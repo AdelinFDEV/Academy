@@ -17,11 +17,12 @@ const YouTubeIcon = () => (
   </svg>
 );
 
-interface Props {
-  variant?: "footer" | "sidebar" | "post";
-}
-
-export default function SocialLinks({ variant = "footer" }: Props) {
+/**
+ * Las redes, en el pie. Hubo dos variantes más («sidebar» y «post») para la
+ * web de entradas; se quitaron el 17-11-2026, con su CSS, porque ya no las
+ * pintaba nadie.
+ */
+export default function SocialLinks() {
   const links = [
     {
       href: INSTAGRAM_URL,
@@ -36,51 +37,6 @@ export default function SocialLinks({ variant = "footer" }: Props) {
       icon: <YouTubeIcon />,
     },
   ];
-
-  if (variant === "sidebar") {
-    return (
-      <div className="sidebar-social-list">
-        {links.map((l) => (
-          <a
-            key={l.label}
-            href={l.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sidebar-social-link"
-          >
-            {l.icon}
-            <span>{l.handle}</span>
-            <span className="sidebar-social-name">{l.label}</span>
-          </a>
-        ))}
-      </div>
-    );
-  }
-
-  if (variant === "post") {
-    return (
-      <div className="post-social-row">
-        <a
-          href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="post-social-link post-social-link--instagram"
-        >
-          <InstagramIcon />
-          Instagram
-        </a>
-        <a
-          href={YOUTUBE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="post-social-link post-social-link--youtube"
-        >
-          <YouTubeIcon />
-          YouTube
-        </a>
-      </div>
-    );
-  }
 
   return (
     <div className="footer-social">

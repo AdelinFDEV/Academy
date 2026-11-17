@@ -100,22 +100,25 @@ export default async function AdminForoPage() {
 
   return (
     <div className="admin-page fa">
-      <div className="admin-page-header">
+      <header className="admin-page-header">
         <div>
-          <h1>Foro</h1>
+          <span className="admin-page-nota">moderación</span>
+          <h1><span className="fluor">Foro</span></h1>
           <p className="admin-page-subtitle">
             {panel.cifras.preguntas} preguntas · {panel.cifras.respuestas} respuestas · {panel.cifras.participantes} participantes
           </p>
         </div>
-      </div>
+      </header>
 
       {!puedeModerar && (
         <p className="fa-aviso" role="status">
-          Puedes ver el panel, pero para moderar tienes que tener activada la verificación en dos pasos y haberla
-          pasado en esta sesión. Actívala en «Mi perfil» y vuelve a iniciar sesión.
+          <span className="fa-aviso-ic" aria-hidden="true">!</span>
+          <span>Puedes ver el panel, pero para moderar tienes que tener activada la verificación en dos pasos y haberla
+          pasado en esta sesión. Actívala en «Mi perfil» y vuelve a iniciar sesión.</span>
         </p>
       )}
 
+      {/* La palanca de emergencia, arriba y a mano; después, la cola de trabajo. */}
       <section className="admin-card fa-seccion">
         <h2 className="fa-titulo">Modo del foro</h2>
         <ModoForo modo={panel.modo} puedeModerar={puedeModerar} />

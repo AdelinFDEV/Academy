@@ -59,7 +59,7 @@ export default function GuideHyperliquidOrderBook() {
     <div className="hl-ob">
       <div className="hl-ob-head">
         <span className="hl-ob-eyebrow">
-          <BookOpen size={14} /> Libro de órdenes · BTC-PERP
+          <BookOpen size={14} aria-hidden="true" /> Libro de órdenes · BTC-PERP
         </span>
         <span className="hl-ob-live">on-chain</span>
       </div>
@@ -100,11 +100,11 @@ export default function GuideHyperliquidOrderBook() {
 
       {/* Control: tamaño de la orden de compra a mercado */}
       <div className="hl-ob-control">
-        <label className="hl-ob-control-lbl">
+        <label htmlFor="hl-ob-tamano" className="hl-ob-control-lbl">
           Compras a mercado <strong>{size.toFixed(1)} BTC</strong> — arrastra para ver cuánta liquidez te comes
         </label>
         <input
-          className="hl-ob-slider"
+          id="hl-ob-tamano"
           type="range"
           min={0.2}
           max={MAX_SIZE}
@@ -119,7 +119,7 @@ export default function GuideHyperliquidOrderBook() {
       </div>
 
       {/* Resultado */}
-      <div className="hl-ob-result">
+      <div className="hl-ob-result" aria-live="polite">
         <div className="hl-ob-res-item">
           <span className="hl-ob-res-lbl">Precio medio de ejecución</span>
           <span className="hl-ob-res-val">{eur(fill.avg)}</span>
@@ -133,7 +133,7 @@ export default function GuideHyperliquidOrderBook() {
       </div>
 
       <p className="hl-ob-note">
-        <ArrowUpRight size={13} />
+        <ArrowUpRight size={13} aria-hidden="true" />
         {fill.partial
           ? "Tu orden es tan grande que se come toda la liquidez visible: en un mercado real seguirías subiendo de precio. Cuanto más grande la orden, peor el precio medio."
           : "Cuanto más grande es tu orden, más niveles del libro tienes que 'comerte' y peor es tu precio medio. Eso es el slippage — y ocurre igual en un exchange centralizado, solo que aquí todo el libro es verificable on-chain."}

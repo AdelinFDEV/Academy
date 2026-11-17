@@ -37,8 +37,10 @@ export default function Turnstile({
   // identidad en cada render del padre.
   const onVerifyRef = useRef(onVerify);
   const onExpireRef = useRef(onExpire);
-  onVerifyRef.current = onVerify;
-  onExpireRef.current = onExpire;
+  useEffect(() => {
+    onVerifyRef.current = onVerify;
+    onExpireRef.current = onExpire;
+  }, [onVerify, onExpire]);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,6 +50,13 @@ export default function Turnstile({
       if (cancelled || !containerRef.current || !api || widgetId.current !== null) return;
       widgetId.current = api.render(containerRef.current, {
         sitekey: SITE_KEY,
+        // Claro siempre: las pantallas de acceso son de papel (estilo
+        // «Cuaderno de estudio»); con «auto» seguía el tema del sistema y salía
+        // un recuadro negro en mitad de la hoja.
+        theme: "light",
+        // El widget normal mide 300 px de ancho: en un móvil de 320 px la hoja
+        // deja unos 260 y se saldría por el borde. Ahí va el compacto (150 px).
+        size: containerRef.current.offsetWidth < 300 ? "compact" : "normal",
         callback: (token: string) => onVerifyRef.current(token),
         "expired-callback": () => onExpireRef.current?.(),
         "error-callback": () => onExpireRef.current?.(),

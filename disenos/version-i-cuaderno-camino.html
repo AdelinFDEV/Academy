@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión I · Cuaderno con camino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Caveat:wght@600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --papel: #fbf6ec; --raya: #e4dccb; --margen: #f2a3a3; --tinta: #232036; --tinta-2: #6b6680; --naranja: #ff8a1f; --naranja-o: #d06a06; --menta: #3ccf91; --menta-o: #20a06a; --lila: #8f7cff; --lila-o: #6a56e6; --amarillo: #ffd23f; --gris: #e6dfd2; --gris-o: #c6bdae; --serif: "Fraunces", Georgia, serif; --mano: "Caveat", cursive; --f: "Nunito", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: var(--tinta); font-family: var(--f); background: var(--papel); background-image: linear-gradient(90deg, transparent 78px, var(--margen) 78px, var(--margen) 80px, transparent 80px), repeating-linear-gradient(var(--papel) 0 35px, var(--raya) 35px 36px); }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1140px; margin: 0 auto; padding: 0 28px 0 120px; }
+  .mano { font-family: var(--mano); }
+  .agujeros { position: fixed; left: 26px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-around; z-index: 2; }
+  .agujeros i { width: 22px; height: 22px; border-radius: 50%; background: #d9d0bd; box-shadow: inset 0 3px 4px rgba(0,0,0,.18); }
+
+  .boton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 26px; border-radius: 16px; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: .03em; color: #fff; background: var(--naranja); box-shadow: 0 5px 0 var(--naranja-o); transition: transform .08s, box-shadow .08s; }
+  .boton:hover { transform: translateY(3px); box-shadow: 0 2px 0 var(--naranja-o); }
+  .boton--menta { background: var(--menta); box-shadow: 0 5px 0 var(--menta-o); } .boton--menta:hover { box-shadow: 0 2px 0 var(--menta-o); }
+  .boton--blanco { background: #fff; color: var(--tinta); box-shadow: 0 5px 0 var(--gris-o); } .boton--blanco:hover { box-shadow: 0 2px 0 var(--gris-o); }
+
+  .nav .ancho { display: flex; justify-content: space-between; align-items: center; padding-top: 22px; padding-bottom: 22px; }
+  .marca { font-family: var(--serif); font-weight: 800; font-size: 28px; }
+  .marca em { color: var(--naranja); font-style: normal; }
+  .chapas { display: flex; gap: 10px; }
+  .chapa { display: flex; align-items: center; gap: 6px; background: #fff; padding: 8px 12px; border-radius: 14px; box-shadow: 0 3px 0 var(--gris-o); font-weight: 800; font-size: 14px; }
+  .chapa i { width: 14px; height: 14px; border-radius: 50%; }
+
+  .hero .ancho { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; padding-top: 30px; padding-bottom: 50px; }
+  .fecha { font-family: var(--mano); font-size: 26px; color: var(--tinta-2); }
+  h1 { font-family: var(--serif); font-weight: 800; font-size: 64px; line-height: 1.02; letter-spacing: -0.02em; margin: 6px 0 0; }
+  .fluor { background: linear-gradient(transparent 55%, var(--amarillo) 55%); }
+  .rodeo { position: relative; display: inline-block; }
+  .rodeo svg { position: absolute; left: -12px; top: -8px; width: calc(100% + 24px); height: calc(100% + 16px); overflow: visible; }
+  .lead { font-size: 19px; line-height: 1.6; color: var(--tinta-2); margin: 18px 0 0; font-weight: 600; }
+  .acciones { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  .nota { margin-top: 26px; font-family: var(--mano); font-size: 24px; color: var(--naranja-o); transform: rotate(-2deg); }
+
+  .camino { position: relative; height: 560px; }
+  .camino svg.ruta { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .nodo { position: absolute; width: 82px; height: 82px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 28px; transition: transform .15s; }
+  .nodo:hover { transform: scale(1.08) rotate(-4deg); }
+  .nodo .etq { position: absolute; top: 90px; left: 50%; transform: translateX(-50%) rotate(-2deg); white-space: nowrap; font-family: var(--mano); font-size: 24px; color: var(--tinta); }
+  .hecho { background: var(--menta); box-shadow: 0 6px 0 var(--menta-o); }
+  .actual { background: var(--naranja); box-shadow: 0 6px 0 var(--naranja-o), 0 0 0 10px rgba(255,138,31,.2); animation: latir 1.6s ease-in-out infinite; }
+  @keyframes latir { 50% { box-shadow: 0 6px 0 var(--naranja-o), 0 0 0 18px rgba(255,138,31,.07); } }
+  .bloq { background: var(--gris); color: var(--gris-o); box-shadow: 0 6px 0 var(--gris-o); }
+  .pegatina { position: absolute; width: 92px; height: 92px; border-radius: 50%; background: var(--lila); color: #fff; display: grid; place-items: center; text-align: center; font-weight: 900; font-size: 13px; line-height: 1.1; border: 4px solid #fff; box-shadow: 0 6px 14px -6px rgba(0,0,0,.35); transform: rotate(12deg); }
+  .posit { position: absolute; width: 170px; padding: 14px; background: var(--amarillo); font-family: var(--mano); font-size: 22px; line-height: 1.1; transform: rotate(4deg); box-shadow: 0 10px 16px -10px rgba(0,0,0,.4); }
+
+  .bloque { padding: 60px 0; }
+  .titulo-sec { display: flex; justify-content: space-between; align-items: end; margin-bottom: 26px; }
+  h2 { font-family: var(--serif); font-weight: 800; font-size: 46px; margin: 0; letter-spacing: -0.02em; }
+  h2 .mano { font-weight: 700; color: var(--naranja); font-size: 1.1em; }
+  .fichas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .ficha { background: #fff; padding: 20px; border-radius: 6px; box-shadow: 0 10px 20px -14px rgba(0,0,0,.45); position: relative; transition: transform .2s; }
+  .ficha:nth-child(1) { transform: rotate(-1.5deg); } .ficha:nth-child(2) { transform: rotate(1deg); } .ficha:nth-child(3) { transform: rotate(-.6deg); }
+  .ficha:hover { transform: rotate(0) translateY(-6px); }
+  .washi { position: absolute; top: -12px; left: 30%; width: 90px; height: 24px; opacity: .85; transform: rotate(-5deg); }
+  .ficha-img { aspect-ratio: 16/10; border-radius: 4px; display: grid; place-items: center; font-family: var(--serif); font-size: 80px; font-weight: 800; color: #fff; }
+  .ficha h3 { font-family: var(--serif); font-size: 26px; margin: 14px 0 0; }
+  .ficha-pie { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .estrellas { font-family: var(--mano); font-size: 22px; color: var(--tinta-2); }
+  .progreso { height: 12px; background: var(--gris); border-radius: 999px; margin-top: 12px; overflow: hidden; }
+  .progreso i { display: block; height: 100%; border-radius: 999px; background: var(--menta); }
+
+  .premium .ancho { padding-bottom: 70px; }
+  .tapa { background: var(--lila); color: #fff; border-radius: 22px; padding: 46px 46px 46px 70px; position: relative; box-shadow: 0 8px 0 var(--lila-o); display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+  .tapa::before { content: ""; position: absolute; left: 24px; top: 24px; bottom: 24px; width: 12px; background: repeating-linear-gradient(#fff 0 8px, transparent 8px 24px); opacity: .6; border-radius: 6px; }
+  .tapa h2 { color: #fff; }
+  .tapa p { font-size: 18px; font-weight: 600; opacity: .92; }
+  .lista-mano { font-family: var(--mano); font-size: 28px; line-height: 1.4; }
+  .lista-mano span::before { content: "✓ "; color: var(--amarillo); }
+  .pie { text-align: center; padding: 0 28px 40px 120px; color: var(--tinta-2); font-weight: 600; font-size: 14px; }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--tinta); color: #fff; font-weight: 800; font-size: 13px; padding: 10px 16px; border-radius: 14px; z-index: 3; }
+</style>
+</head>
+<body>
+<div class="agujeros"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<header class="nav"><div class="ancho">
+  <span class="marca">Adelin<em>BTC</em></span>
+  <span class="chapas"><span class="chapa"><i style="background:var(--naranja)"></i>Racha 5 días</span><span class="chapa"><i style="background:var(--lila)"></i>12 logros</span></span>
+  <a class="boton boton--blanco" href="#">Entrar</a>
+</div></header>
+
+<section class="hero"><div class="ancho">
+  <div>
+    <span class="fecha">Lección de hoy · martes</span>
+    <h1>Tu cuaderno para <span class="fluor">aprender cripto</span>, <span class="rodeo">paso a paso<svg viewBox="0 0 200 60" preserveAspectRatio="none"><path d="M8 34 C 18 6, 182 2, 194 26 C 200 50, 40 58, 12 44 C 2 38, 10 20, 30 14" fill="none" stroke="#ff8a1f" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
+    <p class="lead">Guías gratuitas con ejercicios y quiz. Cada una que terminas se tacha en tu camino y te da una pegatina de logro.</p>
+    <div class="acciones"><a class="boton" href="#">Seguir mi camino</a><a class="boton boton--blanco" href="#">Ver Premium</a></div>
+    <div class="nota">← todas las guías son gratis</div>
+  </div>
+  <div class="camino">
+    <svg class="ruta" viewBox="0 0 500 560" preserveAspectRatio="none"><path d="M70 50 C 300 40, 350 140, 300 190 S 90 250, 130 330 S 360 400, 350 480" fill="none" stroke="#232036" stroke-width="3" stroke-dasharray="10 10" stroke-linecap="round" opacity=".55"/></svg>
+    <a class="nodo hecho" href="#" style="left:30px;top:10px">✓<span class="etq">Qué es Bitcoin</span></a>
+    <a class="nodo hecho" href="#" style="left:262px;top:140px">✓<span class="etq">Blockchain</span></a>
+    <a class="nodo actual" href="#" style="left:90px;top:286px">3<span class="etq">¡Ethereum!</span></a>
+    <a class="nodo bloq" href="#" style="left:312px;top:440px">4<span class="etq">Staking</span></a>
+    <span class="pegatina" style="right:0;top:0">LOGRO<br>Primeros<br>pasos</span>
+    <span class="posit" style="right:10px;top:270px">Apunte: repasa el halving antes del quiz</span>
+  </div>
+</div></section>
+
+<section class="bloque"><div class="ancho">
+  <div class="titulo-sec"><h2>Guías para <span class="mano">estudiar</span></h2><a class="boton boton--blanco" href="#">Todas</a></div>
+  <div class="fichas">
+    <a class="ficha" href="#"><span class="washi" style="background:var(--amarillo)"></span><div class="ficha-img" style="background:var(--lila)">H</div><h3>Hyperliquid</h3><div class="ficha-pie"><span class="estrellas">Intermedio · 14 min</span><span class="boton boton--menta" style="padding:9px 14px;font-size:12px">Empezar</span></div><div class="progreso"><i style="width:0"></i></div></a>
+    <a class="ficha" href="#"><span class="washi" style="background:#ffb4a2"></span><div class="ficha-img" style="background:var(--naranja)">X</div><h3>XRP y Ripple</h3><div class="ficha-pie"><span class="estrellas">Básico · 11 min</span><span class="boton boton--menta" style="padding:9px 14px;font-size:12px">Seguir</span></div><div class="progreso"><i style="width:60%"></i></div></a>
+    <a class="ficha" href="#"><span class="washi" style="background:#a7e8c8"></span><div class="ficha-img" style="background:var(--menta)">R</div><h3>Render</h3><div class="ficha-pie"><span class="estrellas">Intermedio · 12 min</span><span class="boton boton--menta" style="padding:9px 14px;font-size:12px">Empezar</span></div><div class="progreso"><i style="width:0"></i></div></a>
+  </div>
+</div></section>
+
+<section class="premium"><div class="ancho">
+  <div class="tapa">
+    <div><h2>El cuaderno Premium</h2><p>Cuando pases de estudiar a operar: tu diario de trading, la cartera real de Adelin y todos los cursos con certificado.</p><a class="boton" href="#" style="margin-top:12px">Hazte Premium · 19,99 €/mes</a></div>
+    <div class="lista-mano"><span>Diario de Trading con Nova</span><br><span>Portfolio Adelin en directo</span><br><span>Cursos con certificado</span></div>
+  </div>
+</div></section>
+
+<footer class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No es asesoramiento financiero</footer>
+<span class="etiqueta-maqueta">Versión I · Cuaderno con camino (maqueta)</span>
+</body>
+</html>

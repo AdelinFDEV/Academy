@@ -5,7 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
-import { Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import { Aviso, Campo, CampoClave, GoogleIcon, RequisitosClave, Separador, useSonidoDeError } from "@/components/acceso/Campos";
 import { passwordChecks } from "@/lib/passwordRules";
 import { MENSAJE_DOMINIO_NO_PERMITIDO, emailPermitido } from "@/lib/emailPolicy";
 
@@ -42,6 +44,7 @@ function RegisterForm() {
   const [success, setSuccess] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaKey, setCaptchaKey] = useState(0);
+  useSonidoDeError(error);
 
   function resetCaptcha() {
     // El token de captcha es de un solo uso: se regenera tras cada intento.
@@ -157,154 +160,138 @@ function RegisterForm() {
 
   if (success) {
     return (
-      <div className="auth-page">
-        <div className="bg-ambient" />
-        <div className="auth-card">
-          <div className="auth-brand">adelin<span>btc</span></div>
-          <p className="auth-subtitle">Revisa tu email</p>
-          <p className="auth-success">
-            Te hemos enviado un enlace de confirmación a <strong>{email}</strong>. Ábrelo para activar tu cuenta
-            {vieneAPagar ? " y pasarás directamente al pago." : "."}
-          </p>
-          <Link
-            href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}
-            className="btn-primary"
-            style={{ display: "block", textAlign: "center", textDecoration: "none" }}
-          >
-            Volver al login
-          </Link>
-        </div>
-      </div>
+      <AccesoShell nota="¡Ya casi está!" titulo={<>Revisa tu <span className="fluor">email</span></>} apunte={APUNTE}>
+        <Aviso tipo="ok" titulo="Te hemos escrito">
+          Te hemos enviado un enlace de confirmación a <strong>{email}</strong>. Ábrelo para activar tu cuenta
+          {vieneAPagar ? " y pasarás directamente al pago." : "."}
+        </Aviso>
+        <Tecla href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"} tamano="grande" ancho>
+          Volver al login
+        </Tecla>
+      </AccesoShell>
     );
   }
 
   return (
-    <div className="auth-page">
-      <div className="bg-ambient" />
+    <AccesoShell
+      nota={vieneAPagar ? "Paso 1 de 2" : "Empieza aquí"}
+      titulo={
+        vieneAPagar ? (
+          <>Crea tu cuenta y pasas <span className="fluor">al pago</span></>
+        ) : (
+          <>Crea tu <span className="fluor">cuenta</span></>
+        )
+      }
+      apunte={APUNTE}
+    >
+      {/* Quien viene a pagar ve Google primero: un clic, sin formulario y sin
+          esperar el email de confirmación. Es el camino más corto al pago. */}
+      {vieneAPagar && (
+        <>
+          <Tecla color="blanca" ancho onClick={handleGoogle}>
+            <GoogleIcon />
+            Continuar con Google
+          </Tecla>
+          <Separador>o con tu email</Separador>
+        </>
+      )}
 
-      <div className="auth-card">
-        <Link href="/" className="auth-brand" style={{ textDecoration: "none" }}>
-          adelin<span>btc</span>
-        </Link>
-        <p className="auth-subtitle">
-          {vieneAPagar ? "Paso 1 de 2: crea tu cuenta y pasas al pago" : "Crea tu cuenta"}
-        </p>
+      <form onSubmit={handleRegister} className="acc-form">
+        <Campo
+          id="fullName"
+          name="name"
+          etiqueta="Nombre completo"
+          type="text"
+          autoComplete="name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          placeholder="Tu nombre"
+          required
+        />
 
-        {/* Quien viene a pagar ve Google primero: un clic, sin formulario y sin
-            esperar el email de confirmación. Es el camino más corto al pago. */}
-        {vieneAPagar && (
-          <>
-            <button onClick={handleGoogle} className="btn-google">
-              <GoogleIcon />
-              Continuar con Google
-            </button>
-            <div className="auth-divider">
-              <span>o con tu email</span>
-            </div>
-          </>
+        <Campo
+          id="email"
+          name="email"
+          etiqueta="Tu correo"
+          type="email"
+          autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="tu@gmail.com"
+          required
+          ayuda="Solo aceptamos Gmail y Proton Mail."
+        />
+
+        <CampoClave
+          id="password"
+          name="new-password"
+          etiqueta="Contraseña"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Mínimo 8 caracteres"
+          describe="requisitos-clave"
+          required
+        />
+
+        <CampoClave
+          id="confirmPassword"
+          name="confirm-password"
+          etiqueta="Confirmar contraseña"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Repite tu contraseña"
+          required
+        />
+
+        <RequisitosClave id="requisitos-clave" password={password} />
+
+        {error && (
+          <Aviso tipo="error" titulo="No se ha creado la cuenta">
+            {error}
+          </Aviso>
         )}
 
-        <form onSubmit={handleRegister} className="auth-form">
-          <div className="field">
-            <label htmlFor="fullName">Nombre completo</label>
-            <input
-              id="fullName"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Tu nombre"
-              required
-            />
-          </div>
+        <Turnstile
+          onVerify={setCaptchaToken}
+          onExpire={() => setCaptchaToken("")}
+          resetKey={captchaKey}
+        />
 
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@gmail.com"
-              required
-            />
-            <small className="field-hint">Solo aceptamos Gmail y Proton Mail.</small>
-          </div>
+        <Tecla type="submit" tamano="grande" ancho disabled={loading || !captchaToken}>
+          {loading ? "Creando cuenta…" : "Crear cuenta"}
+        </Tecla>
+      </form>
 
-          <div className="field">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mínimo 8 caracteres"
-              required
-            />
-          </div>
+      {!vieneAPagar && (
+        <>
+          <Separador>o continúa con</Separador>
 
-          <div className="field">
-            <label htmlFor="confirmPassword">Confirmar contraseña</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Repite tu contraseña"
-              required
-            />
-          </div>
+          <Tecla color="blanca" ancho onClick={handleGoogle}>
+            <GoogleIcon />
+            Continuar con Google
+          </Tecla>
+        </>
+      )}
 
-          <ul className="pw-requirements" aria-live="polite">
-            {passwordChecks(password).map((req) => (
-              <li key={req.label} className={req.ok ? "ok" : ""}>
-                <Check size={13} aria-hidden="true" />
-                {req.label}
-              </li>
-            ))}
-          </ul>
-
-          {error && <p className="auth-error">{error}</p>}
-
-          <Turnstile
-            onVerify={setCaptchaToken}
-            onExpire={() => setCaptchaToken("")}
-            resetKey={captchaKey}
-          />
-
-          <button type="submit" className="btn-primary" disabled={loading || !captchaToken}>
-            {loading ? "Creando cuenta..." : "Crear cuenta"}
-          </button>
-        </form>
-
-        {!vieneAPagar && (
-          <>
-            <div className="auth-divider">
-              <span>o continúa con</span>
-            </div>
-
-            <button onClick={handleGoogle} className="btn-google">
-              <GoogleIcon />
-              Google
-            </button>
-          </>
-        )}
-
-        <p className="auth-footer">
-          ¿Ya tienes cuenta?{" "}
-          <Link href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}>Inicia sesión</Link>
-        </p>
-      </div>
-    </div>
+      <p className="acc-pie">
+        ¿Ya tienes cuenta?{" "}
+        <Link href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}>Inicia sesión</Link>
+      </p>
+    </AccesoShell>
   );
 }
 
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-      <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
-      <path d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
-    </svg>
-  );
-}
+/** El apunte de la derecha: qué hace fuerte una contraseña. */
+const APUNTE: Apunte = {
+  tema: "Seguridad",
+  pregunta: "¿Qué hace fuerte una contraseña?",
+  respuesta: "La longitud",
+  detalle: "Cuantos más caracteres, más cuesta adivinarla. Y que sea única: no la repitas en otra web.",
+  color: "naranja",
+  postit: "Gratis",
+  nota: "Las guías son gratis, todas",
+};

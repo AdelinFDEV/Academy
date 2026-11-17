@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Crown, Loader2, AtSign } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import { ALIAS_MAX, AVATARES, AVATAR_ADMIN, problemaDelAlias } from "@/lib/perfilPublico";
 
 type Estado = { tipo: "nada" } | { tipo: "guardando" } | { tipo: "ok" } | { tipo: "error"; texto: string };
@@ -69,19 +71,22 @@ export default function PerfilEditor({
       const datos = (await r.json().catch(() => ({}))) as { error?: string };
       if (!r.ok) {
         setEstado({ tipo: "error", texto: datos.error ?? "No se pudo guardar." });
+        sonar("error");
         return;
       }
       setEstado({ tipo: "ok" });
+      sonar("guardado");
       router.refresh();
     } catch {
       setEstado({ tipo: "error", texto: "Sin conexión. Inténtalo de nuevo." });
+      sonar("error");
     }
   }
 
   const aliasVista = limpio && !problema ? limpio : aliasInicial || "tu_alias";
 
   return (
-    <div className="mp-panel mp-editor">
+    <div className="pn-hoja mp-editor">
       <div className="mp-editor-campos">
         {/* ── La foto ── */}
         <fieldset className="mp-campo" disabled={!activo}>
@@ -91,9 +96,9 @@ export default function PerfilEditor({
             {(esAdmin ? [AVATAR_ADMIN, ...AVATARES] : AVATARES).map((v) => {
               const elegida = avatar === v.id;
               return (
-                <button
+                <Tecla
                   key={v.id}
-                  type="button"
+                  color={elegida ? "menta" : "blanca"}
                   role="radio"
                   aria-checked={elegida}
                   className={`mp-foto${elegida ? " is-elegida" : ""}`}
@@ -104,11 +109,11 @@ export default function PerfilEditor({
                     {elegida && <span className="mp-foto-check" aria-hidden="true"><Check size={11} strokeWidth={3.4} /></span>}
                   </span>
                   <span className="mp-foto-nombre">{v.nombre}</span>
-                </button>
+                </Tecla>
               );
             })}
-            <button
-              type="button"
+            <Tecla
+              color={avatar === null ? "menta" : "blanca"}
               role="radio"
               aria-checked={avatar === null}
               className={`mp-foto${avatar === null ? " is-elegida" : ""}`}
@@ -119,7 +124,7 @@ export default function PerfilEditor({
                 {avatar === null && <span className="mp-foto-check" aria-hidden="true"><Check size={11} strokeWidth={3.4} /></span>}
               </span>
               <span className="mp-foto-nombre">Inicial</span>
-            </button>
+            </Tecla>
           </div>
         </fieldset>
 
@@ -165,9 +170,9 @@ export default function PerfilEditor({
             <span className="mp-vista-quien">
               <span className="mp-vista-alias">@{aliasVista}</span>
               {esPremium ? (
-                <span className="mp-chip is-oro"><Crown size={11} aria-hidden="true" /> Premium{premiumDesde ? ` · desde ${premiumDesde}` : ""}</span>
+                <span className="pn-chip tono-naranja"><Crown size={11} aria-hidden="true" /> Premium{premiumDesde ? ` · desde ${premiumDesde}` : ""}</span>
               ) : (
-                <span className="mp-chip">Miembro</span>
+                <span className="pn-chip tono-gris">Miembro</span>
               )}
             </span>
           </div>
@@ -184,9 +189,9 @@ export default function PerfilEditor({
           {estado.tipo === "error" && <span className="is-error">{estado.texto}</span>}
           {estado.tipo === "nada" && hayCambios && <span className="is-pendiente">Tienes cambios sin guardar</span>}
         </span>
-        <button type="button" className="mp-guardar" onClick={guardar} disabled={!puedeGuardar}>
+        <Tecla onClick={guardar} disabled={!puedeGuardar}>
           {estado.tipo === "guardando" ? <><Loader2 size={15} className="mp-girando" aria-hidden="true" /> Guardando…</> : "Guardar cambios"}
-        </button>
+        </Tecla>
       </div>
     </div>
   );

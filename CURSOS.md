@@ -86,7 +86,7 @@ La paleta sale del campo **`color`** de `curso.json` (un hexadecimal). Ese únic
 
 - la portada del curso, la ficha y las tarjetas de `/cursos`;
 - el acento del aula (temario, botones, barras de progreso);
-- **el certificado**: el anillo de la nota, el resplandor del fondo, el filete del marco, el título del curso y el código (`--dp-acento` en `components/aula/certificado.css`). Es su único color: no lleva oro fijo;
+- **el certificado**: la pegatina de la nota, la línea de margen de la hoja, el rotulador bajo el nombre, el título del curso, las notas parciales y el código (`--cq-acento` en `components/aula/certificado.css`, que saca solo un tono oscurecido para leerlo sobre papel y uno suave para fondos);
 - la vitrina de certificados del dashboard.
 
 No hay que tocar CSS para cambiar de paleta: basta con el `color`.
@@ -247,6 +247,7 @@ Reglas de redacción:
 
 - Variantes de callout: `--info`, `--tip`, `--warning`, `--danger`.
 - El ancho de las barras de `prose-chart` se calcula a mano: `(valor / valor_más_alto) × 100`. Grafica la diferencia, no el total.
+- **Las marcas de estudio** (rotulador, pósits, símbolos al margen) siguen [`ESTILO.md`](./ESTILO.md), «Las marcas de estudio en TODOS los textos explicativos». En el aula las pone `MarcasEstudio` por estructura, sin tocar el HTML de la lección: el resumen y los callouts como pósits, la primera `<strong>` de cada apartado con rotulador (subrayado coral si el `<h2>` habla de errores o riesgos), la cifra de `prose-dato` recuadrada en lila y los pasos con su aro. Pon en `<strong>` la idea clave de cada apartado.
 - **Comprueba las cuentas.** Si una lección cita una simulación o un cálculo, hazlo de verdad (un script de Python basta) antes de escribir la cifra.
 
 ---
@@ -330,13 +331,15 @@ Formato de cada pregunta:
 
 **El certificado** es un solo componente: `src/components/aula/Certificado.tsx` (+ `certificado.css`). Lo pintan el aula, la verificación pública, la vitrina y todas las **muestras** (`muestra` = marca de agua «Muestra»): ficha del curso, `/cursos`, `/premium`, el slider de la portada y la vitrina vacía. Cambiar el diseño ahí lo cambia en todas partes.
 
-- Diseño («Noche», 12-11-2026): el mismo lenguaje que la web. Fondo azul noche con un resplandor del color del curso y un filete fino; a la izquierda el texto en marfil (nombre en serif Fraunces, servida con `next/font`; el curso en cursiva del color del curso; el logro en una píldora) y el pie con fecha, emisor «AdelinBTC Academy», código y dirección de verificación; a la derecha, **una placa con la nota final en un anillo** y las dos notas que la componen. **Hereda la paleta del curso** por `color`, que es su único color.
-- **Las clases son `dp-*` y solo viven en ese componente.** El 12-11-2026 se cambió el diseño conservando los nombres `cert-*`, y el servidor de desarrollo siguió sirviendo trozos del CSS viejo: las dos rejillas se mezclaron y el certificado salió roto en la pantalla del admin. **Si se vuelve a rehacer, se cambia el prefijo**, y se actualizan los selectores de fuera que lo tocan (`catalogo.css`, `cursos.css`, `home.css`, `premium.css`, `vitrina-certificados.css`).
-- `.dp` solo fija la proporción y hace de contenedor; el certificado es `.dp-hoja`. En el propio contenedor no se usa `cqw` (miraría al contenedor de fuera).
+- Diseño («Cuaderno», 17-11-2026, el estilo de la web: `ESTILO.md`): **una hoja de cuaderno**. Papel blanco con renglones tenues y la línea de margen del color del curso; arriba la marca y una etiqueta «Certificado de aprovechamiento»; a la izquierda el nombre en Fraunces 800 con un trazo de rotulador del color del curso debajo, el curso en Fraunces 800 en el color del curso oscurecido y **el logro en un pósit amarillo escrito a mano** (Caveat: es la única nota a mano); a la derecha, **la nota final en una gran pegatina redonda del color del curso**, con borde blanco, un poco torcida y con «Curso aprobado · AdelinBTC Academy» en círculo, como un tampón, y debajo las dos notas que la componen en dos fichas; abajo, tras una raya discontinua, fecha, emisor «AdelinBTC Academy», el código en un recuadro discontinuo y la dirección de verificación. **Hereda la paleta del curso** por `color`: de él salen solos el tono oscurecido con tinta (`--cq-o`, el que se lee sobre papel: el lima o el ámbar no se leen tal cual sobre blanco) y el suave (`--cq-s`). Sobre el color del curso, el texto es tinta, nunca blanco. El resto de la paleta, con moderación: el naranja solo en el punto de la marca y el amarillo solo en el pósit del logro.
+- **Las clases son `cq-*` y solo viven en ese componente.** Cada diseño estrena prefijo (`cert-*`, luego `dp-*`, ahora `cq-*`): el 12-11-2026 se cambió el diseño conservando los nombres, el servidor de desarrollo siguió sirviendo trozos del CSS viejo y las dos rejillas se mezclaron. **Si se vuelve a rehacer, se cambia el prefijo**, y se actualizan los selectores de fuera que tocan la raíz del certificado (hoy `.cq`; antes `.dp` en `catalogo.css`, `cursos.css`, `premium.css` y `vitrina-certificados.css`).
+- `.cq` solo fija la proporción (A4 apaisado) y hace de contenedor; el certificado es `.cq-hoja`. En el propio contenedor no se usa `cqw` (miraría al contenedor de fuera). Dentro, todo se mide en `--u` (1cqw): se ve igual en miniatura que impreso.
+- **`completo`**: las tres páginas a tamaño completo (aula, `/dashboard/certificados/<codigo>`, `/cursos/verificar/<codigo>`) tienen que pasarlo. En una pantalla de 820px o menos, la hoja pierde la proporción fija y se recompone en vertical (pegatina y notas en fila, letra pequeña con suelo de 10px), porque un A4 apaisado deja la letra en 3px en un móvil y en 6px en una tableta. Las miniaturas (vitrina, muestras) no lo llevan: siguen siendo un A4 apaisado en pequeño. Impreso, siempre apaisado.
+- Un marco de fuera (la vitrina, una muestra) **no tiene que pintar fondo ni borde propios**: la hoja ya trae su papel, su radio y su sombra «de canto» (`0 6px 0` gris lateral). Si el marco la recorta (`overflow: hidden`), que deje sitio a esa sombra o la quite con `.su-marco .cq { box-shadow: none; }`.
 - **Solo lleva datos reales**: nombre, curso, logro, las tres notas, fecha, código y su dirección de verificación. Nada de horas, avales ni organismos.
 - **Sin encabezados**: el nombre y el curso son `<p>`, no `<h1>`/`<h2>`. Las muestras salen en la portada, `/premium` y `/cursos`, y un `<h1>` dentro les ponía un segundo título («Tu nombre aquí»).
 - El nombre y el título del curso **se encogen solos** si son largos (`cuerpoSegunLargo`), para que no desborden.
-- Se mide en `cqw`: se ve igual en miniatura que impreso. Se descarga con «Guardar como PDF» (A4 apaisado; la regla `@media print` deja solo el certificado).
+- Se descarga con «Guardar como PDF» (`BotonImprimir`): A4 apaisado sin márgenes (`@page`), la regla `@media print` deja solo el certificado y fuerza a imprimir los fondos (`print-color-adjust: exact`), así salen el papel rayado, la pegatina y el pósit aunque el navegador tenga desmarcado «Gráficos de fondo».
 - Se emite **solo** con el examen final aprobado (`emitirCertificado` en `cursos-examen.ts`, al corregir; o `repararCertificado` si aquella emisión falló), con un código de 10 caracteres y verificación pública en `/cursos/verificar/<codigo>`.
 - **No se firma con el nombre de ninguna persona.**
 
@@ -426,7 +429,7 @@ Todo sale solo de Supabase al publicarlo; no hay que tocar estas páginas:
 |---|---|
 | `/cursos` | El catálogo: cabecera con los totales de todos los cursos y, debajo, una tarjeta por curso con su ilustración y el progreso del alumno (punto 4) |
 | `/cursos/<slug>` | La ficha pública (indexable, entra sola en el sitemap) |
-| `/aula/<slug>` | El aula: temario fijo y plegable (tecla T), lecciones con el diccionario en popup, exámenes, certificado |
+| `/aula/<slug>` | El aula: temario lateral plegable (tecla T), lecciones con el diccionario en popup, exámenes, certificado |
 | `/premium` | La lista de cursos publicados y la muestra del certificado |
 | `/dashboard` | La vitrina de certificados |
 | `/dashboard/logros` | El logro, en «Cursos» |
@@ -442,10 +445,10 @@ Todo sale solo de Supabase al publicarlo; no hay que tocar estas páginas:
 
 | Pieza | Qué hace | Dónde |
 |---|---|---|
-| Barra superior | «Salir», el curso (lleva a su portada), **un tramo por módulo** que se rellena con sus lecciones y se pone verde al aprobar su examen, y «Seguir donde lo dejé» | `AulaShell.tsx` |
-| Temario | Un camino: cada módulo con su ficha (número, visto o candado) y su nota al aprobarlo; las lecciones cuelgan de un raíl con la actual marcada. Plegable con la tecla T; en móvil, panel que se abre desde la barra de arriba | `AulaShell.tsx`, `AulaCuerpo.tsx` |
+| Barra superior | Se va con la página al hacer scroll (nada anclado, pedido por el admin). «Salir», el curso (lleva a su portada), **un tramo por módulo** que se rellena con sus lecciones y se pone verde al aprobar su examen, y «Seguir donde lo dejé» | `AulaShell.tsx` |
+| Temario | Un camino: cada módulo con su ficha (número, visto o candado) y su nota al aprobarlo; las lecciones cuelgan de un raíl con la actual marcada. Acompaña la lectura en escritorio (`sticky`, en su columna) y se pliega con la tecla T; en móvil, panel que se abre desde la barra de arriba | `AulaShell.tsx`, `AulaCuerpo.tsx` |
 | Portada del aula | El anillo de avance, **el siguiente paso como botón principal**, cuatro cifras y el cronograma por módulos | `aula/[curso]/page.tsx` |
-| Lección | Módulo y título, etiquetas (minutos, revisión, completada), **las paradas del módulo** (una por lección y el examen al final), una línea de avance de lectura bajo la barra, y al final una tarjeta que dice qué viene después | `aula/[curso]/[leccion]/page.tsx`, `ProgresoLectura.tsx` |
+| Lección | Módulo y título, etiquetas (minutos, revisión, completada), **las paradas del módulo** (una por lección y el examen al final) y, al final, una tarjeta que dice qué viene después | `aula/[curso]/[leccion]/page.tsx` |
 | Bloques | Una tarjeta común (`Marco`) con su etiqueta y un color por familia: comprobar, minijuego, calculadora, gráfico | `bloques/comun.tsx` |
 | Examen | Tres cifras antes de empezar (preguntas, nota de corte, espera), barra de contestadas, una pregunta por pantalla en su tarjeta, y el resultado con la corrección | `Examen.tsx` |
 
@@ -456,7 +459,7 @@ Todo sale solo de Supabase al publicarlo; no hay que tocar estas páginas:
 - **Las superficies son tres**: `--aula-panel` (tarjetas), `--aula-panel-alto` (encima de una tarjeta) y `--aula-hundido` (dentro de una tarjeta: opciones, cartas, cifras). No inventes una cuarta.
 - **Un estado nunca se dice solo con transparencia.** Al contestar una pregunta se marcan la buena (`is-buena`) y, si falló, la elegida (`is-mala`); **las demás se quedan legibles** (`is-neutra`). Hasta el 12-11-2026 bajaban al 45 % de opacidad y, sobre el fondo oscuro, parecía que las opciones desaparecían: lo notó el admin.
 - **Las opciones de una pregunta son siempre `.aula-opciones` / `.aula-opcion`**, las mismas en el bloque `pregunta` y en el examen. Un bloque nuevo con respuestas las reutiliza.
-- **En móvil, nada flota sobre los botones de abajo.** El botón del temario va en la barra superior.
+- **Nada se queda anclado al hacer scroll** (ni barras arriba ni abajo): solo el temario lateral de escritorio, que va en su columna y no tapa nada. **En móvil, nada flota sobre los botones de abajo.** El botón del temario va en la barra superior.
 - **Se anima con `transform` y `opacity`**, y todo está en la lista de `prefers-reduced-motion` del final de `aula.css`. Si añades una transición, añádela ahí.
 - **El texto de la lección no se toca desde el aula**: el vocabulario `.prose-*` es el de toda la web (`globals.css`). El aula solo le da ritmo (`.aula-prose`), como el trazo del color del curso sobre cada `<h2>`.
 

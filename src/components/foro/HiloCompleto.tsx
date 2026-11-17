@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { BadgeCheck, CornerDownRight, Lock, MessageCircle, Pin } from "lucide-react";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
+import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
 import MarcoForo from "@/components/foro/MarcoForo";
 import TextoForo from "@/components/foro/TextoForo";
-import { aspectoDe } from "@/components/foro/categorias";
+import { aspectoDe, colorDe } from "@/components/foro/categorias";
 import AccionesMensaje from "@/components/foro/participar/AccionesMensaje";
 import ContextoHilo from "@/components/foro/participar/ContextoHilo";
 import Etiquetas from "@/components/foro/participar/Etiquetas";
@@ -22,10 +23,12 @@ import "@/app/foro/hilo.css";
  * cliente que piden APARTE lo personal de quien mira (`ContextoHilo`). Sin
  * JavaScript, o para Google, la página se lee entera igual.
  *
- * El diseño (12-11-2026): la pregunta abre como un artículo, teñida del color
- * de su categoría; cada respuesta es una tarjeta con su «me gusta» en un riel
- * a la izquierda; la elegida va la primera, en verde; y las réplicas cuelgan
- * de su respuesta con una sola sangría, porque el hilo tiene un nivel.
+ * Estilo «Cuaderno de estudio» (17-11-2026): la pregunta es una hoja de
+ * cuaderno con la pestaña y el margen del color de su categoría; cada
+ * respuesta, una nota pegada con cinta, con su «me gusta» en un riel a la
+ * izquierda; la elegida va la primera, en menta y con su pegatina; y las
+ * réplicas cuelgan de su respuesta como notas más pequeñas, con una sola
+ * sangría, porque el hilo tiene un nivel.
  */
 
 const marcas = (m: { editado: boolean; editadoPorModeracion: boolean }) =>
@@ -34,24 +37,31 @@ const marcas = (m: { editado: boolean; editadoPorModeracion: boolean }) =>
 function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
   const marca = marcas(r);
   return (
-    <li className={`fh-respuesta fo-tarjeta${r.esGanadora ? " is-ganadora" : ""}`} id={`r-${r.id}`}>
+    <li className={`fh-resp${r.esGanadora ? " is-ganadora" : ""}`} id={`r-${r.id}`}>
       {r.esGanadora && (
-        <p className="fh-cinta">
-          <BadgeCheck size={16} strokeWidth={2.4} aria-hidden="true" />
-          Respuesta elegida por quien preguntó
-        </p>
+        <>
+          {/* La pegatina es el adorno; lo que se lee es la cinta de al lado. */}
+          <span className="fh-pegatina" aria-hidden="true">
+            <BadgeCheck size={24} strokeWidth={2.6} />
+            Elegida
+          </span>
+          <p className="fh-cinta">
+            <BadgeCheck size={15} strokeWidth={2.8} aria-hidden="true" />
+            Respuesta elegida por quien preguntó
+          </p>
+        </>
       )}
 
-      <div className="fh-respuesta-dentro">
-        {/* El riel: el «me gusta», en vertical, a la izquierda del texto. */}
+      <div className="fh-resp-dentro">
+        {/* El riel: el «me gusta», a la izquierda del texto. */}
         <div className="fh-riel">
           <MeGusta respuestaId={r.id} inicial={r.meGusta} />
         </div>
 
-        <div className="fh-respuesta-cuerpo">
+        <div className="fh-resp-cuerpo">
           <header className="fh-mensaje-cab">
             <Firma autor={r.autor} fecha={r.fecha} />
-            {marca && <span className="fh-marca">{marca}</span>}
+            {marca && <span className="fh-editado">{marca}</span>}
           </header>
           <TextoForo texto={r.texto} />
           <AccionesMensaje respuestaId={r.id} esRespuesta esGanadora={r.esGanadora} hiloCerrado={cerrado} texto={r.texto} fecha={r.fecha} />
@@ -64,11 +74,11 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
                   <li key={x.id} className="fh-replica" id={`r-${x.id}`}>
                     <header className="fh-mensaje-cab">
                       <Firma autor={x.autor} fecha={x.fecha} compacta />
-                      {marcaReplica && <span className="fh-marca">{marcaReplica}</span>}
+                      {marcaReplica && <span className="fh-editado">{marcaReplica}</span>}
                     </header>
                     {x.citado && (
                       <p className="fh-cita">
-                        <CornerDownRight size={12} strokeWidth={2.4} aria-hidden="true" />
+                        <CornerDownRight size={13} strokeWidth={2.6} aria-hidden="true" />
                         En respuesta a <b>{x.citado}</b>
                       </p>
                     )}
@@ -101,13 +111,13 @@ export default function HiloCompleto({
 }) {
   const url = `/foro/${hilo.id}-${hilo.slug}`;
   const marca = marcas(hilo);
-  const { color, Icono } = aspectoDe(hilo.categoria.slug);
+  const { Icono } = aspectoDe(hilo.categoria.slug);
   const resuelto = hilo.respuestas.some((r) => r.esGanadora);
   const meGustaTotal = hilo.respuestas.reduce((n, r) => n + r.meGusta + r.replicas.reduce((m, x) => m + x.meGusta, 0), 0);
   const valoraciones = hilo.etiquetas.interesante + hilo.etiquetas.gracias + hilo.etiquetas.yoTambien;
 
   return (
-    <MarcoForo conSesion={conSesion} acento={color}>
+    <MarcoForo conSesion={conSesion} tono={colorDe(hilo.categoria.slug)}>
       <ContextoHilo preguntaId={hilo.id} conSesion={conSesion}>
         <nav className="fo-migas" aria-label="Estás en">
           <Link href="/foro">Foro</Link>
@@ -117,29 +127,29 @@ export default function HiloCompleto({
 
         {aviso && <p className="fo-aviso" role="status">{aviso}</p>}
 
-        {/* ── La pregunta, como el arranque de un artículo ── */}
+        {/* ── La pregunta, como el arranque de una hoja ── */}
         <header className="fh-cabecera">
           <div className="fh-sellos">
             <Link href={`/foro/${hilo.categoria.slug}`} className="fo-cat">
-              <Icono size={12} strokeWidth={2.4} aria-hidden="true" />
+              <Icono size={13} strokeWidth={2.6} aria-hidden="true" />
               {hilo.categoria.nombre}
             </Link>
             {resuelto && (
               <span className="fo-sello fo-sello--resuelto">
-                <BadgeCheck size={11} strokeWidth={2.6} aria-hidden="true" /> Resuelto
+                <BadgeCheck size={13} strokeWidth={2.8} aria-hidden="true" /> Resuelto
               </span>
             )}
             {hilo.fijado && (
-              <span className="fo-sello"><Pin size={10} strokeWidth={2.6} aria-hidden="true" /> Fijado</span>
+              <span className="fo-sello"><Pin size={12} strokeWidth={2.8} aria-hidden="true" /> Fijado</span>
             )}
           </div>
-          <h1 className="fh-titulo">{hilo.titulo}</h1>
+          <h1 className="fh-hilo-titulo">{hilo.titulo}</h1>
           <Firma autor={hilo.autor} fecha={hilo.fecha} />
         </header>
 
         <div className="fh-rejilla">
           <div className="fh-principal">
-            <article className="fh-pregunta fo-tarjeta">
+            <article className="fh-pregunta">
               <TextoForo texto={hilo.texto} className="fh-texto-pregunta" />
 
               {hilo.imagenes.length > 0 && (
@@ -167,7 +177,7 @@ export default function HiloCompleto({
                   inicial={{ interesante: hilo.etiquetas.interesante, gracias: hilo.etiquetas.gracias, yo_tambien: hilo.etiquetas.yoTambien }}
                 />
                 <div className="fh-pregunta-acciones">
-                  {marca && <span className="fh-marca">{marca}</span>}
+                  {marca && <span className="fh-editado">{marca}</span>}
                   <AccionesMensaje hiloCerrado={hilo.cerrado} texto={hilo.texto} titulo={hilo.titulo} fecha={hilo.fecha} />
                 </div>
               </footer>
@@ -183,17 +193,23 @@ export default function HiloCompleto({
                 </h2>
                 {hilo.totalRespuestas > 1 && (
                   <nav className="fh-orden" aria-label="Orden de las respuestas">
-                    <Link href={url} className={orden === "relevancia" ? "is-activo" : undefined} aria-current={orden === "relevancia" ? "true" : undefined}>
+                    <Tecla
+                      href={url}
+                      color={orden === "relevancia" ? "coral" : "blanca"}
+                      tamano="peq"
+                      aria-current={orden === "relevancia" ? "true" : undefined}
+                    >
                       Más valoradas
-                    </Link>
-                    <Link
+                    </Tecla>
+                    <Tecla
                       href={`${url}?orden=recientes`}
-                      className={orden === "recientes" ? "is-activo" : undefined}
+                      color={orden === "recientes" ? "coral" : "blanca"}
+                      tamano="peq"
                       aria-current={orden === "recientes" ? "true" : undefined}
                       rel="nofollow"
                     >
                       Más recientes
-                    </Link>
+                    </Tecla>
                   </nav>
                 )}
               </header>
@@ -210,16 +226,18 @@ export default function HiloCompleto({
               )}
 
               {hilo.cerrado ? (
-                <p className="fh-cerrado">
-                  <Lock size={16} strokeWidth={2.3} aria-hidden="true" />
+                <p className={`fh-cerrado${resuelto ? " is-resuelto" : ""}`}>
+                  <span className="fh-cerrado-icono" aria-hidden="true">
+                    {resuelto ? <BadgeCheck size={20} strokeWidth={2.6} /> : <Lock size={18} strokeWidth={2.6} />}
+                  </span>
                   {resuelto
                     ? "Resuelto: este hilo ya tiene respuesta y no admite más."
                     : "Este hilo está cerrado y no admite más respuestas."}
                 </p>
               ) : (
-                <div className="fh-responder fo-tarjeta" id="responder">
+                <div className="fh-responder" id="responder">
                   <h3 className="fh-responder-titulo">
-                    <MessageCircle size={17} strokeWidth={2.3} aria-hidden="true" />
+                    <span className="fh-responder-icono" aria-hidden="true"><MessageCircle size={18} strokeWidth={2.6} /></span>
                     Tu respuesta
                   </h3>
                   <Responder />
@@ -249,11 +267,15 @@ export default function HiloCompleto({
                 {resuelto ? "Resuelto" : hilo.cerrado ? "Cerrado" : hilo.totalRespuestas > 0 ? "Abierto, con respuestas" : "Esperando la primera respuesta"}
               </p>
               {!hilo.cerrado && (
-                <a href="#responder" className="fp-btn fp-btn--firme fh-ficha-boton">Responder</a>
+                <Tecla href="#responder" color="coral" ancho className="fh-ficha-responder">
+                  <MessageCircle size={17} strokeWidth={2.6} aria-hidden="true" />
+                  Responder
+                </Tecla>
               )}
             </section>
 
-            <section className="fh-recordatorio fo-tarjeta" aria-label="Antes de responder">
+            {/* Antes de responder: un pósit, como una nota al margen. */}
+            <section className="fh-recordatorio" aria-label="Antes de responder">
               <h2>Antes de responder</h2>
               <ul>
                 <li>Responde a lo que se pregunta, con tus palabras.</li>

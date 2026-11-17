@@ -2,25 +2,24 @@
    EL FORO — un hilo (/foro/<id>-<titulo>)
    ══════════════════════════════════════════════════════════════════════════
 
-   Lo importa `src/components/foro/HiloCompleto.tsx`. Prefijo: fh- (y lo de
-   participar que solo vive en el hilo: el «me gusta» y las etiquetas, fp-).
-   Rehecho desde cero el 12-11-2026, con el resto del foro.
+   Lo importa `src/components/foro/HiloCompleto.tsx`. Prefijo: fh-.
+   Estilo «Cuaderno de estudio» desde el 17-11-2026. El acento (`--cat`,
+   `--cat-o`, `--cat-s`) es el de la categoría del hilo: lo pone el marco.
 
-   · La pregunta abre como un artículo: titular grande y, debajo, su texto en
-     una tarjeta con un filo del color de su categoría.
-   · Cada respuesta es una tarjeta con un RIEL a la izquierda, donde vive su
-     «me gusta». Es lo que ordena las respuestas, así que se ve de un vistazo.
-   · La elegida es la única verde de la página: cinta arriba, borde y riel.
-   · Las réplicas cuelgan de su respuesta con UNA sangría y una línea que las
-     une: el hilo tiene un solo nivel (FORO.md §2).
-   · A la derecha, una ficha fija con las cifras del hilo y el botón de
-     responder, para no tener que bajar hasta el final. */
+   · La pregunta: una hoja de cuaderno con su pestaña y la línea del margen
+     en el color de la categoría.
+   · Las respuestas: notas de papel pegadas con un trozo de cinta, con el «me
+     gusta» en un riel a la izquierda.
+   · La elegida: la primera, en menta, con su pegatina redonda.
+   · Las réplicas: notas más pequeñas, colgadas con una sola sangría. */
 
-/* ── Cabecera: el titular de la pregunta ───────────────────────────────── */
+/* ── Cabecera ──────────────────────────────────────────────────────────── */
 
 .fh-cabecera {
-  max-width: 54rem;
-  margin-bottom: 2.2rem;
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .fh-sellos {
@@ -28,592 +27,582 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
-  margin-bottom: 1rem;
 }
 
-.fh-titulo {
-  margin-bottom: 1.4rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4.2vw, 2.7rem);
+.fh-hilo-titulo {
+  max-width: 26ch;
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 4.4vw, 3.1rem);
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.035em;
-  color: #fff;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  color: var(--tinta);
   overflow-wrap: anywhere;
-  text-wrap: balance;
 }
+
+/* ── Rejilla: hilo + columna ── */
 
 .fh-rejilla {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 300px;
   align-items: start;
-  gap: 2.2rem;
+  gap: 2.4rem;
 }
 
-.fh-principal { min-width: 0; }
+.fh-principal {
+  display: grid;
+  gap: 2.6rem;
+  min-width: 0;
+}
 
-/* ── La pregunta ───────────────────────────────────────────────────────── */
+/* ── La pregunta: la hoja ── */
 
 .fh-pregunta {
   position: relative;
-  overflow: hidden;
-  margin-bottom: 2.8rem;
-  padding: 1.8rem 1.9rem 1.3rem;
+  margin-top: 12px;
+  padding: 1.8rem 1.8rem 1.4rem 3.4rem;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
 }
 
-/* El filo de color, arriba: de la categoría, que se apaga hacia la derecha. */
+/* La pestaña de su categoría, asomando por arriba. */
 .fh-pregunta::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--cat) 0%, color-mix(in srgb, var(--cat) 20%, transparent) 70%, transparent 100%);
+  top: -12px;
+  left: 2.2rem;
+  width: 78px;
+  height: 18px;
+  border-radius: 10px 10px 0 0;
+  background: var(--cat);
+  box-shadow: inset 0 -4px 0 var(--cat-o);
 }
 
-.fh-texto-pregunta {
-  font-size: 1.08rem;
-  color: var(--text-primary);
+/* La línea del margen del cuaderno. */
+.fh-pregunta::after {
+  content: "";
+  position: absolute;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  left: 1.7rem;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--cat);
+  opacity: 0.55;
 }
 
+.fh-texto-pregunta { font-size: 1.1rem; }
+
+/* Las imágenes: fotos pegadas, un poco torcidas, con borde blanco. */
 .fh-imagenes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-  gap: 0.7rem;
-  margin-top: 1.6rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
   list-style: none;
 }
 
+.fh-imagenes li:nth-child(odd) { transform: rotate(-1.2deg); }
+.fh-imagenes li:nth-child(even) { transform: rotate(1deg); }
+
 .fh-imagenes a {
   display: block;
-  overflow: hidden;
-  border: 1px solid var(--fo-borde);
-  border-radius: 14px;
-  background: rgba(0, 0, 0, 0.3);
-  transition: border-color 0.18s ease, transform 0.18s ease;
+  padding: 7px;
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o), 0 10px 18px -12px rgba(29, 27, 51, 0.5);
+  transition: transform 0.26s var(--fo-muelle);
 }
 
-.fh-imagenes a:hover { border-color: var(--fo-borde-vivo); transform: translateY(-2px); }
-.fh-imagenes a:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 3px; }
-.fh-imagenes img { display: block; width: 100%; height: 9.5rem; object-fit: cover; }
+@media (hover: hover) {
+  .fh-imagenes a:hover { transform: translateY(-3px) scale(1.02); }
+}
+
+.fh-imagenes img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--fondo);
+}
 
 .fh-pregunta-pie {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.8rem 1.2rem;
-  margin-top: 1.6rem;
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
   padding-top: 1.2rem;
-  border-top: 1px solid var(--fo-borde);
+  border-top: 2px dashed var(--gris);
 }
 
 .fh-pregunta-acciones {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.6rem;
+  display: grid;
+  gap: 0.5rem;
 }
 
 .fh-pregunta-acciones .fp-acciones { margin-top: 0; }
 
-.fh-marca {
-  font-size: 0.74rem;
-  font-style: italic;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-/* ── Las etiquetas: tres teclas ────────────────────────────────────────── */
-
-.fp-etiquetas { min-width: 0; }
-
-.fh-etiquetas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  list-style: none;
-}
-
-.fp-etiqueta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-height: 2.3rem;
-  padding: 0 0.85rem;
-  border: 1px solid var(--fo-borde-vivo);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  font: inherit;
-  font-size: 0.82rem;
+/* «Editado»: una marca a mano. */
+.fh-editado {
+  font-family: var(--letra-mano);
+  font-size: 19px;
   font-weight: 600;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+  color: var(--tinta-2);
 }
 
-.fp-etiqueta b {
-  padding-left: 0.5rem;
-  border-left: 1px solid var(--fo-borde-vivo);
-  font-family: var(--font-display);
-  font-weight: 800;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
+/* ── Las respuestas ── */
+
+.fh-respuestas {
+  display: grid;
+  gap: 1.4rem;
 }
-
-button.fp-etiqueta:hover:not(:disabled) {
-  border-color: var(--accent-orange-soft);
-  background: var(--accent-orange-light);
-  color: #fff;
-  transform: translateY(-1px);
-}
-
-button.fp-etiqueta:disabled { cursor: default; }
-button.fp-etiqueta:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 2px; }
-
-.fp-etiqueta.is-puesta {
-  border-color: var(--accent-orange);
-  background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
-  color: #fff;
-}
-
-.fp-etiqueta.is-puesta svg { color: var(--accent-orange-soft); }
-.fp-etiqueta.is-puesta b { border-left-color: color-mix(in srgb, var(--accent-orange) 60%, transparent); }
-.fp-etiqueta.es-propia { cursor: default; }
-
-/* ── Las respuestas ────────────────────────────────────────────────────── */
 
 .fh-respuestas-cab {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.7rem 1rem;
-  margin-bottom: 1.1rem;
+  gap: 0.8rem 1.2rem;
 }
 
-/* El orden, como un interruptor de dos posiciones. */
 .fh-orden {
-  display: inline-flex;
-  padding: 3px;
-  border: 1px solid var(--fo-borde);
-  border-radius: 999px;
-  background: rgba(6, 13, 26, 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.fh-orden a {
-  padding: 0.38rem 0.9rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.15s ease, background 0.15s ease;
-}
-
-.fh-orden a:hover { color: #fff; }
-.fh-orden a.is-activo { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.fh-orden .tecla { margin-bottom: 0; }
+.fh-orden { padding-bottom: 6px; }
 
 .fh-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  display: grid;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
-.fh-respuesta {
-  overflow: hidden;
-  /* Al llegar por un aviso (#r-…), que la barra fija no tape el mensaje. */
-  scroll-margin-top: calc(var(--nav-h) + 1rem);
+/* Una respuesta: una nota de papel con su trozo de cinta. */
+.fh-resp {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.2rem;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: var(--fo-canto);
+  scroll-margin-top: 110px;
 }
 
-.fh-respuesta:target { border-color: var(--accent-orange); }
+.fh-resp::before {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 92px;
+  height: 24px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--coral-s) 80%, transparent);
+  box-shadow: 0 1px 2px rgba(29, 27, 51, 0.12);
+  transform: translateX(-50%) rotate(-3deg);
+}
 
-.fh-respuesta-dentro {
+.fh-lista > .fh-resp:nth-child(even)::before { transform: translateX(-50%) rotate(2.5deg); }
+
+/* El destino de un enlace (#r-…), un momento resaltado. */
+.fh-resp:target,
+.fh-replica:target { box-shadow: 0 5px 0 var(--gris-o), 0 0 0 4px var(--azul-s); }
+
+/* La elegida: menta, con su pegatina y la cinta en menta. */
+.fh-resp.is-ganadora {
+  border: 3px solid var(--menta);
+  box-shadow: 0 6px 0 var(--menta-o);
+}
+
+.fh-resp.is-ganadora::before { background: color-mix(in srgb, var(--menta-s) 85%, transparent); }
+
+.fh-pegatina {
+  position: absolute;
+  top: -30px;
+  right: -12px;
+  z-index: 2;
   display: grid;
-  grid-template-columns: 4.4rem minmax(0, 1fr);
+  place-items: center;
+  align-content: center;
+  gap: 1px;
+  width: 92px;
+  height: 92px;
+  border: 4px solid var(--papel);
+  border-radius: 50%;
+  background: var(--menta);
+  box-shadow: 0 6px 14px -6px rgba(29, 27, 51, 0.45);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* Sobre menta, tinta: el blanco no llega al contraste. */
+  color: var(--tinta);
+  transform: rotate(10deg);
+  animation: fh-pegar 0.6s var(--fo-muelle) both;
 }
 
-.fh-respuesta-cuerpo {
-  min-width: 0;
-  padding: 1.4rem 1.6rem 1.2rem 1.4rem;
+@keyframes fh-pegar {
+  from { opacity: 0; transform: rotate(-20deg) scale(1.6); }
 }
+
+.fh-cinta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 1rem;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--menta-s);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--menta-o);
+}
+
+.fh-resp-dentro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.1rem;
+}
+
+/* El riel del «me gusta»: la tecla en vertical. */
+.fh-riel {
+  position: relative;
+}
+
+.fh-riel .fp-megusta.tecla {
+  flex-direction: column;
+  gap: 2px;
+  width: 58px;
+  padding: 10px 0 8px;
+}
+
+.fh-riel .fp-megusta.es-propio {
+  flex-direction: column;
+  gap: 2px;
+  width: 58px;
+  padding: 9px 0 7px;
+}
+
+.fh-riel .fp-megusta-texto {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+/* Lo que sale al pulsar sin poder (la invitación, un error): flota al lado,
+   que en el riel no cabe. */
+.fh-riel .fp-invitacion,
+.fh-riel .fp-error {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 10px);
+  z-index: 5;
+  width: min(340px, 72vw);
+  box-shadow: 0 14px 30px -14px rgba(29, 27, 51, 0.45);
+}
+
+.fh-resp-cuerpo { min-width: 0; }
 
 .fh-mensaje-cab {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem 1rem;
+  gap: 0.4rem 1rem;
   margin-bottom: 0.9rem;
 }
 
-/* ── El riel del «me gusta» ────────────────────────────────────────────── */
-
-.fh-riel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.3rem 0.4rem;
-  border-right: 1px solid var(--fo-borde);
-  background: rgba(6, 13, 26, 0.35);
-}
-
-.fp-megusta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid var(--fo-borde-vivo);
-  background: rgba(255, 255, 255, 0.03);
-  font: inherit;
-  color: var(--text-muted);
-  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
-}
-
-button.fp-megusta { cursor: pointer; }
-button.fp-megusta:disabled { cursor: default; }
-button.fp-megusta:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 2px; }
-
-.fp-megusta b {
-  font-family: var(--font-display);
-  font-weight: 800;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-}
-
-button.fp-megusta:hover:not(:disabled) {
-  border-color: #ff7a93;
-  background: rgba(255, 122, 147, 0.1);
-  color: #ff9fb2;
-  transform: translateY(-1px);
-}
-
-.fp-megusta.is-puesto { border-color: #ff7a93; background: rgba(255, 122, 147, 0.14); color: #ff7a93; }
-.fp-megusta.es-propio { border-style: dashed; }
-
-/* En el riel: en vertical, el corazón encima de la cifra, sin texto. */
-.fh-riel .fp-megusta {
-  flex-direction: column;
-  gap: 0.3rem;
-  width: 3.2rem;
-  padding: 0.7rem 0 0.6rem;
-  border-radius: 14px;
-}
-
-.fh-riel .fp-megusta b { font-size: 1.15rem; line-height: 1; }
-.fh-riel .fp-megusta-texto { display: none; }
-
-/* Si no puede participar, la invitación sale al lado del riel, no dentro. */
-.fh-riel .fp-invitacion,
-.fh-riel .fp-error {
-  position: absolute;
-  top: 1.3rem;
-  left: calc(100% + 0.8rem);
-  z-index: 5;
-  width: min(22rem, 68vw);
-  margin: 0;
-  box-shadow: var(--fo-sombra);
-}
-
-.fh-riel .fp-error {
-  padding: 0.7rem 0.9rem;
-  border: 1px solid rgba(255, 107, 107, 0.4);
-  border-radius: 12px;
-  background: #0b1526;
-}
-
-/* ── La respuesta elegida ──────────────────────────────────────────────── */
-
-.fh-respuesta.is-ganadora {
-  border-color: color-mix(in srgb, var(--fo-verde) 50%, transparent);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--fo-verde) 9%, transparent) 0%, transparent 42%),
-    var(--fo-cristal), rgba(13, 26, 48, 0.72);
-  box-shadow: var(--fo-filo), 0 26px 60px -34px var(--fo-verde);
-}
-
-.fh-cinta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.4rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--fo-verde) 30%, transparent);
-  background: color-mix(in srgb, var(--fo-verde) 14%, transparent);
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fo-verde);
-}
-
-.fh-respuesta.is-ganadora .fh-riel {
-  border-right-color: color-mix(in srgb, var(--fo-verde) 28%, transparent);
-  background: color-mix(in srgb, var(--fo-verde) 6%, transparent);
-}
-
-/* ── Las réplicas: un solo nivel ───────────────────────────────────────── */
+/* ── Las réplicas: notas pequeñas, colgadas ── */
 
 .fh-replicas {
-  position: relative;
-  margin-top: 1.3rem;
-  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.3rem 0 0;
+  padding: 0 0 0 1.2rem;
+  border-left: 3px dashed var(--gris);
   list-style: none;
-}
-
-/* La línea que las une a su respuesta. */
-.fh-replicas::before {
-  content: "";
-  position: absolute;
-  top: 0.4rem;
-  bottom: 0.9rem;
-  left: 0;
-  width: 2px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, var(--fo-borde-vivo) 0%, var(--fo-borde) 100%);
 }
 
 .fh-replica {
   position: relative;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--fo-borde);
-  border-radius: 14px;
-  background: rgba(6, 13, 26, 0.42);
-  scroll-margin-top: calc(var(--nav-h) + 1rem);
+  padding: 1rem 1.1rem 0.6rem;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: 0 3px 0 var(--gris);
+  scroll-margin-top: 110px;
 }
 
-.fh-replica + .fh-replica { margin-top: 0.6rem; }
-.fh-replica:target { border-color: var(--accent-orange); }
-
-/* El codo que la engancha a la línea. */
+/* El enganche con la línea punteada. */
 .fh-replica::before {
   content: "";
   position: absolute;
-  top: 1.5rem;
-  left: -1.3rem;
-  width: 1.3rem;
-  height: 2px;
-  background: var(--fo-borde-vivo);
+  top: 1.4rem;
+  left: calc(-1.2rem - 3px);
+  width: calc(1.2rem - 2px);
+  border-top: 3px dashed var(--gris);
 }
 
-.fh-replica .fh-mensaje-cab { margin-bottom: 0.45rem; }
-.fh-replica .fo-texto { font-size: 0.95rem; line-height: 1.62; }
+.fh-replica .fh-mensaje-cab { margin-bottom: 0.6rem; }
+.fh-replica .fo-texto { font-size: 0.98rem; }
 
 .fh-cita {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 0.4rem;
-  font-size: 0.76rem;
-  color: var(--text-muted);
+  gap: 5px;
+  margin: 0 0 0.5rem;
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  color: var(--tinta-2);
 }
 
-.fh-cita b { color: var(--text-secondary); font-weight: 600; }
+.fh-cita b { color: var(--cat-o); font-weight: 700; }
 
 .fh-replica-pie {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 0.2rem 0.5rem;
-  margin-top: 0.6rem;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
 }
 
-.fh-replica-pie .fp-acciones { flex: 1; min-width: 0; margin-top: 0; }
-.fh-replica-pie .fp-acciones > .fp-fila { margin-left: 0; }
+.fh-replica-pie > .fp-acciones { flex: 1 1 260px; margin-top: 0; }
 
-/* En una réplica el «me gusta» va en línea, pequeño. */
-.fh-replica-pie .fp-megusta { padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.78rem; }
-.fh-replica-pie .fp-megusta svg { width: 14px; height: 14px; }
-.fh-replica-pie .fp-megusta-texto { display: none; }
+/* ── Cerrado / responder ── */
 
-/* ── Responder y cierre ────────────────────────────────────────────────── */
+.fh-cerrado {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 1rem 1.15rem;
+  border: 3px solid var(--gris-o);
+  border-radius: 18px;
+  background: var(--gris);
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.fh-cerrado-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--tinta-3);
+  color: #fff;
+}
+
+.fh-cerrado.is-resuelto { border-color: var(--menta); background: var(--menta-s); color: var(--menta-o); }
+.fh-cerrado.is-resuelto .fh-cerrado-icono { background: var(--menta); }
 
 .fh-responder {
-  margin-top: 1.6rem;
-  padding: 1.5rem 1.6rem;
-  scroll-margin-top: calc(var(--nav-h) + 1rem);
+  padding: 1.5rem 1.5rem 0.8rem;
+  border-radius: 26px;
+  background: var(--coral-s);
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+  scroll-margin-top: 110px;
 }
 
 .fh-responder-titulo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.fh-responder-icono {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--coral);
+  box-shadow: 0 4px 0 var(--coral-o);
   color: #fff;
 }
 
-.fh-responder-titulo svg { color: var(--accent-orange-soft); }
-.fh-responder .fp-invitacion { margin-top: 0; }
-
-.fh-cerrado {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 1.6rem;
-  padding: 1rem 1.2rem;
-  border: 1px dashed var(--fo-borde-vivo);
-  border-radius: 16px;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-.fh-opiniones {
-  max-width: 46rem;
-  margin: 3rem 0 1.2rem;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  color: var(--text-muted);
-}
-
-/* ── La columna lateral ────────────────────────────────────────────────── */
+/* ── La columna lateral ── */
 
 .fh-lateral {
-  position: sticky;
-  top: calc(var(--nav-h) + 1.2rem);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  gap: 2rem;
 }
 
-.fh-ficha { padding: 1.3rem; }
+.fh-ficha {
+  display: grid;
+  gap: 1rem;
+  padding: 1.3rem 1.2rem 0.6rem;
+}
 
 .fh-ficha dl {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
-.fh-ficha dl > div { display: flex; flex-direction: column-reverse; gap: 0.2rem; text-align: center; }
-.fh-ficha dl > div + div { border-left: 1px solid var(--fo-borde); }
+.fh-ficha dl > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.2rem;
+  text-align: center;
+}
+
+.fh-ficha dl > div + div { border-left: 2px dashed var(--gris); }
 
 .fh-ficha dd {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.9rem;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.03em;
-  color: #fff;
+  color: var(--tinta);
   font-variant-numeric: tabular-nums;
 }
 
 .fh-ficha dt {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--tinta-2);
 }
 
 .fh-estado {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.8rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  justify-self: center;
+  margin: 0;
+  padding: 5px 12px;
+  border-radius: 10px;
+  background: var(--coral-s);
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: var(--coral-o);
+  text-align: center;
 }
 
-.fh-estado::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-orange);
+.fh-estado.is-resuelto { background: var(--menta-s); color: var(--menta-o); }
+
+/* Antes de responder: un pósit amarillo. */
+.fh-recordatorio {
+  padding: 1.25rem 1.25rem 1.15rem;
+  border-radius: 6px 6px 22px 6px;
+  background: var(--amarillo-s);
+  box-shadow: 0 10px 14px -10px rgba(29, 27, 51, 0.45);
+  transform: rotate(1.4deg);
 }
-
-.fh-estado.is-resuelto { background: color-mix(in srgb, var(--fo-verde) 12%, transparent); color: var(--fo-verde); }
-.fh-estado.is-resuelto::before { background: var(--fo-verde); }
-
-.fh-ficha-boton { width: 100%; margin-top: 0.8rem; }
-
-.fh-recordatorio { padding: 1.2rem 1.3rem; }
 
 .fh-recordatorio h2 {
-  margin-bottom: 0.7rem;
-  font-family: var(--font-display);
-  font-size: 0.92rem;
+  margin: 0 0 0.6rem;
+  font-family: var(--letra-mano);
+  font-size: 28px;
   font-weight: 700;
-  color: #fff;
+  line-height: 1;
+  color: var(--tinta);
 }
 
 .fh-recordatorio ul {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 0.5rem;
-  margin-bottom: 0.9rem;
+  margin: 0 0 0.9rem;
+  padding: 0;
   list-style: none;
 }
 
 .fh-recordatorio li {
   position: relative;
-  padding-left: 1rem;
-  font-size: 0.82rem;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
   line-height: 1.45;
-  color: var(--text-secondary);
+  color: var(--tinta-2);
 }
 
 .fh-recordatorio li::before {
   content: "";
   position: absolute;
-  top: 0.55em;
+  top: 0.5em;
   left: 0;
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--accent-orange-soft);
+  background: var(--coral);
 }
 
-.fh-recordatorio a { font-size: 0.8rem; font-weight: 700; color: var(--accent-orange-soft); text-decoration: none; }
-.fh-recordatorio a:hover { color: #fff; }
+.fh-recordatorio a {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: var(--tinta);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
 
-/* ── Pantallas más estrechas ───────────────────────────────────────────── */
+.fh-recordatorio a:hover { color: var(--coral-o); }
+
+/* ── Pie: opiniones ── */
+
+.fh-opiniones {
+  max-width: 70ch;
+  margin: 3rem 0 0;
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  line-height: 1.3;
+  color: var(--tinta-2);
+}
+
+/* ── Tableta y móvil ── */
 
 @media (max-width: 1000px) {
-  .fh-rejilla { grid-template-columns: 1fr; }
-  .fh-lateral { position: static; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fh-rejilla { grid-template-columns: minmax(0, 1fr); }
+  .fh-lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  /* En una sola columna la ficha cae debajo del formulario: su «Responder»
+     llevaría hacia arriba, a lo que se acaba de pasar. */
+  .fh-ficha .fh-ficha-responder { display: none; }
+  .fh-ficha { padding-bottom: 1.2rem; }
 }
 
-@media (max-width: 720px) {
-  .fh-pregunta { padding: 1.3rem 1.15rem 1rem; }
-  .fh-texto-pregunta { font-size: 1rem; }
-  /* En el móvil el riel se tumba: una franja arriba, con el «me gusta» en línea. */
-  .fh-respuesta-dentro { grid-template-columns: 1fr; }
-  .fh-riel {
-    flex-direction: row;
-    align-items: center;
-    padding: 0.6rem 1.1rem;
-    border-right: 0;
-    border-bottom: 1px solid var(--fo-borde);
-  }
-  .fh-riel .fp-megusta { flex-direction: row; width: auto; padding: 0.4rem 0.85rem; border-radius: 999px; }
-  .fh-riel .fp-megusta b { font-size: 0.95rem; }
-  .fh-riel .fp-megusta-texto { display: inline; font-size: 0.78rem; }
+@media (max-width: 640px) {
+  .fh-lateral { grid-template-columns: minmax(0, 1fr); }
+  .fh-pregunta { padding: 1.5rem 1.1rem 1.2rem 2.4rem; }
+  .fh-pregunta::after { left: 1.1rem; }
+  .fh-pregunta::before { left: 1.6rem; }
+  .fh-resp { padding: 1.4rem 1rem 1rem; }
+  .fh-resp-dentro { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
+  /* En el móvil el riel se tumba: el «me gusta» va arriba, en horizontal. */
+  .fh-riel { order: -1; }
+  .fh-riel .fp-megusta.tecla,
+  .fh-riel .fp-megusta.es-propio { flex-direction: row; gap: 7px; width: auto; padding: 8px 13px; }
   .fh-riel .fp-invitacion,
-  .fh-riel .fp-error { top: calc(100% + 0.5rem); left: 1.1rem; width: calc(100vw - 4.4rem); }
-  .fh-respuesta-cuerpo { padding: 1.1rem 1.15rem 1rem; }
-  .fh-replicas { padding-left: 0.9rem; }
-  .fh-replica::before { left: -0.9rem; width: 0.9rem; }
-  .fh-responder { padding: 1.2rem 1.15rem; }
-  .fh-lateral { grid-template-columns: 1fr; }
-  .fh-imagenes { grid-template-columns: repeat(2, 1fr); }
+  .fh-riel .fp-error { position: static; width: auto; margin-top: 0.6rem; box-shadow: none; }
+  .fh-pegatina { width: 80px; height: 80px; top: -28px; right: -6px; font-size: 0.75rem; letter-spacing: 0.02em; }
+  .fh-riel .fp-megusta-texto { font-size: 0.85rem; }
+  /* Un hilo largo con réplicas a 360 px: la sangría y el relleno, al mínimo,
+     para que la columna del texto no se quede en nada. */
+  .fh-replicas { padding-left: 0.7rem; }
+  .fh-replica { padding: 0.9rem 0.85rem 0.5rem; }
+  .fh-replica::before { left: calc(-0.7rem - 3px); width: calc(0.7rem - 2px); }
+  .fh-replica .fo-texto { font-size: 1rem; }
+  .fh-resp .fp-form--replica { padding: 0.9rem 0.85rem 0.4rem; }
+  /* Las cifras del hilo: en minúscula caben en su tercio a 360 px. */
+  .fh-ficha dt { letter-spacing: 0.02em; text-transform: none; font-size: 0.8rem; }
+  .fh-responder { padding: 1.2rem 1rem 0.6rem; }
+  .fh-imagenes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fp-megusta,
-  .fp-etiqueta,
-  .fh-imagenes a,
-  .fh-orden a { transition: none; }
-  button.fp-megusta:hover:not(:disabled),
-  button.fp-etiqueta:hover:not(:disabled),
+  .fh-pegatina { animation: none; }
+  .fh-imagenes a { transition: none; }
   .fh-imagenes a:hover { transform: none; }
 }

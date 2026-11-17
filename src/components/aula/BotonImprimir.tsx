@@ -1,15 +1,17 @@
 "use client";
 
 import { Download } from "lucide-react";
+import Tecla, { type ColorTecla } from "@/components/cuaderno/Tecla";
 
 /**
- * Abre el diálogo de impresión, donde se elige «Guardar como PDF». Lo usan el
- * aula y la vitrina de certificados del dashboard, cada uno con sus clases.
+ * «Descargar en PDF»: abre el diálogo de impresión, donde se elige «Guardar
+ * como PDF». Es la única tecla de imprimir de la web: la usan el certificado
+ * del aula y el de la vitrina (/dashboard/certificados/<codigo>).
  */
-export default function BotonImprimir({ className = "aula-btn aula-btn--grande" }: { className?: string }) {
+export default function BotonImprimir({ color = "naranja" }: { color?: ColorTecla }) {
   return (
-    <button type="button" className={className} onClick={() => window.print()}>
-      <Download size={17} aria-hidden="true" /> Descargar en PDF
-    </button>
+    <Tecla color={color} onClick={() => window.print()}>
+      <Download size={17} strokeWidth={2.6} aria-hidden="true" /> Descargar en PDF
+    </Tecla>
   );
 }

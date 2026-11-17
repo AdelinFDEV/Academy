@@ -1,620 +1,1520 @@
-/* La ficha de cada curso, /cursos/[slug].
-   El fondo técnico, el hero, las cabeceras numeradas y el cierre salen de
-   `herramientas/detalle.css`, que se importa junto a este archivo. Aquí va lo
-   propio: los pasos de «Cómo funciona» y la ficha (prefijo cf-).
-   El catálogo /cursos tiene su propio archivo, `catalogo.css`, desde el 08-11-2026. */
+/* ══════════════════════════════════════════════════════════════════════════
+   CURSOS — la parte pública, estilo «Cuaderno de estudio» (17-11-2026)
+   Lo que comparten el catálogo (/cursos), la ficha de cada curso
+   (/cursos/<slug>) y la verificación de certificados (/cursos/verificar/…),
+   y lo propio de la ficha (`fc-`) y de la verificación (`cv-`). Lo propio del
+   catálogo va en catalogo.css.
 
-/* ── Cómo funciona ──────────────────────────────────────────────────────── */
+   Referencias: ESTILO.md, disenos/sistema.html («El camino de un curso») y los
+   cursos de la portada (src/components/cursos-home.css). Color de la sección:
+   LILA. Cada curso, además, su color propio (`--c`, el campo `color`,
+   CURSOS.md §4), con sus dos tonos derivados: `--c-o` (canto, y texto sobre
+   su tono suave) y `--c-s` (fondos). Sobre el color del curso, texto en tinta:
+   hay cursos de tono claro. Verde y rojo (--sube, --baja) SOLO en cifras con
+   signo: aquí no hay ninguna.
 
-.cur-pasos {
-  list-style: none;
+   Lo importan src/app/cursos/page.tsx, [slug]/page.tsx y verificar/[codigo]/page.tsx.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cu-pagina {
+  background: var(--fondo);
+  color: var(--tinta);
+  color-scheme: light;
+}
+
+.cu {
+  --muelle: cubic-bezier(0.34, 1.8, 0.5, 1);
+  --sobrepaso: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --c: var(--lila);
+
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 4vw, 2rem) clamp(3rem, 7vw, 5rem);
+  font-family: var(--letra-texto);
+  color: var(--tinta);
+  /* Una palabra larga (un título de curso, un término) parte la línea antes
+     que salirse de la pantalla del móvil. */
+  overflow-wrap: break-word;
+}
+
+/* Los dos tonos del color del curso, donde se fija `--c` (un var() se resuelve
+   en el elemento que lo declara: hay que repetirlos donde cambia). */
+.cu,
+.cu-curso,
+.cu-reanudar,
+.cu-cert {
+  --c-o: color-mix(in srgb, var(--c) 58%, var(--tinta));
+  --c-s: color-mix(in srgb, var(--c) 18%, #fff);
+}
+
+/* ── Texto ──────────────────────────────────────────────────────────────── */
+
+.cu-migas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 1.4rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--tinta-3);
+}
+
+.cu-migas a {
+  color: var(--tinta-2);
+  text-decoration: none;
+}
+
+.cu-migas a:hover { color: var(--azul-o); text-decoration: underline; text-underline-offset: 3px; }
+
+.cu-migas > span:last-child {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--tinta-2);
+}
+
+/* La nota a mano de cada bloque (Caveat). Una o dos por sección, no más. */
+.cu-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--lila-o);
+  transform: rotate(-2deg);
+}
+
+/* El número de sección, a mano, como en el sistema de diseño. */
+.cu-num {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--lila-o);
+}
+
+.cu-titulo {
+  margin: 0.35rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.3rem, 5.4vw, 3.9rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+
+.cu-h2 {
+  margin: 0.2rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+  overflow-wrap: break-word;
+}
+
+.cu-sub,
+.cu-p {
+  max-width: 64ch;
+  margin: 0.7rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.cu-etiqueta {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+/* Los enlaces dentro del texto (diccionario, guías): azul, el color de los enlaces. */
+.cu-p a,
+.cu-sub a,
+.fc-lead a,
+.fc-para a,
+.fc-objetivos a,
+.fc-aldia a,
+.fc-faq a {
+  font-weight: 800;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--azul) 45%, transparent);
+}
+
+.cu-p a:hover,
+.cu-sub a:hover,
+.fc-lead a:hover,
+.fc-para a:hover,
+.fc-objetivos a:hover,
+.fc-aldia a:hover,
+.fc-faq a:hover { text-decoration-color: var(--azul); }
+
+.cu-enlace {
+  font-weight: 800;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Chips, aviso, barra ────────────────────────────────────────────────── */
+
+.cu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.cu-chip--papel { background: var(--papel); color: var(--tinta); box-shadow: 0 3px 0 rgba(29, 27, 51, 0.25); text-transform: capitalize; }
+.cu-chip--lila { background: var(--lila-s); color: var(--lila-o); }
+.cu-chip--gris { background: var(--gris); color: var(--tinta-2); }
+.cu-chip--naranja { background: var(--naranja-s); color: var(--naranja-o); }
+.cu-chip--menta { background: var(--menta-s); color: var(--menta-o); }
+.cu-chip--tinta { background: var(--tinta); color: #fff; }
+
+.cu-aviso {
+  margin: 0 0 1.4rem;
+  padding: 14px 18px;
+  border: 3px solid;
+  border-radius: 18px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.cu-aviso--coral { background: var(--coral-s); border-color: var(--coral); color: var(--coral-o); }
+
+/* La barra gruesa con relieve (sistema, «Progreso»): lila, la de los cursos. */
+.cu-barra {
+  display: block;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--gris);
+}
+
+.cu-barra i {
+  display: block;
+  height: 100%;
+  min-width: 18px;
+  border-radius: 999px;
+  background: var(--lila);
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
+  animation: cu-llenar 1.6s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+@keyframes cu-llenar { from { width: 0; } }
+
+/* ── La cinta adhesiva y el marco (fotos y certificados pegados) ────────── */
+
+.cu-cinta {
+  position: absolute;
+  z-index: 3;
+  top: -13px;
+  width: 92px;
+  height: 28px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.28) 0 6px, transparent 6px 12px),
+    color-mix(in srgb, var(--c) 62%, transparent);
+  box-shadow: 0 2px 4px rgba(29, 27, 51, 0.12);
+  pointer-events: none;
+}
+
+.cu-cinta--izq { left: 22px; transform: rotate(-7deg); }
+.cu-cinta--dcha { right: 22px; transform: rotate(6deg); }
+
+/* El certificado sujeto con dos cintas y un poco girado. El diseño del
+   certificado (Certificado.tsx + certificado.css, prefijo cq-) no se toca:
+   la hoja ya trae su papel, su radio y su sombra de canto, así que el marco
+   no pinta fondo ni borde; solo lo coloca. */
+.cu-marco {
+  position: relative;
+  padding-bottom: 8px;
+  transform: rotate(1.4deg);
+  transition: transform 0.4s var(--muelle);
+}
+
+@media (hover: hover) { .cu-marco:hover { transform: rotate(0deg) translateY(-4px); } }
+
+.cu-marco .cq { max-width: none; }
+
+.cu-marco-enlace {
+  display: block;
+  border-radius: 12px;
+}
+
+.cu-marco-enlace:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.cu-marco-nota {
+  position: absolute;
+  right: 18px;
+  bottom: -40px;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--tinta-2);
+  transform: rotate(-3deg);
+}
+
+/* ── La portada de un curso (PortadaCurso.tsx) ──────────────────────────── */
+
+.cu-portada-img { object-fit: cover; object-position: 70% 50%; }
+
+/* Sin ilustración: el arte en SVG, del color del curso oscurecido, sobre su tono suave. */
+.cu-portada-arte {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--c-s);
+  color: var(--c-o);
+}
+
+/* ── Secciones ──────────────────────────────────────────────────────────── */
+
+.cu-seccion {
+  margin-top: clamp(3.5rem, 8vw, 5.5rem);
+}
+
+.cu-seccion-cab {
+  margin-bottom: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+/* ── Cómo funciona (PasosCurso.tsx): cuatro paradas ─────────────────────── */
+
+.cu-pasos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.95rem;
+  list-style: none;
 }
 
-@media (min-width: 700px) {
-  .cur-pasos { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 1000px) {
-  .cur-pasos { grid-template-columns: repeat(4, 1fr); }
-}
-
-.cur-paso {
+.cu-paso {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: 1.3rem 1.2rem 1.25rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 15px;
-  background: rgba(9, 13, 24, 0.55);
+  gap: 6px;
+  padding: 24px 22px 26px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
 }
 
-.cur-paso-num {
+/* El tramo de camino que lleva a la parada siguiente. */
+.cu-paso:not(:last-child)::after {
+  content: "";
   position: absolute;
-  top: 1rem;
-  right: 1.1rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: rgba(240, 244, 255, 0.28);
+  z-index: 1;
+  top: 50px;
+  left: calc(100% - 4px);
+  width: 30px;
+  height: 8px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, var(--lila) 0 8px, transparent 8px 14px);
 }
 
-.cur-paso-icon {
-  display: inline-flex;
+.cu-paso-nodo {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: var(--lila);
+  box-shadow: 0 6px 0 var(--lila-o);
+  color: #fff;
+}
+
+.cu-paso--meta .cu-paso-nodo {
+  border-radius: 18px;
+  background: var(--amarillo);
+  box-shadow: 0 6px 0 var(--amarillo-o);
+  color: var(--tinta);
+  rotate: -4deg;
+}
+
+.cu-paso-num {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lila-o);
+}
+
+.cu-paso--meta .cu-paso-num { color: var(--amarillo-o); }
+
+.cu-paso-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.cu-paso-texto {
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+/* ── El certificado (catálogo y ficha) ──────────────────────────────────── */
+
+.cu-cert {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
-  justify-content: center;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem) clamp(3rem, 6vw, 4.5rem);
+  border-radius: 40px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris);
+}
+
+.cu-lista-check {
+  display: grid;
+  gap: 12px;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cu-lista-check li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.cu-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  color: var(--det-accent);
-  background: color-mix(in srgb, var(--det-accent) 12%, transparent);
-}
-
-.cur-paso-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: rgba(240, 244, 255, 0.95);
-}
-
-.cur-paso-text {
-  font-size: 0.87rem;
-  line-height: 1.6;
-  color: rgba(240, 244, 255, 0.6);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   FICHA DE UN CURSO — /cursos/[slug]   (prefijo cf-)
-   Rediseñada el 06-10-2026 a petición del admin: más atractiva, iconos en
-   todas las piezas y el CERTIFICADO como protagonista. El color del curso
-   llega por `--cf-acento`.
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.cf { --cf-acento: #e6b455; }
-
-.cur-borrador {
-  position: relative;
-  z-index: 1;
-  margin: 0 0 1rem;
-  padding: 0.7rem 1rem;
-  border: 1px dashed rgba(251, 191, 36, 0.55);
   border-radius: 12px;
-  background: rgba(251, 191, 36, 0.08);
-  color: #fbbf24;
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-
-/* ── Botones ───────────────────────────────────────────────────────────── */
-
-.cf-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  padding: 0.95rem 1.5rem;
-  border-radius: 14px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--cf-acento) 70%, #fff), var(--cf-acento) 55%, color-mix(in srgb, var(--cf-acento) 80%, #b45309));
-  color: #0a1628;
-  font: 800 0.98rem var(--font-family);
-  text-decoration: none;
-  box-shadow: 0 14px 34px -14px color-mix(in srgb, var(--cf-acento) 75%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-.cf-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 20px 40px -14px color-mix(in srgb, var(--cf-acento) 85%, transparent); }
-.cf-btn svg { transition: transform 0.2s ease; }
-.cf-btn:hover svg { transform: translateX(3px); }
-.cf-btn--ghost {
-  background: rgba(240, 244, 255, 0.04);
-  border: 1px solid rgba(240, 244, 255, 0.16);
-  color: rgba(240, 244, 255, 0.92);
-  box-shadow: none;
-}
-.cf-btn--ghost:hover { border-color: color-mix(in srgb, var(--cf-acento) 50%, transparent); box-shadow: none; }
-
-/* Un icono en su baldosa: la pieza que se repite en toda la ficha. */
-.cf-icono {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  color: var(--cf-acento);
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cf-acento) 20%, transparent), color-mix(in srgb, var(--cf-acento) 6%, transparent));
-  border: 1px solid color-mix(in srgb, var(--cf-acento) 22%, transparent);
-}
-.cf-icono--oro {
-  color: #1a1206;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cf-acento) 55%, #fff), var(--cf-acento));
-  border-color: transparent;
-  box-shadow: 0 8px 20px -10px color-mix(in srgb, var(--cf-acento) 80%, transparent);
-}
-
-/* ── Hero ──────────────────────────────────────────────────────────────── */
-
-.cf-hero {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  align-items: center;
-  padding: 1.6rem 0 2.6rem;
-}
-@media (min-width: 980px) { .cf-hero { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 3rem; } }
-
-.cf-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.3rem; }
-.cf-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.38rem 0.8rem;
-  border: 1px solid rgba(240, 244, 255, 0.12);
-  border-radius: 99px;
-  background: rgba(240, 244, 255, 0.04);
-  color: rgba(240, 244, 255, 0.78);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-.cf-chip svg { color: var(--cf-acento); }
-.cf-chip--oro {
-  border-color: color-mix(in srgb, var(--cf-acento) 45%, transparent);
-  background: color-mix(in srgb, var(--cf-acento) 12%, transparent);
-  color: color-mix(in srgb, var(--cf-acento) 85%, #fff);
-}
-
-.cf-titulo {
-  margin: 0 0 1.1rem;
-  font: 800 clamp(2.2rem, 5.2vw, 3.6rem) / 1.05 var(--font-display);
-  letter-spacing: -0.035em;
   color: #fff;
 }
-.cf-titulo-grad {
-  display: block;
-  margin-top: 0.55rem;
-  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
-  line-height: 1.3;
-  letter-spacing: -0.015em;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--cf-acento) 60%, #fff), var(--cf-acento));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
 
-.cf-lead { margin: 0 0 1.8rem; max-width: 60ch; font-size: 1.04rem; line-height: 1.7; color: rgba(240, 244, 255, 0.68); }
+.cu-ic--lila { background: var(--lila); box-shadow: 0 4px 0 var(--lila-o); }
+.cu-ic--menta { background: var(--menta); box-shadow: 0 4px 0 var(--menta-o); color: var(--tinta); }
+.cu-ic--cielo { background: var(--cielo); box-shadow: 0 4px 0 var(--cielo-o); color: var(--tinta); }
+.cu-ic--amarillo { background: var(--amarillo); box-shadow: 0 4px 0 var(--amarillo-o); color: var(--tinta); }
 
-.cf-acciones { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 1.5rem; }
-
-.cf-confianza { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; margin: 0; padding: 0; }
-.cf-confianza li { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.84rem; color: rgba(240, 244, 255, 0.58); }
-.cf-confianza svg { color: var(--cf-acento); }
-
-/* El panel de la derecha: lo que incluye, con su baldosa de icono. */
-.cf-panel {
-  position: relative;
-  padding: 1.5rem;
-  border-radius: 22px;
-  background:
-    linear-gradient(rgba(10, 16, 30, 0.92), rgba(10, 16, 30, 0.92)) padding-box,
-    linear-gradient(150deg, color-mix(in srgb, var(--cf-acento) 70%, transparent), rgba(240, 244, 255, 0.06) 40%, color-mix(in srgb, var(--cf-acento) 35%, transparent)) border-box;
-  border: 1px solid transparent;
-  box-shadow: 0 30px 70px -35px rgba(0, 0, 0, 0.9), 0 0 60px -30px color-mix(in srgb, var(--cf-acento) 40%, transparent);
-}
-.cf-panel-kicker {
-  display: block;
-  margin-bottom: 1rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.5);
-}
-.cf-incluye { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
-.cf-incluye li {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.65rem 0.6rem;
-  border-radius: 14px;
-  transition: background 0.2s ease;
-}
-.cf-incluye li:hover { background: rgba(240, 244, 255, 0.03); }
-.cf-incluye li > span:last-child { display: flex; flex-direction: column; gap: 0.1rem; }
-.cf-incluye strong { font: 800 1.02rem var(--font-display); color: #fff; }
-.cf-incluye li > span:last-child > span { font-size: 0.82rem; color: rgba(240, 244, 255, 0.55); }
-
-.cf-incluye-cert {
-  margin-top: 0.4rem;
-  border: 1px solid color-mix(in srgb, var(--cf-acento) 40%, transparent);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--cf-acento) 14%, transparent), transparent 70%);
-}
-.cf-incluye .cf-incluye-cert strong { color: color-mix(in srgb, var(--cf-acento) 80%, #fff); }
-
-.cf-progreso { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid rgba(240, 244, 255, 0.08); }
-.cf-progreso-cab { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.84rem; color: rgba(240, 244, 255, 0.6); }
-.cf-progreso-cab strong { color: var(--cf-acento); }
-.cf-barra { position: relative; display: block; height: 8px; border-radius: 99px; background: rgba(240, 244, 255, 0.08); overflow: hidden; }
-.cf-barra i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--cf-acento) 60%, #fff), var(--cf-acento)); }
-
-/* ── Objetivos ─────────────────────────────────────────────────────────── */
-
-.cf-objetivos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
-@media (min-width: 720px) { .cf-objetivos { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1040px) { .cf-objetivos { grid-template-columns: repeat(3, 1fr); } }
-
-.cf-objetivos li {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.25rem 1.2rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 18px;
-  background: linear-gradient(160deg, rgba(240, 244, 255, 0.035), rgba(9, 13, 24, 0.6) 55%);
-  transition: transform 0.25s ease, border-color 0.25s ease;
-}
-.cf-objetivos li:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--cf-acento) 35%, transparent); }
-.cf-objetivo-icono {
+/* El logro del curso: una pegatina con su icono, en su color. */
+.cu-logro {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 14px;
+  margin-top: 1.6rem;
+  padding: 12px 20px 12px 12px;
+  border-radius: 22px;
+  background: var(--amarillo-s);
+  box-shadow: 0 5px 0 var(--amarillo);
+}
+
+.cu-logro-sello {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--tinta);
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.35);
+  transform: rotate(-8deg);
+}
+
+.cu-logro-nota {
+  display: block;
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #7a5d00;
+}
+
+.cu-logro strong {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+/* ── El descargo (DisclaimerRiesgo), vestido de aviso amarillo ──────────────
+   El componente es compartido y no se toca: aquí solo cambia cómo se ve. */
+
+.cu .disclaimer {
+  margin: clamp(3rem, 6vw, 4rem) 0 0;
+  padding: clamp(18px, 3vw, 24px) clamp(18px, 3vw, 26px);
+  border: 3px solid var(--amarillo);
+  border-radius: 24px;
+  background: var(--amarillo-s);
+  color: #7a5d00;
+}
+
+.cu .disclaimer-head { gap: 14px; }
+
+.cu .disclaimer-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--amarillo-o);
+  color: #fff;
+  box-shadow: 0 3px 0 #9a7600;
+}
+
+.cu .disclaimer-title {
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  color: #5c4600;
+}
+
+.cu .disclaimer-body p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b5200;
+}
+
+.cu .disclaimer-body strong { color: #4d3b00; }
+.cu .disclaimer-body a,
+.cu .disclaimer-foot a { color: #4d3b00; font-weight: 800; }
+
+.cu .disclaimer-foot {
+  border-top: 2px dashed rgba(201, 154, 0, 0.45);
+  font-weight: 700;
+  color: #7a5d00;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LA FICHA DE UN CURSO (/cursos/<slug>, FichaCurso.tsx) — prefijo fc-
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.fc-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: start;
+}
+
+.fc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fc-titulo {
+  margin: 1rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+  overflow-wrap: break-word;
+}
+
+.fc-titulo-sub {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--tinta-2);
+}
+
+.fc-lead {
+  max-width: 60ch;
+  margin: 1.3rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta-2);
+}
+
+.fc-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 1.8rem;
+}
+
+.fc-confianza {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.fc-confianza li { display: inline-flex; align-items: center; gap: 6px; }
+.fc-confianza svg { color: var(--lila-o); }
+
+/* La ficha del curso: su foto pegada, lo que incluye y el progreso. */
+.fc-ficha {
+  padding: 18px 20px 22px;
+  border-radius: 30px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+.fc-foto {
+  position: relative;
+  margin-bottom: 1.6rem;
+  border: 6px solid var(--papel);
+  border-radius: 20px;
+  box-shadow: 0 4px 0 var(--gris), 0 18px 30px -18px rgba(29, 27, 51, 0.5);
+  transform: rotate(-1.2deg);
+}
+
+.fc-foto-portada {
+  position: relative;
+  aspect-ratio: 20 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--lila-s);
+}
+
+.fc-sello {
+  position: absolute;
+  z-index: 2;
+  left: 14px;
+  bottom: -26px;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--tinta);
+  box-shadow: 0 6px 0 var(--c-o);
+  transform: rotate(-6deg);
+}
+
+.fc-incluye {
+  display: grid;
+  gap: 10px;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fc-incluye li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--fondo);
+}
+
+.fc-incluye-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
   width: 38px;
   height: 38px;
-  border-radius: 50%;
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.12);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-}
-.cf-objetivo-num {
-  position: absolute;
-  top: 1.1rem;
-  right: 1.2rem;
-  font: 800 1.6rem var(--font-display);
-  color: rgba(240, 244, 255, 0.07);
-}
-.cf-objetivos p { margin: 0; font-size: 0.94rem; line-height: 1.6; color: rgba(240, 244, 255, 0.82); }
-
-/* Los términos enlazados al diccionario dentro de la ficha (regla del
-   diccionario): el mismo color del texto, con un subrayado del acento. */
-.cf-lead a,
-.cf-objetivos a,
-.cf-para a,
-.cf .det-faq-item a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--cf-acento) 55%, transparent);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
-}
-.cf-lead a:hover,
-.cf-objetivos a:hover,
-.cf-para a:hover,
-.cf .det-faq-item a:hover { color: #ffffff; text-decoration-color: var(--cf-acento); }
-
-/* ── Para quién es ─────────────────────────────────────────────────────── */
-
-.cf-para { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
-@media (min-width: 860px) { .cf-para { grid-template-columns: 3fr 2fr; } }
-
-.cf-para-col {
-  padding: 1.3rem 1.3rem 1.1rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 18px;
-  background: linear-gradient(160deg, rgba(240, 244, 255, 0.035), rgba(9, 13, 24, 0.6) 55%);
-}
-
-.cf-para-titulo {
-  margin: 0 0 0.9rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.55);
-}
-
-.cf-para ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
-.cf-para li { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.94rem; line-height: 1.6; color: rgba(240, 244, 255, 0.82); }
-.cf-para li svg { flex-shrink: 0; margin-top: 0.2rem; }
-.cf-para-col--si li svg { color: #4ade80; }
-.cf-para-col--no li svg { color: rgba(248, 113, 113, 0.8); }
-
-/* ── Al día: lo reciente que ya recoge el temario ──────────────────────── */
-
-.cf-aldia { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
-@media (min-width: 860px) { .cf-aldia { grid-template-columns: repeat(2, 1fr); } }
-.cf-aldia li {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-  padding: 1.05rem 1.15rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 16px;
-  background: linear-gradient(160deg, rgba(240, 244, 255, 0.03), rgba(9, 13, 24, 0.55) 60%);
-  font-size: 0.93rem;
-  line-height: 1.6;
-  color: rgba(240, 244, 255, 0.8);
-}
-.cf-aldia li svg { flex-shrink: 0; margin-top: 0.2rem; color: var(--cf-acento); }
-.cf-aldia a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--cf-acento) 55%, transparent);
-  text-underline-offset: 3px;
-}
-.cf-aldia a:hover { color: #ffffff; text-decoration-color: var(--cf-acento); }
-
-/* ── Temario en línea de tiempo ────────────────────────────────────────── */
-
-.cf-temario { position: relative; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
-.cf-temario::before {
-  content: "";
-  position: absolute;
-  top: 24px;
-  bottom: 24px;
-  left: 23px;
-  width: 2px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--cf-acento) 55%, transparent), rgba(240, 244, 255, 0.07) 70%, color-mix(in srgb, var(--cf-acento) 55%, transparent));
-}
-
-.cf-mod { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 1rem; align-items: start; }
-@media (max-width: 560px) {
-  .cf-mod { grid-template-columns: 38px minmax(0, 1fr); gap: 0.7rem; }
-  .cf-temario::before { left: 18px; }
-}
-
-.cf-mod-nodo {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-top: 0.4rem;
-  border-radius: 50%;
-  background: #0b1424;
-  border: 2px solid color-mix(in srgb, var(--cf-acento) 55%, transparent);
-  color: var(--cf-acento);
-  font: 800 0.88rem var(--font-display);
-  box-shadow: 0 0 0 5px rgba(10, 22, 40, 0.9);
-}
-@media (max-width: 560px) { .cf-mod-nodo { width: 38px; height: 38px; font-size: 0.78rem; } }
-.cf-mod.is-hecho .cf-mod-nodo { background: #4ade80; border-color: #4ade80; color: #0a1628; }
-.cf-mod--final .cf-mod-nodo {
-  border: 0;
-  color: #1a1206;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cf-acento) 55%, #fff), var(--cf-acento));
-  box-shadow: 0 0 0 5px rgba(10, 22, 40, 0.9), 0 0 30px -4px color-mix(in srgb, var(--cf-acento) 70%, transparent);
-}
-
-.cf-mod-card {
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(9, 13, 24, 0.62);
-  overflow: hidden;
-  transition: border-color 0.25s ease;
-}
-.cf-mod-card[open]:not([data-acordeon="cerrando"]), .cf-mod-card:hover { border-color: color-mix(in srgb, var(--cf-acento) 30%, transparent); }
-.cf-mod--final .cf-mod-card {
-  padding: 1.15rem 1.25rem;
-  border-color: color-mix(in srgb, var(--cf-acento) 45%, transparent);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--cf-acento) 12%, transparent), rgba(9, 13, 24, 0.7) 65%);
-}
-
-.cf-mod-card summary { display: flex; align-items: flex-start; gap: 1rem; padding: 1.15rem 1.25rem; cursor: pointer; list-style: none; }
-.cf-mod-card summary::-webkit-details-marker { display: none; }
-
-.cf-mod-cab { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
-.cf-mod-kicker { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cf-acento); }
-.cf-mod-titulo { font: 700 1.12rem/1.3 var(--font-display); color: #fff; }
-.cf-mod-desc { font-size: 0.88rem; line-height: 1.55; color: rgba(240, 244, 255, 0.58); }
-.cf-mod-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.45rem; }
-.cf-mod-pills span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 99px;
-  background: rgba(240, 244, 255, 0.05);
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: rgba(240, 244, 255, 0.65);
-}
-.cf-mod-pills svg { color: var(--cf-acento); }
-
-.cf-mod-flecha {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: rgba(240, 244, 255, 0.05);
-  color: rgba(240, 244, 255, 0.6);
-  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
-}
-.cf-mod-card[open]:not([data-acordeon="cerrando"]) .cf-mod-flecha { transform: rotate(180deg); background: color-mix(in srgb, var(--cf-acento) 16%, transparent); color: var(--cf-acento); }
-
-.cf-lecciones { list-style: none; margin: 0; padding: 0 1.25rem 1rem; display: grid; gap: 0.2rem; }
-.cf-lecciones li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.7rem 0.6rem;
   border-radius: 12px;
-  border-top: 1px solid rgba(240, 244, 255, 0.05);
+  background: var(--c-s);
+  color: var(--c-o);
 }
-.cf-lecciones li:hover { background: rgba(240, 244, 255, 0.025); }
-.cf-leccion-icono { display: inline-flex; margin-top: 1px; color: color-mix(in srgb, var(--cf-acento) 75%, #fff); }
-.cf-lecciones li.is-hecha .cf-leccion-icono { color: #4ade80; }
-.cf-leccion-texto { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.93rem; font-weight: 600; color: rgba(240, 244, 255, 0.9); }
-.cf-leccion-tit { display: block; }
-.cf-leccion-num { margin-right: 0.45rem; font-weight: 800; color: rgba(240, 244, 255, 0.35); }
-.cf-leccion-resumen { font-size: 0.82rem; font-weight: 400; line-height: 1.5; color: rgba(240, 244, 255, 0.5); }
-.cf-leccion-min { flex-shrink: 0; font-size: 0.76rem; font-weight: 700; color: rgba(240, 244, 255, 0.45); white-space: nowrap; }
 
-.cf-lecciones li.cf-leccion-examen {
-  margin-top: 0.3rem;
-  border: 1px dashed color-mix(in srgb, var(--cf-acento) 40%, transparent);
-  background: color-mix(in srgb, var(--cf-acento) 6%, transparent);
-}
-.cf-leccion-examen .cf-leccion-icono { color: var(--cf-acento); }
-.cf-leccion-examen .cf-leccion-texto { color: color-mix(in srgb, var(--cf-acento) 80%, #fff); }
-
-/* ── El certificado: el protagonista ───────────────────────────────────── */
-
-.cf-cert {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.4rem;
-  align-items: center;
-  margin: 3.5rem 0;
-  padding: clamp(1.5rem, 4vw, 3rem);
-  border-radius: 28px;
-  overflow: hidden;
-  background:
-    radial-gradient(70% 90% at 100% 50%, color-mix(in srgb, var(--cf-acento) 18%, transparent), transparent 70%) padding-box,
-    radial-gradient(50% 70% at 0% 0%, color-mix(in srgb, var(--cf-acento) 8%, transparent), transparent 70%) padding-box,
-    linear-gradient(rgba(10, 16, 30, 0.94), rgba(10, 16, 30, 0.94)) padding-box,
-    linear-gradient(135deg, color-mix(in srgb, var(--cf-acento) 75%, transparent), rgba(240, 244, 255, 0.06) 45%, color-mix(in srgb, var(--cf-acento) 60%, transparent)) border-box;
-  border: 1px solid transparent;
-  box-shadow: 0 40px 100px -50px color-mix(in srgb, var(--cf-acento) 60%, transparent);
-}
-@media (min-width: 980px) { .cf-cert { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
-
-.cf-cert-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.8rem;
-  border-radius: 99px;
-  background: color-mix(in srgb, var(--cf-acento) 15%, transparent);
-  color: var(--cf-acento);
-  font-size: 0.74rem;
+.fc-incluye strong {
+  display: block;
+  font-family: var(--letra-titular);
+  font-size: 1.08rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
-.cf-cert-titulo {
-  margin: 1rem 0 0.9rem;
-  font: 800 clamp(1.7rem, 3.6vw, 2.5rem) / 1.12 var(--font-display);
-  letter-spacing: -0.03em;
+
+.fc-incluye li > span:last-child > span {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+
+.fc-incluye li.fc-incluye-cert { background: var(--amarillo-s); }
+.fc-incluye-cert .fc-incluye-ic { background: var(--amarillo); color: var(--tinta); }
+
+.fc-progreso {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 2px dashed var(--gris);
+}
+
+.fc-progreso-cab {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.fc-progreso-cab span { font-size: 0.86rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.fc-progreso-cab strong { font-family: var(--letra-titular); font-size: 1.5rem; color: var(--lila-o); }
+
+.fc-progreso-pie {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+/* ── Para quién es: dos pósits, menta (te sirve) y coral (no es para ti) ──
+   El papel, la cinta y el giro son de `Postit` (postit.css); aquí, su sitio. */
+
+.fc-para {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 24px;
+  padding-top: 10px;
+}
+
+.fc-para > .fc-para-col { margin: 0; padding: 26px 24px 24px; }
+
+.fc-para-titulo {
+  margin: 0 0 14px;
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.fc-para-col--si .fc-para-titulo { color: var(--menta-o); }
+.fc-para-col--no .fc-para-titulo { color: var(--coral-o); }
+
+.fc-para ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fc-para li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--tinta);
+}
+
+.fc-para-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border-radius: 8px;
   color: #fff;
 }
-.cf-cert-titulo span {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--cf-acento) 55%, #fff), var(--cf-acento));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+
+.fc-para-col--si .fc-para-ic { background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); color: var(--tinta); }
+.fc-para-col--no .fc-para-ic { background: var(--coral); box-shadow: 0 3px 0 var(--coral-o); }
+
+/* ── Lo que sabrás hacer: una hoja de cuaderno con renglones y margen ───── */
+
+.fc-objetivos {
+  --renglon: 2.1rem;
+  position: relative;
+  margin: 0;
+  padding: 1.4rem clamp(1rem, 3vw, 2rem) 1.6rem clamp(3.4rem, 7vw, 4.6rem);
+  list-style: none;
+  border-radius: 26px;
+  background:
+    linear-gradient(90deg, transparent calc(clamp(2.6rem, 5.6vw, 3.6rem) - 1px), var(--coral) calc(clamp(2.6rem, 5.6vw, 3.6rem) - 1px), var(--coral) calc(clamp(2.6rem, 5.6vw, 3.6rem) + 1px), transparent calc(clamp(2.6rem, 5.6vw, 3.6rem) + 1px)),
+    repeating-linear-gradient(transparent 0 calc(var(--renglon) - 2px), var(--azul-s) calc(var(--renglon) - 2px) var(--renglon)),
+    var(--papel);
+  background-position: 0 0, 0 1.3rem, 0 0;
+  box-shadow: 0 6px 0 var(--gris-o);
 }
-.cf-cert-lead { margin: 0 0 1.4rem; font-size: 0.98rem; line-height: 1.7; color: rgba(240, 244, 255, 0.66); }
 
-.cf-cert-lista { list-style: none; margin: 0 0 1.6rem; padding: 0; display: grid; gap: 0.7rem; }
-.cf-cert-lista li { display: flex; align-items: center; gap: 0.8rem; font-size: 0.93rem; font-weight: 600; color: rgba(240, 244, 255, 0.88); }
-.cf-cert-lista .cf-icono { width: 34px; height: 34px; border-radius: 10px; }
-
-.cf-logro {
+.fc-objetivos li {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: 16px;
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), transparent 70%);
+  align-items: baseline;
+  gap: 12px;
+  min-height: var(--renglon);
 }
-.cf-logro-medalla {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  color: #0a1628;
-  background: radial-gradient(circle at 35% 30%, #bbf7d0, #22c55e);
-  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15), 0 10px 24px -10px rgba(34, 197, 94, 0.8);
-}
-.cf-logro > span:last-child { display: flex; flex-direction: column; gap: 0.15rem; }
-.cf-logro-kicker { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #4ade80; }
-.cf-logro strong { font: 800 1.1rem var(--font-display); color: #fff; }
 
-/* La muestra, ligeramente girada y flotando, con su brillo dorado detrás. */
-.cf-cert-muestra { position: relative; perspective: 1400px; }
-.cf-cert-muestra::before {
+.fc-objetivos li + li { margin-top: 0.4rem; }
+
+.fc-objetivo-num {
+  position: absolute;
+  left: calc(-1 * clamp(2.6rem, 5.4vw, 3.4rem));
+  font-family: var(--letra-mano);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: var(--renglon);
+  color: var(--lila-o);
+}
+
+/* Cada número, rodeado a boli. */
+.fc-objetivo-aro {
+  --se-tam: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -20px 0 0 -20px;
+  vertical-align: 0;
+}
+
+.fc-objetivos p {
+  margin: 0;
+  font-size: 1.06rem;
+  font-weight: 700;
+  line-height: var(--renglon);
+  color: var(--tinta);
+}
+
+/* ── Al día: un pósit amarillo de nota (`Postit`), con su «NB» ─────────── */
+
+.fc-aldia-postit { margin: 22px 0 0; padding: 26px 24px 22px; }
+
+.fc-aldia {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fc-aldia li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.fc-aldia-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--cielo);
+  box-shadow: 0 3px 0 var(--cielo-o);
+  color: var(--tinta);
+}
+
+/* ── EL CAMINO del temario ──────────────────────────────────────────────────
+   Cada parada es una fila: a la izquierda el raíl, con su nodo, y a la
+   derecha su tarjeta. El tramo de vía (`.fc-via`) va del centro de su nodo
+   al centro del nodo de la fila siguiente: empieza a la altura del nodo y
+   mide lo que la fila (que reserva su hueco con `padding-bottom`). Su curva
+   se estira al alto, así que da igual lo larga que sea la tarjeta. */
+
+.fc-camino {
+  --rail: 132px;
+  --y: 40px;
+  --nodo: 72px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.2rem 0 0;
+  list-style: none;
+}
+
+.fc-parada {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: clamp(12px, 2.5vw, 22px);
+  min-height: calc(var(--y) * 2);
+  padding-bottom: 28px;
+}
+
+.fc-via {
+  position: absolute;
+  z-index: 0;
+  top: var(--y);
+  left: 0;
+  width: var(--rail);
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.fc-via path {
+  fill: none;
+  stroke: var(--gris);
+  stroke-width: 16px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.fc-via.is-hecha path { stroke: var(--menta); }
+
+.fc-nodo {
+  --n: var(--nodo);
+  position: absolute;
+  z-index: 1;
+  top: var(--y);
+  left: calc(var(--x) * var(--rail) / 100);
+  display: grid;
+  place-items: center;
+  width: var(--n);
+  height: var(--n);
+  border-radius: 50%;
+  translate: -50% -50%;
+  font-size: 1.65rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+}
+
+/* Los cinco estados del sistema. */
+.fc-nodo.is-hecho { background: var(--menta); box-shadow: 0 7px 0 var(--menta-o); color: var(--tinta); }
+.fc-nodo.is-actual {
+  background: var(--naranja);
+  box-shadow: 0 7px 0 var(--naranja-o), 0 0 0 10px rgba(255, 138, 31, 0.2);
+}
+/* El latido: un aro naranja que crece y se desvanece, solo con `transform` y
+   `opacity` (animar la sombra repintaba en cada fotograma). */
+.fc-nodo.is-actual::after {
   content: "";
   position: absolute;
-  inset: 12% 8%;
-  background: color-mix(in srgb, var(--cf-acento) 45%, transparent);
-  filter: blur(60px);
-  opacity: 0.55;
+  inset: -10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(255, 138, 31, 0.3);
+  pointer-events: none;
+  animation: fc-latir 1.6s ease-out infinite;
 }
-.cf-cert-muestra .dp {
-  transform: rotateY(-8deg) rotateX(3deg) rotate(1.5deg);
-  transition: transform 0.6s ease;
-  animation: cf-flotar 6s ease-in-out infinite;
-}
-.cf-cert-muestra:hover .dp { transform: none; animation-play-state: paused; }
-@keyframes cf-flotar {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -8px; }
+/* Abierto pero no es lo siguiente: papel con su aro, como en el aula. */
+.fc-nodo.is-abierto { background: var(--papel); color: var(--tinta); box-shadow: inset 0 0 0 4px var(--gris), 0 7px 0 var(--gris-o); }
+.fc-nodo.is-bloq { background: var(--gris); color: var(--tinta-2); box-shadow: 0 7px 0 var(--gris-o); }
+
+@keyframes fc-latir {
+  from { transform: scale(0.92); opacity: 1; }
+  to { transform: scale(1.22); opacity: 0; }
 }
 
-/* ── Cómo funciona: baldosas de icono más vistosas ─────────────────────── */
+/* Los exámenes son lila, también los que aún no se abren: sin progreso, el
+   camino enseña qué es cada parada. Con progreso, como en el aula, el que aún
+   no se abre va en gris con su candado. */
+.fc-nodo--examen {
+  --n: calc(var(--nodo) * 0.7);
+  font-size: 1.3rem;
+}
 
-.cf .cur-paso { padding-top: 1.5rem; transition: transform 0.25s ease, border-color 0.25s ease; }
-.cf .cur-paso:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--cf-acento) 30%, transparent); }
-.cf .cur-paso-icon {
-  width: 46px;
-  height: 46px;
+.fc-nodo--examen.is-bloq,
+.fc-nodo--examen.is-abierto { background: var(--lila); color: #fff; box-shadow: 0 6px 0 var(--lila-o); }
+.fc-nodo--examen.is-espera { background: var(--coral); color: #fff; box-shadow: 0 6px 0 var(--coral-o); }
+.fc-camino.is-progreso .fc-nodo--examen.is-bloq { background: var(--gris); color: var(--tinta-2); box-shadow: 0 6px 0 var(--gris-o); }
+
+.fc-nodo--final { --n: var(--nodo); font-size: 1.65rem; }
+
+.fc-nodo--meta {
+  --n: calc(var(--nodo) * 1.3);
+  border-radius: 28px;
+  background: var(--amarillo);
+  color: var(--tinta);
+  box-shadow: 0 7px 0 var(--amarillo-o);
+  font-size: 0.86rem;
+  text-align: center;
+  line-height: 1.1;
+  rotate: -3deg;
+}
+
+.fc-nodo--meta.is-bloq,
+.fc-nodo--meta.is-hecho { background: var(--amarillo); color: var(--tinta); box-shadow: 0 7px 0 var(--amarillo-o); }
+.fc-nodo--meta.is-hecho { box-shadow: 0 7px 0 var(--amarillo-o), 0 0 0 10px rgba(255, 210, 63, 0.35); }
+
+/* La meta va un poco más abajo: es más grande. */
+.fc-parada--meta { --y: 52px; padding-bottom: 0; }
+
+.fc-bocadillo {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--tinta);
+  font-size: 0.8rem;
+  font-weight: 900;
+  white-space: nowrap;
+  color: #fff;
+  translate: -30% 0;
+  rotate: -2deg;
+  pointer-events: none;
+}
+
+.fc-bocadillo::after {
+  content: "";
+  position: absolute;
+  left: 26%;
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-top-color: var(--tinta);
+  border-bottom: 0;
+}
+
+/* La tarjeta de cada parada. */
+.fc-tarjeta {
+  grid-column: 2;
+  align-self: start;
+  min-width: 0;
+  padding: 18px 22px 20px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+
+.fc-parada.is-actual > .fc-tarjeta { box-shadow: 0 6px 0 var(--naranja), 0 0 0 3px var(--naranja-s); }
+
+.fc-mod-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lila-o);
+}
+
+.fc-mod-titulo {
+  margin: 0.35rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--tinta);
+}
+
+.fc-mod-desc {
+  margin: 0.45rem 0 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.fc-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fc-pills li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 9px;
+  background: var(--gris);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--tinta-2);
+}
+
+.fc-pills .fc-pill-hechas { background: var(--menta-s); color: var(--menta-o); }
+
+/* El estado de una parada, cuando hay progreso: una etiqueta de su color. */
+.fc-estado {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+p.fc-estado { margin-top: 0.7rem; }
+
+.fc-estado.is-hecho { background: var(--menta-s); color: var(--menta-o); }
+.fc-estado.is-actual { background: var(--naranja-s); color: var(--naranja-o); }
+.fc-estado.is-abierto { background: var(--lila-s); color: var(--lila-o); }
+.fc-estado.is-espera { background: var(--coral-s); color: var(--coral-o); }
+.fc-estado.is-bloq { background: var(--gris); color: var(--tinta-2); }
+
+/* Las lecciones del módulo, plegables. El resumen se pulsa como una tecla
+   pequeña y blanca (ESTILO.md: todo lo que se pulsa se hunde). */
+.fc-lecciones { margin-top: 1rem; }
+
+.fc-lecciones > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-bottom: 6px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: var(--papel);
+  box-shadow: inset 0 0 0 2px var(--gris), 0 6px 0 var(--gris-o);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.26s var(--muelle), box-shadow 0.26s var(--muelle);
+}
+
+.fc-lecciones > summary::-webkit-details-marker { display: none; }
+@media (hover: hover) {
+  .fc-lecciones > summary:hover { transform: translateY(2px); box-shadow: inset 0 0 0 2px var(--gris), 0 4px 0 var(--gris-o); }
+}
+.fc-lecciones > summary:active { transform: translateY(6px); box-shadow: inset 0 0 0 2px var(--gris), inset 0 4px 8px rgba(0, 0, 0, 0.12), 0 0 0 var(--gris-o); transition-duration: 0.06s; }
+.fc-lecciones > summary:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+.fc-lecciones > summary svg { transition: transform 0.3s var(--muelle); }
+.fc-lecciones[open] > summary svg { transform: rotate(180deg); }
+
+.fc-lecciones ol {
+  display: grid;
+  gap: 4px;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fc-lecciones li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
   border-radius: 14px;
-  color: #1a1206;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cf-acento) 55%, #fff), var(--cf-acento));
-  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--cf-acento) 80%, transparent);
+  background: var(--fondo);
 }
 
-/* ── Cierre ────────────────────────────────────────────────────────────── */
+.fc-leccion-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--c-s);
+  color: var(--c-o);
+}
 
-.cf-final {
+.fc-lecciones li.is-hecha .fc-leccion-ic { background: var(--menta); color: var(--tinta); }
+
+.fc-leccion-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.fc-leccion-tit {
+  display: block;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.fc-leccion-num {
+  margin-right: 8px;
+  font-weight: 900;
+  color: var(--lila-o);
+}
+
+.fc-leccion-resumen {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.fc-leccion-min {
+  flex: none;
+  padding-top: 2px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  white-space: nowrap;
+  color: var(--tinta-2);
+}
+
+/* Los exámenes: una tarjeta más ligera, del lila de los exámenes. */
+.fc-parada--examen .fc-tarjeta {
+  padding: 14px 18px 16px;
+  background: var(--lila-s);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--lila) 45%, #fff);
+}
+
+.fc-parada--final .fc-tarjeta { padding: 18px 22px 20px; }
+
+.fc-examen-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--lila-o);
+}
+
+.fc-examen-texto {
+  margin: 0.35rem 0 0;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.fc-meta {
+  background: var(--amarillo-s);
+  box-shadow: 0 6px 0 var(--amarillo);
+}
+
+.fc-meta .fc-mod-kicker { color: var(--amarillo-o); }
+.fc-meta .tecla { margin-top: 0.9rem; }
+
+/* La leyenda, bajo el camino. */
+.fc-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.fc-leyenda li { display: inline-flex; align-items: center; gap: 7px; }
+
+.fc-punto { width: 14px; height: 14px; border-radius: 50%; }
+.fc-punto--actual { background: var(--naranja); box-shadow: 0 3px 0 var(--naranja-o); }
+.fc-punto--hecho { background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); }
+.fc-punto--bloq { background: var(--gris); box-shadow: 0 3px 0 var(--gris-o); }
+.fc-punto--examen { background: var(--lila); box-shadow: 0 3px 0 var(--lila-o); }
+.fc-punto--meta { border-radius: 4px; background: var(--amarillo); box-shadow: 0 3px 0 var(--amarillo-o); }
+
+/* ── Preguntas frecuentes ───────────────────────────────────────────────── */
+
+.fc-faq {
+  display: grid;
+  gap: 14px;
+}
+
+.fc-faq-item {
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+
+.fc-faq-item > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  font-family: var(--letra-titular);
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.3;
+  list-style: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fc-faq-item > summary::-webkit-details-marker { display: none; }
+.fc-faq-item > summary:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* El «+» que gira a «×» al abrir, en una tecla lila pequeña. */
+.fc-faq-mas {
   position: relative;
-  z-index: 1;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--lila);
+  box-shadow: 0 4px 0 var(--lila-o);
+  transition: transform 0.3s var(--muelle);
+}
+
+.fc-faq-mas::before,
+.fc-faq-mas::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+  translate: -50% -50%;
+}
+
+.fc-faq-mas::after { rotate: 90deg; }
+.fc-faq-item[open] .fc-faq-mas { transform: rotate(135deg); }
+
+.fc-faq-item p {
+  margin: 0;
+  padding: 0 20px 20px;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta-2);
+}
+
+/* ── Cierre: tinta para la venta (Premium cierra en tinta), lila para el alumno ── */
+
+.fc-final {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.9rem;
-  margin-top: 3rem;
-  padding: clamp(2rem, 5vw, 3.5rem) 1.5rem;
-  border-radius: 28px;
+  margin-top: clamp(3rem, 6vw, 4rem);
+  padding: clamp(2.6rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3rem) clamp(2.4rem, 5vw, 3.4rem);
+  border-radius: 40px;
+  background: var(--tinta);
+  color: #fff;
   text-align: center;
-  background:
-    radial-gradient(60% 80% at 50% 0%, color-mix(in srgb, var(--cf-acento) 20%, transparent), transparent 70%),
-    rgba(9, 13, 24, 0.7);
-  border: 1px solid color-mix(in srgb, var(--cf-acento) 30%, transparent);
 }
-.cf-final-icono {
-  display: inline-flex;
+
+.fc-final--alumno { background: var(--lila-s); color: var(--tinta); box-shadow: 0 6px 0 color-mix(in srgb, var(--lila) 45%, #fff); }
+
+.fc-final-sello {
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  margin-bottom: 1.2rem;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--tinta);
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.4);
+  transform: rotate(-8deg);
+}
+
+.fc-final-titulo {
+  max-width: 22ch;
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.fc-final-sub {
+  max-width: 52ch;
+  margin: 0.9rem 0 1.8rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.fc-final--alumno .fc-final-sub { color: var(--tinta-2); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LA VERIFICACIÓN DE UN CERTIFICADO (/cursos/verificar/<codigo>) — prefijo cv-
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cv-cab {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  color: #1a1206;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cf-acento) 55%, #fff), var(--cf-acento));
-  box-shadow: 0 16px 40px -14px color-mix(in srgb, var(--cf-acento) 85%, transparent);
+  gap: clamp(16px, 3vw, 26px);
 }
-.cf-final-titulo { margin: 0.4rem 0 0; font: 800 clamp(1.5rem, 3.2vw, 2.1rem) / 1.2 var(--font-display); letter-spacing: -0.02em; color: #fff; }
-.cf-final-sub { margin: 0 0 0.6rem; max-width: 52ch; color: rgba(240, 244, 255, 0.62); line-height: 1.65; }
+
+.cv-sello {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 12vw, 96px);
+  height: clamp(72px, 12vw, 96px);
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: var(--menta);
+  color: var(--tinta);
+  box-shadow: 0 7px 0 var(--menta-o), 0 18px 28px -14px rgba(29, 27, 51, 0.45);
+  transform: rotate(-8deg);
+}
+
+.cv-titulo { font-size: clamp(2.1rem, 5vw, 3.3rem); }
+
+.cv-ok {
+  margin: 0.5rem 0 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--menta-o);
+}
+
+.cv-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3rem);
+  align-items: start;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.cv-datos {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 18px;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+
+.cv-datos div {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--fondo);
+}
+
+.cv-datos dt {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.cv-datos dd {
+  margin: 3px 0 0;
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.cv-marco { transform: rotate(0.8deg); }
+
+.cv-pie {
+  margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+  text-align: center;
+}
+
+/* ── Movimiento ─────────────────────────────────────────────────────────── */
+
+/* Los nodos del camino aparecen con un saltito al entrar en pantalla, donde
+   el navegador sabe animar con el scroll. Donde no, salen quietos. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .fc-nodo {
+      animation: fc-saltar linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%;
+    }
+  }
+}
+
+@keyframes fc-saltar {
+  0% { opacity: 0; scale: 0.4; }
+  70% { opacity: 1; scale: 1.1; }
+  100% { opacity: 1; scale: 1; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .cf-btn, .cf-objetivos li, .cf-mod-flecha, .cf .cur-paso { transition: none; }
-  .cf-cert-muestra .dp { animation: none; }
+  .cu-barra i,
+  .fc-nodo,
+  .fc-nodo.is-actual::after { animation: none; }
+  .cu-marco,
+  .fc-lecciones > summary,
+  .fc-lecciones > summary svg,
+  .fc-faq-mas { transition: none; }
+  .cu-marco:hover { transform: rotate(1.4deg); }
+}
+
+/* ── Tableta ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .cu-pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cu-paso:nth-child(2)::after { display: none; }
+}
+
+@media (max-width: 960px) {
+  .fc-hero,
+  .cu-cert,
+  .cv-cuerpo { grid-template-columns: minmax(0, 1fr); }
+  .fc-ficha { max-width: 560px; }
+  .cu-cert { border-radius: 32px; }
+  .cu-marco { margin-bottom: 1.6rem; }
+}
+
+/* ── Móvil ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .fc-para { grid-template-columns: minmax(0, 1fr); }
+
+  .fc-camino {
+    --rail: 92px;
+    --y: 32px;
+    --nodo: 56px;
+  }
+
+  .fc-parada--meta { --y: 40px; }
+  .fc-nodo { font-size: 1.3rem; }
+  .fc-nodo--examen { font-size: 1.05rem; }
+  .fc-nodo--meta { border-radius: 22px; font-size: 0.74rem; }
+  .fc-tarjeta { padding: 16px 16px 18px; }
+  .fc-lecciones li { flex-wrap: wrap; padding: 10px; }
+  .fc-leccion-min { padding-left: 38px; }
+  .fc-leccion-ic { width: 26px; }
+}
+
+@media (max-width: 560px) {
+  .cu-pasos { grid-template-columns: minmax(0, 1fr); }
+  .cu-paso::after { display: none; }
+  .fc-acciones .tecla,
+  .cv-pie .tecla { flex: 1 1 100%; white-space: normal; }
+  .cu-cert { padding-inline: 1rem; border-radius: 26px; }
+  .cu-logro { display: flex; }
+  .fc-final { border-radius: 28px; }
+  .fc-final .tecla { width: 100%; white-space: normal; }
+  .cv-cab { align-items: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .fc-camino {
+    --rail: 78px;
+    --nodo: 50px;
+  }
+
+  .fc-parada { gap: 10px; }
+  .fc-bocadillo { font-size: 0.74rem; translate: -22% 0; }
 }

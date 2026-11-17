@@ -1,100 +1,209 @@
-/* Solo la guía /guias/worldcoin. Lo compartido por todas las guías vive en
-   ../guias.css, que carga el layout ANTES que este archivo. */
+/* Solo la guía /guias/worldcoin. Prefijo: wld-. Lo compartido por todas las
+   guías vive en ../guias.css, que carga el layout ANTES que este archivo.
+   Estilo «Cuaderno de estudio» (ESTILO.md): guías = color cielo. */
 
-.orb-game {
-  background: rgba(15,32,64,0.5);
-  border: 1px solid rgba(230,180,85,0.15);
-  border-radius: 16px;
-  padding: 24px;
+/* ── Simulador del Orb: una hoja de papel ── */
+.wld-orb {
   margin-top: 28px;
+  padding: 26px 28px;
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  color: var(--tinta);
   text-align: center;
 }
 
-.orb-game-header { margin-bottom: 22px; text-align: left; }
+.wld-orb-cab { margin-bottom: 22px; text-align: left; }
 
-.orb-game-stage { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.wld-orb-titulo {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-family: var(--letra-texto);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-.orb-sphere {
+.wld-orb-pista {
+  margin: 12px 0 0;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--tinta-2);
+}
+
+.wld-orb-escena { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+
+/* El ojo del Orb: una esfera de papel con su canto, anillos cielo */
+.wld-orb-esfera {
   position: relative;
-  width: 140px; height: 140px;
+  width: 150px; height: 150px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(circle at 35% 30%, #1e3558, #060f1f 70%);
-  border: 1px solid rgba(230,180,85,0.3);
-  box-shadow: 0 0 40px -10px rgba(230,180,85,0.15);
-  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  background: var(--fondo);
+  box-shadow: 0 6px 0 var(--gris-o), inset 0 0 0 4px var(--gris);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.orb-ring {
-  position: absolute; inset: 0; border-radius: 50%;
-  border: 1px solid rgba(230,180,85,0.18);
+.wld-orb-anillo {
+  position: absolute; border-radius: 50%;
+  border: 3px solid var(--cielo-s);
+  transition: border-color 0.3s ease;
 }
 
-.orb-ring-1 { inset: 14px; }
+.wld-orb-anillo-1 { inset: 16px; }
+.wld-orb-anillo-2 { inset: 30px; }
+.wld-orb-anillo-3 { inset: 44px; }
 
-.orb-ring-2 { inset: 28px; }
-
-.orb-ring-3 { inset: 42px; }
-
-.orb-scan-line {
-  position: absolute;
-  left: 8%; right: 8%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #ff6b2b, transparent);
-  box-shadow: 0 0 12px 2px rgba(255,107,43,0.7);
-  animation: orb-scan-move 1.4s ease-in-out infinite;
-}
-
-.orb-core {
+.wld-orb-nucleo {
   position: relative; z-index: 2;
-  color: var(--gold);
+  width: 58px; height: 58px;
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
+  background: var(--cielo);
+  color: var(--tinta); /* sobre cielo y menta, tinta; sobre naranja y coral, blanco */
+  box-shadow: 0 4px 0 var(--cielo-o);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.orb-status { min-height: 78px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); width: 100%; max-width: 340px; }
+/* Escaneando: lo que se mueve, en naranja */
+.wld-orb-esfera--scanning { background: var(--naranja-s); box-shadow: 0 6px 0 var(--gris-o), inset 0 0 0 4px var(--naranja); }
+.wld-orb-esfera--scanning .wld-orb-anillo { border-color: var(--naranja); }
+.wld-orb-esfera--scanning .wld-orb-anillo-1 { animation: wld-orb-anillo 1.8s ease-in-out infinite; }
+.wld-orb-esfera--scanning .wld-orb-anillo-2 { animation: wld-orb-anillo 1.8s ease-in-out infinite 0.3s; }
+.wld-orb-esfera--scanning .wld-orb-anillo-3 { animation: wld-orb-anillo 1.8s ease-in-out infinite 0.6s; }
+.wld-orb-esfera--scanning .wld-orb-nucleo { background: var(--naranja); box-shadow: 0 4px 0 var(--naranja-o); color: #fff; }
 
-.orb-progress-track { width: 100%; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+/* Verificado: menta. Rechazado: coral. */
+.wld-orb-esfera--verified { background: var(--menta-s); box-shadow: 0 6px 0 var(--gris-o), inset 0 0 0 4px var(--menta); transform: scale(1.04); }
+.wld-orb-esfera--verified .wld-orb-anillo { border-color: var(--menta); opacity: 0.55; }
+.wld-orb-esfera--verified .wld-orb-nucleo { background: var(--menta); box-shadow: 0 4px 0 var(--menta-o); }
+.wld-orb-esfera--rejected { background: var(--coral-s); box-shadow: 0 6px 0 var(--gris-o), inset 0 0 0 4px var(--coral); }
+.wld-orb-esfera--rejected .wld-orb-anillo { border-color: var(--coral); opacity: 0.55; }
+.wld-orb-esfera--rejected .wld-orb-nucleo { background: var(--coral); box-shadow: 0 4px 0 var(--coral-o); color: #fff; }
 
-.orb-progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b2b, var(--gold)); border-radius: 4px; transition: width 0.1s linear; }
+.wld-orb-linea {
+  position: absolute; z-index: 3;
+  top: 22%; left: 12%; right: 12%;
+  height: 4px;
+  /* Barre del 22 % al 76 % de la esfera (150px) moviendo solo transform */
+  --barrido: 81px;
+  border-radius: 99px;
+  background: var(--naranja);
+  box-shadow: 0 2px 0 var(--naranja-o);
+  animation: wld-orb-barrido 1.4s ease-in-out infinite;
+}
 
-.orb-result { display: flex; flex-direction: column; gap: 4px; animation: orb-result-in 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.wld-orb-estado {
+  min-height: 86px; width: 100%; max-width: 360px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-size: 14px; font-weight: 700; color: var(--tinta-2);
+}
 
-.orb-result-title { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; }
+/* Barra de progreso gruesa, con relieve */
+.wld-orb-pista-barra { width: 100%; height: 16px; border-radius: 99px; background: var(--gris); overflow: hidden; }
+.wld-orb-relleno {
+  height: 100%; border-radius: 99px;
+  background: var(--naranja);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.35);
+  transition: width 0.1s linear;
+}
 
-.orb-result--ok .orb-result-title { color: #4ade80; }
+/* El resultado: un aviso como los de sistema.html */
+.wld-orb-resultado {
+  width: 100%;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 16px 18px;
+  border: 3px solid;
+  border-radius: 18px;
+  animation: wld-orb-entra 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.wld-orb-resultado--ok { background: var(--menta-s); border-color: var(--menta); color: var(--menta-o); }
+.wld-orb-resultado--ko { background: var(--coral-s); border-color: var(--coral); color: var(--coral-o); }
 
-.orb-result--ko .orb-result-title { color: #f87171; }
+.wld-orb-resultado-titulo {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: var(--letra-titular); font-size: 18px; font-weight: 800;
+}
+.wld-orb-resultado-hash { font-size: 13px; font-weight: 700; color: var(--tinta-2); overflow-wrap: anywhere; }
+.wld-orb-resultado-hash code {
+  padding: 2px 8px; border-radius: 8px;
+  background: var(--papel); color: var(--tinta);
+  font-size: 12.5px; font-weight: 700;
+}
+.wld-orb-resultado-grant { font-size: 14px; font-weight: 900; }
+.wld-orb-resultado--ko .wld-orb-resultado-grant { font-weight: 800; }
 
-.orb-result-hash { font-size: 12px; color: var(--text-muted); }
+.wld-orb-mandos { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+.wld-orb-mandos .tecla { white-space: normal; text-align: center; }
 
-.orb-result-hash code { color: var(--gold); }
+/* ── Reparto de WLD: el dónut ── */
+.wld-tok { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+.wld-tok svg { flex-shrink: 0; }
+.wld-tok-arco {
+  transform: rotate(-90deg);
+  transform-origin: 80px 80px;
+  transition: stroke-dasharray 1.1s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+.wld-tok-cifra { font-family: var(--letra-titular); font-size: 22px; font-weight: 800; fill: var(--tinta); }
+.wld-tok-unidad { font-family: var(--letra-texto); font-size: 11px; font-weight: 800; fill: var(--tinta-2); }
 
-.orb-result-grant { font-size: 12px; font-weight: 600; color: var(--gold); }
-
-.orb-result--ko .orb-result-grant { color: #f87171; font-weight: 500; }
-
-.orb-game-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
-
-.tokenomics-donut-wrap { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
-
-.tokenomics-legend { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
-
-.tokenomics-legend-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #dce8f8; }
-
-.tokenomics-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-
-.tokenomics-legend-label { flex: 1; }
-
-.tokenomics-legend-val { font-weight: 700; color: var(--gold); }
+.wld-tok-leyenda { display: flex; flex-direction: column; gap: 10px; min-width: 220px; flex: 1 1 220px; max-width: 360px; }
+.wld-tok-fila {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--fondo);
+  box-shadow: 0 4px 0 var(--gris-o);
+  font-size: 14px; font-weight: 700; color: var(--tinta);
+}
+.wld-tok-punto { width: 14px; height: 14px; border-radius: 5px; flex-shrink: 0; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12); }
+.wld-tok-nombre { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.wld-tok-valor { font-family: var(--letra-titular); font-size: 17px; font-weight: 800; color: var(--cielo-o); font-variant-numeric: tabular-nums; }
 
 @media (max-width: 640px) {
-  .orb-sphere { width: 112px; height: 112px; }
-  .tokenomics-donut-wrap { flex-direction: column; }
+  .wld-orb { padding: 18px 16px; border-radius: 24px; }
+  .wld-orb-esfera { width: 124px; height: 124px; }
+  .wld-orb-anillo-1 { inset: 12px; }
+  .wld-orb-anillo-2 { inset: 24px; }
+  .wld-orb-anillo-3 { inset: 36px; }
+  .wld-orb-nucleo { width: 50px; height: 50px; }
+  .wld-orb-linea { --barrido: 67px; } /* 54 % de 124px */
+  .wld-orb-pista { font-size: 22px; }
+  .wld-orb-mandos .tecla { width: 100%; }
+  .wld-tok { flex-direction: column; }
+  .wld-tok-leyenda { width: 100%; min-width: 0; }
 }
 
-@keyframes orb-scan-move {
-  0%, 100% { top: 20%; }
-  50% { top: 78%; }
+@keyframes wld-orb-barrido {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(var(--barrido)); }
 }
 
-@keyframes orb-result-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes wld-orb-anillo {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes wld-orb-entra { from { opacity: 0; transform: translateY(10px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .wld-orb-esfera, .wld-orb-anillo, .wld-orb-nucleo, .wld-orb-relleno, .wld-tok-arco { transition: none; }
+  .wld-orb-esfera--verified { transform: none; }
+  .wld-orb-linea { animation: none; top: 50%; transform: none; }
+  .wld-orb-esfera--scanning .wld-orb-anillo-1,
+  .wld-orb-esfera--scanning .wld-orb-anillo-2,
+  .wld-orb-esfera--scanning .wld-orb-anillo-3,
+  .wld-orb-resultado { animation: none; }
+}
+
+/* ══ Marcas de estudio (17-11-2026) ══
+   Lo común (margen de los pósits, estrella de la respuesta, símbolos al
+   margen) está en guias.css, «Marcas de estudio». Aquí solo el ancho de los
+   pósits que se quedan en su sitio: el del texto, no el de la página. */
+.wld-nota { max-width: 760px; }

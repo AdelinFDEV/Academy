@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ArrowRight, Bookmark, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * La llamada a crear cuenta, arriba de cada ficha del diccionario.
@@ -60,7 +60,9 @@ export default function TerminoCta({
         <ul className="tcta-ventajas">
           {VENTAJAS.map((v) => (
             <li key={v}>
-              <Check size={13} strokeWidth={3} aria-hidden="true" />
+              <span className="tcta-tic" aria-hidden="true">
+                <Check size={13} strokeWidth={3.4} />
+              </span>
               {v}
             </li>
           ))}
@@ -68,14 +70,14 @@ export default function TerminoCta({
       </div>
 
       <div className="tcta-accion">
-        <Link href="/register" className="tcta-btn">
-          <Bookmark size={15} strokeWidth={2.2} aria-hidden="true" />
+        <Tecla href="/register">
+          <Bookmark size={16} strokeWidth={2.6} aria-hidden="true" />
           Crear cuenta gratis
-          <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
-        </Link>
-        <Link href="/login" className="tcta-ya">
+          <ArrowRight size={16} strokeWidth={2.8} aria-hidden="true" />
+        </Tecla>
+        <Tecla href="/login" color="blanca" tamano="peq">
           Ya tengo cuenta
-        </Link>
+        </Tecla>
       </div>
     </aside>
   );

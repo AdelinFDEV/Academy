@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideTronEnvio from "./GuideTronEnvio";
 import GuideTronQuiz from "./GuideTronQuiz";
@@ -60,7 +62,6 @@ export default async function TronPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -73,15 +74,15 @@ export default async function TronPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel básico · 12 min</div>
         <h1 className="gbc-hero-title">
           Qué es TRON (TRX)<br />
           <span className="gbc-hero-gold">la red por la que viaja el USDT</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>TRON es una blockchain pensada para mover dinero rápido y barato, y TRX es su moneda.</strong> Casi
-          nadie llega a ella por TRX: llega porque cerca de la mitad del USDT del mundo, el dólar digital más
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>TRON es una blockchain pensada para mover dinero rápido y barato, y TRX es su moneda.</Anotacion></strong> Casi
+          nadie llega a ella por TRX: llega porque <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>cerca de la mitad del USDT del mundo</Anotacion>, el dólar digital más
           usado, circula por su red. Cuando alguien te pide «mándamelo por TRC-20», te está pidiendo que uses
           TRON.
         </p>
@@ -107,12 +108,12 @@ export default async function TronPage() {
             <p>
               Aquello no cuajó. Lo que sí cuajó fue otra cosa, bastante menos romántica. TRON resultó ser una
               red rápida, con comisiones bajas y compatible con las herramientas de
-              <Link href="/guias/ethereum"> Ethereum</Link>. Justo lo que necesitaba quien solo quería enviar
-              dólares digitales de un sitio a otro.
+              <Link href="/guias/ethereum"> Ethereum</Link>. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Justo lo que necesitaba quien solo quería enviar
+              dólares digitales de un sitio a otro.</Anotacion>
             </p>
             <p>
-              Por eso esta guía no empieza por la tecnología. Empieza por el uso real, que es uno: mover
-              <Termino slug="stablecoin"> stablecoins</Termino>. Vamos a seguir un caso durante toda la guía.
+              Por eso esta guía no empieza por la tecnología. Empieza por el uso real, que es uno: <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>mover
+              <Termino slug="stablecoin"> stablecoins</Termino></Anotacion>. Vamos a seguir un caso durante toda la guía.
               Tienes 500 USDT y quieres enviárselos a alguien.
             </p>
           </div>
@@ -128,7 +129,7 @@ export default async function TronPage() {
             <p>
               USDT es una moneda digital que vale un dólar. La emite una empresa, Tether, y existe en varias
               redes a la vez: es el mismo dólar con distintas matrículas. La de Ethereum se llama ERC-20. La de
-              TRON, <strong>TRC-20</strong>.
+              TRON, <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={200}>TRC-20</Anotacion></strong>.
             </p>
             <p>
               Durante años, enviar USDT por Ethereum costaba varios dólares, a veces decenas. Por TRON costaba
@@ -150,7 +151,7 @@ export default async function TronPage() {
             <p>
               Lo interesante es que la ventaja de precio ya no es la de antes. Enviar USDT por Ethereum o por
               sus redes auxiliares cuesta hoy céntimos, y por TRON, como vas a ver, cuesta más de lo que la
-              gente cree. Si sigue siendo la red del USDT es por costumbre: es donde están los cajeros, las
+              gente cree. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>Si sigue siendo la red del USDT es por costumbre</Anotacion>: es donde están los cajeros, las
               casas de cambio y los contactos de medio mundo.
             </p>
           </div>
@@ -164,13 +165,16 @@ export default async function TronPage() {
           <h2 className="gbc-title">Cuánto cuesta enviar USDT por TRON (TRC-20)</h2>
           <div className="gbc-body">
             <p>
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={5} retraso={200} />
               Aquí está lo que confunde a todo el mundo. TRON no cobra una comisión en el sentido habitual.
               Cada operación consume dos recursos, y la red te los cobra de dos maneras posibles.
             </p>
+            <Llave color="azul">
             <ul>
               <li><strong>Ancho de banda:</strong> el espacio que ocupa tu operación. Cada cuenta recibe un poco gratis cada día, suficiente para un envío sencillo de TRX.</li>
               <li><strong>Energía:</strong> el cálculo que exige ejecutar un <Termino slug="smart-contract">contrato inteligente</Termino>. Enviar USDT lo es, y gasta mucha.</li>
             </ul>
+            </Llave>
             <p>
               Si no tienes esos recursos, la red los cobra quemando TRX de tu cartera. Este es el recibo de tu
               envío de 500 USDT, con los parámetros en vigor en noviembre de 2026:
@@ -184,7 +188,7 @@ export default async function TronPage() {
               <div><dt>Precio de la energía</dt><dd>0,0001 TRX por unidad</dd></div>
               <div><dt>Coste de la energía</dt><dd>≈ 6,5 TRX</dd></div>
               <div><dt>Ancho de banda (si no te queda gratis)</dt><dd>≈ 0,35 TRX</dd></div>
-              <div className="es-total"><dt>Total que se quema de tu cartera</dt><dd>≈ 6,9 TRX</dd></div>
+              <div className="es-total"><dt>Total que se quema de tu cartera</dt><dd><Anotacion tipo="circle" relleno={[4, 10]} junta animar={false}>≈ 6,9 TRX</Anotacion></dd></div>
             </dl>
             <p className="tron-recibo-nota">
               Si la dirección de destino nunca ha tenido USDT, la energía se dobla: unas 130.000 unidades y
@@ -194,8 +198,8 @@ export default async function TronPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Fíjate en dos cosas. La primera: el coste no depende de la cantidad. Enviar 5 USDT cuesta lo
-              mismo que enviar 50.000. La segunda: se paga en TRX, no en USDT. Calcula lo que supone en euros
+              Fíjate en dos cosas. La primera: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>el coste no depende de la cantidad</Anotacion>. Enviar 5 USDT cuesta lo
+              mismo que enviar 50.000. La segunda: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={700}>se paga en TRX, no en USDT</Anotacion>. Calcula lo que supone en euros
               con el precio de TRX que veas hoy:
             </p>
           </div>
@@ -231,20 +235,20 @@ export default async function TronPage() {
               <tbody>
                 <tr><td><strong>Tenerlo y dejar que se queme</strong></td><td>Pagar cada operación sobre la marcha</td><td>Es lo más caro por envío, y lo más cómodo si envías poco</td></tr>
                 <tr><td><strong>Bloquearlo</strong></td><td>Energía o ancho de banda cada día, sin quemar nada</td><td>Hace falta mucho: del orden de miles de TRX para cubrir un envío de USDT al día</td></tr>
-                <tr><td><strong>Votar con lo bloqueado</strong></td><td>Elegir a quienes producen los bloques y cobrar una parte de sus recompensas</td><td>Recuperar los TRX bloqueados tarda 14 días</td></tr>
+                <tr><td><strong>Votar con lo bloqueado</strong></td><td>Elegir a quienes producen los bloques y cobrar una parte de sus recompensas</td><td><Anotacion tipo="underline" color="var(--coral)" animar={false}>Recuperar los TRX bloqueados tarda 14 días</Anotacion></td></tr>
               </tbody>
             </table>
           </div>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Bloquear TRX es su <Termino slug="staking">staking</Termino>. Paga un rendimiento bajo, de un
-              dígito, y sobre todo ahorra comisiones a quien usa mucho la red.
+              dígito, y <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>sobre todo ahorra comisiones a quien usa mucho la red</Anotacion>.
             </p>
             <p>
               Un detalle que distingue a TRX de casi todas las demás: no tiene tope de monedas, pero cada
               operación pagada sin recursos quema TRX para siempre. Con tanto USDT moviéndose, hace tiempo que
               se destruyen más TRX de los que se crean. Esa <Termino slug="quema-de-tokens">quema</Termino> depende
-              de que la red se siga usando: si el USDT se muda a otra parte, se acaba.
+              de que la red se siga usando: <Anotacion tipo="underline" color="var(--coral)" retraso={300}>si el USDT se muda a otra parte, se acaba</Anotacion>.
             </p>
           </div>
         </div>
@@ -252,12 +256,12 @@ export default async function TronPage() {
 
       {/* ── 5 ── */}
       <section id="quien-manda" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">El gobierno de la red</div>
           <h2 className="gbc-title">Quién controla TRON: 27 superrepresentantes y un fundador</h2>
           <div className="gbc-body">
             <p>
-              En TRON no hay <Termino slug="minero">mineros</Termino>. Los bloques los producen, por turnos, 27 participantes llamados
+              En TRON no hay <Termino slug="minero">mineros</Termino>. Los bloques los producen, por turnos, <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={200}>27 participantes</Anotacion> llamados
               superrepresentantes. Se eligen con los votos de quienes tienen TRX bloqueados, y la lista se
               revisa cada seis horas. Es una variante de la
               <Termino slug="prueba-de-participacion"> prueba de participación</Termino>.
@@ -265,8 +269,8 @@ export default async function TronPage() {
             <p>
               Veintisiete son muy pocos. En Ethereum hay cientos de miles de
               <Termino slug="validador"> validadores</Termino>. Con 27 la red va rápida y los cambios se aprueban
-              en días, como la rebaja de la energía. A cambio, basta con que se pongan de acuerdo 19 para
-              decidir cualquier cosa.
+              en días, como la rebaja de la energía. A cambio, <Anotacion tipo="underline" color="var(--coral)" retraso={300}>basta con que se pongan de acuerdo 19 para
+              decidir cualquier cosa</Anotacion>.
             </p>
             <p>
               Y luego está Justin Sun. Formalmente dejó la dirección de la Fundación TRON a finales de 2021 y
@@ -274,22 +278,23 @@ export default async function TronPage() {
               portavoz y, según se le atribuye de forma habitual, su mayor tenedor.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">El caso de la SEC, y cómo acabó</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={7} retraso={400} />
+            <div className="postit-titulo">El caso de la SEC, y cómo acabó</div>
+            <div className="postit-cuerpo">
               <p>En marzo de 2023, el regulador de los mercados de Estados Unidos demandó a Sun y a sus empresas.
               Les acusaba de vender TRX sin registrarlo y de inflar su volumen con operaciones falsas, lo que se
               llama <Termino slug="wash-trading">wash trading</Termino>. En marzo de 2026 se anunció un acuerdo: una de las
               empresas paga 10 millones de dólares y se retiran las acusaciones contra Sun, sin admitir ni
               negar los hechos.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
       {/* ── 6 ── */}
       <section id="congelar" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Lo que casi nadie explica</div>
           <h2 className="gbc-title">El USDT de TRON se puede congelar, y en Europa cuesta encontrarlo</h2>
           <div className="gbc-body">
@@ -298,32 +303,33 @@ export default async function TronPage() {
               afectan más que cualquier detalle técnico.
             </p>
             <p>
-              <strong>La primera: no son del todo tuyos.</strong> El contrato del USDT permite a Tether congelar
-              el saldo de cualquier dirección. Lo hace a petición de autoridades y por iniciativa propia.
+              <strong>La primera: no son del todo tuyos.</strong> <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>El contrato del USDT permite a Tether congelar
+              el saldo de cualquier dirección.</Anotacion> Lo hace a petición de autoridades y por iniciativa propia.
               Desde 2024 trabaja con TRON y con la empresa de análisis TRM Labs en una unidad conjunta, llamada
               T3, que ha bloqueado cientos de millones de dólares vinculados a estafas y otros delitos.
             </p>
             <p>
               Tiene su lógica: TRON es también la red favorita de quien mueve dinero ilícito. Varios informes de
               empresas de análisis la sitúan como la blockchain con más volumen de ese tipo. Pero el
-              mecanismo es el mismo para todos. Si recibes USDT que venía de una dirección marcada, el
-              congelado puedes ser tú.
+              mecanismo es el mismo para todos. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>Si recibes USDT que venía de una dirección marcada, el
+              congelado puedes ser tú.</Anotacion>
             </p>
             <p>
               <strong>La segunda: en la Unión Europea ya no se vende en los <Termino slug="exchange">exchanges</Termino>.</strong> La norma <Termino slug="mica">MiCA</Termino>
               exige una licencia europea a quien emite una stablecoin, y Tether no la ha pedido. Por eso los
               exchanges autorizados en la UE retiraron el USDT de su oferta para clientes europeos a comienzos
-              de 2025. Tenerlo en tu <Termino slug="wallet">cartera</Termino> no está prohibido; lo difícil es
-              convertirlo en euros por una vía regulada.
+              de 2025. Tenerlo en tu <Termino slug="wallet">cartera</Termino> no está prohibido; <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>lo difícil es
+              convertirlo en euros por una vía regulada.</Anotacion>
             </p>
           </div>
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">Antes de aceptar un pago en USDT por TRC-20</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Antes de aceptar un pago en USDT por TRC-20</div>
+            <div className="postit-cuerpo">
               <p>Pregúntate cómo vas a convertirlo en euros. Si la respuesta es «ya veré», el problema no lo
               tiene quien te paga: lo tienes tú.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -334,24 +340,24 @@ export default async function TronPage() {
           <h2 className="gbc-title">Los cuatro errores más caros al usar TRON</h2>
           <ol className="tron-errores">
             <li>
-              <strong>Tener USDT y cero TRX.</strong>
+              <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1}>Tener USDT y cero TRX.</Anotacion></strong>
               <p>Es el más frecuente. Recibes USDT en una cartera nueva y no puedes moverlos, porque la
-              comisión se paga en TRX y no tienes. Necesitas que alguien te envíe unos pocos TRX antes.</p>
+              comisión se paga en TRX y no tienes. <SimboloEstudio tipo="check" color="menta" className="tron-error-check" semilla={4} animar={false} />Necesitas que alguien te envíe unos pocos TRX antes.</p>
             </li>
             <li>
-              <strong>Equivocarte de red.</strong>
+              <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={250}>Equivocarte de red.</Anotacion></strong>
               <p>Las direcciones de TRON empiezan por T. Las de Ethereum, por 0x. Un exchange que espera USDT
-              por una red no lo ve si llega por otra. Elige la red en el origen y en el destino, y comprueba
+              por una red no lo ve si llega por otra. <SimboloEstudio tipo="check" color="menta" className="tron-error-check" semilla={6} animar={false} />Elige la red en el origen y en el destino, y comprueba
               que coinciden.</p>
             </li>
             <li>
-              <strong>Copiar la dirección del historial.</strong>
+              <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} animar={false}>Copiar la dirección del historial.</Anotacion></strong>
               <p>Hay estafadores que te envían cantidades mínimas desde una dirección que se parece a una que
               usas. Es el <Termino slug="envenenamiento-de-direcciones">envenenamiento de direcciones</Termino>, y
-              TRON es su terreno preferido. Copia siempre la dirección de su origen, nunca del historial.</p>
+              TRON es su terreno preferido. <SimboloEstudio tipo="check" color="menta" className="tron-error-check" semilla={8} animar={false} />Copia siempre la dirección de su origen, nunca del historial.</p>
             </li>
             <li>
-              <strong>No hacer un envío de prueba.</strong>
+              <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} animar={false}>No hacer un envío de prueba.</Anotacion></strong>
               <p>Como el coste es fijo, enviar primero 5 USDT cuesta lo mismo que enviar 5.000. Es el seguro
               más barato que existe contra los tres errores anteriores.</p>
             </li>
@@ -366,7 +372,7 @@ export default async function TronPage() {
           <h2 className="gbc-title">Los riesgos de TRON y de TRX</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Depende de un solo uso.</strong> El valor de la red es mover USDT. Si Tether prioriza otra red o lanza la suya, TRON pierde su razón de ser.</li>
+              <li><strong>Depende de un solo uso.</strong> El valor de la red es mover USDT. <Anotacion tipo="underline" color="var(--coral)" retraso={200}>Si Tether prioriza otra red o lanza la suya, TRON pierde su razón de ser.</Anotacion></li>
               <li><strong>Depende de una persona.</strong> Pocas redes grandes están tan asociadas a su fundador, y pocas figuras han acumulado tantas polémicas.</li>
               <li><strong>Está concentrada.</strong> 27 productores de bloques. Rápido, y fácil de presionar.</li>
               <li><strong>Su reputación pesa.</strong> Ser la red con más dinero ilícito atrae la atención de los reguladores y de los bancos.</li>
@@ -374,8 +380,8 @@ export default async function TronPage() {
             </ul>
             <p>
               En cuanto a Hacienda, cambiar euros por USDT, USDT por TRX o cualquiera de ellos por otra moneda
-              es una operación que tributa. También lo es cada vez que se queman TRX para pagar una comisión,
-              aunque el importe sea mínimo. El detalle está en la guía de
+              es una operación que tributa. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>También lo es cada vez que se queman TRX para pagar una comisión,
+              aunque el importe sea mínimo.</Anotacion> El detalle está en la guía de
               <Link href="/guias/fiscalidad-cripto-espana"> fiscalidad de las criptomonedas en España</Link>.
             </p>
           </div>
@@ -392,7 +398,7 @@ export default async function TronPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de TRON</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Peaje Pagado</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Peaje Pagado</strong>.</p>
           </div>
           {d.isRegistered ? <GuideTronQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

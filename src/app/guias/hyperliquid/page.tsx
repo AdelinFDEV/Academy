@@ -3,7 +3,6 @@ import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideAnimatedStat from "@/components/GuideAnimatedStat";
 import GuideSpotlightCards from "@/components/GuideSpotlightCards";
@@ -12,6 +11,9 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import GuideHyperliquidOrderBook from "./GuideHyperliquidOrderBook";
 import GuideHyperliquidQuiz from "./GuideHyperliquidQuiz";
 import "./hyperliquid.css";
@@ -159,7 +161,6 @@ export default async function HyperliquidPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
@@ -174,7 +175,6 @@ export default async function HyperliquidPage() {
 
       {/* Hero */}
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           ¿Qué es Hyperliquid?<br />
@@ -183,8 +183,8 @@ export default async function HyperliquidPage() {
         <p className="gbc-hero-desc">
           Operar con perpetuos siempre había obligado a elegir: la velocidad de un exchange centralizado
           (con custodia y opacidad) o la transparencia de un DEX (lento y con precios malos). Hyperliquid
-          se propuso romper ese dilema con una idea difícil: meter un libro de órdenes profesional entero
-          dentro de una blockchain. Esto es qué es, cómo lo consigue y por qué se ha convertido en uno de
+          se propuso romper ese dilema con una idea difícil: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>meter un libro de órdenes profesional entero
+          dentro de una blockchain</Anotacion>. Esto es qué es, cómo lo consigue y por qué se ha convertido en uno de
           los proyectos más comentados del sector.
         </p>
         <div className="gbc-hero-pills">
@@ -203,17 +203,17 @@ export default async function HyperliquidPage() {
           <h2 className="gbc-title">El dilema de operar con perpetuos</h2>
           <div className="gbc-body">
             <p>
-              Los <strong>contratos perpetuos</strong> son el producto más operado de todo el mercado cripto:
+              Los <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}><strong>contratos perpetuos</strong></Anotacion> son el producto más operado de todo el mercado cripto:
               derivados que permiten apostar al alza o a la baja del precio de una moneda, con apalancamiento y
               sin fecha de caducidad. Casi todo ese volumen se movía en <strong>exchanges centralizados</strong>
-              como Binance: rápidos y cómodos, pero con dos problemas de fondo. Tú no controlas tus fondos —los
-              custodia la empresa— y no ves lo que pasa por dentro. El colapso de FTX en 2022 recordó a todo el
+              como Binance: rápidos y cómodos, pero con dos problemas de fondo. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Tú no controlas tus fondos —los
+              custodia la empresa— y no ves lo que pasa por dentro.</Anotacion> El colapso de FTX en 2022 recordó a todo el
               mundo lo que puede salir mal cuando confías tu dinero a una caja negra.
             </p>
             <p>
               La alternativa descentralizada, los <strong>DEX</strong>, resolvía la custodia (tú tienes tus
-              fondos) pero no encajaba bien con los perpetuos. La mayoría usan <strong>AMM</strong> (creadores
-              de mercado automáticos): pools de liquidez y una fórmula matemática que fija el precio. Funciona
+              fondos) pero no encajaba bien con los perpetuos. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>La mayoría usan <strong>AMM</strong> (creadores
+              de mercado automáticos)</Anotacion>: pools de liquidez y una fórmula matemática que fija el precio. Funciona
               para intercambios simples, pero para trading serio de derivados —donde importan la profundidad,
               la velocidad y precios finos— se quedaba corto y caro.
             </p>
@@ -229,8 +229,9 @@ export default async function HyperliquidPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
+              <SimboloEstudio tipo="estrella" margen semilla={7} retraso={200} />
               Esa es la tesis de Hyperliquid. En lugar de conformarse con un AMM, decidió construir lo más
-              difícil: un <strong>libro de órdenes completo funcionando 100% on-chain</strong>. Y para que eso
+              difícil: un <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>libro de órdenes completo funcionando 100% on-chain</Anotacion></strong>. Y para que eso
               fuera posible sin ahogarse, no lo montó sobre Ethereum ni otra red existente, sino sobre una
               <strong> blockchain propia</strong> diseñada desde cero para una sola cosa: aguantar el ritmo
               frenético de un exchange de trading.
@@ -241,42 +242,45 @@ export default async function HyperliquidPage() {
 
       {/* ── SECCIÓN 2: CÓMO FUNCIONA ── FREE */}
       <section id="como-funciona" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Sección 2 <span className="gbc-free-pill">Gratis</span></div>
           <h2 className="gbc-title">Cómo funciona: un libro de órdenes dentro de una blockchain</h2>
           <div className="gbc-body">
             <p>
-              Para entender Hyperliquid hay que entender primero qué es un <strong>libro de órdenes</strong>.
+              Para entender Hyperliquid hay que entender primero qué es un <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}><strong>libro de órdenes</strong></Anotacion>.
               No hay una fórmula que invente el precio: hay dos columnas, las órdenes de <strong>compra</strong>
               (bids) y las de <strong>venta</strong> (asks) a cada nivel de precio. Cuando lanzas una orden a
               mercado, esta se va cruzando con las contrapartidas reales que hay en el libro. Si tu orden es
-              grande, se «come» varios niveles y acabas pagando un precio medio peor: eso es el
+              grande, se «come» varios niveles y <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>acabas pagando un precio medio peor</Anotacion>: eso es el
               <strong> slippage</strong>. Pruébalo tú mismo:
             </p>
           </div>
 
-          <GuideHyperliquidOrderBook />
+          <div className="gbc-ancho">
+            <GuideHyperliquidOrderBook />
+          </div>
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
               La proeza técnica de Hyperliquid es mantener ese libro —con miles de órdenes cambiando por
-              segundo— <strong>entero on-chain</strong>, sin que ninguna empresa lo gestione en secreto. Lo
+              segundo— <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={200}>entero on-chain</Anotacion></strong>, sin que ninguna empresa lo gestione en secreto. Lo
               logra con su propia blockchain, la <strong>L1 de Hyperliquid</strong>, cuyo consenso
               <strong> HyperBFT</strong> confirma las operaciones con una latencia bajísima. El resultado se
-              siente como un exchange centralizado —rápido, con órdenes límite, apalancamiento— pero tú nunca
-              pierdes la custodia y cada operación es verificable.
+              siente como un exchange centralizado —rápido, con órdenes límite, apalancamiento— pero <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>tú nunca
+              pierdes la custodia y cada operación es verificable.</Anotacion>
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Dos capas: HyperCore y HyperEVM</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={9} animar={false} />
+            <div className="postit-titulo">Dos capas: HyperCore y HyperEVM</div>
+            <div className="postit-cuerpo">
               <p>Hyperliquid tiene un núcleo, <em>HyperCore</em>, donde vive el motor de trading (el libro de
-              órdenes, los perpetuos, el spot). Y encima añadió <em>HyperEVM</em>, una capa compatible con
-              Ethereum donde cualquiera puede desplegar aplicaciones DeFi que se conectan directamente con esa
+              órdenes, los perpetuos, el spot). Y encima añadió <em>HyperEVM</em>, <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>una capa compatible con
+              Ethereum</Anotacion> donde cualquiera puede desplegar aplicaciones DeFi que se conectan directamente con esa
               liquidez. Es como tener el exchange y el «app store» sobre las mismas vías.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -294,11 +298,11 @@ export default async function HyperliquidPage() {
               de inflexión fue el <strong>29 de noviembre de 2024</strong>: el lanzamiento de su token
               <strong> HYPE</strong> con un airdrop que repartió una gran parte del suministro entre los
               usuarios que habían operado en la plataforma. Fue uno de los airdrops más comentados de la
-              historia reciente, tanto por su tamaño como por una decisión poco habitual: el proyecto no
-              había vendido tokens a fondos de capital riesgo.
+              historia reciente, tanto por su tamaño como por una decisión poco habitual: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>el proyecto no
+              había vendido tokens a fondos de capital riesgo</Anotacion>.
             </p>
             <p>
-              Desde entonces se ha consolidado como el <strong>mayor DEX de perpetuos por volumen</strong>,
+              Desde entonces se ha consolidado como el <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>mayor DEX de perpetuos por volumen</Anotacion></strong>,
               capturando una porción enorme del trading descentralizado de derivados. En 2025 amplió su
               alcance con el lanzamiento de <strong>HyperEVM</strong>, abriendo la puerta a un ecosistema de
               aplicaciones DeFi construidas sobre su liquidez.
@@ -312,15 +316,16 @@ export default async function HyperliquidPage() {
             <GuideAnimatedStat end={0} decimals={0} label="Rondas de financiación con VCs" source="Hyperliquid Labs" />
           </div>
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Autofinanciado, sin inversores externos</div>
-            <div className="gbc-box-body">
+          <Postit color="menta" giro={1.5} className="hl-nota">
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={4} animar={false} />
+            <div className="postit-titulo">Autofinanciado, sin inversores externos</div>
+            <div className="postit-cuerpo">
               <p>A diferencia de casi todos los grandes proyectos cripto, Hyperliquid no levantó rondas con
-              fondos de capital riesgo a cambio de una parte del token. El equipo, <em>Hyperliquid Labs</em>,
-              se autofinanció, y eso le permitió repartir una porción del suministro mucho mayor entre la
+              fondos de capital riesgo a cambio de una parte del token. El equipo, <em>Hyperliquid Labs</em>,{" "}
+              <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>se autofinanció</Anotacion>, y eso le permitió repartir una porción del suministro mucho mayor entre la
               comunidad. Es parte de por qué su airdrop generó tanto entusiasmo.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -331,8 +336,8 @@ export default async function HyperliquidPage() {
           <h2 className="gbc-title">Para qué se usa Hyperliquid</h2>
           <div className="gbc-body">
             <p>
-              Aunque nació como un exchange de perpetuos, Hyperliquid se ha ido convirtiendo en una pequeña
-              plataforma con varias capas. Estos son sus usos principales.
+              Aunque nació como un exchange de perpetuos, Hyperliquid se ha ido convirtiendo en <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>una pequeña
+              plataforma con varias capas</Anotacion>. Estos son sus usos principales.
             </p>
           </div>
           <GuideSpotlightCards uses={USES} />
@@ -355,7 +360,7 @@ export default async function HyperliquidPage() {
           <h2 className="gbc-title">El token HYPE: comisiones, buybacks y gobernanza</h2>
           <div className="gbc-body">
             <p>
-              HYPE es el token nativo del ecosistema y cumple varias funciones a la vez. Es el
+              HYPE es el token nativo del ecosistema y <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>cumple varias funciones a la vez</Anotacion>. Es el
               <strong> gas</strong> que se paga por usar las aplicaciones de HyperEVM, se puede
               <strong> stakear</strong> para participar en la seguridad de la red, y está pensado como pieza
               central de la gobernanza del protocolo.
@@ -364,20 +369,21 @@ export default async function HyperliquidPage() {
               Pero lo que más atención ha recibido es su relación con las <strong>comisiones</strong>. El
               enorme volumen de trading de Hyperliquid genera muchos ingresos, y una parte se destina a
               <strong> recomprar HYPE en el mercado</strong> a través del llamado <em>Assistance Fund</em>.
-              La idea es que, cuanto más se usa el exchange, más presión de compra recibe el token, atando su
+              La idea es que, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>cuanto más se usa el exchange, más presión de compra recibe el token</Anotacion>, atando su
               valor a la actividad real de la plataforma.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">El airdrop que marcó la diferencia</div>
-            <div className="gbc-box-body">
-              <p>En noviembre de 2024, Hyperliquid repartió una porción muy grande del suministro de HYPE
-              entre sus usuarios reales, premiando a quienes habían operado en la plataforma. Al no haber
+          <Postit color="amarillo" giro={-1} className="hl-nota">
+            <SimboloEstudio tipo="estrella" color="naranja" className="postit-esquina" semilla={15} retraso={300} />
+            <div className="postit-titulo">El airdrop que marcó la diferencia</div>
+            <div className="postit-cuerpo">
+              <p>En noviembre de 2024, Hyperliquid <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>repartió una porción muy grande del suministro de HYPE
+              entre sus usuarios reales</Anotacion>, premiando a quienes habían operado en la plataforma. Al no haber
               vendido tokens a inversores privados, esa distribución hacia la comunidad fue mucho mayor de lo
               habitual — un gesto que reforzó la narrativa de un proyecto «de los usuarios».</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -388,8 +394,8 @@ export default async function HyperliquidPage() {
           <h2 className="gbc-title">Lo que puede salir mal: centralización, intervención y regulación</h2>
           <div className="gbc-body">
             <p>
-              Hyperliquid es uno de los proyectos más impresionantes a nivel técnico, pero eso no lo hace
-              inmune a los riesgos. Antes de sacar conclusiones, conviene mirar las cuatro tensiones que más
+              Hyperliquid es uno de los proyectos más impresionantes a nivel técnico, pero <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>eso no lo hace
+              inmune a los riesgos</Anotacion>. Antes de sacar conclusiones, conviene mirar las cuatro tensiones que más
               se le señalan.
             </p>
           </div>
@@ -399,16 +405,17 @@ export default async function HyperliquidPage() {
             <GuideFlipCards cards={RISK_CARDS} />
           </div>
 
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La tensión que define su futuro</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5} className="hl-nota">
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">La tensión que define su futuro</div>
+            <div className="postit-cuerpo">
               <p>Todo se resume en un equilibrio difícil: Hyperliquid ofrece una experiencia de trading
-              excepcional, pero para lograr esa velocidad ha sacrificado —de momento— parte de la
-              descentralización que promete el mundo cripto. Su reto es abrir el consenso y demostrar que
+              excepcional, pero para lograr esa velocidad <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={500}>ha sacrificado —de momento— parte de la
+              descentralización que promete el mundo cripto</Anotacion>. Su reto es abrir el consenso y demostrar que
               puede ser rápido <em>y</em> resistente a la censura a la vez. Esta guía es educativa y no es
               consejo de inversión: infórmate y decide por ti mismo.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -421,7 +428,7 @@ export default async function HyperliquidPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Maestro del Libro de Órdenes</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong className="gbc-logro">Maestro del Libro de Órdenes</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideHyperliquidQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

@@ -1,181 +1,168 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   PANEL DE ADMINISTRACIÓN · base común
-   Menú lateral, cabeceras, tarjetas y botones que comparten las tres secciones.
-   Cada sección tiene su color (`--sec`): Analítica naranja, Foro violeta,
-   Guías turquesa. Analítica y Foro tienen además su propio CSS.
+   PANEL DE ADMINISTRACIÓN · base común, estilo «Cuaderno de estudio»
+   (ESTILO.md, disenos/sistema.html). El cuaderno del admin: fondo lavanda,
+   la portada a la izquierda con las pestañas de cada sección y las páginas en
+   papel blanco con relieve de canto.
+
+   Cada página fija su color con `--sec`, `--sec-o` (lateral) y `--sec-s`
+   (suave): Analítica naranja, Acciones menta, Foro coral, Guías cielo, SEO
+   azul. Las fichas de color salen de globals.css; aquí no hay colores sueltos.
+   Analítica, Acciones, Foro y las dos páginas de instrucciones tienen además
+   su propio CSS.
    ══════════════════════════════════════════════════════════════════════════ */
 
-.admin-layout {
-  --ad-fondo: #081222;
-  --ad-lateral: #0a1730;
-  --ad-tarjeta: #0f1f3b;
-  --ad-tarjeta-2: #132748;
-  --ad-borde: rgba(148, 178, 230, 0.13);
-  --ad-borde-fuerte: rgba(148, 178, 230, 0.26);
-  --ad-texto: #f2f6ff;
-  --ad-suave: #9db2d3;
-  --ad-tenue: #6f86aa;
-  --ad-sombra: 0 18px 40px -26px rgba(0, 0, 0, 0.9);
-
-  /* Colores de sección y de dato */
-  --c-naranja: #ff7a3d;  --c-naranja-rgb: 255 122 61;
-  --c-azul: #4c9dff;     --c-azul-rgb: 76 157 255;
-  --c-violeta: #a78bfa;  --c-violeta-rgb: 167 139 250;
-  --c-verde: #34d399;    --c-verde-rgb: 52 211 153;
-  --c-oro: #f0b94e;      --c-oro-rgb: 240 185 78;
-  --c-rosa: #f472b6;     --c-rosa-rgb: 244 114 182;
-  --c-turquesa: #2dd4bf; --c-turquesa-rgb: 45 212 191;
-  --c-rojo: #f87171;     --c-rojo-rgb: 248 113 113;
-
-  --sec: var(--c-naranja);
-  --sec-rgb: var(--c-naranja-rgb);
-  --sec-suave: #ffa477;
+.ad {
+  --sec: var(--naranja);
+  --sec-o: var(--naranja-o);
+  --sec-s: var(--naranja-s);
+  --canto: 0 5px 0 var(--gris-o);
 
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background:
-    radial-gradient(900px 500px at 100% -10%, rgba(76, 157, 255, 0.08), transparent 60%),
-    radial-gradient(700px 420px at 30% 110%, rgba(167, 139, 250, 0.06), transparent 60%),
-    var(--ad-fondo);
-  color: var(--ad-texto);
+  min-height: 100dvh;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
 }
 
-/* ── Menú lateral ─────────────────────────────────────────────────────── */
-.admin-sidebar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.7rem 1rem;
-  background: linear-gradient(180deg, #0c1c3a, var(--ad-lateral));
-  border-bottom: 1px solid var(--ad-borde);
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
+.ad * { color-scheme: light; }
 
-.admin-sidebar-top { flex-shrink: 0; }
-
-.admin-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  text-decoration: none;
-  color: var(--ad-texto);
-}
-
-/* La foto del admin, con un aro naranja. */
-.admin-brand-marca {
-  display: block;
-  width: 36px;
-  height: 36px;
-  border: 2px solid var(--c-naranja);
-  border-radius: 50%;
-  object-fit: cover;
-  background: #0c1c3a;
-  box-shadow: 0 8px 20px -8px rgba(255, 107, 43, 0.8);
-}
-
-.admin-brand-texto { display: none; line-height: 1.15; }
-.admin-brand-texto b { display: block; font-size: 0.98rem; letter-spacing: -0.02em; }
-.admin-brand-texto b span { color: var(--c-naranja); }
-.admin-brand-texto small { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ad-tenue); }
-
-.admin-nav-titulo { display: none; }
-
-.admin-nav {
-  display: flex;
-  gap: 0.35rem;
-  flex: 1;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.admin-nav::-webkit-scrollbar { display: none; }
-
-.admin-nav-link {
-  --c: var(--c-naranja);
-  --c-rgb: var(--c-naranja-rgb);
+/* ── La portada del cuaderno (menú) ───────────────────────────────────── */
+/* En el móvil es una barra arriba que se va con la página: nada se queda
+   anclado al hacer scroll (pedido por el admin). */
+.ad-lateral {
   position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--papel);
+  border-bottom: 3px solid var(--gris);
+  box-shadow: 0 6px 18px -14px rgba(29, 27, 51, 0.45);
+}
+
+.ad-lateral-cabeza { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+
+.ad-marca {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  padding: 0.45rem 0.6rem;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  color: var(--ad-suave);
-  font-size: 0.88rem;
-  font-weight: 600;
+  color: var(--tinta);
   text-decoration: none;
-  white-space: nowrap;
-  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  border-radius: 16px;
+}
+.ad-marca:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* La foto del admin, con su aro naranja y su canto. */
+.ad-marca-foto {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--naranja);
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--naranja-s);
+  box-shadow: 0 4px 0 var(--naranja-o);
 }
 
-.admin-nav-icono {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: rgb(var(--c-rgb) / 0.13);
-  color: var(--c);
-  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+.ad-marca-texto { display: none; line-height: 1.05; }
+.ad-marca-texto b {
+  display: block;
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.ad-marca-texto b span { color: var(--naranja); }
+.ad-marca-texto small {
+  display: inline-block;
+  font-family: var(--letra-mano);
+  font-size: 1.2rem;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
 }
 
-.admin-nav-textos { display: none; min-width: 0; line-height: 1.2; }
-.admin-nav-textos small { display: block; font-size: 0.7rem; font-weight: 400; color: var(--ad-tenue); }
+.ad-sonido { display: inline-flex; }
+.ad-sonido .tecla { margin-bottom: 6px; }
 
-.admin-nav-link:hover { background: rgb(var(--c-rgb) / 0.07); color: var(--ad-texto); }
-.admin-nav-link:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+.ad-nav-titulo { display: none; }
 
-.admin-nav-link.active {
-  background: linear-gradient(90deg, rgb(var(--c-rgb) / 0.2), rgb(var(--c-rgb) / 0.05));
-  border-color: rgb(var(--c-rgb) / 0.32);
-  color: #fff;
-}
-.admin-nav-link.active .admin-nav-icono {
-  background: var(--c);
-  color: #08142a;
-  box-shadow: 0 6px 16px -6px rgb(var(--c-rgb) / 0.9);
-}
-
-.admin-sidebar-footer { display: none; }
-
-.admin-nav-link-small {
+.ad-nav {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.7rem;
-  border-radius: 9px;
-  color: var(--ad-suave);
-  font-size: 0.82rem;
-  text-decoration: none;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-.admin-nav-link-small:hover { background: rgba(148, 178, 230, 0.08); color: var(--ad-texto); }
-
-.admin-sidebar-footer .btn-logout {
-  width: 100%;
-  margin-top: 0.35rem;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid rgb(var(--c-rojo-rgb) / 0.28);
-  border-radius: 9px;
-  background: rgb(var(--c-rojo-rgb) / 0.08);
-  color: #fca5a5;
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.18s ease;
-}
-.admin-sidebar-footer .btn-logout:hover { background: rgb(var(--c-rojo-rgb) / 0.16); }
-
-/* ── Contenido ────────────────────────────────────────────────────────── */
-.admin-main {
+  gap: 0.45rem;
   flex: 1;
   min-width: 0;
-  padding: 1.25rem 1rem 3rem;
+  padding: 2px 2px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ad-nav::-webkit-scrollbar { display: none; }
+
+/* Una pestaña: su icono es una tecla pequeña de su color. */
+.ad-nav-enlace {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.3rem;
+  border-radius: 16px;
+  color: var(--tinta-2);
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.ad-nav-icono {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--c-s);
+  color: var(--c-o);
+  box-shadow: 0 4px 0 var(--gris-o);
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.ad-nav-textos { display: none; min-width: 0; line-height: 1.2; }
+.ad-nav-textos small {
+  display: block;
+  margin-top: 1px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--tinta-3);
+}
+
+@media (hover: hover) {
+  .ad-nav-enlace:hover { color: var(--tinta); }
+  .ad-nav-enlace:hover .ad-nav-icono { transform: translateY(2px); box-shadow: 0 2px 0 var(--gris-o); }
+}
+.ad-nav-enlace:active .ad-nav-icono { transform: translateY(4px); box-shadow: 0 0 0 var(--gris-o); transition-duration: 0.06s; }
+.ad-nav-enlace:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+.ad-nav-enlace.is-activo { color: var(--tinta); background: var(--c-s); }
+/* --c-t: blanco, salvo sobre menta y cielo, que va en tinta (AdminNav.tsx). */
+.ad-nav-enlace.is-activo .ad-nav-icono { background: var(--c); color: var(--c-t, #fff); box-shadow: 0 4px 0 var(--c-o); }
+.ad-nav-enlace.is-activo .ad-nav-textos small { color: var(--c-o); }
+
+.ad-lateral-pie { display: none; }
+
+/* ── Las páginas ──────────────────────────────────────────────────────── */
+.ad-principal {
+  flex: 1;
+  min-width: 0;
+  padding: 1.25rem 0.9rem 3.5rem;
 }
 
 .admin-page {
@@ -184,569 +171,200 @@
   margin: 0 auto;
 }
 
-/* Cabecera de página, compartida: banda con el color de la sección. */
+/* Cabecera de cada página: una hoja con el círculo de su color en la esquina. */
 .admin-page-header {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.4rem;
-  padding: 1.4rem 1.5rem;
-  border: 1px solid rgb(var(--sec-rgb) / 0.25);
-  border-radius: 18px;
-  background:
-    radial-gradient(420px 180px at 0% 0%, rgb(var(--sec-rgb) / 0.22), transparent 70%),
-    linear-gradient(135deg, var(--ad-tarjeta-2), var(--ad-tarjeta));
-  box-shadow: var(--ad-sombra);
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.6rem;
+  padding: 1.5rem 1.6rem 1.6rem;
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
   overflow: hidden;
 }
 .admin-page-header::before {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--sec), rgb(var(--sec-rgb) / 0.2));
+  right: -60px;
+  top: -70px;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: var(--sec-s);
 }
+.admin-page-header > * { position: relative; }
+
+.admin-page-nota {
+  display: inline-block;
+  margin: 0 0 0.15rem;
+  font-family: var(--letra-mano);
+  font-size: 1.45rem;
+  line-height: 1.1;
+  color: var(--sec-o);
+  transform: rotate(-2deg);
+}
+
 .admin-page-header h1 {
   margin: 0;
-  font-size: 1.7rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.1rem, 4.5vw, 2.9rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
 }
+
 .admin-page-subtitle {
-  margin: 0.3rem 0 0;
-  font-size: 0.88rem;
-  color: var(--ad-suave);
-}
-
-.admin-card {
-  padding: 1.2rem 1.35rem;
-  border: 1px solid var(--ad-borde);
-  border-radius: 16px;
-  background: linear-gradient(180deg, var(--ad-tarjeta-2), var(--ad-tarjeta));
-  box-shadow: var(--ad-sombra);
-}
-
-/* ── Botón de rol y de 2FA (tabla de usuarios) ────────────────────────── */
-.role-toggle {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 11px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font: inherit;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: filter 0.18s ease, transform 0.18s ease;
-}
-.role-toggle:disabled { cursor: default; }
-.role-toggle:not(:disabled):hover { filter: brightness(1.2); transform: translateY(-1px); }
-.role-toggle:focus-visible { outline: 2px solid var(--c-naranja); outline-offset: 2px; }
-.role-toggle.free-role { color: var(--ad-suave); background: rgba(148, 178, 230, 0.08); border-color: var(--ad-borde-fuerte); }
-.role-toggle.premium-role { color: #1c1404; background: linear-gradient(135deg, #ffd27a, var(--c-oro)); }
-.role-toggle.admin-role { color: #fca5a5; background: rgb(var(--c-rojo-rgb) / 0.12); border-color: rgb(var(--c-rojo-rgb) / 0.3); }
-
-.admin-mfa-reset-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid rgb(var(--c-verde-rgb) / 0.3);
-  background: rgb(var(--c-verde-rgb) / 0.1);
-  color: var(--c-verde);
-  font-size: 0.72rem;
+  max-width: 62ch;
+  margin: 0.55rem 0 0;
+  font-size: 1rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+  line-height: 1.55;
+  color: var(--tinta-2);
 }
-.admin-mfa-reset-btn:hover { color: #fca5a5; background: rgb(var(--c-rojo-rgb) / 0.1); border-color: rgb(var(--c-rojo-rgb) / 0.3); }
-.admin-mfa-confirm { display: inline-flex; gap: 0.4rem; }
-.admin-mfa-confirm-yes,
-.admin-mfa-confirm-no { padding: 4px 10px; border-radius: 999px; border: 1px solid transparent; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
-.admin-mfa-confirm-yes { color: #fca5a5; background: rgb(var(--c-rojo-rgb) / 0.12); border-color: rgb(var(--c-rojo-rgb) / 0.3); }
-.admin-mfa-confirm-no { color: var(--ad-suave); background: rgba(148, 178, 230, 0.08); border-color: var(--ad-borde-fuerte); }
 
-/* ── Escritorio: el menú pasa a columna ───────────────────────────────── */
+/* Una hoja de papel suelta: la usan Foro y Analítica. */
+.admin-card {
+  padding: 1.3rem 1.4rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: var(--canto);
+}
+
+/* El código en línea, en todas las páginas del panel. */
+.ad code {
+  padding: 0.1em 0.4em;
+  border-radius: 7px;
+  background: var(--fondo);
+  box-shadow: inset 0 0 0 1.5px var(--gris);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.86em;
+  color: var(--tinta);
+  overflow-wrap: anywhere;
+}
+
+/* ── Escritorio: la portada pasa a columna ────────────────────────────── */
 @media (min-width: 900px) {
-  .admin-layout { flex-direction: row; }
+  .ad { flex-direction: row; }
 
-  .admin-sidebar {
+  .ad-lateral {
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    width: 264px;
-    min-width: 264px;
+    width: 270px;
+    min-width: 270px;
     height: 100vh;
-    padding: 1.3rem 0.95rem 1rem;
+    height: 100dvh;
+    padding: 1.4rem 1rem 1.1rem;
     border-bottom: 0;
-    border-right: 1px solid var(--ad-borde);
-    background:
-      radial-gradient(260px 200px at 0% 0%, rgba(255, 122, 61, 0.14), transparent 70%),
-      linear-gradient(180deg, #0c1c3a, var(--ad-lateral));
+    border-right: 3px solid var(--gris);
+    box-shadow: none;
   }
 
-  .admin-brand { padding: 0 0.35rem 1.2rem; border-bottom: 1px solid var(--ad-borde); }
-  .admin-brand-marca { width: 44px; height: 44px; }
-  .admin-brand-texto { display: block; }
+  .ad-lateral-cabeza {
+    justify-content: space-between;
+    padding: 0 0.3rem 1.2rem;
+    border-bottom: 2px dashed var(--gris);
+  }
+  .ad-marca-foto { width: 46px; height: 46px; }
+  .ad-marca-texto { display: block; }
+  .ad-sonido { order: 0; }
 
-  .admin-nav-titulo {
+  .ad-nav-titulo {
     display: block;
-    margin: 1.2rem 0.55rem 0.55rem;
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    margin: 1.2rem 0.5rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--ad-tenue);
+    color: var(--tinta-3);
   }
 
-  .admin-nav { flex: 0 0 auto; flex-direction: column; overflow: visible; gap: 0.3rem; }
-  .admin-nav-link { padding: 0.55rem 0.6rem; }
-  .admin-nav-icono { width: 36px; height: 36px; border-radius: 11px; }
-  .admin-nav-textos { display: block; }
-  .admin-nav-link.active::after {
-    content: "";
-    position: absolute;
-    right: -0.95rem;
-    top: 22%;
-    bottom: 22%;
-    width: 3px;
-    border-radius: 3px 0 0 3px;
-    background: var(--c);
-  }
+  .ad-nav { flex: 0 0 auto; flex-direction: column; gap: 0.35rem; overflow: visible; padding: 0; }
+  .ad-nav-enlace { padding: 0.45rem 0.55rem; }
+  .ad-nav-textos { display: block; }
 
-  .admin-sidebar-footer {
-    display: block;
+  .ad-lateral-pie {
+    display: grid;
+    gap: 0.35rem;
     margin-top: auto;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--ad-borde);
+    padding-top: 1rem;
+    border-top: 2px dashed var(--gris);
   }
 
-  .admin-main { padding: 2rem 2.4rem 4rem; height: 100vh; overflow-y: auto; }
+  .ad-principal { padding: 2rem 2.4rem 4rem; height: 100vh; height: 100dvh; overflow-y: auto; }
+}
+
+/* ── Móvil y tableta: la portada es una barra arriba, en tres filas ──────
+   1 · la foto y el altavoz; 2 · las cinco pestañas, a partes iguales y con su
+   nombre debajo del icono (solo con iconos no se sabía cuál era cuál, y la
+   quinta quedaba escondida tras un scroll sin pista); 3 · salir a la web, al
+   panel del usuario o cerrar sesión, que en el móvil no estaban en ninguna
+   parte. */
+@media (max-width: 899px) {
+  .ad-lateral {
+    flex-wrap: wrap;
+    row-gap: 0.55rem;
+    padding: max(0.6rem, env(safe-area-inset-top)) max(0.8rem, env(safe-area-inset-right)) 0.7rem max(0.8rem, env(safe-area-inset-left));
+  }
+
+  .ad-lateral-cabeza { flex: 1 1 100%; justify-content: space-between; }
+
+  .ad-nav {
+    flex: 1 1 100%;
+    gap: 0.3rem;
+    padding: 2px 0 6px;
+  }
+
+  .ad-nav-enlace {
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 56px;
+    padding: 0.4rem 0.15rem 0.35rem;
+    font-size: 12px;
+  }
+
+  .ad-nav-textos { display: block; text-align: center; }
+  .ad-nav-textos small { display: none; }
+
+  .ad-lateral-pie {
+    display: flex;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.6rem;
+    border-top: 2px dashed var(--gris);
+  }
+
+  .ad-lateral-pie .tecla { flex: 1 1 auto; width: auto; }
 }
 
 @media (max-width: 600px) {
-  .admin-page-header { padding: 1.1rem 1.1rem 1.1rem 1.3rem; }
-  .admin-page-header h1 { font-size: 1.4rem; }
+  .admin-page-header { padding: 1.2rem 1.2rem 1.3rem; border-radius: 24px; }
+  .admin-page-subtitle { font-size: 0.95rem; }
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   GUÍAS · REFERENCIA (/admin/guias-instrucciones) — color de sección: turquesa
-   ══════════════════════════════════════════════════════════════════════════ */
-
-.admin-guide-instructions {
-  --sec: var(--c-turquesa);
-  --sec-rgb: var(--c-turquesa-rgb);
-  --sec-suave: #7ee8d8;
-  max-width: 940px;
-  margin: 0 auto;
-  padding: 0 0 4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
+/* Las teclas pequeñas miden 34 px de alto: con el dedo, su zona de toque se
+   amplía por fuera hasta los 44 px sin cambiar cómo se ven. Y las teclas a
+   todo el ancho pueden partir su texto en dos líneas antes que salirse. */
+@media (pointer: coarse) {
+  .ad .tecla--peq::after {
+    content: "";
+    position: absolute;
+    inset: -5px -3px;
+  }
 }
 
-.agi-hero {
-  position: relative;
-  padding: 1.6rem 1.7rem;
-  border: 1px solid rgb(var(--sec-rgb) / 0.28);
-  border-radius: 18px;
-  background:
-    radial-gradient(460px 200px at 0% 0%, rgb(var(--sec-rgb) / 0.2), transparent 70%),
-    linear-gradient(135deg, var(--ad-tarjeta-2), var(--ad-tarjeta));
-  box-shadow: var(--ad-sombra);
-  overflow: hidden;
-}
-.agi-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--sec), rgb(var(--sec-rgb) / 0.2));
+.ad .tecla--ancho {
+  white-space: normal;
+  text-align: center;
 }
 
-.agi-hero-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--sec);
-  margin-bottom: 0.75rem;
-}
-
-.agi-hero-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 0.75rem;
-  line-height: 1.2;
-}
-
-.agi-hero-sub {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
-  max-width: 680px;
-}
-
-.agi-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.agi-section-title {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(240, 244, 255, 0.07);
-}
-
-.agi-section-num {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  color: var(--sec);
-  background: rgb(var(--sec-rgb) / 0.1);
-  border: 1px solid rgb(var(--sec-rgb) / 0.2);
-  border-radius: 5px;
-  padding: 0.2rem 0.5rem;
-  flex-shrink: 0;
-}
-
-.agi-section-intro {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.agi-card {
-  background: var(--ad-tarjeta);
-  border: 1px solid var(--ad-borde);
-  border-radius: 16px;
-  box-shadow: var(--ad-sombra);
-  padding: 1.25rem 1.5rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-.agi-card--mono {
-  font-family: 'Courier New', monospace;
-  font-size: 0.82rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.agi-card p { margin: 0 0 0.75rem; }
-
-.agi-card p:last-child { margin-bottom: 0; }
-
-.agi-warning {
-  color: var(--sec-suave) !important;
-  background: rgb(var(--sec-rgb) / 0.05);
-  border: 1px solid rgb(var(--sec-rgb) / 0.15);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  font-size: 0.88rem !important;
-}
-
-/* Nota al pie de un bloque de instrucciones: explica el porqué de una regla,
-   sin la carga de aviso de .agi-warning — que se reserva para lo que rompe. */
-.agi-note {
-  margin: 0.85rem 0 0;
-  padding-left: 0.85rem;
-  border-left: 2px solid rgba(255, 255, 255, 0.12);
-  font-size: 0.84rem !important;
-  color: var(--text-muted, var(--text-secondary));
-  line-height: 1.65;
-}
-
-.agi-list {
-  padding-left: 1.25rem;
-  margin: 0.5rem 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.agi-list li { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; }
-
-.agi-list li strong { color: var(--text-primary); }
-
-.agi-list li code { font-size: 0.8rem; background: rgba(240,244,255,0.06); padding: 0.1em 0.4em; border-radius: 4px; color: var(--sec-suave); }
-
-.agi-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-left: 2px solid rgb(var(--sec-rgb) / 0.2);
-  margin-left: 0.5rem;
-  padding-left: 1.5rem;
-}
-
-.agi-step {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  padding: 1rem 0 1rem;
-  border-bottom: 1px solid rgba(240, 244, 255, 0.05);
-}
-
-.agi-step:last-child { border-bottom: none; }
-
-.agi-step-num {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--sec);
-  color: #06231f;
-  font-size: 0.78rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 0.1rem;
-}
-
-.agi-step strong { display: block; font-size: 0.92rem; color: var(--text-primary); margin-bottom: 0.3rem; }
-
-.agi-step p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.55; }
-
-.agi-step code { font-size: 0.78rem; background: rgba(240,244,255,0.06); padding: 0.1em 0.4em; border-radius: 4px; color: var(--sec-suave); }
-
-.agi-subsection { display: flex; flex-direction: column; gap: 0.6rem; }
-
-.agi-subsection-title {
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  margin: 0.5rem 0 0;
-}
-
-.agi-code-row {
-  display: flex;
-  align-items: baseline;
-  gap: 1.25rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(240, 244, 255, 0.05);
-  font-size: 0.85rem;
-}
-
-.agi-code-row:last-child { border-bottom: none; }
-
-.agi-code-path {
-  font-family: 'Courier New', monospace;
-  color: var(--sec-suave);
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
-  min-width: 220px;
-}
-
-.agi-table-def { padding: 0.5rem 0; border-bottom: 1px solid rgba(240,244,255,0.05); }
-
-.agi-table-def:last-child { border-bottom: none; }
-
-.agi-table-name { color: var(--sec); font-weight: 700; margin-bottom: 0.35rem; font-size: 0.9rem; }
-
-.agi-table-fields { color: var(--text-muted); font-size: 0.78rem; line-height: 1.6; }
-
-.agi-lib-row {
-  display: flex;
-  gap: 1.25rem;
-  align-items: baseline;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(240,244,255,0.05);
-  font-size: 0.87rem;
-}
-
-.agi-lib-row:last-child { border-bottom: none; }
-
-.agi-lib-name { color: var(--sec-suave); font-weight: 700; flex-shrink: 0; min-width: 130px; }
-
-.agi-palette { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-
-.agi-swatch {
-  border-radius: 12px;
-  padding: 1.25rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.agi-swatch--gold   { background: rgba(230,180,85,0.1);  border: 1px solid rgba(230,180,85,0.35); }
-
-.agi-swatch--orange { background: rgb(var(--sec-rgb) / 0.12); border: 1px solid rgb(var(--sec-rgb) / 0.3); }
-
-.agi-swatch--navy   { background: rgba(17, 34, 64, 0.8); border: 1px solid rgba(240,244,255,0.1); }
-
-.agi-swatch--white  { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); }
-
-.agi-palette--4col { grid-template-columns: repeat(4, 1fr); }
-
-@media (max-width: 900px) { .agi-palette--4col { grid-template-columns: repeat(2, 1fr); } }
-
-@media (max-width: 500px) { .agi-palette--4col { grid-template-columns: 1fr; } }
-
-.agi-swatch-name { font-weight: 800; font-size: 0.92rem; color: var(--text-primary); }
-
-.agi-swatch-var  { font-family: monospace; font-size: 0.72rem; color: var(--sec-suave); }
-
-.agi-swatch-hex  { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); }
-
-.agi-swatch-use  { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.25rem; }
-
-.agi-diff-row { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0; font-size: 0.87rem; color: var(--text-secondary); }
-
-.agi-diff-badge { font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 20px; white-space: nowrap; }
-
-.agi-diff--basic        { background: rgba(95,211,154,0.12); color: #5fd39a; border: 1px solid rgba(95,211,154,0.25); }
-
-.agi-diff--intermediate { background: rgb(var(--sec-rgb) / 0.12); color: var(--sec); border: 1px solid rgb(var(--sec-rgb) / 0.25); }
-
-.agi-diff--advanced     { background: rgba(255,100,100,0.1); color: #ff7070; border: 1px solid rgba(255,100,100,0.2); }
-
-.agi-components-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.agi-comp-card {
-  background: var(--ad-tarjeta);
-  border: 1px solid var(--ad-borde);
-  border-radius: 12px;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.agi-comp-icon { font-size: 1.5rem; }
-
-.agi-comp-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
-
-.agi-comp-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; flex: 1; }
-
-.agi-comp-desc code { font-size: 0.75rem; background: rgba(240,244,255,0.06); padding: 0.1em 0.35em; border-radius: 4px; color: var(--sec-suave); }
-
-.agi-comp-rule { font-size: 0.78rem; color: var(--sec); background: rgb(var(--sec-rgb) / 0.06); border-left: 2px solid var(--sec); padding: 0.4rem 0.65rem; border-radius: 0 6px 6px 0; margin-top: 0.25rem; }
-
-.agi-checklist {
-  background: var(--ad-tarjeta);
-  border: 1px solid var(--ad-borde);
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.agi-check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.87rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  cursor: default;
-}
-
-.agi-check-item input[type="checkbox"] {
-  margin-top: 0.15rem;
-  accent-color: var(--sec);
-  flex-shrink: 0;
-  width: 15px;
-  height: 15px;
-}
-
-.agi-check-item code { font-size: 0.78rem; background: rgba(240,244,255,0.06); padding: 0.1em 0.35em; border-radius: 4px; color: var(--sec-suave); }
-
-@media (max-width: 700px) {
-  .agi-palette { grid-template-columns: 1fr; }
-  .agi-components-grid { grid-template-columns: 1fr; }
-  .agi-code-path { min-width: 160px; }
-}
-
-/* ── Piezas nuevas de las páginas de instrucciones (13-11-2026) ── */
-
-/* SEO: misma plantilla que Guías, en azul. */
-.agi--seo {
-  --sec: var(--c-azul);
-  --sec-rgb: var(--c-azul-rgb);
-  --sec-suave: #9cc7ff;
-}
-.agi--seo .agi-step-num { color: #06162e; }
-
-.admin-guide-instructions a:not([class]) { color: var(--sec-suave); text-underline-offset: 3px; }
-.admin-guide-instructions a:not([class]):hover { color: #fff; }
-.admin-guide-instructions .agi-section { scroll-margin-top: 1.5rem; }
-
-.agi-indice {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-  gap: 0.4rem;
-  padding: 1rem;
-  border: 1px solid var(--ad-borde);
-  border-radius: 16px;
-  background: var(--ad-tarjeta);
-}
-.agi-indice a {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 9px;
-  color: var(--ad-suave);
-  font-size: 0.86rem;
-  text-decoration: none;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-.agi-indice a span { font-size: 0.7rem; font-weight: 700; color: var(--sec); font-variant-numeric: tabular-nums; }
-.agi-indice a:hover { background: rgb(var(--sec-rgb) / 0.1); color: #fff; }
-.agi-indice a:focus-visible { outline: 2px solid var(--sec); outline-offset: 2px; }
-
-/* Pasos en fila: el embudo, las tres fases de Google, los tres umbrales. */
-.agi-embudo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin: 1rem 0; }
-.agi-embudo--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.agi-card .agi-embudo:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.agi-embudo > div {
-  padding: 0.85rem 0.95rem;
-  border: 1px solid rgb(var(--sec-rgb) / 0.25);
-  border-radius: 12px;
-  background: rgb(var(--sec-rgb) / 0.07);
-}
-.agi-embudo b { display: block; margin-bottom: 0.25rem; font-size: 0.88rem; color: #fff; }
-.agi-embudo span { display: block; font-size: 0.8rem; line-height: 1.45; color: var(--ad-suave); }
-
-.agi-tabla-envoltura { overflow-x: auto; border: 1px solid var(--ad-borde); border-radius: 16px; background: var(--ad-tarjeta); box-shadow: var(--ad-sombra); }
-.agi-tabla { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 0.86rem; line-height: 1.55; }
-.agi-tabla th { padding: 0.75rem 1rem; text-align: left; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--sec); background: rgb(var(--sec-rgb) / 0.07); border-bottom: 1px solid var(--ad-borde); }
-.agi-tabla td { padding: 0.8rem 1rem; vertical-align: top; color: var(--text-secondary); border-bottom: 1px solid var(--ad-borde); }
-.agi-tabla tr:last-child td { border-bottom: 0; }
-.agi-tabla td strong { color: #fff; }
-.agi-tabla code { font-size: 0.78rem; padding: 0.1em 0.4em; border-radius: 4px; background: rgba(240, 244, 255, 0.06); color: var(--sec-suave); }
-
-.agi-card code { font-size: 0.8rem; padding: 0.1em 0.4em; border-radius: 4px; background: rgba(240, 244, 255, 0.06); color: var(--sec-suave); }
-.agi-card--mono code { padding: 0; background: none; }
-.agi-card--mono pre { font-size: 0.8rem; color: var(--text-secondary); }
-.agi-fuentes { list-style: disc; }
-
-@media (max-width: 760px) {
-  .agi-embudo, .agi-embudo--tres { grid-template-columns: 1fr; }
-  .agi-card .agi-embudo:has(> :nth-child(3):last-child) { grid-template-columns: 1fr; }
+@media (prefers-reduced-motion: reduce) {
+  .ad-nav-icono { transition-duration: 0.01s; }
 }

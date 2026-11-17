@@ -1,1897 +1,749 @@
-/* El nav, fijo arriba en todo el panel (08-11-2026), igual que el aula.
-   No vale `position: sticky`: en globals.css la regla `html, body` lleva
-   `overflow-x: hidden` en los DOS, y eso vuelve al <body> una caja con scroll
-   propio que no se mueve; el sticky se pega a ella y el nav se va con la
-   página. `fixed` no depende de eso. El hueco que deja el nav lo reserva el
-   `padding-top` de `.blog-page`; el rail lateral ya empieza debajo del nav. */
-.blog-page { padding-top: var(--nav-h); }
-.blog-page > .blog-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+/*
+ * El panel del usuario — /dashboard/** (importado en dashboard/layout.tsx).
+ *
+ * Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md y
+ * disenos/sistema.html). Aquí va:
+ *   1. el armazón: el papel lavanda de todas las páginas del panel;
+ *   2. las piezas que comparten sus páginas (pn-*): cabecera, hoja, chips,
+ *      barra de progreso, racha, avisos, vacíos y los tonos de color;
+ *   3. la portada del panel (/dashboard): saludo, índice, cartera, logros,
+ *      Premium, guías y lo guardado.
+ * Cada subpágina tiene su archivo: logros/logros.css, perfil/perfil.css,
+ * certificados/certificados.css, estadisticas/estadisticas.css. El Diario
+ * tiene los suyos en trading/.
+ *
+ * Sin barras fijas ni rail lateral (pedido por el admin): la barra es la del
+ * sitio (SiteNav, site-nav.css) y la navegación del panel es el índice de
+ * /dashboard, que va con la página.
+ *
+ * Nada depende de las variables antiguas de globals.css (--text-primary,
+ * --bg-card…), que desde el 17-11-2026 solo apuntan a las del cuaderno.
+ */
+
+/* ══ 1 · El armazón ═══════════════════════════════════════════════════════ */
+
+.dash {
+  --muelle: cubic-bezier(0.34, 1.8, 0.5, 1);
+  --llegar: cubic-bezier(0.3, 1.3, 0.5, 1);
+
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
 }
 
 .dashboard-main {
-  max-width: 1100px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 2.5rem 2rem;
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
+  padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1rem, 4vw, 2rem) 5rem;
 }
 
-.dashboard-header {
-  margin-bottom: 0;
-}
-
-.dashboard-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.3rem;
-}
-
-.dashboard-header h1 span {
-  color: var(--accent-orange);
-}
-
-.dashboard-header p {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-}
-
-/* `.dash-account-btn` vivio aqui hasta el 06-09-2026. "Mi cuenta" se movio
-   al menu del nombre en la barra, donde sale en todas las paginas. */
-
-.dash-2fa-nudge {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.85rem 1.1rem;
-  border-radius: 10px;
-  border: 1px solid rgba(245, 158, 11, .3);
-  background: rgba(245, 158, 11, .08);
-  margin-bottom: 1.5rem;
-}
-
-.dash-2fa-nudge-icon {
-  flex-shrink: 0;
-  color: #f59e0b;
-}
-
-.dash-2fa-nudge-text {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-}
-
-.dash-2fa-nudge-cta {
-  flex-shrink: 0;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #f59e0b;
-  text-decoration: none;
-  padding: 0.45rem 0.9rem;
-  border-radius: 8px;
-  border: 1px solid rgba(245, 158, 11, .4);
-  white-space: nowrap;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.dash-2fa-nudge-cta:hover {
-  background: rgba(245, 158, 11, .15);
-  border-color: rgba(245, 158, 11, .6);
-}
-
-.dash-2fa-nudge-dismiss {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.dash-2fa-nudge-dismiss:hover {
-  background: rgba(240, 244, 255, 0.08);
-  color: var(--text-primary);
-}
-
-@media (max-width: 640px) {
-  .dash-2fa-nudge {
-    flex-wrap: wrap;
-  }
-
-  .dash-2fa-nudge-text {
-    flex-basis: 100%;
-    order: 1;
-  }
-}
-/* ── Los dos atajos con dato vivo ───────────────────────────────────────────
- *
- * Sustituyen a las seis tarjetas del antiguo spotlight, retiradas el
- * 06-09-2026: el usuario entra a su panel a ver lo suyo, no a que le vendan
- * media academia. Quedan dos, y cada una porque enseña un dato que cambia —la
- * rentabilidad de la cartera y la fecha de la próxima sesión—, no porque haya
- * que anunciar la herramienta.
- *
- * La cifra manda en la jerarquía: es lo que hace que el ojo pare. */
-
-/* Un solo atajo desde el 04-11-2026: ocupa la fila entera, en horizontal. */
-.dash-atajos {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.9rem;
-}
-
-.dash-atajo {
-  --at: var(--accent-orange-soft);
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    "icono cuerpo"
-    "cta   cta";
-  align-items: start;
-  gap: 0.5rem 0.85rem;
-  padding: 1.05rem 1.15rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 16px;
-  background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--at) 11%, transparent) 0%, transparent 58%),
-    linear-gradient(160deg, rgba(14, 26, 56, 0.9) 0%, rgba(9, 18, 38, 0.96) 100%);
-  text-decoration: none;
-  overflow: hidden;
-  transition: border-color 0.22s ease, transform 0.22s ease;
-}
-
-.dash-atajo:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--at) 38%, transparent);
-}
-
-.dash-atajo-icon {
-  grid-area: icono;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--at) 15%, transparent);
-  color: var(--at);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--at) 26%, transparent);
-}
-
-.dash-atajo-cuerpo {
-  grid-area: cuerpo;
-  display: flex;
-  flex-direction: column;
-  gap: 0.12rem;
-  min-width: 0;
-}
-
-.dash-atajo-label {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.45);
-}
-
-.dash-atajo-cifra {
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  color: #4ade80;
-}
-
-.dash-atajo-cifra.is-baja { color: #f87171; }
-
-.dash-atajo-pie {
-  font-size: 0.775rem;
-  line-height: 1.45;
-  color: rgba(240, 244, 255, 0.5);
-}
-
-.dash-atajo-cta {
-  grid-area: cta;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.55rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(240, 244, 255, 0.07);
-  font-size: 0.8rem;
-  font-weight: 650;
-  color: var(--at);
-  transition: gap 0.2s ease;
-}
-
-.dash-atajo:hover .dash-atajo-cta { gap: 0.55rem; }
-
-@media (min-width: 720px) {
-  .dash-atajo {
-    grid-template-columns: auto 1fr auto;
-    grid-template-areas: "icono cuerpo cta";
-    align-items: center;
-    gap: 0 1.1rem;
-    padding: 1.15rem 1.4rem;
-    border-radius: 20px;
-  }
-
-  .dash-atajo-cta {
-    margin-top: 0;
-    padding: 0.6rem 1rem;
-    border: 1px solid color-mix(in srgb, var(--at) 35%, transparent);
-    border-radius: 12px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dash-atajo:hover { transform: none; }
-}
-
-/* La marca de conseguido y el candado son los de /dashboard/logros, algo más pequeños. */
-
-/* Bloqueado: se ve qué se conseguirá, atenuado. */
-
-.dash-link-orange {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--accent-orange);
-  text-decoration: none;
-  flex-shrink: 0;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-orange) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent-orange) 24%, transparent);
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
-}
-
-.dash-link-arrow {
-  transition: transform 0.2s;
-}
-
-.dash-link-orange:hover {
-  background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
-  border-color: color-mix(in srgb, var(--accent-orange) 45%, transparent);
-  transform: translateY(-1px);
-}
-
-.dash-link-orange:hover .dash-link-arrow {
-  transform: translateX(3px);
-}
-
-.dash-saved-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.dash-saved-item {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  background: var(--bg-card);
-  border: var(--card-border);
-  border-radius: 12px;
-  padding: 0.8rem 0.9rem;
-  text-decoration: none;
-  color: var(--text-primary);
-  transition: border-color 0.18s, background 0.18s;
-}
-
-.dash-saved-item:hover {
-  border-color: rgba(240, 244, 255, 0.18);
-  background: var(--bg-elevated);
-}
-
-.dash-saved-item.is-read {
-  opacity: 0.65;
-}
-
-.dash-saved-thumb {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  background: var(--bg-card-alt);
-  background-size: cover;
-  background-position: center;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-}
-
-.dash-saved-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.dash-saved-cat {
-  display: block;
-  font-size: 0.63rem;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--accent-orange);
-  font-weight: 700;
-  margin-bottom: 0.18rem;
-}
-
-.dash-saved-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  margin-bottom: 0.3rem;
-}
-
-.dash-saved-tags {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.dash-tag-read {
-  font-size: 0.63rem;
-  font-weight: 700;
-  color: #5fd39a;
-}
-
-.dash-tag-premium {
-  font-size: 0.55rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  color: var(--premium-gold);
-  background: rgba(230, 180, 85, 0.14);
-  border: 1px solid rgba(230, 180, 85, 0.35);
-  border-radius: 4px;
-  padding: 2px 5px;
-  line-height: 1;
-}
-
-.dash-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2.2rem 1rem;
-  border: 1px dashed rgba(240, 244, 255, 0.12);
-  border-radius: 20px;
-  background:
-    radial-gradient(50% 80% at 50% 0%, rgba(255, 107, 43, 0.06) 0%, transparent 70%),
-    linear-gradient(165deg, #0e172d 0%, #080d1a 100%);
-  gap: 0.6rem;
-}
-
-.dash-empty-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: rgba(240, 244, 255, 0.04);
-  border: 1px solid var(--hairline);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  margin-bottom: 0.25rem;
-}
-
-.dash-empty p {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-}
-
-@media (min-width: 640px) {
-
-  .dash-saved-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.65rem;
-  }
-}
-
-/* ── Logros: cabecera premium ── */
-
-/* ── Logros: panel de progreso global ── */
-
-/* Solo aparece en logros ya desbloqueados — nunca en la vista pública (siempre "locked") */
-.badge-unlocked-check {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 19px;
-  height: 19px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  color: #fff;
-  border: 2px solid var(--bg-card, #0e1b30);
-  box-shadow: 0 2px 8px -2px rgba(34, 197, 94, 0.6);
-}
-
-/* Pareja de la marca anterior: el logro aún no conseguido. */
-.badge-lock {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 19px;
-  height: 19px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #2a3a55;
-  color: var(--text-muted);
-  border: 2px solid var(--bg-card, #0e1b30);
-}
-
-.badge-unlocked-check--gold {
-  background: linear-gradient(135deg, #f5c842 0%, #f59e0b 100%);
-  color: #1a0f00;
-  box-shadow: 0 2px 8px -2px rgba(245, 158, 11, 0.7);
-}
-
-/* Logros especiales — tratamiento premium para que destaquen sobre el resto */
-
-.badge-tooltip {
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  width: 190px;
-  background: #1a2540;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 10px;
-  padding: 0.75rem 0.9rem;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.18s, transform 0.18s;
-  z-index: 20;
-  text-align: left;
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
-}
-
-.badge-tooltip-condition {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  line-height: 1.45;
+.dashboard-main :where(h1, h2, h3) {
   margin: 0;
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--tinta);
 }
 
-.badge-tooltip-reward {
+.dashboard-main :where(p, ul, ol, dl, dd) { margin: 0; }
+.dashboard-main :where(ul, ol) { padding: 0; list-style: none; }
+
+/* ══ 2 · Las piezas comunes del panel ════════════════════════════════════ */
+
+/* ── Los tonos: cada sección, su color (ESTILO.md). --c base, --c-o lateral
+   (el canto y el texto sobre el suave), --c-s suave (fondos), --c-t lo que va
+   encima de la base: blanco, salvo sobre menta, cielo y amarillo, que van en
+   tinta (el blanco no llega al contraste AA sobre esos tres). ── */
+.tono-naranja { --c: var(--naranja); --c-o: var(--naranja-o); --c-s: var(--naranja-s); --c-t: #fff; }
+.tono-azul { --c: var(--azul); --c-o: var(--azul-o); --c-s: var(--azul-s); --c-t: #fff; }
+.tono-menta { --c: var(--menta); --c-o: var(--menta-o); --c-s: var(--menta-s); --c-t: var(--tinta); }
+.tono-lila { --c: var(--lila); --c-o: var(--lila-o); --c-s: var(--lila-s); --c-t: #fff; }
+.tono-amarillo { --c: var(--amarillo); --c-o: var(--amarillo-o); --c-s: var(--amarillo-s); --c-t: var(--tinta); }
+.tono-coral { --c: var(--coral); --c-o: var(--coral-o); --c-s: var(--coral-s); --c-t: #fff; }
+.tono-cielo { --c: var(--cielo); --c-o: var(--cielo-o); --c-s: var(--cielo-s); --c-t: var(--tinta); }
+.tono-gris { --c: var(--tinta-3); --c-o: var(--tinta-2); --c-s: var(--gris); --c-t: #fff; }
+.tono-papel { --c: var(--papel); --c-o: var(--gris-o); --c-s: var(--fondo); --c-t: var(--tinta); }
+
+/* ── La cabecera de una subpágina: volver, nota a mano, titular y entrada ── */
+.pn-cab {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: 0.35rem;
-  margin: 0.6rem 0 0;
-  padding-top: 0.6rem;
-  border-top: 1px solid rgba(245, 158, 11, 0.2);
-  font-size: 0.75rem;
-  color: #f59e0b;
-  line-height: 1.4;
 }
 
-.badge-tooltip-reward-star {
-  flex-shrink: 0;
-  font-size: 0.8rem;
+.pn-volver { margin-bottom: calc(6px + 0.6rem); }
+
+.pn-mano {
+  font-family: var(--letra-mano);
+  font-size: 25px;
+  line-height: 1.1;
+  color: var(--c-o, var(--naranja-o));
+  transform: rotate(-2deg);
+  transform-origin: left center;
 }
 
-.badge-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: #1a2540;
-}
-
-@media (min-width: 601px) and (max-width: 900px) {
-  .dashboard-main {
-    padding: 2rem 2.5rem;
-  }
-}
-
-.stats-empty {
+.pn-titulo {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  padding: 4rem 1rem;
-  color: var(--text-secondary);
-  opacity: 0.6;
-  text-align: center;
+  gap: 0.2em 0.45em;
+  font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 
-.estads-secondary {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
+.pn-titulo .anotacion { white-space: nowrap; }
 
-.estads-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.estads-item {
-  background: var(--bg-card);
-  border: var(--card-border);
-  border-radius: 12px;
-  padding: 1.1rem 1.25rem;
-}
-
-.estads-label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  opacity: 0.6;
-  margin-bottom: 0.75rem;
-}
-
-.estads-bar-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.estads-bar {
-  display: flex;
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-  background: rgba(240, 244, 255, 0.05);
-}
-
-.estads-bar-win {
-  background: #22c55e;
-}
-
-.estads-bar-loss {
-  background: #ef4444;
-}
-
-.estads-bar-be {
-  background: rgba(240, 244, 255, 0.2);
-}
-
-.estads-bar-legend {
-  display: flex;
-  gap: 12px;
-  font-size: 0.78rem;
+.pn-lead {
+  max-width: 62ch;
+  margin-top: 0.5rem;
+  font-size: 1.08rem;
   font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
 }
 
-.estads-highlight {
+.pn-lead strong { color: var(--tinta); font-weight: 800; }
+
+/* ── La hoja: papel blanco con su canto ── */
+.pn-hoja {
+  position: relative;
+  padding: clamp(1.25rem, 3vw, 1.9rem);
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+.pn-hoja-cab {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  margin-top: 4px;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.2rem;
 }
 
-.estads-highlight.positive {
-  background: rgba(34, 197, 94, 0.08);
-  border: 1px solid rgba(34, 197, 94, 0.15);
-}
+.pn-hoja-cab .tecla { flex: none; }
 
-.estads-highlight.negative {
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.15);
-}
-
-.estads-pair {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.estads-pnl {
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.estads-highlight.positive .estads-pnl {
-  color: #22c55e;
-}
-
-.estads-highlight.negative .estads-pnl {
-  color: #ef4444;
-}
-
-.estads-pairs {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-card);
-  border: var(--card-border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.estads-pair-row {
-  display: grid;
-  grid-template-columns: 1fr 60px 100px;
+.pn-h2 {
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.8rem 1.25rem;
-  border-bottom: 1px solid rgba(240, 244, 255, 0.04);
-  font-size: 0.88rem;
+  gap: 0.5rem;
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
 }
 
-.estads-pair-row:last-child {
-  border-bottom: none;
-}
-
-.estads-pair-name {
+.pn-sub {
+  margin-top: 0.3rem;
+  font-size: 0.98rem;
   font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
 }
 
-.estads-pair-count {
-  color: var(--text-secondary);
-  font-size: 0.78rem;
+.pn-etiqueta {
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
 }
 
-.estads-pair-pnl {
-  font-weight: 700;
+/* El contador junto a un titular. */
+.pn-cuenta {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.9em;
+  height: 1.9em;
+  padding: 0 0.45em;
+  border-radius: 10px;
+  background: var(--c-s);
+  color: var(--c-o);
+  font-family: var(--letra-texto);
+  font-size: 0.5em;
+  font-weight: 900;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+/* ── Chips (sistema.html: «Etiquetas») ── */
+.pn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--c-s, var(--gris));
+  color: var(--c-o, var(--tinta-2));
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ── La barra de progreso: gruesa, con relieve, se llena con un rebote ── */
+.pn-barra {
+  position: relative;
+  display: block;
+  flex: 1;
+  height: 18px;
+  min-width: 80px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--gris);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.06);
+}
+
+.pn-barra > i {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: 999px;
+  background: var(--c, var(--naranja));
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
+  animation: pn-llenar 1.6s var(--llegar) both;
+}
+
+.pn-barra--fina { height: 10px; }
+.pn-barra--fina > i { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1); }
+
+@keyframes pn-llenar { from { width: 0; } }
+
+.pn-progreso {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pn-progreso > b {
+  flex: none;
+  min-width: 3.4em;
+  font-family: var(--letra-titular);
+  font-size: 1.2rem;
+  font-weight: 800;
   text-align: right;
 }
 
-.estads-pair-pnl.positive {
-  color: #22c55e;
-}
-
-.estads-pair-pnl.negative {
-  color: #ef4444;
-}
-
-@media (max-width: 600px) {
-  .dashboard-main {
-    padding: 1.5rem 1.5rem 2rem;
-  }
-
-  .dashboard-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .dashboard-header h1 {
-    font-size: 1.65rem;
-  }
-
-}
-
-@media (min-width: 601px) and (max-width: 768px) {
-  .dashboard-main {
-    padding: 2rem 1.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-
-  .dashboard-main {
-    padding: 1.25rem 1.1rem 2rem;
-  }
-
-}
-
-.dash-terms-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-}
-
-@media (max-width: 600px) {
-  .dash-terms-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.dash-term-card {
-  background: var(--bg-card);
-  border: var(--card-border);
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
-  box-shadow: var(--card-shadow);
-}
-
-.dash-term-head {
+/* ── La racha de la semana (RachaSemana.tsx) ── */
+.rs {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  margin-bottom: 0.5rem;
-}
-
-.dash-term-head-right {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.dash-term-name {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
-.dash-unsave-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.dash-unsave-btn:hover {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.3);
-  color: #ef4444;
-}
-
-.dash-unsave-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.dash-term-def {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.dash-saved-item--guide { align-items: center; }
-
-.dash-saved-thumb--guide { background: rgba(230,180,85,0.08); border: 1px solid rgba(230,180,85,0.2); color: var(--gold); display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; width: 52px; height: 52px; }
-
-
-/* ── El armazón del dashboard ───────────────────────────────────────────────
- *
- * Rail fijo a la izquierda y contenido a su derecha, como cualquier panel al
- * uso. Hasta el 06-09-2026 el menú era una tarjeta pegajosa a la DERECHA, con
- * su borde redondeado y su margen: parecía un widget más de la página en vez de
- * la navegación del panel, y quedaba en el lado al que nadie mira primero.
- *
- * El rail es `fixed`, no `sticky`: así ocupa la pantalla de arriba abajo y no
- * se mueve al hacer scroll, aunque el contenido sea largo.
- */
-:root {
-  --dtb-ancho: 264px;
-}
-
-.dash-page-wrap {
-  margin-left: var(--dtb-ancho);
-  padding: 0 2rem;
-  position: relative;
-  z-index: 2;
-}
-
-.dash-page-wrap .dashboard-main {
-  /* El contenido se centra en el espacio que deja el rail. Sin tope se
-     estiraría hasta hacer ilegibles las líneas en pantallas anchas. */
-  max-width: 1040px;
+  gap: 6px;
+  /* Siete casillas de 38 px no caben en la hoja de un móvil de 360 px:
+     encogen hasta 26 px antes que salirse. */
   min-width: 0;
-  margin: 0 auto;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.dtb-sidebar {
-  position: fixed;
-  /* El rail ocupa la pantalla ENTERA, de 0 a 0, y pasa por detrás de la barra
-     superior (que tiene z-index 400 y va por encima). Los enlaces siguen
-     empezando donde empezaban gracias al `padding-top`.
-     Antes arrancaba en la altura de la barra, y cualquier desajuste entre esa
-     altura y la real dejaba una franja vacía justo encima — que es lo que
-     pasaba. Así el hueco es imposible: no hay nada que cuadrar. */
-  top: 0;
-  padding-top: var(--nav-h);
-  left: 0;
-  bottom: 0;
-  width: var(--dtb-ancho);
-  /* Por debajo de la barra superior (z-index 400), que sigue mandando. */
-  z-index: 300;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  background: linear-gradient(160deg, rgba(14,26,56,0.97) 0%, rgba(9,18,38,0.99) 100%);
-  /* Solo el borde que separa del contenido: los otros tres tocan el borde de
-     la pantalla y no pintan nada. */
-  border: 0;
-  border-right: 1px solid rgba(240,244,255,0.08);
-  border-radius: 0;
+  max-width: 100%;
   margin: 0;
-  padding-bottom: 1.5rem;
-}
-
-/* Barra de scroll discreta: el rail puede tener más herramientas que alto de
-   pantalla en portátiles pequeños. */
-.dtb-sidebar::-webkit-scrollbar { width: 6px; }
-.dtb-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(240,244,255,0.12);
-  border-radius: 99px;
-}
-
-/* ── Filas del rail ─────────────────────────────────────────────────────────
- *
- * Rehechas el 04-11-2026: la lista anterior (iconos grises sobre fondo plano)
- * se veía demasiado simple. Ahora cada herramienta lleva su icono en una
- * baldosa de su color —el de su pieza en el catálogo—, las tres de pago con
- * su icono animado, y el activo se marca con ese mismo color. Arriba, la
- * vuelta al panel; abajo, a quien no es Premium, su tarjeta. Sin
- * descripciones: en 264 px se cortaban a media frase. */
-
-/* Un brillo cálido arriba y la retícula fina de la portada. */
-.dtb-sidebar {
-  background:
-    radial-gradient(120% 40% at 0% 0%, rgba(255, 107, 43, 0.09) 0%, transparent 60%),
-    linear-gradient(170deg, #0d172d 0%, #080d1a 100%);
-}
-
-.dtb-sidebar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(240, 244, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 244, 255, 0.035) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(180deg, #000 0%, transparent 45%);
-}
-
-/* La vuelta al panel, como una tarjetita. */
-.dtb-panel {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 1rem 0.75rem 0.4rem;
-  padding: 0.75rem 0.8rem;
-  border: 1px solid rgba(255, 107, 43, 0.18);
-  border-radius: 14px;
-  text-decoration: none;
-  background: linear-gradient(135deg, rgba(255, 107, 43, 0.1) 0%, rgba(240, 244, 255, 0.02) 100%);
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.dtb-panel:hover,
-.dtb-panel.is-activa {
-  border-color: rgba(255, 107, 43, 0.45);
-  background: linear-gradient(135deg, rgba(255, 107, 43, 0.17) 0%, rgba(240, 244, 255, 0.03) 100%);
-}
-
-.dtb-panel-icon {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  color: #1a0d05;
-  background: linear-gradient(145deg, #ffb07a 0%, #ff6b2b 100%);
-  box-shadow: 0 8px 18px -8px rgba(255, 107, 43, 0.8);
-}
-
-.dtb-panel-texto {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.dtb-panel-nombre {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-.dtb-panel-sub {
-  font-size: 0.72rem;
-  color: rgba(240, 244, 255, 0.5);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dtb-section {
-  position: relative;
-  padding: 0.7rem 0.75rem 0.4rem;
-}
-
-/* Etiqueta corta del grupo, discreta. */
-.dtb-section-label {
-  display: block;
-  margin: 0 0 0.45rem 0.65rem;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.32);
-}
-
-.dtb-section-tools {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dtb-tool {
-  --dtb-c: #ff9a4d;
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.45rem 0.6rem;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  text-decoration: none;
-  color: rgba(240, 244, 255, 0.72);
-  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
-}
-
-/* La barrita del activo, en el color de la herramienta. */
-.dtb-tool::before {
-  content: "";
-  position: absolute;
-  left: -0.75rem;
-  top: 50%;
-  width: 3px;
-  height: 22px;
-  border-radius: 0 3px 3px 0;
-  background: var(--dtb-c);
-  box-shadow: 0 0 12px var(--dtb-c);
-  transform: translateY(-50%) scaleY(0);
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-a.dtb-tool:hover {
-  color: #fff;
-  background: rgba(240, 244, 255, 0.04);
-}
-
-.dtb-tool.is-activa {
-  color: #fff;
-  border-color: color-mix(in srgb, var(--dtb-c) 25%, transparent);
-  background: linear-gradient(90deg, color-mix(in srgb, var(--dtb-c) 14%, transparent) 0%, transparent 100%);
-}
-
-.dtb-tool.is-activa::before {
-  transform: translateY(-50%) scaleY(1);
-}
-
-/* El icono, en su baldosa de color. */
-.dtb-tool-icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  color: var(--dtb-c);
-  background: color-mix(in srgb, var(--dtb-c) 13%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dtb-c) 22%, transparent);
-  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-}
-
-a.dtb-tool:hover .dtb-tool-icon,
-.dtb-tool.is-activa .dtb-tool-icon {
-  color: #0b1224;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--dtb-c) 70%, #fff) 0%, var(--dtb-c) 100%);
-  box-shadow: 0 8px 18px -8px var(--dtb-c);
-}
-
-.dtb-tool-name {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.86rem;
-  font-weight: 600;
-  letter-spacing: -0.006em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* «Mi perfil»: la foto del usuario llena la baldosa entera. Sin foto, su
-   inicial sobre el naranja de la marca, como en la barra de arriba. */
-.dtb-tool-icon.has-foto {
-  overflow: hidden;
   padding: 0;
-  background: linear-gradient(145deg, #ffb07a 0%, #ff6b2b 100%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  list-style: none;
 }
 
-a.dtb-tool:hover .dtb-tool-icon.has-foto,
-.dtb-tool.is-activa .dtb-tool-icon.has-foto {
-  background: linear-gradient(145deg, #ffb07a 0%, #ff6b2b 100%);
-  box-shadow: 0 0 0 2px var(--dtb-c), 0 8px 18px -8px rgba(255, 107, 43, 0.7);
+.rs-dia {
+  display: grid;
+  flex: 0 1 38px;
+  place-items: center;
+  min-width: 26px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o);
+  color: var(--tinta-3);
+  font-size: 13px;
+  font-weight: 900;
 }
 
-.dtb-tool-foto {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #10151f;
+.rs-dia.is-hoy { outline: 2px dashed var(--gris-o); outline-offset: 3px; }
+
+.rs-dia.is-on {
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--naranja-o);
+  animation: rs-encender 0.5s var(--muelle) both;
 }
 
-/* Con el ratón encima, los iconos animados van más rápido, como en la barra. */
-a.dtb-tool:hover .ia-cinta { animation-duration: 1.5s; }
-a.dtb-tool:hover .ia-ruta,
-a.dtb-tool:hover .ia-chincheta { animation-duration: 1.8s; }
-a.dtb-tool:hover .ia-diana { animation-duration: 1.4s; }
-a.dtb-tool:hover .ia-diana--2 { animation-delay: 0.7s; }
-a.dtb-tool:hover .ia-copa,
-a.dtb-tool:hover .ia-destello { animation-duration: 1.4s; }
-a.dtb-tool:hover .ia-birrete,
-a.dtb-tool:hover .ia-borla { animation-duration: 1.6s; }
-a.dtb-tool:hover .ia-barra { animation-duration: 1.3s; }
-a.dtb-tool:hover .ia-linea { animation-duration: 1.8s; }
+.rs-dia.is-on.is-hoy { outline-color: var(--naranja); }
 
-/* Lo que no se puede abrir se apaga, pero se sigue leyendo: saber que existe
-   es justo lo que empuja a suscribirse. */
-.dtb-tool--dim {
-  color: rgba(240, 244, 255, 0.42);
-  cursor: default;
+.rs.is-cargando .rs-dia { background: var(--gris); box-shadow: 0 4px 0 var(--gris-o); }
+
+.rs-dia:nth-child(2) { animation-delay: 0.05s; }
+.rs-dia:nth-child(3) { animation-delay: 0.1s; }
+.rs-dia:nth-child(4) { animation-delay: 0.15s; }
+.rs-dia:nth-child(5) { animation-delay: 0.2s; }
+.rs-dia:nth-child(6) { animation-delay: 0.25s; }
+.rs-dia:nth-child(7) { animation-delay: 0.3s; }
+
+@keyframes rs-encender {
+  from { transform: scale(0.6); opacity: 0.4; }
 }
 
-.dtb-tool--dim .dtb-tool-icon {
-  color: color-mix(in srgb, var(--dtb-c) 55%, rgba(240, 244, 255, 0.3));
-  background: rgba(240, 244, 255, 0.04);
-  box-shadow: inset 0 0 0 1px rgba(240, 244, 255, 0.06);
-}
-
-.dtb-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.dtb-badge--premium {
-  width: 20px;
-  height: 20px;
-  border-radius: 7px;
-  background: rgba(230, 180, 85, 0.15);
-  color: #f6d58e;
-}
-
-.dtb-badge--soon {
-  padding: 0.14rem 0.45rem;
-  border: 1px solid rgba(230, 180, 85, 0.3);
-  border-radius: 999px;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(230, 180, 85, 0.08);
-  color: #f6d58e;
-}
-
-/* La tarjeta de Premium, abajo, solo a quien tiene algo bloqueado. */
-.dtb-premium {
-  position: relative;
-  overflow: hidden;
+/* ── Avisos (sistema.html: «Avisos») ── */
+.pn-aviso {
   display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  margin: 1rem 0.75rem 0;
-  padding: 1rem;
-  border: 1px solid rgba(230, 180, 85, 0.3);
-  border-radius: 16px;
-  text-decoration: none;
-  background:
-    radial-gradient(90% 90% at 100% 0%, rgba(230, 180, 85, 0.18) 0%, transparent 65%),
-    linear-gradient(160deg, #141d33 0%, #0a0f1d 100%);
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.dtb-premium:hover {
-  border-color: rgba(230, 180, 85, 0.55);
-  transform: translateY(-2px);
-}
-
-.dtb-premium-icono {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  color: #1a1204;
-  background: linear-gradient(135deg, #f6d58e 0%, #e6b455 100%);
-}
-
-.dtb-premium-titulo {
-  font-size: 0.86rem;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 3px solid var(--c);
+  border-radius: 18px;
+  background: var(--c-s);
+  color: var(--c-o);
   font-weight: 700;
-  line-height: 1.35;
-  color: #fff;
+  line-height: 1.5;
 }
 
-.dtb-premium-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #f6d58e;
-  transition: gap 0.2s ease;
-}
+.pn-aviso.tono-amarillo { color: #7a5d00; }
 
-.dtb-premium:hover .dtb-premium-cta { gap: 0.5rem; }
-
-@media (prefers-reduced-motion: reduce) {
-  .dtb-tool,
-  .dtb-tool::before,
-  .dtb-tool-icon,
-  .dtb-panel,
-  .dtb-premium { transition: none; }
-
-  .dtb-premium:hover { transform: none; }
-}
-
-/* ── Herramientas en el móvil: pastilla flotante + panel desde abajo ──────
-   Rehecho el 10-11-2026, a petición del admin. Antes: una barra a todo el
-   ancho que abría un panel a pantalla completa con z-index 200, por DEBAJO de
-   la barra superior (400), así que la X de cerrar quedaba tapada y el menú se
-   abría pero no se cerraba. Ahora el panel va por encima de todo (z-index
-   500), ocupa como mucho el 82 % de la pantalla y se cierra con la X,
-   tocando el fondo, arrastrándolo hacia abajo o con Escape. */
-
-.dtb-pill {
-  display: none;
-  position: fixed;
-  left: 50%;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  z-index: 100;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.45rem 0.95rem 0.45rem 0.45rem;
-  border: 1px solid rgba(255, 107, 43, 0.32);
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(22, 40, 74, 0.94), rgba(11, 22, 42, 0.96));
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  backdrop-filter: blur(14px) saturate(140%);
-  box-shadow:
-    0 14px 34px -12px rgba(0, 0, 0, 0.85),
-    0 0 0 6px rgba(10, 22, 40, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  font: 700 0.88rem var(--font-family);
-  color: #fff;
-  cursor: pointer;
-  transform: translateX(-50%);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, box-shadow 0.2s ease;
-}
-.dtb-pill:active { transform: translateX(-50%) scale(0.96); }
-/* Con el panel abierto la pastilla se esconde hacia abajo: el panel ya está ahí. */
-.dtb-pill.is-abierta { opacity: 0; transform: translateX(-50%) translateY(140%); pointer-events: none; }
-
-.dtb-pill-icon {
+.pn-aviso-ic {
   display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
   flex: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-orange), #ff9a4d);
-  color: #fff;
-  box-shadow: 0 4px 12px -4px rgba(255, 107, 43, 0.8);
-}
-.dtb-pill-label { letter-spacing: 0.01em; white-space: nowrap; }
-.dtb-pill-chevron { color: var(--accent-orange-soft, #ff8552); animation: dtb-chevron-hint 2.6s ease-in-out infinite; }
-
-@keyframes dtb-chevron-hint {
-  0%, 100% { transform: translateY(1px); }
-  50%      { transform: translateY(-2px); }
-}
-
-/* El fondo: por encima de TODO, también de la barra superior. */
-.dtb-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: flex;
-  align-items: flex-end;
-  background: rgba(3, 9, 22, 0.62);
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
-  animation: dtb-fade-in 0.3s ease both;
-}
-.dtb-overlay.is-cerrando { animation: dtb-fade-out 0.28s ease forwards; }
-
-.dtb-sheet {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-height: 82vh;
-  max-height: 82dvh;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-bottom: 0;
-  border-radius: 26px 26px 0 0;
-  background:
-    radial-gradient(120% 60% at 50% 0%, rgba(255, 107, 43, 0.1), transparent 60%),
-    linear-gradient(180deg, #13243f 0%, #0a1628 100%);
-  box-shadow: 0 -24px 60px -20px rgba(0, 0, 0, 0.9);
-  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-  animation: dtb-sheet-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  touch-action: pan-y;
-}
-.dtb-sheet.is-cerrando { animation: dtb-sheet-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards; }
-
-/* El asa y la cabecera: de aquí se arrastra para cerrar. */
-.dtb-sheet-agarre { flex-shrink: 0; padding-top: 10px; cursor: grab; touch-action: none; }
-.dtb-sheet-agarre:active { cursor: grabbing; }
-.dtb-sheet-asa {
-  display: block;
-  width: 42px;
-  height: 5px;
-  margin: 0 auto;
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.22);
-}
-.dtb-sheet-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px 12px 18px;
-  border-bottom: 1px solid rgba(240, 244, 255, 0.07);
-}
-.dtb-sheet-title {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font: 700 1.08rem var(--font-display);
-  color: #fff;
-}
-.dtb-sheet-close {
-  display: grid;
   place-items: center;
   width: 38px;
   height: 38px;
-  border: 1px solid rgba(240, 244, 255, 0.12);
   border-radius: 12px;
-  background: rgba(240, 244, 255, 0.05);
-  color: rgba(240, 244, 255, 0.75);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-.dtb-sheet-close:hover,
-.dtb-sheet-close:active { background: rgba(240, 244, 255, 0.12); color: #fff; }
-
-.dtb-sheet-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: 6px 16px 10px;
+  background: var(--c);
+  color: var(--c-t);
+  font-weight: 900;
 }
 
-.dtb-sheet .dtb-sheet-panel { margin: 10px 0 4px; }
+.pn-aviso.tono-amarillo .pn-aviso-ic { background: var(--amarillo-o); color: #fff; }
 
-.dtb-sheet-seccion { margin-top: 14px; animation: dtb-item-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.dtb-sheet-seccion:nth-of-type(1) { animation-delay: 0.1s; }
-.dtb-sheet-seccion:nth-of-type(2) { animation-delay: 0.16s; }
-.dtb-sheet-seccion:nth-of-type(n + 3) { animation-delay: 0.22s; }
-.dtb-sheet .dtb-section-label { padding: 0 2px 8px; }
+.pn-aviso-texto { flex: 1; min-width: 0; }
 
-/* Las herramientas, en baldosas de dos en dos: se ven todas de un vistazo. */
-.dtb-sheet-rejilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.dtb-sheet .dtb-tool {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.6rem;
-  min-height: 88px;
-  padding: 12px;
-  border: 1px solid rgba(240, 244, 255, 0.07);
-  border-radius: 16px;
-  background:
-    linear-gradient(160deg, color-mix(in srgb, var(--dtb-c) 9%, transparent), transparent 70%),
-    rgba(240, 244, 255, 0.025);
-}
-.dtb-sheet .dtb-tool::before { display: none; }
-.dtb-sheet a.dtb-tool:active { transform: scale(0.97); }
-.dtb-sheet .dtb-tool.is-activa {
-  border-color: color-mix(in srgb, var(--dtb-c) 45%, transparent);
-  background:
-    linear-gradient(160deg, color-mix(in srgb, var(--dtb-c) 20%, transparent), transparent 75%),
-    rgba(240, 244, 255, 0.03);
-}
-.dtb-sheet .dtb-tool-icon { width: 38px; height: 38px; border-radius: 12px; }
-.dtb-sheet .dtb-tool-name { font-size: 0.86rem; font-weight: 600; line-height: 1.25; white-space: normal; }
-.dtb-sheet .dtb-badge { position: absolute; top: 10px; right: 10px; }
-
-.dtb-sheet .dtb-sheet-premium { margin: 16px 0 4px; }
-
-@media (max-width: 960px) {
-  .dtb-sidebar { display: none; }
-  .dtb-pill    { display: inline-flex; animation: dtb-pill-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
-
-  /* Sin rail no hay hueco que reservar a la izquierda, y abajo se deja sitio
-     para que la pastilla no tape el final de la página. */
-  .dash-page-wrap {
-    margin-left: 0;
-    padding: 0 1.25rem;
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-  }
-}
-
-@media (max-width: 640px) {
-  .dash-page-wrap {
-    padding: 0 1rem;
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-  }
-}
-
-@media (max-width: 400px) {
-  .dash-page-wrap {
-    padding: 0 0.875rem;
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-  }
-  .dtb-sheet-rejilla { gap: 6px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dtb-pill,
-  .dtb-pill-chevron,
-  .dtb-overlay,
-  .dtb-sheet,
-  .dtb-sheet-seccion { animation: none !important; }
-  .dtb-sheet, .dtb-pill { transition: none; }
-}
-
-@keyframes dtb-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes dtb-fade-out { from { opacity: 1; } to { opacity: 0; } }
-
-@keyframes dtb-sheet-in {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-/* Sin «from»: si se ha arrastrado, sale desde donde lo soltaste. */
-@keyframes dtb-sheet-out {
-  to { transform: translateY(100%); }
-}
-
-@keyframes dtb-item-in {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: none; }
-}
-
-@keyframes dtb-pill-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(120%); }
-  to   { opacity: 1; transform: translateX(-50%); }
-}
-
-/* Al cerrar, las secciones no re-animan (se van con el sheet) */
-.dtb-sheet--closing .dtb-section { animation: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .dtb-sheet-body .dtb-section { animation: none !important; }
-}
-
-/* ════════════════════════════════════════════════════════════════════════
-   Páginas inmersivas del panel (Diario de Trading, Logros)
-   El mismo lenguaje que las fichas públicas (herramientas/detalle.css):
-   cuadrícula que se desvanece, luces difusas, pastilla con pulso, título con
-   degradado y cabeceras numeradas. Cada página pone su acento en --imm-accent.
-   ════════════════════════════════════════════════════════════════════════ */
-
-.imm {
-  --imm-accent: var(--premium-gold);
-  --imm-accent-2: #f5d48a;
-  position: relative;
-  isolation: isolate;
-}
-
-.imm-backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.imm-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 244, 255, 0.04) 1px, transparent 1px);
-  background-size: 46px 46px;
-  -webkit-mask-image: radial-gradient(120% 40% at 50% 0%, #000 20%, transparent 75%);
-  mask-image: radial-gradient(120% 40% at 50% 0%, #000 20%, transparent 75%);
-}
-
-.imm-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.55;
-  animation: imm-drift 22s ease-in-out infinite alternate;
-}
-
-.imm-orb--1 { top: 0; left: 0; width: 460px; height: 460px; background: radial-gradient(circle, color-mix(in srgb, var(--imm-accent) 20%, transparent) 0%, transparent 70%); }
-.imm-orb--2 { top: 18%; right: -8%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(126, 166, 255, 0.14) 0%, transparent 70%); animation-delay: -8s; }
-.imm-orb--3 { top: 55%; left: 20%; width: 380px; height: 380px; background: radial-gradient(circle, color-mix(in srgb, var(--imm-accent-2) 9%, transparent) 0%, transparent 70%); animation-delay: -14s; }
-
-@keyframes imm-drift {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(4%, 6%, 0) scale(1.1); }
-}
-
-.imm-head { position: relative; isolation: isolate; padding: 1.2rem 0 0.6rem; }
-
-.imm-watermark {
-  position: absolute;
-  top: -2.2rem;
-  right: 1rem;
-  z-index: -1;
-  font-family: var(--font-display);
-  font-size: clamp(6rem, 16vw, 11rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.05em;
-  white-space: nowrap;
-  color: color-mix(in srgb, var(--imm-accent) 7%, transparent);
-  pointer-events: none;
-  user-select: none;
-}
-
-.imm-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.34rem 0.8rem;
-  border: 1px solid color-mix(in srgb, var(--imm-accent) 35%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--imm-accent) 8%, transparent);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: var(--imm-accent-2);
-}
-
-.imm-eyebrow-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--imm-accent);
-  animation: imm-pulse 2.2s ease-out infinite;
-}
-
-@keyframes imm-pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--imm-accent) 55%, transparent); }
-  70% { box-shadow: 0 0 0 7px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
-
-.imm-title {
-  margin: 0 0 0.8rem;
-  font-family: var(--font-display);
-  font-size: clamp(2.1rem, 5vw, 3.1rem);
-  font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -0.03em;
-  color: rgba(240, 244, 255, 0.98);
-  text-wrap: balance;
-}
-
-.imm-title-grad {
+.pn-aviso-texto b {
   display: block;
-  /* El degradado se recorta a la caja de la línea, y con un interlineado tan
-     justo (1.06) se comía los rasgos que bajan: la «j» de «deja» salía cortada.
-     El relleno abajo amplía la caja y el margen negativo devuelve el sitio. */
-  padding-bottom: 0.14em;
-  margin-bottom: -0.14em;
-  background: linear-gradient(100deg, var(--imm-accent) 0%, var(--imm-accent-2) 60%, #ffffff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
-.imm-sub { margin: 0; max-width: 62ch; font-size: 0.94rem; line-height: 1.6; color: rgba(240, 244, 255, 0.55); }
+.dh-bloque > .pn-error { margin: 0 0 0.9rem; }
 
-/* Cabecera de sección: número, título y una línea de lectura. */
-.imm-sechead { display: flex; align-items: flex-start; gap: 1.1rem; }
-.imm-sechead > div { min-width: 0; flex: 1; }
-
-.imm-sechead-num {
-  flex-shrink: 0;
-  margin-top: 0.3rem;
-  padding: 0.3rem 0.68rem;
-  border: 1px solid color-mix(in srgb, var(--imm-accent) 35%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--imm-accent) 7%, transparent);
-  font-size: 0.71rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--imm-accent-2);
+.pn-error {
+  margin-top: 0.6rem;
+  color: var(--coral-o);
+  font-size: 0.92rem;
+  font-weight: 800;
 }
 
-.imm-sechead h2 {
-  margin: 0 0 0.35rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.6vw, 1.72rem);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.024em;
-  color: rgba(240, 244, 255, 0.96);
-  text-wrap: balance;
-}
-
-.imm-sechead p { margin: 0; max-width: 62ch; font-size: 0.94rem; line-height: 1.6; color: rgba(240, 244, 255, 0.52); }
-
-@media (max-width: 640px) {
-  .imm-watermark { top: -1rem; right: 0; font-size: 5.5rem; }
-  .imm-sechead { gap: 0.8rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .imm-orb,
-  .imm-eyebrow-dot { animation: none; }
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
-   EL PANEL DEL USUARIO (dashboard/page.tsx)
-   ══════════════════════════════════════════════════════════════════════════
-
-   Rehecho el 04-11-2026 con el lenguaje de la portada: paneles con un brillo
-   de color en una esquina, retícula fina, cifras grandes y textos cortos.
-   Naranja para lo suyo (racha, enlaces), oro para Premium. */
-
-.dashboard-main .dh-hero,
-.dashboard-main .dh-card,
-.dashboard-main .dh-premium,
-.dashboard-main .dh-bloque {
-  margin: 0;
-}
-
-/* ── Cabecera ──────────────────────────────────────────────────────────── */
-
-.dh-hero {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  display: grid;
-  gap: 1.6rem;
+/* ── Vacío: nada guardado todavía ── */
+.pn-vacio {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 1.8rem 1.6rem;
-  border: 1px solid rgba(255, 107, 43, 0.2);
+  gap: 0.75rem;
+  padding: 2rem 1.25rem 1.5rem;
+  border: 3px dashed var(--gris-o);
   border-radius: 24px;
-  background:
-    radial-gradient(70% 120% at 0% 0%, rgba(255, 107, 43, 0.14) 0%, transparent 60%),
-    radial-gradient(50% 90% at 100% 100%, rgba(79, 157, 255, 0.08) 0%, transparent 60%),
-    linear-gradient(160deg, #0f1830 0%, #080d1a 100%);
+  text-align: center;
+  color: var(--tinta-2);
+  font-weight: 700;
 }
 
-.dh-hero.is-premium {
-  border-color: rgba(230, 180, 85, 0.28);
-  background:
-    radial-gradient(70% 120% at 0% 0%, rgba(230, 180, 85, 0.15) 0%, transparent 60%),
-    radial-gradient(50% 90% at 100% 100%, rgba(255, 107, 43, 0.08) 0%, transparent 60%),
-    linear-gradient(160deg, #111a30 0%, #080d1a 100%);
+.pn-vacio-icono {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 5px 0 var(--c-o);
+  transform: rotate(-4deg);
 }
 
-/* Retícula fina, solo arriba a la izquierda. */
-.dh-hero::before {
+/* ══ 3 · La portada del panel (/dashboard) ═══════════════════════════════ */
+
+/* ── Cabecera: saludo, datos y racha ── */
+.dh {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: center;
+  overflow: hidden;
+  border-radius: 34px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* Un círculo suave detrás, como en las tarjetas de producto. */
+.dh::before {
   content: "";
   position: absolute;
-  inset: 0;
-  z-index: -1;
+  top: -90px;
+  right: -70px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: var(--naranja-s);
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 244, 255, 0.045) 1px, transparent 1px);
-  background-size: 36px 36px;
-  mask-image: radial-gradient(60% 80% at 10% 0%, #000 0%, transparent 75%);
 }
 
-@media (min-width: 900px) {
-  .dh-hero {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 2.4rem;
-    padding: 2.1rem 2.2rem;
-  }
-}
+.dh > * { position: relative; }
 
-.dh-plan {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.75rem;
-  border: 1px solid rgba(240, 244, 255, 0.12);
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.6);
-  background: rgba(240, 244, 255, 0.04);
-}
+.dh-nota { color: var(--naranja-o); }
 
-.dh-hero.is-premium .dh-plan,
-.dh-plan--oro {
-  border-color: rgba(230, 180, 85, 0.35);
-  color: #f6d58e;
-  background: rgba(230, 180, 85, 0.1);
-}
-
-/* El saludo con la foto que eligió en «Mi perfil» a la izquierda, si la eligió. */
 .dh-saludo-fila {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  margin-top: 0.9rem;
+  gap: 14px;
+  margin-top: 0.4rem;
 }
 
 .dh-saludo-foto {
   flex: none;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12), 0 10px 24px -10px rgba(0, 0, 0, 0.7);
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--papel);
+  border-radius: 20px;
+  box-shadow: 0 5px 0 var(--gris-o);
+  font-size: 1.5rem;
+  transform: rotate(-4deg);
 }
 
 .dh-saludo {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3.6vw, 2.5rem);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
-  color: #fff;
+  min-width: 0;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
-.dh-saludo span {
-  background: linear-gradient(100deg, #ffb07a 0%, #ff6b2b 70%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.dh-hero.is-premium .dh-saludo span {
-  background-image: linear-gradient(100deg, #f6d58e 0%, #e6b455 70%);
-}
-
-/* La estrella de los 30 días: va aparte del span de color del nombre. */
-.dh-saludo .dh-estrella {
-  margin-left: 0.4rem;
-  font-size: 0.7em;
-  background: none;
-  color: #f6d58e;
-  -webkit-text-fill-color: #f6d58e;
-  text-shadow: 0 0 18px rgba(230, 180, 85, 0.6);
+.dh-estrella {
+  display: inline-block;
+  margin-left: 0.25em;
+  font-size: 0.6em;
+  color: var(--amarillo-o);
+  vertical-align: middle;
+  transform: rotate(12deg);
 }
 
 .dh-sub {
-  margin: 0.55rem 0 0;
-  font-size: 0.95rem;
-  color: rgba(240, 244, 255, 0.55);
+  max-width: 44ch;
+  margin-top: 0.9rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
 }
 
-.dh-hero-cta {
-  display: inline-flex;
+.dh-acciones {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem;
+  gap: 12px 14px;
   margin-top: 1.2rem;
-  padding: 0.7rem 1.2rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-decoration: none;
-  color: #1a1204;
-  background: linear-gradient(135deg, #f6d58e 0%, #e6b455 100%);
-  box-shadow: 0 14px 30px -14px rgba(230, 180, 85, 0.8);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.dh-hero-cta:hover { transform: translateY(-2px); }
+.dh-acciones .tecla { margin-bottom: 6px; }
 
-/* Los tres datos. */
+.dh-lado {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
 .dh-datos {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
+  gap: 12px;
 }
 
-@media (min-width: 900px) {
-  .dh-datos { grid-template-columns: repeat(3, 8.6rem); }
-}
-
+/* Cada dato, una tarjeta suave de su color con canto: se hunde un poco al pasar. */
 .dh-dato {
-  --c: #ff9a4d;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.95rem 0.95rem 0.9rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 16px;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 14px 13px;
+  border-radius: 20px;
+  background: var(--c-s);
+  color: var(--tinta);
   text-decoration: none;
-  background: rgba(5, 10, 20, 0.45);
-  transition: border-color 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 5px 0 var(--c);
+  transition: transform 0.26s var(--muelle), box-shadow 0.26s var(--muelle);
 }
 
-.dh-dato--logros { --c: #e6b455; }
-.dh-dato--guias { --c: #4f9dff; }
+.dh-dato:nth-child(1) { transform: rotate(-1.5deg); }
+.dh-dato:nth-child(3) { transform: rotate(1.2deg); }
 
-.dh-dato:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--c) 45%, transparent);
+@media (hover: hover) {
+  .dh-dato:hover { transform: translateY(3px) rotate(0); box-shadow: 0 2px 0 var(--c); }
 }
+
+.dh-dato:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
 
 .dh-dato-icono {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  margin-bottom: 0.4rem;
-  border-radius: 10px;
-  color: var(--c);
-  background: color-mix(in srgb, var(--c) 15%, transparent);
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 3px 0 var(--c-o);
 }
 
 .dh-dato-valor {
-  font-family: var(--font-display);
-  font-size: 1.7rem;
+  margin-top: 6px;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 3.6vw, 2.4rem);
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  color: #fff;
 }
 
-.dh-dato-valor small {
-  font-size: 0.55em;
-  font-weight: 700;
-  letter-spacing: 0;
-  color: rgba(240, 244, 255, 0.4);
-}
+.dh-dato-valor small { font-size: 0.5em; color: var(--tinta-2); }
 
 .dh-dato-texto {
-  font-size: 0.74rem;
-  line-height: 1.3;
-  color: rgba(240, 244, 255, 0.5);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--c-o);
 }
 
-/* ── Comunes ───────────────────────────────────────────────────────────── */
+.dh-dato.tono-amarillo .dh-dato-texto { color: #7a5d00; }
 
-.dh-h2 {
+.dh-racha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--fondo);
+}
+
+/* ── El índice: todo lo suyo, en fichas de color (IndicePanel.tsx) ── */
+.ix {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.ix-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 1rem;
+}
+
+.ix-cab .pn-mano { color: var(--tinta-2); }
+
+.ix-grupo {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.6rem 1rem;
+  align-items: start;
+}
+
+.ix-grupo-titulo {
+  padding-top: 1.1rem;
+  font-family: var(--letra-texto);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.ix-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+/* La ficha: papel con el canto de su color; al pasar se levanta y se tuerce
+   un poco, como una pestaña del cuaderno. */
+.ix-ficha {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  margin: 0;
-  font-family: var(--font-display);
+  gap: 12px;
+  height: 100%;
+  min-height: 78px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--papel);
+  color: var(--tinta);
+  text-decoration: none;
+  box-shadow: 0 5px 0 var(--c-o, var(--gris-o)), 0 18px 26px -24px rgba(29, 27, 51, 0.6);
+  transition: transform 0.3s var(--muelle), box-shadow 0.3s var(--muelle);
+}
+
+.ix-ficha.tono-papel { box-shadow: 0 5px 0 var(--gris-o), 0 18px 26px -24px rgba(29, 27, 51, 0.6); }
+
+@media (hover: hover) {
+  a.ix-ficha:hover {
+    transform: translateY(-3px) rotate(-0.8deg);
+    box-shadow: 0 8px 0 var(--c-o, var(--gris-o)), 0 22px 30px -22px rgba(29, 27, 51, 0.55);
+  }
+
+  a.ix-ficha.is-bloqueada:hover { box-shadow: 0 8px 0 var(--gris-o), 0 22px 30px -22px rgba(29, 27, 51, 0.55); }
+}
+
+a.ix-ficha:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--c-o, var(--gris-o)); transition-duration: 0.06s; }
+a.ix-ficha:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.ix-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 4px 0 var(--c-o);
+}
+
+.ix-ficha.tono-papel .ix-icono { background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
+
+.ix-icono.has-foto { overflow: hidden; padding: 0; }
+
+.ix-foto {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
   font-size: 1.2rem;
+}
+
+.ix-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ix-nombre {
+  font-family: var(--letra-titular);
+  font-size: 1.08rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #fff;
+  line-height: 1.2;
 }
 
-.dh-cuenta {
-  padding: 0.12rem 0.55rem;
-  border-radius: 999px;
-  font-family: var(--font-family);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  color: #ffb07a;
-  background: rgba(255, 107, 43, 0.14);
+.ix-desc {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--tinta-2);
 }
 
-.dh-enlace {
+.ix-chip {
+  position: absolute;
+  top: -10px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  flex: none;
-  font-size: 0.84rem;
-  font-weight: 700;
-  text-decoration: none;
-  color: #ff9a4d;
-  transition: gap 0.2s ease, color 0.2s ease;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 9px;
+  background: var(--gris);
+  color: var(--tinta-2);
+  font-size: 12px;
+  font-weight: 900;
+  transform: rotate(3deg);
 }
 
-.dh-enlace:hover {
-  gap: 0.5rem;
-  color: #ffb07a;
-}
+.ix-chip--premium { background: var(--naranja); color: #fff; box-shadow: 0 3px 0 var(--naranja-o); }
 
-.dh-card {
-  padding: 1.4rem 1.4rem 1.5rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 22px;
-  background:
-    radial-gradient(60% 90% at 100% 0%, rgba(230, 180, 85, 0.08) 0%, transparent 60%),
-    linear-gradient(165deg, #0e172d 0%, #080d1a 100%);
-}
+/* Bloqueada: se sabe que existe, pero no engaña. Si es de Premium sigue
+   siendo un enlace (a su ficha); si aún no existe, no se puede pulsar. */
+.ix-ficha.is-bloqueada { background: var(--fondo); box-shadow: 0 5px 0 var(--gris); }
+div.ix-ficha.is-bloqueada { cursor: not-allowed; }
+.ix-ficha.is-bloqueada .ix-icono { background: var(--gris); color: var(--tinta-3); box-shadow: 0 4px 0 var(--gris-o); }
+.ix-ficha.is-bloqueada .ix-nombre { color: var(--tinta-2); }
 
-.dh-card-cab,
-.dh-bloque-cab {
+/* ── La cartera (DashboardAtajos.tsx): tarjeta de producto menta ── */
+.dash-atajo {
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.dh-bloque-cab {
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.dh-card-sub {
-  margin: 0.3rem 0 0;
-  font-size: 0.86rem;
-  color: rgba(240, 244, 255, 0.5);
-}
-
-/* ── Logros ────────────────────────────────────────────────────────────── */
-
-.dh-barra {
-  height: 6px;
-  margin: 1.1rem 0 1.3rem;
+  gap: 18px;
   overflow: hidden;
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.07);
+  padding: 22px 24px;
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
 }
 
-.dh-barra span {
-  display: block;
-  height: 100%;
-  min-width: 6px;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #ff9a4d 0%, #e6b455 100%);
-  box-shadow: 0 0 14px rgba(230, 180, 85, 0.6);
+.dash-atajo::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -40px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: var(--c-s);
 }
+
+.dash-atajo > * { position: relative; }
+
+.dash-atajo-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 5px 0 var(--c-o);
+  transform: rotate(-4deg);
+}
+
+.dash-atajo-cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash-atajo-cifra {
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.dash-atajo-cifra.is-sube { color: var(--sube); }
+.dash-atajo-cifra.is-baja { color: var(--baja); }
+
+.dash-atajo-pie {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.dash-atajo-cta { flex: none; }
+
+/* ── El aviso de la verificación en dos pasos (TwoFactorNudge.tsx) ── */
+.dash-2fa { align-items: center; }
+
+.dash-2fa-acciones {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-2fa-acciones .tecla { margin-bottom: 6px; }
+
+/* ── Logros: la colección de pegatinas ── */
+.dh-logros .pn-progreso { margin-bottom: 1.5rem; }
 
 .dh-logros-rejilla {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 22px 12px;
 }
 
 .dh-logro {
@@ -1899,325 +751,414 @@ a.dtb-tool:hover .ia-linea { animation-duration: 1.8s; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.55rem;
-  padding: 1rem 0.5rem 0.85rem;
-  border: 1px solid rgba(240, 244, 255, 0.06);
-  border-radius: 16px;
+  gap: 8px;
   text-align: center;
-  background: rgba(240, 244, 255, 0.02);
-  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
-}
-
-.dh-logro:hover {
-  transform: translateY(-2px);
-  border-color: rgba(240, 244, 255, 0.16);
-}
-
-.dh-logro .badge-unlocked-check,
-.dh-logro .badge-lock {
-  position: absolute;
-  top: 0.45rem;
-  right: 0.45rem;
-}
-
-.dh-logro-icono {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  color: rgba(240, 244, 255, 0.28);
-  background: rgba(240, 244, 255, 0.04);
 }
 
 .dh-logro-nombre {
-  font-size: 0.74rem;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 800;
   line-height: 1.25;
-  color: rgba(240, 244, 255, 0.4);
+  color: var(--tinta);
 }
 
-.dh-logro.is-conseguido {
-  border-color: rgba(255, 154, 77, 0.3);
-  background: linear-gradient(170deg, rgba(255, 154, 77, 0.1) 0%, rgba(240, 244, 255, 0.02) 80%);
+.dh-logro:not(.is-conseguido) .dh-logro-nombre { color: var(--tinta-3); }
+
+/* La pista: lo que pide el logro, como un pósit que aparece al pasar. */
+.dh-logro-pista {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 210px;
+  padding: 12px 14px;
+  border-radius: 6px 6px 16px 16px;
+  background: var(--amarillo-s);
+  color: var(--tinta);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: left;
+  box-shadow: 0 10px 18px -10px rgba(29, 27, 51, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 6px) rotate(-2deg);
+  transition: opacity 0.18s ease, transform 0.3s var(--muelle);
 }
 
-.dh-logro.is-conseguido .dh-logro-icono {
-  color: #ff9a4d;
-  background: rgba(255, 154, 77, 0.14);
-  box-shadow: 0 10px 24px -12px rgba(255, 154, 77, 0.8);
+.dh-logro-premio { color: #7a5d00; font-weight: 900; }
+
+@media (hover: hover) {
+  .dh-logro:hover .dh-logro-pista { opacity: 1; transform: translate(-50%, 0) rotate(-2deg); }
 }
 
-.dh-logro.is-conseguido .dh-logro-nombre { color: #fff; }
-
-.dh-logro.is-conseguido.is-especial {
-  border-color: rgba(230, 180, 85, 0.38);
-  background: linear-gradient(170deg, rgba(230, 180, 85, 0.13) 0%, rgba(240, 244, 255, 0.02) 80%);
-}
-
-.dh-logro.is-conseguido.is-especial .dh-logro-icono {
-  color: #f6d58e;
-  background: rgba(230, 180, 85, 0.16);
-  box-shadow: 0 10px 24px -12px rgba(230, 180, 85, 0.9);
-}
-
-.dh-logro:hover .badge-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ── Premium ───────────────────────────────────────────────────────────── */
-
+/* ── Premium: el bloque de tinta (ESTILO.md: «Premium cierra en tinta») ── */
 .dh-premium {
   position: relative;
-  overflow: hidden;
   display: grid;
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1.5rem 2.5rem;
   align-items: center;
-  padding: 1.6rem 1.5rem;
-  border: 1px solid rgba(230, 180, 85, 0.28);
-  border-radius: 22px;
-  background:
-    radial-gradient(60% 120% at 100% 50%, rgba(230, 180, 85, 0.16) 0%, transparent 60%),
-    linear-gradient(160deg, #121c34 0%, #080e1c 100%);
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: 34px;
+  background: var(--tinta);
+  color: #fff;
+  box-shadow: 0 7px 0 #08070f;
 }
 
-@media (min-width: 860px) {
-  .dh-premium {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 2.4rem;
-    padding: 1.8rem 2rem;
-  }
+.dh-premium::before {
+  content: "";
+  position: absolute;
+  right: -60px;
+  bottom: -90px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(255, 138, 31, 0.16);
 }
+
+.dh-premium > * { position: relative; }
 
 .dh-premium-titulo {
-  margin: 0.8rem 0 0;
-  font-family: var(--font-display);
-  font-size: 1.45rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  margin-top: 0.9rem;
   color: #fff;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
 }
 
+.dh-premium-titulo .fluor { color: var(--tinta); }
+
 .dh-premium-lista {
-  display: grid;
-  gap: 0.55rem;
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 1.2rem;
 }
 
 .dh-premium-lista li {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  font-size: 0.92rem;
-  color: rgba(240, 244, 255, 0.78);
+  gap: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .dh-premium-lista li > span {
   display: grid;
-  place-items: center;
   flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
-  color: #f6d58e;
-  background: rgba(230, 180, 85, 0.13);
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 3px 0 var(--c-o);
 }
 
 .dh-premium-compra {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .dh-premium-precio {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.03em;
-  white-space: nowrap;
-  color: #fff;
 }
 
-.dh-premium-precio small {
-  margin-left: 0.1rem;
-  font-size: 0.42em;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: rgba(240, 244, 255, 0.45);
-}
-
-.dh-premium-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  min-height: 48px;
-  padding: 0 1.5rem;
-  border-radius: 13px;
-  font-size: 0.95rem;
-  font-weight: 800;
-  text-decoration: none;
-  white-space: nowrap;
-  color: #1a1204;
-  background: linear-gradient(135deg, #f6d58e 0%, #e6b455 100%);
-  box-shadow: 0 16px 34px -14px rgba(230, 180, 85, 0.85);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.dh-premium-cta:hover { transform: translateY(-2px); }
+.dh-premium-precio small { font-size: 0.4em; color: rgba(255, 255, 255, 0.7); }
 
 .dh-premium-nota {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin: 0;
-  font-size: 0.72rem;
-  white-space: nowrap;
-  color: rgba(240, 244, 255, 0.45);
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  color: var(--amarillo);
+  transform: rotate(-2deg);
 }
 
-.dh-premium-nota svg { color: #e6b455; }
-
-/* ── Últimas guías ─────────────────────────────────────────────────────── */
-
+/* ── Últimas guías (cielo, el color de las guías) ── */
 .dh-guias {
   display: grid;
-  gap: 0.9rem;
-}
-
-@media (min-width: 760px) {
-  .dh-guias { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
 }
 
 .dh-guia {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--g) 22%, rgba(240, 244, 255, 0.06));
-  border-radius: 18px;
+  border-radius: 24px;
+  background: var(--papel);
+  color: var(--tinta);
   text-decoration: none;
-  background: linear-gradient(170deg, #0e172d 0%, #080d1a 100%);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 0 var(--cielo-o), 0 22px 30px -26px rgba(29, 27, 51, 0.6);
+  transition: transform 0.3s var(--muelle), box-shadow 0.3s var(--muelle);
 }
 
-.dh-guia:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--g) 55%, transparent);
-  box-shadow: 0 24px 50px -28px color-mix(in srgb, var(--g) 70%, transparent);
+.dh-guia:nth-child(1) { transform: rotate(-1deg); }
+.dh-guia:nth-child(3) { transform: rotate(1deg); }
+
+@media (hover: hover) {
+  .dh-guia:hover { transform: translateY(-5px) rotate(0); box-shadow: 0 10px 0 var(--cielo-o), 0 26px 34px -24px rgba(29, 27, 51, 0.55); }
 }
+
+.dh-guia:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
 
 .dh-guia-portada {
   position: relative;
   display: block;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--cielo-s);
 }
 
-.dh-guia-portada .guia-portada {
-  position: absolute;
-  inset: 0;
-}
+.dh-guia-portada img { width: 100%; height: 100%; object-fit: cover; }
 
 .dh-guia-hecha {
   position: absolute;
-  top: 0.6rem;
-  left: 0.6rem;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.28rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #062312;
-  background: #4ade80;
-  box-shadow: 0 8px 18px -8px rgba(74, 222, 128, 0.8);
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 3px 0 var(--menta);
+  transform: rotate(-3deg);
 }
 
 .dh-guia-cuerpo {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.9rem 1rem 1.05rem;
+  gap: 6px;
+  padding: 14px 18px 18px;
 }
 
 .dh-guia-meta {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: color-mix(in srgb, var(--g) 70%, #fff);
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cielo-o);
 }
 
 .dh-guia-titulo {
-  display: -webkit-box;
-  overflow: hidden;
-  font-size: 0.98rem;
-  font-weight: 700;
-  line-height: 1.3;
-  color: #fff;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-family: var(--letra-titular);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
-/* ── Móvil ─────────────────────────────────────────────────────────────── */
+/* ── Lo guardado ── */
+.dash-guardadas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dash-guardada {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px 12px 12px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+
+.dash-guardada-enlace {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  color: var(--tinta);
+  text-decoration: none;
+  border-radius: 14px;
+}
+
+.dash-guardada-enlace:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+@media (hover: hover) {
+  .dash-guardada-enlace:hover .dash-guardada-titulo { text-decoration: underline; text-decoration-color: var(--cielo); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+}
+
+.dash-guardada-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 4px 0 var(--c-o);
+}
+
+.dash-guardada-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.dash-guardada-titulo {
+  overflow-wrap: anywhere;
+  font-family: var(--letra-titular);
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.dash-guardada-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.dash-quitar { flex: none; margin-bottom: 8px; }
+
+.dash-terminos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* Cada término, una ficha de estudio amarilla un poco torcida. */
+.dash-termino {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px 16px 18px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--amarillo-o), 0 18px 26px -24px rgba(29, 27, 51, 0.6);
+}
+
+.dash-termino--0 { transform: rotate(-0.8deg); }
+.dash-termino--2 { transform: rotate(0.8deg); }
+
+.dash-termino-cab {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.dash-termino-nombre {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-family: var(--letra-titular);
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.dash-termino-def {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+/* Las teclas pequeñas miden 34 px de alto: con el dedo, su zona de toque se
+   amplía por fuera hasta los 44 px sin cambiar cómo se ven. Y las teclas a
+   todo el ancho pueden partir su texto en dos líneas antes que salirse. */
+@media (pointer: coarse) {
+  .dash .tecla--peq::after {
+    content: "";
+    position: absolute;
+    inset: -5px -3px;
+  }
+}
+
+.dash .tecla--ancho {
+  white-space: normal;
+  text-align: center;
+}
+
+/* ── Tableta y móvil ── */
+@media (max-width: 960px) {
+  .dh { grid-template-columns: minmax(0, 1fr); }
+  .dh-premium { grid-template-columns: minmax(0, 1fr); }
+  .dh-guias { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dh-guia:nth-child(3) { display: none; }
+
+  .ix-grupo { grid-template-columns: minmax(0, 1fr); }
+  .ix-grupo-titulo { padding-top: 0; }
+}
 
 @media (max-width: 640px) {
-  .dh-hero {
-    padding: 1.4rem 1.1rem;
-    border-radius: 20px;
+  .dashboard-main { gap: 24px; }
+
+  .dh-datos { gap: 8px; }
+  .dh-dato { padding: 12px 10px; }
+  .dh-dato-texto { font-size: 12px; }
+
+  /* En el móvil, cada grupo del índice se desliza en horizontal. */
+  .ix-lista {
+    display: flex;
+    gap: 12px;
+    margin: 0 calc(-1 * clamp(1rem, 4vw, 2rem));
+    padding: 12px clamp(1rem, 4vw, 2rem) 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 clamp(1rem, 4vw, 2rem);
+    scrollbar-width: none;
   }
 
-  .dh-dato {
-    padding: 0.75rem 0.7rem;
-  }
+  .ix-lista::-webkit-scrollbar { display: none; }
+  .ix-lista > li { flex: none; width: 74%; max-width: 280px; scroll-snap-align: start; }
 
-  .dh-dato-valor {
-    font-size: 1.35rem;
-  }
+  .dash-atajo { flex-wrap: wrap; padding: 20px; }
+  .dash-atajo-cta { width: 100%; }
 
-  .dh-card,
-  .dh-premium {
-    padding: 1.2rem 1rem;
-  }
+  .dash-2fa { flex-wrap: wrap; }
+  .dash-2fa-acciones { width: 100%; justify-content: flex-end; }
 
-  .dh-premium-compra {
-    align-items: stretch;
-  }
+  .dh-guias { grid-template-columns: minmax(0, 1fr); }
+  .dh-guia:nth-child(3) { display: flex; }
+  .dh-guia { transform: none !important; }
 
-  .dh-premium-precio,
-  .dh-premium-nota {
-    align-self: center;
+  .dh-logros-rejilla { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); }
+  /* Sin ratón no hay «al pasar»: la pista se oculta a la vista, pero el
+     lector de pantalla la sigue leyendo (lo que pide cada logro está entero
+     en /dashboard/logros). */
+  .dh-logro-pista {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
+}
 
-  .dh-logros-rejilla {
-    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
-  }
+@media (max-width: 400px) {
+  .dh-datos { grid-template-columns: minmax(0, 1fr); }
+  .dh-dato { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; transform: none !important; }
+  .dh-dato-valor { margin-top: 0; }
+  .rs-dia { flex-basis: 34px; height: 42px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dh-hero-cta,
-  .dh-dato,
-  .dh-logro,
-  .dh-premium-cta,
-  .dh-guia,
-  .dh-enlace {
-    transition: none;
-  }
+  .pn-barra > i,
+  .rs-dia.is-on { animation: none; }
 
-  .dh-hero-cta:hover,
-  .dh-dato:hover,
-  .dh-logro:hover,
-  .dh-premium-cta:hover,
-  .dh-guia:hover {
-    transform: none;
-  }
+  .dh-dato,
+  .ix-ficha,
+  .dh-guia,
+  .dh-logro-pista { transition: none; }
 }

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, DM_Sans, Fraunces } from "next/font/google";
+import { Fraunces, Nunito, Caveat } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
@@ -14,20 +14,9 @@ import GlosarioPopupGlobal, { type TerminoCorto } from "@/components/GlosarioPop
 import AcordeonesSuaves from "@/components/AcordeonesSuaves";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-poppins",
-  display: "swap",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
-
+// Poppins y DM Sans, las letras de la web oscura, se quitaron el 17-11-2026:
+// desde entonces toda la web va con las tres del «Cuaderno de estudio».
+//
 // Fraunces: la serif del certificado de los cursos. Antes llegaba con un
 // @import a fonts.googleapis.com en globals.css: una petición a Google que
 // bloqueaba el pintado de TODAS las páginas, cargaba dos familias que no se
@@ -36,9 +25,27 @@ const dmSans = DM_Sans({
 // Kalam se quitó a la vez: solo la usaba una clase que ya no existía.
 const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   style: ["normal", "italic"],
   variable: "--font-fraunces",
+  display: "swap",
+  preload: true,
+});
+
+// Las dos letras del estilo «Cuaderno de estudio» (ESTILO.md, 17-11-2026):
+// Nunito para el texto y los botones, Caveat para las notas a mano. Fraunces
+// (arriba) hace los titulares y las cifras.
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800", "900"],
+  variable: "--font-nunito",
+  display: "swap",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-caveat",
   display: "swap",
   preload: false,
 });
@@ -84,9 +91,13 @@ export const metadata: Metadata = {
 // 31-08-2026; si alguien vuelve a añadirlo para "que no se descuadre", el
 // arreglo correcto es el CSS, no bloquear el zoom del visitante.
 export const viewport: Viewport = {
-  themeColor: "#0a1628",
+  // El lavanda del fondo (`--fondo`): la barra del navegador móvil se funde con la página.
+  themeColor: "#f3f5ff",
   width: "device-width",
   initialScale: 1,
+  // En Android, al abrir el teclado la página se encoge en vez de quedar
+  // tapada: el botón de enviar de los formularios sigue a la vista.
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({
@@ -95,7 +106,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${fraunces.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
+    <html lang="es" className={`${fraunces.variable} ${nunito.variable} ${caveat.variable}`} style={{ fontFamily: "var(--font-nunito, sans-serif)" }}>
       <head>
       </head>
       <body suppressHydrationWarning>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideNearAlmacenamiento from "./GuideNearAlmacenamiento";
 import GuideNearQuiz from "./GuideNearQuiz";
@@ -91,7 +93,6 @@ export default async function NearPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -104,16 +105,16 @@ export default async function NearPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es NEAR Protocol (NEAR)<br />
           <span className="gbc-hero-gold">y en qué se diferencia de las demás redes</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>NEAR Protocol es una blockchain para ejecutar aplicaciones, pensada para que usarla se parezca
-          a usar internet</strong>: las cuentas tienen nombre, como «lucia.near», y enviar dinero cuesta en torno a
-          una centésima de céntimo. Escala repartiendo el trabajo en fragmentos que funcionan en paralelo. Su moneda,
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>NEAR Protocol es una blockchain para ejecutar aplicaciones, pensada para que usarla se parezca
+          a usar internet</Anotacion></strong>: las cuentas tienen nombre, como «lucia.near», y enviar dinero cuesta en torno a
+          una centésima de céntimo. Escala <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>repartiendo el trabajo en fragmentos que funcionan en paralelo</Anotacion>. Su moneda,
           NEAR, paga las comisiones, respalda los datos que guardas y se usa para el staking.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos leídos en la propia red ese día</p>
@@ -134,8 +135,8 @@ export default async function NearPage() {
               NEAR Protocol es una <Termino slug="blockchain">blockchain</Termino> de capa 1: una red propia, con
               sus propios <Termino slug="validador">validadores</Termino>, sobre la que se ejecutan
               <Termino slug="smart-contract"> contratos inteligentes</Termino>. Compite en la misma liga que
-              Ethereum o Solana, pero ha puesto el foco en otra cosa: que quien la usa no tenga que entender
-              direcciones, redes ni comisiones.
+              Ethereum o Solana, pero ha puesto el foco en otra cosa: <Anotacion tipo="underline" color="var(--azul)" retraso={300}>que quien la usa no tenga que entender
+              direcciones, redes ni comisiones</Anotacion>.
             </p>
             <p>
               Sus fundadores venían de la inteligencia artificial, no de las criptomonedas. Illia Polosukhin había
@@ -153,7 +154,7 @@ export default async function NearPage() {
             <p>
               A 14 de noviembre de 2026 había 1.311,7 millones de NEAR, según la propia red, y cada uno cotizaba
               a 3,02 euros según CoinGecko. Eso deja su <Termino slug="market-cap">capitalización</Termino> en unos
-              3.960 millones de euros, en el puesto 22 del mercado. El precio está cerca de un 84 % por debajo de
+              3.960 millones de euros, en el puesto 22 del mercado. El precio está <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>cerca de un 84 % por debajo</Anotacion> de
               su <Termino slug="ath">máximo histórico</Termino> de 20,44 dólares, del 16 de enero de 2022.
             </p>
           </div>
@@ -162,18 +163,18 @@ export default async function NearPage() {
 
       {/* ── 2 ── */}
       <section id="cuentas" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Lo que se nota al usarla</div>
           <h2 className="gbc-title">Cuentas con nombre: «lucia.near» en vez de una cadena de 64 caracteres</h2>
           <div className="gbc-body">
             <p>
               En Bitcoin o en Ethereum, tu cuenta es una dirección: una ristra de letras y números que nadie
-              recuerda. En NEAR Protocol puede ser un nombre. Hay tres formas de cuenta, y las tres reciben NEAR
-              igual:
+              recuerda. En NEAR Protocol puede ser un nombre. Hay tres formas de cuenta, <Anotacion tipo="underline" color="var(--lila)" retraso={300}>y las tres reciben NEAR
+              igual</Anotacion>:
             </p>
           </div>
 
-          <div className="near-cuentas">
+          <div className="near-cuentas gbc-ancho">
             {CUENTAS.map((c) => (
               <div key={c.tipo} className={`near-cuenta${c.nombre ? " es-nombre" : ""}`}>
                 <span className="near-cuenta-tipo">{c.tipo}</span>
@@ -182,7 +183,7 @@ export default async function NearPage() {
               </div>
             ))}
           </div>
-          <p className="gbc-fuente">Formatos y longitudes: especificación del protocolo NEAR (Nomicon), apartado de cuentas. Las direcciones de ejemplo son inventadas y están recortadas.</p>
+          <p className="gbc-fuente gbc-ancho">Formatos y longitudes: especificación del protocolo NEAR (Nomicon), apartado de cuentas. Las direcciones de ejemplo son inventadas y están recortadas.</p>
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
@@ -196,27 +197,30 @@ export default async function NearPage() {
               <Termino slug="clave-privada"> clave privada</Termino>: quien la tiene, lo puede todo. En NEAR una
               cuenta puede tener varias claves, y cada una con sus permisos.
             </p>
+            <Llave color="azul">
             <ul>
               <li><strong>Clave de acceso total.</strong> Mueve fondos, añade o borra claves. Es la que protege tu <Termino slug="seed-phrase">frase semilla</Termino>.</li>
               <li><strong>Clave de llamada a funciones.</strong> Solo puede usar un contrato concreto, no puede enviar NEAR y tiene un tope para gastar en comisiones. Es la que deja una aplicación en tu navegador para no pedirte firma a cada clic.</li>
             </ul>
+            </Llave>
             <p>
               Esa segunda llave es la razón de que muchas aplicaciones de NEAR no te pidan confirmar cada
-              movimiento. Es cómodo, y su daño está acotado: si alguien la roba, puede usar esa aplicación en tu
-              nombre, pero no vaciarte la cuenta.
+              movimiento. Es cómodo, y su daño está acotado: <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>si alguien la roba, puede usar esa aplicación en tu
+              nombre, pero no vaciarte la cuenta</Anotacion>.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El error típico con los nombres</div>
-            <div className="gbc-box-body">
-              <p>Un nombre legible también se puede imitar. «lucia.near» y «luc1a.near» son cuentas distintas, y la
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error típico con los nombres</div>
+            <div className="postit-cuerpo">
+              <p>Un nombre legible también se puede imitar. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>«lucia.near» y «luc1a.near» son cuentas distintas</Anotacion>, y la
               segunda puede ser de un estafador. Es la versión con nombres del
               <Termino slug="envenenamiento-de-direcciones"> envenenamiento de direcciones</Termino>. Copia el
               nombre de un sitio de confianza, compruébalo letra a letra y, si es la primera vez, envía antes una
               cantidad pequeña.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -228,12 +232,12 @@ export default async function NearPage() {
           <div className="gbc-body">
             <p>
               Una blockchain normal es una sola fila: todos los validadores procesan todas las operaciones. NEAR
-              usa <Termino slug="sharding">sharding</Termino>: parte la red en fragmentos que trabajan a la vez,
-              cada uno con un grupo de cuentas. Su diseño se llama <strong>Nightshade</strong>.
+              usa <Termino slug="sharding">sharding</Termino>: <Anotacion tipo="underline" color="var(--azul)" retraso={200}>parte la red en fragmentos que trabajan a la vez</Anotacion>,
+              cada uno con un grupo de cuentas. Su diseño se llama <strong><Anotacion tipo="circle" junta animar={false}>Nightshade</Anotacion></strong>.
             </p>
             <p>
               Lo particular de Nightshade es que los fragmentos no son redes separadas. Cada bloque recoge un trozo
-              de cada fragmento, así que sigue habiendo una sola cadena y una sola historia. Para ti es invisible:
+              de cada fragmento, así que <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>sigue habiendo una sola cadena y una sola historia</Anotacion>. Para ti es invisible:
               no eliges fragmento ni ves en cuál está tu cuenta.
             </p>
             <p>
@@ -268,7 +272,7 @@ export default async function NearPage() {
               <Link href="/guias/ethereum"> Ethereum</Link> deja su red principal lenta y manda el tráfico a
               <Termino slug="capa-2"> capas 2</Termino> construidas encima.
               <Link href="/guias/solana"> Solana</Link> lo hace todo en una sola fila con máquinas muy potentes.
-              NEAR reparte el trabajo dentro de la propia red, y eso le permite crecer añadiendo fragmentos.
+              {" "}<Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>NEAR reparte el trabajo dentro de la propia red, y eso le permite crecer añadiendo fragmentos.</Anotacion>
             </p>
           </div>
         </div>
@@ -284,9 +288,10 @@ export default async function NearPage() {
           <h2 className="gbc-title">El almacenamiento en NEAR Protocol: por qué parte de tu saldo queda bloqueado</h2>
           <div className="gbc-body">
             <p>
-              Guardar datos en NEAR Protocol no se paga: se respalda. Por cada 100.000 bytes que ocupe tu cuenta, 1 NEAR de
-              tu saldo queda inmovilizado. Es lo que la red llama <em>storage staking</em>. El NEAR
-              sigue siendo tuyo, pero no lo puedes mover mientras los datos existan. Si los borras, se libera.
+              <SimboloEstudio tipo="estrella" margen semilla={14} animar={false} />
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>Guardar datos en NEAR Protocol no se paga: se respalda.</Anotacion> <Anotacion tipo="underline" color="var(--lila)" retraso={900}>Por cada 100.000 bytes que ocupe tu cuenta, 1 NEAR de
+              tu saldo queda inmovilizado.</Anotacion> Es lo que la red llama <em>storage staking</em>. El NEAR
+              sigue siendo tuyo, pero no lo puedes mover mientras los datos existan. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Si los borras, se libera.</Anotacion>
             </p>
             <p>
               El motivo es económico. Cada dato que se guarda lo tienen que conservar los validadores mientras exista.
@@ -297,7 +302,7 @@ export default async function NearPage() {
             <ul>
               <li><strong>Al recibir un token por primera vez.</strong> El contrato de ese token tiene que apuntar tu saldo, y te pide un depósito por el sitio que ocupa. En wNEAR y en la <Termino slug="stablecoin">stablecoin</Termino> USDT son 0,00125 NEAR: 125 bytes.</li>
               <li><strong>Al intentar vaciar tu cuenta.</strong> Si ocupa más de lo que la red regala, no puedes enviar todo tu saldo: una parte respalda tus propios datos. Las cuentas que ocupan menos de 770 bytes pueden quedarse a cero.</li>
-              <li><strong>Si despliegas un contrato.</strong> El código cuenta como datos. Un contrato de 200 kB inmoviliza 2 NEAR.</li>
+              <li><strong>Si despliegas un contrato.</strong> El código cuenta como datos. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Un contrato de 200 kB inmoviliza 2 NEAR.</Anotacion></li>
             </ul>
             <p>Pon tus números:</p>
           </div>
@@ -322,7 +327,7 @@ export default async function NearPage() {
 
       {/* ── 5 ── */}
       <section id="comisiones" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Un cambio de octubre de 2026</div>
           <h2 className="gbc-title">Adónde van las comisiones: el fin del 30 % para los desarrolladores</h2>
           <div className="gbc-body">
@@ -332,26 +337,27 @@ export default async function NearPage() {
               una forma de pagar a quien construía aplicaciones sin que tuviera que cobrarte aparte.
             </p>
             <p>
-              Ya no es así. El 3 de julio de 2026, la cámara de gobierno de NEAR Protocol, la House of Stake,
+              <Anotacion tipo="circle" junta>Ya no es así.</Anotacion> El 3 de julio de 2026, la cámara de gobierno de NEAR Protocol, la House of Stake,
               ratificó la propuesta HSP-027, aprobada por 46 votos a 2. La versión 2.14 del software de la red,
               publicada el 26 de octubre de 2026, lleva ese reparto a cero. El 14 de noviembre de 2026 la red
-              principal ya funcionaba con esa regla: <strong>toda la comisión se quema</strong>.
+              principal ya funcionaba con esa regla: <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={400}>toda la comisión se quema</Anotacion></strong>.
             </p>
             <p>
-              Conviene saberlo porque la mayoría de las guías en español todavía cuenta el 30 % como vigente. Y
+              Conviene saberlo porque <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>la mayoría de las guías en español todavía cuenta el 30 % como vigente</Anotacion>. Y
               porque cambia lo que significa la actividad de la red: cada operación ahora retira NEAR de la
               circulación en lugar de repartirlo.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Que se queme no significa que haya menos NEAR</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="asterisco" color="cielo" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Que se queme no significa que haya menos NEAR</div>
+            <div className="postit-cuerpo">
               <p>Con comisiones de una centésima de céntimo, lo que se quema es poco frente a lo que se crea. La
               prueba está en la cuenta: la red arrancó en 2020 con 1.000 millones de NEAR y en noviembre de 2026
-              tenía 1.311,7 millones. La <Termino slug="quema-de-tokens">quema</Termino> frena la
-              <Termino slug="inflacion"> inflación</Termino>, no la anula.</p>
+              tenía 1.311,7 millones. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>La <Termino slug="quema-de-tokens">quema</Termino> frena la
+              <Termino slug="inflacion"> inflación</Termino>, no la anula.</Anotacion></p>
             </div>
-          </div>
+          </Postit>
           <p className="gbc-fuente">
             Propuesta y ratificación: foro de gobernanza de NEAR, HSP-027 (3 de julio de 2026). Recuento de votos:
             Forklog y The Defiant (julio de 2026). Versión 2.14.0: notas de publicación de nearcore, 26 de octubre
@@ -375,15 +381,14 @@ export default async function NearPage() {
               cada uno, y te reparte el resto.
             </p>
             <p>
-              Lo que se reparte sale de monedas nuevas. Desde el 30 de octubre de 2025, la red crea como máximo
-              un 2,5 % de NEAR al año; antes era un 5 %. De cada emisión, el 90 % va a los validadores y a
+              Lo que se reparte sale de monedas nuevas. Desde el 30 de octubre de 2025, la red crea como máximo <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>un 2,5 % de NEAR al año</Anotacion>; antes era un 5 %. De cada emisión, el 90 % va a los validadores y a
               quienes delegan en ellos, y el 10 % a la cuenta del tesoro del protocolo.
             </p>
             <p>
               El 14 de noviembre de 2026 había 589 millones de NEAR en staking, el 44,9 % del total. El 90 % de
               ese 2,5 % repartido entre menos de la mitad de las monedas da un 5 % bruto anual. Con un validador
-              que cobre el 10 %, te queda un 4,5 %. Falta restar lo que no sale en el folleto: en ese mismo año,
-              la cantidad total de NEAR ha crecido otro 2,5 %.
+              que cobre el 10 %, te queda un 4,5 %. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Falta restar lo que no sale en el folleto: en ese mismo año,
+              la cantidad total de NEAR ha crecido otro 2,5 %.</Anotacion>
             </p>
             <p>Así quedan 1.000 NEAR al cabo de un año, en tres casos:</p>
           </div>
@@ -399,12 +404,12 @@ export default async function NearPage() {
               <span className="near-camino-nombre">Staking, validador al 10 %</span>
               <strong>≈ 1.045 NEAR</strong>
               <span className="near-camino-peso">+2,0 % de peso en la red</span>
-              <p>Ganas más deprisa de lo que crece la oferta. Ese 2 % es lo que ganas de verdad, en NEAR.</p>
+              <p>Ganas más deprisa de lo que crece la oferta. <Anotacion tipo="underline" color="var(--menta)" retraso={300}>Ese 2 % es lo que ganas de verdad, en NEAR.</Anotacion></p>
             </div>
             <div className="near-camino">
               <span className="near-camino-nombre">El validador falla medio año</span>
               <strong>≈ 1.022 NEAR</strong>
-              <span className="near-camino-peso">−0,2 % de peso en la red</span>
+              <span className="near-camino-peso es-baja">−0,2 % de peso en la red</span>
               <p>Un validador que deja de producir bloques deja de cobrar, y tú con él. Acabas casi como empezaste.</p>
             </div>
           </div>
@@ -415,16 +420,17 @@ export default async function NearPage() {
             en staking, y sube si sale. La rebaja del 5 % al 2,5 %: versión 2.9.0 de nearcore, octubre de 2025.
           </p>
 
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Lo que viene: un tope del 1,6 %</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" animar={false} />
+            <div className="postit-titulo">Lo que viene: un tope del 1,6 %</div>
+            <div className="postit-cuerpo">
               <p>A principios de noviembre de 2026, la House of Stake aprobó la propuesta HSP-029, que baja la
               emisión máxima del 2,5 % al 1,6 % de forma gradual, a lo largo de 24 meses. Aún no está en marcha:
               falta la revisión de su consejo de seguridad, un periodo de gracia de unos 90 días y que los
               validadores instalen la nueva versión. Cuando llegue, el rendimiento bruto bajará hacia el 3,4 %,
               según los cálculos de la propia propuesta, y también la dilución de quien no hace staking.</p>
             </div>
-          </div>
+          </Postit>
           <p className="gbc-fuente">HSP-029: The Block y Crypto Briefing, 3 de noviembre de 2026.</p>
 
           {/* EXPERIENCIA DEL ADMIN: si el admin hace o ha hecho staking de NEAR, aquí encaja su caso real:
@@ -438,17 +444,18 @@ export default async function NearPage() {
               tu cartera, en NEAR quedan bloqueadas mientras las tienes en staking. Al retirarlas esperas cuatro
               <Termino slug="epoca"> épocas</Termino>. Cada época son 43.200 bloques, unas 6,8 horas al ritmo
               actual. Como la cuenta empieza al cerrar la época en curso, la espera va de unas 27 a unas 34 horas.
-              Durante ese tiempo no cobras ni puedes vender.
+              {" "}<Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Durante ese tiempo no cobras ni puedes vender.</Anotacion>
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El staking no protege del precio</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El staking no protege del precio</div>
+            <div className="postit-cuerpo">
               <p>Todo lo anterior se mide en NEAR. Ganar un 2 % de peso en la red no compensa una caída del 84 %
-              como la que acumula su precio desde enero de 2022. El staking reparte la tarta; no decide cuánto vale.</p>
+              como la que acumula su precio desde enero de 2022. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>El staking reparte la tarta; no decide cuánto vale.</Anotacion></p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -467,9 +474,9 @@ export default async function NearPage() {
               La <Termino slug="abstraccion-de-cadenas">abstracción de cadenas</Termino> busca que no tengas que
               saber en qué red está cada cosa. Su pieza central son las <strong>firmas en cadena</strong>, en
               marcha desde el 8 de agosto de 2024. Un grupo de nodos firma operaciones en nombre de tu cuenta de
-              NEAR mediante <Termino slug="computacion-multiparte">computación multiparte</Termino>: cada uno
-              aporta un trozo de la firma y ninguno tiene la clave entera. Así, desde «lucia.near» puedes
-              controlar una dirección de Bitcoin o de Ethereum.
+              NEAR mediante <Termino slug="computacion-multiparte">computación multiparte</Termino>: <Anotacion tipo="underline" color="var(--lila)" retraso={300}>cada uno
+              aporta un trozo de la firma y ninguno tiene la clave entera</Anotacion>. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Así, desde «lucia.near» puedes
+              controlar una dirección de Bitcoin o de Ethereum.</Anotacion>
             </p>
             <p>
               Encima funcionan los <strong>NEAR Intents</strong>. Dices qué quieres, por ejemplo cambiar bitcoin
@@ -484,8 +491,9 @@ export default async function NearPage() {
               procesan, para que ni quien opera la máquina vea lo que le preguntas.
             </p>
             <p>
-              Una advertencia sobre todo esto. Que NEAR AI tenga clientes no significa que el token NEAR gane valor
-              con ello: el vínculo entre el producto y la moneda depende de cuánto uso acabe pasando por la red.
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={9} animar={false} />
+              Una advertencia sobre todo esto. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>Que NEAR AI tenga clientes no significa que el token NEAR gane valor
+              con ello</Anotacion>: el vínculo entre el producto y la moneda depende de cuánto uso acabe pasando por la red.
               Las cifras de este apartado las publica el propio proyecto y no las ha auditado nadie de fuera.
             </p>
           </div>
@@ -503,12 +511,12 @@ export default async function NearPage() {
           <h2 className="gbc-title">NEAR Protocol y Hacienda: qué declarar si vives en España</h2>
           <div className="gbc-body">
             <p>
-              Mientras tus NEAR solo estén en tu cuenta, no hay nada que declarar por ellos. Las tres situaciones
+              <Anotacion tipo="underline" color="var(--menta)" retraso={200}>Mientras tus NEAR solo estén en tu cuenta, no hay nada que declarar por ellos.</Anotacion> Las tres situaciones
               propias de NEAR Protocol se tratan así:
             </p>
             <ul>
-              <li><strong>Las recompensas del staking</strong> son renta el día que llegan, por su valor en euros de ese día: rendimiento del capital mobiliario, según la consulta V1766-22 de la Dirección General de Tributos. En NEAR llegan con cada época, tres o cuatro veces al día, así que a fin de año son más de mil apuntes: exporta el historial de tu cartera o de tu validador.</li>
-              <li><strong>Un cambio con NEAR Intents tributa como una venta.</strong> Dar NEAR a cambio de bitcoin o de USDC en otra red es una permuta, aunque no haya euros por medio y aunque nunca elijas puente ni red.</li>
+              <li><strong>Las recompensas del staking</strong> son renta el día que llegan, por su valor en euros de ese día: rendimiento del capital mobiliario, según la consulta V1766-22 de la Dirección General de Tributos. En NEAR llegan con cada época, tres o cuatro veces al día, así que a fin de año <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>son más de mil apuntes</Anotacion>: exporta el historial de tu cartera o de tu validador.</li>
+              <li><strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Un cambio con NEAR Intents tributa como una venta.</Anotacion></strong> Dar NEAR a cambio de bitcoin o de USDC en otra red es una permuta, aunque no haya euros por medio y aunque nunca elijas puente ni red.</li>
               <li><strong>Lo bloqueado por almacenamiento no es una venta.</strong> El NEAR no sale de tu cuenta ni lo cambias por nada; solo deja de poder moverse.</li>
             </ul>
             <p>
@@ -526,10 +534,10 @@ export default async function NearPage() {
           <h2 className="gbc-title">Los riesgos de NEAR Protocol</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>La emisión sin techo.</strong> El protocolo no fija un número final de NEAR: cada época crea monedas nuevas, y con las comisiones actuales la quema retira una fracción mínima de lo que entra.</li>
+              <li><strong>La emisión sin techo.</strong> <Anotacion tipo="underline" color="var(--coral)" retraso={200}>El protocolo no fija un número final de NEAR</Anotacion>: cada época crea monedas nuevas, y con las comisiones actuales la quema retira una fracción mínima de lo que entra.</li>
               <li><strong>Las reglas cambian.</strong> En un año se han rebajado la inflación y se ha suprimido el reparto a los desarrolladores, y ya hay aprobada otra rebaja de la emisión. La rebaja de 2025 salió adelante aunque la primera votación de la comunidad no alcanzó el umbral, y hubo validadores que lo criticaron.</li>
               <li><strong>La competencia.</strong> Ethereum, Solana y decenas de redes buscan a los mismos usuarios y desarrolladores, y casi todas prometen lo mismo: rápida y barata.</li>
-              <li><strong>Las piezas nuevas.</strong> Firmas en cadena, Intents y NEAR AI son recientes. Un fallo en el grupo de nodos que firma por ti afectaría a fondos en otras redes.</li>
+              <li><strong>Las piezas nuevas.</strong> Firmas en cadena, Intents y NEAR AI son recientes. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Un fallo en el grupo de nodos que firma por ti afectaría a fondos en otras redes.</Anotacion></li>
               <li><strong>Los nombres se imitan.</strong> Una cuenta legible facilita el engaño de los nombres parecidos y el <Termino slug="phishing">phishing</Termino>.</li>
               <li><strong>El precio.</strong> NEAR es una <Termino slug="altcoin">altcoin</Termino> con mucha <Termino slug="volatilidad">volatilidad</Termino>: en noviembre de 2026 seguía cerca de un 84 % por debajo de los 20,44 dólares de enero de 2022.</li>
             </ul>
@@ -547,7 +555,7 @@ export default async function NearPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de NEAR Protocol</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Nombre Propio</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Nombre Propio</strong>.</p>
           </div>
           {d.isRegistered ? <GuideNearQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

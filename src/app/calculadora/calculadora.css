@@ -1,454 +1,836 @@
-/* ==========================================================================
-   calculadora.css — Predicción de Precio (/calculadora)
+/* ══════════════════════════════════════════════════════════════════════════
+   /calculadora — Predicción de Precio (page.tsx + CalculadoraClient.tsx)
 
-   Rehecha el 10-11-2026, a petición del admin: la lógica se quedó igual y se
-   cambió el aspecto entero. Antes vivía en globals.css (unas 900 líneas que
-   se cargaban en todas las páginas); ahora va aquí, importada solo por
-   CalculadoraClient. Prefijo `pc-` (predicción).
-   ========================================================================== */
+   Estilo «Cuaderno de estudio» (17-11-2026; ESTILO.md, disenos/sistema.html),
+   en la línea de la calculadora de colegio de la portada
+   (`CalculadoraEscolar.tsx`, en home.css): carcasa de tinta con placa solar,
+   pantalla de cristal líquido verde, teclas de verdad (Tecla.tsx) y, al lado,
+   el mercado como un tique de papel, el veredicto como un aviso y la
+   comparativa con las barras gruesas del sistema.
 
-.pc {
-  --pc-acento: var(--accent-orange, #ff6b2b);
-  --pc-acento-2: #ffb07a;
-  --pc-oro: #e6b455;
-  --pc-linea: rgba(240, 244, 255, 0.08);
-  --pc-linea-2: rgba(240, 244, 255, 0.14);
-  --pc-suave: rgba(240, 244, 255, 0.66);
-  --pc-tenue: rgba(240, 244, 255, 0.42);
-  --pc-sube: #34d399;
-  --pc-baja: #f87171;
-  max-width: 1060px;
-  margin: 0 auto;
-  padding: 0.5rem 0 3.5rem;
+   Se ve bien por sí sola sin depender de la base de globals.css.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cal {
+  position: relative;
+  /* `svh`: en el móvil, `vh` cuenta la barra del navegador escondida. */
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
 }
 
-/* ── Cabecera ── */
+.cal,
+.cal * { color-scheme: light; }
 
-.pc-cab { max-width: 720px; margin: 0 auto 1.8rem; text-align: center; }
+.cal-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5.5rem);
+}
+
+/* Los colores con nombre que usan el mercado, el veredicto y las barras. */
+.pc-c--naranja { --c: var(--naranja); --co: var(--naranja-o); --cs: var(--naranja-s); --ct: #fff; }
+.pc-c--azul { --c: var(--azul); --co: var(--azul-o); --cs: var(--azul-s); --ct: #fff; }
+.pc-c--lila { --c: var(--lila); --co: var(--lila-o); --cs: var(--lila-s); --ct: #fff; }
+.pc-c--menta { --c: var(--menta); --co: var(--menta-o); --cs: var(--menta-s); --ct: var(--tinta); }
+.pc-c--coral { --c: var(--coral); --co: var(--coral-o); --cs: var(--coral-s); --ct: #fff; }
+.pc-c--amarillo { --c: var(--amarillo); --co: var(--amarillo-o); --cs: var(--amarillo-s); --ct: var(--tinta); }
+
+/* ── Cabecera ─────────────────────────────────────────────────────────────── */
+
+.pc-cab {
+  max-width: 760px;
+  margin-bottom: clamp(1.8rem, 4vw, 2.6rem);
+}
 
 .pc-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.8rem;
-  border: 1px solid rgba(255, 107, 43, 0.28);
-  border-radius: 999px;
-  background: rgba(255, 107, 43, 0.08);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--pc-acento-2);
-}
-.pc-eyebrow-punto {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--pc-sube);
-  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
-  animation: pc-latido 2.2s ease-out infinite;
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
 }
 
 .pc-titulo {
-  margin: 1rem 0 0.7rem;
-  font: 800 clamp(2.1rem, 5vw, 3.3rem) / 1.05 var(--font-display);
-  letter-spacing: -0.02em;
-  color: #fff;
+  margin: 0.35rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.5rem, 5.6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
 }
 
-.pc-lead { margin: 0; font-size: 1.05rem; line-height: 1.65; color: var(--pc-suave); }
-.pc-lead a, .pc-ayuda a { color: var(--pc-acento-2); }
+.pc-lead {
+  max-width: 52ch;
+  margin: 1.1rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
 
-/* ── Mercado en directo ── */
+.cal a:not(.tecla) {
+  font-weight: 800;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-decoration-color: var(--azul);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
 
-.pc-mercado {
+.cal a:not(.tecla):focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── La mesa: la calculadora a la izquierda, lo demás a la derecha ────────── */
+
+.pc-mesa {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
-  gap: 0.6rem;
-  margin-bottom: 1.2rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(1.5rem, 3.5vw, 2.6rem);
+  align-items: start;
 }
 
-.pc-moneda {
+/* ══ La calculadora de colegio ══ */
+
+.pc-maquina {
+  display: grid;
+  gap: 18px;
+  padding: 20px clamp(16px, 3vw, 24px) 22px;
+  border-radius: 36px;
+  background: var(--tinta);
+  color: #fff;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.12),
+    0 10px 0 #08070f,
+    0 40px 50px -30px rgba(29, 27, 51, 0.65);
+}
+
+.pc-marca {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  min-width: 0;
-  padding: 0.7rem 0.9rem;
-  border: 1px solid var(--pc-linea);
-  border-radius: 14px;
-  background: rgba(13, 26, 50, 0.6);
+  justify-content: space-between;
+  margin: 0 4px;
 }
-.pc-moneda-icono {
+
+.pc-marca-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+
+/* La placa solar. */
+.pc-solar {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 7px;
+  background: #3a3758;
+}
+
+.pc-solar i {
+  width: 16px;
+  height: 18px;
+  border-radius: 2px;
+  background: #57537c;
+}
+
+/* ── La pantalla ── */
+.pc-lcd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  min-height: 210px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: var(--menta-s);
+  box-shadow: inset 0 5px 0 rgba(29, 27, 51, 0.14);
+  color: var(--tinta);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-res-rotulo {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pc-res-cifra {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.6rem, 6vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.pc-res-cuenta {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.pc-res-cuenta i { font-style: normal; color: var(--tinta-3); }
+
+.pc-frente {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.pc-frente > div {
+  display: grid;
+  gap: 1px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  text-align: right;
+}
+
+.pc-frente small {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pc-frente strong {
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.pc-frente span {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* Lo que se ve en la pantalla antes del primer cálculo, y el muro. */
+.pc-vacio,
+.pc-muro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+}
+
+.pc-vacio-icono,
+.pc-muro-icono {
   display: grid;
   place-items: center;
-  flex: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--c) 18%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 45%, transparent);
-  font: 800 0.85rem var(--font-display);
-  color: var(--c);
-}
-.pc-moneda-nombre { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
-.pc-moneda-nombre strong { font-size: 0.88rem; color: #fff; }
-.pc-moneda-nombre small { font-size: 0.72rem; color: var(--pc-tenue); }
-.pc-moneda-cifras { display: flex; flex-direction: column; align-items: flex-end; margin-left: auto; line-height: 1.2; }
-.pc-moneda-cifras strong { font-size: 0.92rem; font-variant-numeric: tabular-nums; color: #fff; }
-.pc-moneda-cifras small { font-size: 0.74rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-.pc-moneda-cargando { margin-left: auto; font-size: 0.78rem; color: var(--pc-tenue); }
-.pc .es-sube { color: var(--pc-sube); }
-.pc .es-baja { color: var(--pc-baja); }
-
-.pc-actualizar {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0 0.95rem;
-  border: 1px solid var(--pc-linea);
-  border-radius: 14px;
-  background: rgba(13, 26, 50, 0.6);
-  font: 600 0.78rem var(--font-family);
-  color: var(--pc-suave);
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-.pc-actualizar:hover:not(:disabled) { border-color: var(--pc-linea-2); color: #fff; }
-.pc-actualizar:disabled { cursor: default; opacity: 0.7; }
-.pc-gira { animation: pc-girar 0.8s linear infinite; }
-
-/* ── El panel: datos | resultado ── */
-
-.pc-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  border: 1px solid var(--pc-linea-2);
-  border-radius: 24px;
-  background: linear-gradient(165deg, #10203d 0%, #0a1528 100%);
-  box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 rgba(29, 27, 51, 0.16);
+  color: var(--menta-o);
 }
 
-.pc-datos { display: flex; flex-direction: column; gap: 1.5rem; padding: 1.8rem; }
+.pc-muro-icono { color: var(--naranja-o); }
 
+.pc-vacio-titulo,
+.pc-muro-titulo {
+  margin: 6px 0 0;
+  font-family: var(--letra-titular);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.pc-vacio-texto,
+.pc-muro-texto {
+  max-width: 44ch;
+  margin: 0;
+  font-size: 0.97rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.pc-muro .tecla { margin-top: 8px; }
+
+.pc-muro-alt {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* La fórmula, grabada en la carcasa. */
 .pc-formula {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: center;
+  gap: 6px 10px;
   margin: 0;
-  font-size: 0.78rem;
-  color: var(--pc-tenue);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
 }
-.pc-formula span {
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--pc-linea);
-  border-radius: 8px;
-  background: rgba(240, 244, 255, 0.03);
-  color: var(--pc-suave);
-}
-.pc-formula i { font-style: normal; font-weight: 700; color: var(--pc-acento); }
 
-.pc-campo { display: flex; flex-direction: column; }
+.pc-formula i {
+  font-family: var(--letra-titular);
+  font-size: 18px;
+  font-style: normal;
+  color: var(--amarillo);
+}
+
+/* ── Los dos campos, como teclas grandes de papel ── */
+.pc-campo {
+  display: grid;
+  gap: 6px;
+  padding: 14px 14px 16px;
+  border-radius: 22px;
+  background: #2a2848;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.06);
+}
 
 .pc-etiqueta {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font: 700 1rem var(--font-display);
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 900;
   color: #fff;
 }
+
 .pc-paso {
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  background: var(--pc-acento);
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: #0a1628;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+  color: var(--tinta);
+  font-family: var(--letra-titular);
+  font-size: 15px;
 }
-.pc-ayuda { margin: 0.35rem 0 0.7rem; padding-left: calc(24px + 0.6rem); font-size: 0.84rem; line-height: 1.5; color: var(--pc-tenue); }
+
+.pc-ayuda {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #c9c7e3;
+}
+
+.pc-ayuda a:not(.tecla) {
+  color: var(--amarillo);
+  text-decoration-color: var(--amarillo);
+}
 
 .pc-caja {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid var(--pc-linea-2);
-  border-radius: 14px;
-  background: rgba(3, 8, 20, 0.45);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 0 16px;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: inset 0 4px 0 rgba(29, 27, 51, 0.08);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
+
 .pc-caja:focus-within {
-  border-color: var(--pc-acento);
-  box-shadow: 0 0 0 4px rgba(255, 107, 43, 0.14);
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px rgba(79, 93, 255, 0.35);
 }
-.pc-caja-prefijo { padding-left: 1.1rem; font: 700 1.5rem var(--font-display); color: var(--pc-tenue); }
+
+.pc-caja-prefijo {
+  font-family: var(--letra-titular);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--tinta-3);
+}
+
 .pc-input {
   flex: 1;
   min-width: 0;
-  padding: 0.85rem 1.1rem;
+  padding: 14px 0;
   border: 0;
-  background: none;
-  font: 700 1.5rem var(--font-display);
-  font-variant-numeric: tabular-nums;
-  color: #fff;
   outline: none;
+  background: transparent;
+  color: var(--tinta);
+  font-family: var(--letra-titular);
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
-.pc-caja-prefijo + .pc-input { padding-left: 0.4rem; }
-.pc-input::placeholder { color: rgba(240, 244, 255, 0.18); }
+
+.pc-input::placeholder { color: var(--gris-o); }
+
 .pc-caja-lectura {
   flex: none;
-  margin-right: 0.9rem;
-  padding: 0.25rem 0.55rem;
-  border-radius: 8px;
-  background: rgba(255, 107, 43, 0.1);
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: var(--pc-acento-2);
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: var(--fondo);
+  font-size: 12.5px;
+  font-weight: 900;
+  color: var(--tinta-2);
   white-space: nowrap;
 }
 
-.pc-atajos { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
-.pc-atajo {
-  padding: 0.38rem 0.75rem;
-  border: 1px solid var(--pc-linea);
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.03);
-  font: 600 0.78rem var(--font-family);
-  color: var(--pc-suave);
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+.pc-atajos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px 10px;
+  margin-top: 8px;
 }
-.pc-atajo:hover { border-color: var(--pc-linea-2); color: #fff; }
-.pc-atajo.is-activo { border-color: var(--pc-acento); background: rgba(255, 107, 43, 0.14); color: #fff; }
+
+.pc-atajos .tecla {
+  width: 100%;
+  padding-inline: 6px;
+  letter-spacing: 0.02em;
+  /* «55.5B (XRP)» en media columna a 320 px: que parta antes que salirse. */
+  white-space: normal;
+  text-align: center;
+}
 
 .pc-ejemplos {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding-top: 1.1rem;
-  border-top: 1px dashed var(--pc-linea);
-  font-size: 0.82rem;
-  color: var(--pc-tenue);
+  display: grid;
+  gap: 8px;
 }
-.pc-ejemplos span { margin-right: 0.2rem; }
-.pc-ejemplos button {
-  padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(230, 180, 85, 0.3);
-  border-radius: 10px;
-  background: rgba(230, 180, 85, 0.07);
-  font: 600 0.8rem var(--font-family);
-  color: var(--pc-oro);
-  cursor: pointer;
-  transition: background 0.2s ease;
+
+.pc-ejemplos-tit {
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  color: var(--amarillo);
+  transform: rotate(-1.5deg);
+  transform-origin: left;
 }
-.pc-ejemplos button:hover { background: rgba(230, 180, 85, 0.15); }
 
-/* ── El resultado ── */
+.pc-ejemplos-teclas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 10px;
+}
 
-.pc-resultado {
+.pc-ejemplos-teclas .tecla {
+  width: 100%;
+  padding-inline: 8px;
+  white-space: normal;
+  text-align: center;
+}
+
+.pc-restantes {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--naranja-s);
+  color: var(--naranja-o);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.pc-restantes a:not(.tecla) { color: var(--naranja-o); text-decoration-color: var(--naranja); }
+
+/* ══ La mesa de al lado ══ */
+
+.pc-lado {
+  display: grid;
+  gap: 26px;
+}
+
+/* ── El tique de papel del mercado ── */
+.pc-mercado {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 1.8rem;
-  border-left: 1px solid var(--pc-linea);
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgba(255, 107, 43, 0.1), transparent 60%),
-    rgba(3, 8, 20, 0.35);
+  padding: 20px 20px 18px;
+  border-radius: 6px 6px 22px 22px;
+  background: var(--papel);
+  box-shadow: 0 0 0 2px var(--gris), 0 12px 24px -16px rgba(29, 27, 51, 0.4);
+  transform: rotate(-0.8deg);
 }
-.pc-resultado.is-activo { justify-content: flex-start; }
 
-.pc-vacio, .pc-muro { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1rem 0.5rem; }
-.pc-vacio-icono, .pc-muro-icono {
+/* El borde de arriba, cortado a bocados como el papel de tique. */
+.pc-mercado::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: radial-gradient(circle at 6px 0, transparent 6px, var(--papel) 6.5px) 0 0 / 12px 12px repeat-x;
+}
+
+.pc-mercado-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed var(--gris);
+}
+
+.pc-mercado-tit {
+  font-family: var(--letra-texto);
+  margin: 0;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pc-actualizar.tecla {
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-gira { animation: pc-gira 0.9s linear infinite; }
+@keyframes pc-gira { to { transform: rotate(360deg); } }
+
+.pc-monedas {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pc-moneda {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 2px dashed var(--gris);
+}
+
+.pc-moneda:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.pc-moneda-icono {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  margin-bottom: 1rem;
-  border: 1px solid var(--pc-linea-2);
-  border-radius: 16px;
-  background: rgba(240, 244, 255, 0.04);
-  color: var(--pc-acento-2);
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: var(--c);
+  box-shadow: 0 4px 0 var(--co);
+  color: var(--ct);
+  font-family: var(--letra-titular);
+  font-size: 19px;
+  font-weight: 800;
 }
-.pc-vacio-titulo, .pc-muro-titulo { margin: 0; font: 700 1.1rem var(--font-display); color: #fff; }
-.pc-vacio-texto, .pc-muro-texto { max-width: 34ch; margin: 0.5rem 0 0; font-size: 0.9rem; line-height: 1.6; color: var(--pc-tenue); }
-.pc-muro-alt { margin: 0.8rem 0 0; font-size: 0.84rem; color: var(--pc-tenue); }
-.pc-muro-alt a { color: var(--pc-acento-2); }
 
-.pc-boton {
-  display: inline-flex;
-  margin-top: 1.2rem;
-  padding: 0.8rem 1.4rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--pc-acento), #ff8a4c);
-  font: 800 0.92rem var(--font-family);
-  color: #fff;
-  text-decoration: none;
-  box-shadow: 0 12px 28px -12px rgba(255, 107, 43, 0.7);
-  transition: transform 0.15s ease, filter 0.15s ease;
+.pc-moneda-nombre,
+.pc-moneda-cifras {
+  display: grid;
+  gap: 1px;
+  line-height: 1.2;
 }
-.pc-boton:hover { transform: translateY(-1px); filter: brightness(1.06); }
 
-.pc-res-rotulo { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pc-tenue); }
-.pc-res-cifra {
-  margin: 0.1rem 0 0;
-  font: 800 clamp(2.4rem, 5.5vw, 3.4rem) / 1.05 var(--font-display);
+.pc-moneda-nombre strong { font-weight: 900; }
+
+.pc-moneda-nombre small {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.pc-moneda-cifras { text-align: right; }
+
+.pc-moneda-cifras strong {
+  font-family: var(--letra-titular);
+  font-size: 1.15rem;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #fff 30%, var(--pc-acento-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
-.pc-res-cuenta { margin: 0.35rem 0 0; font-size: 0.88rem; font-variant-numeric: tabular-nums; color: var(--pc-tenue); }
-.pc-res-cuenta i { margin: 0 0.25rem; font-style: normal; color: var(--pc-acento); }
 
+/* Cifras con signo: aquí sí, el verde y el rojo de las cifras. */
+.pc-moneda-cifras small {
+  font-size: 0.82rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-moneda-cifras .es-sube { color: var(--sube); }
+.pc-moneda-cifras .es-baja { color: var(--baja); }
+
+.pc-moneda-cargando {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  color: var(--tinta-2);
+}
+
+/* ── El veredicto: un aviso del sistema, con su color ── */
 .pc-veredicto {
-  margin-top: 1.3rem;
-  padding: 1rem 1.1rem 1.05rem;
-  border: 1px solid color-mix(in srgb, var(--v) 35%, transparent);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--v) 8%, transparent);
+  padding: 18px 20px;
+  border: 3px solid var(--c);
+  border-radius: 22px;
+  background: var(--cs);
+  animation: pc-aparece 0.45s cubic-bezier(0.34, 1.6, 0.5, 1) both;
 }
-.pc-veredicto-cab { display: flex; align-items: center; gap: 0.5rem; }
-.pc-veredicto-icono { display: grid; color: var(--v); }
-.pc-veredicto-cab strong { font: 700 1.02rem var(--font-display); color: var(--v); }
-.pc-veredicto > p { margin: 0.35rem 0 0; font-size: 0.86rem; line-height: 1.55; color: var(--pc-suave); }
 
-.pc-medidor { margin-top: 0.95rem; }
-.pc-medidor-pista { position: relative; height: 8px; border-radius: 999px; opacity: 0.9; }
+@keyframes pc-aparece { from { opacity: 0; transform: translateY(10px) scale(0.97); } }
+
+.pc-veredicto-cab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pc-veredicto-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--co);
+  color: #fff;
+}
+
+.pc-veredicto-cab strong {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--tinta);
+}
+
+.pc-veredicto > p {
+  margin: 8px 0 0;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.pc-medidor { margin-top: 16px; }
+
+.pc-medidor-pista {
+  position: relative;
+  height: 18px;
+  border-radius: 999px;
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* El marcador: una teclita de tinta clavada en la barra. */
 .pc-medidor-marca {
   position: absolute;
   top: 50%;
-  width: 18px;
-  height: 18px;
-  border: 3px solid #fff;
-  border-radius: 50%;
-  background: var(--v);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+  width: 16px;
+  height: 30px;
+  border: 3px solid var(--papel);
+  border-radius: 7px;
+  background: var(--tinta);
+  box-shadow: 0 3px 0 rgba(29, 27, 51, 0.3);
   transform: translate(-50%, -50%);
-  transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: left 0.6s cubic-bezier(0.34, 1.5, 0.5, 1);
 }
-.pc-medidor-escala { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.7rem; color: var(--pc-tenue); }
 
-.pc-frente { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; margin-top: 0.9rem; }
-.pc-frente > div {
+.pc-medidor-escala {
   display: flex;
-  flex-direction: column;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--pc-linea);
-  border-radius: 14px;
-  background: rgba(240, 244, 255, 0.025);
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
 }
-.pc-frente small { font-size: 0.72rem; color: var(--pc-tenue); }
-.pc-frente strong { margin-top: 0.15rem; font: 800 1.3rem var(--font-display); font-variant-numeric: tabular-nums; color: #fff; }
-.pc-frente span { font-size: 0.74rem; color: var(--pc-tenue); }
 
-.pc-restantes {
-  margin: 1.2rem 0 0;
-  padding: 0.6rem 0.8rem;
-  border-radius: 10px;
-  background: rgba(230, 180, 85, 0.08);
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--pc-suave);
-}
-.pc-restantes a { color: var(--pc-oro); font-weight: 700; }
-
-/* ── Comparativa ── */
-
+/* ── La comparativa ── */
 .pc-compara {
-  margin-top: 1.4rem;
-  padding: 1.6rem 1.8rem;
-  border: 1px solid var(--pc-linea);
-  border-radius: 22px;
-  background: rgba(13, 26, 50, 0.55);
+  padding: clamp(1.2rem, 3vw, 1.6rem);
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
 }
-.pc-compara-cab h2 { margin: 0; font: 700 1.25rem var(--font-display); color: #fff; }
-.pc-compara-cab p { margin: 0.3rem 0 0; font-size: 0.88rem; color: var(--pc-tenue); }
 
-.pc-barras { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.3rem; }
+.pc-compara-cab h2 {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.35rem, 2.6vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--tinta);
+}
+
+.pc-compara-cab p {
+  margin: 0.4rem 0 0;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.pc-barras {
+  display: grid;
+  gap: 14px;
+  margin-top: 1.2rem;
+}
+
 .pc-barra {
   display: grid;
-  grid-template-columns: 110px minmax(0, 1fr) 84px;
-  align-items: center;
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: end;
 }
-.pc-barra-nombre { display: flex; flex-direction: column; line-height: 1.2; }
-.pc-barra-nombre strong { font-size: 0.9rem; color: var(--c); }
-.pc-barra-nombre small { font-size: 0.72rem; color: var(--pc-tenue); }
-.pc-barra-pista { height: 12px; border-radius: 999px; background: rgba(240, 244, 255, 0.05); overflow: hidden; }
+
+.pc-barra-nombre {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pc-barra-nombre strong { font-weight: 900; }
+
+.pc-barra-nombre small {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.pc-barra.es-tuyo .pc-barra-nombre strong {
+  padding: 0 4px;
+  border-radius: 5px;
+  background: var(--amarillo);
+}
+
+.pc-barra-valor {
+  grid-row: 1;
+  grid-column: 2;
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-barra-pista {
+  grid-column: 1 / -1;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--gris);
+}
+
 .pc-barra-relleno {
   display: block;
   height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, transparent), var(--c));
-  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
+  transition: width 0.7s cubic-bezier(0.3, 1.3, 0.5, 1);
+  animation: pc-llenar 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) both;
 }
-.pc-barra-valor { font-size: 0.86rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; color: var(--pc-suave); }
-.pc-barra.es-tuyo .pc-barra-pista { height: 16px; box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.35); }
-.pc-barra.es-tuyo .pc-barra-relleno { box-shadow: 0 0 18px rgba(255, 107, 43, 0.5); }
-.pc-barra.es-tuyo .pc-barra-valor { color: #fff; }
+
+@keyframes pc-llenar { from { width: 0; } }
 
 .pc-conclusion {
-  margin-top: 1.3rem;
-  padding: 0.95rem 1.1rem;
-  border-left: 3px solid var(--pc-acento);
-  border-radius: 0 12px 12px 0;
-  background: rgba(255, 107, 43, 0.06);
+  margin-top: 1.2rem;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--fondo);
 }
-.pc-conclusion p { margin: 0; font-size: 0.92rem; line-height: 1.65; color: var(--pc-suave); }
-.pc-conclusion strong { color: #fff; }
 
-.pc-nota { margin: 1rem 0 0; font-size: 0.74rem; color: var(--pc-tenue); }
+.pc-conclusion p {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
 
-/* ── El texto que lo explica (page.tsx) ── */
+.pc-conclusion strong { color: var(--tinta); font-weight: 900; }
+
+.pc-nota {
+  margin: 1rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* ── La explicación: una hoja del cuaderno (page.tsx) ─────────────────────── */
 
 .pc-explica {
-  max-width: 720px;
-  margin: 3rem auto 0;
-  padding: 2rem 0 0;
-  border-top: 1px solid var(--pc-linea);
+  position: relative;
+  max-width: 820px;
+  margin: clamp(3rem, 7vw, 4.5rem) auto 0;
+  padding: clamp(1.5rem, 5vw, 2.8rem) clamp(1.2rem, 5vw, 3rem) clamp(1.5rem, 5vw, 2.6rem) clamp(2.2rem, 6vw, 4rem);
+  border-radius: 32px;
+  background:
+    linear-gradient(90deg, transparent clamp(1.3rem, 4vw, 2.4rem), var(--coral-s) clamp(1.3rem, 4vw, 2.4rem) calc(clamp(1.3rem, 4vw, 2.4rem) + 2px), transparent calc(clamp(1.3rem, 4vw, 2.4rem) + 2px)),
+    var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+  color: var(--tinta-2);
+  font-size: 1.08rem;
+  font-weight: 500;
+  line-height: 1.75;
 }
-.pc-explica h2 { margin: 2rem 0 0.8rem; font: 700 1.4rem/1.25 var(--font-display); color: #fff; }
-.pc-explica h2:first-child { margin-top: 0; }
-.pc-explica p { margin: 0 0 1rem; font-size: 1rem; line-height: 1.75; color: var(--pc-suave); }
-.pc-explica a { color: var(--pc-acento-2); }
 
-/* ── Animaciones ── */
+.pc-explica-titulo {
+  margin: 2.2rem 0 0.7rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.45rem, 3.2vw, 1.85rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
 
-@keyframes pc-girar { to { transform: rotate(360deg); } }
-@keyframes pc-latido {
-  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
-  70%, 100% { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+.pc-explica-titulo:first-child { margin-top: 0; }
+
+.pc-explica p { margin: 0 0 1.05rem; }
+.pc-explica p:last-child { margin-bottom: 0; }
+
+/* ── Tableta y móvil ──────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  .pc-mesa { grid-template-columns: minmax(0, 1fr); }
+  .pc-maquina { max-width: 620px; width: 100%; margin: 0 auto; }
+  .pc-lado { max-width: 620px; width: 100%; margin: 0 auto; }
+}
+
+@media (max-width: 480px) {
+  .pc-maquina { border-radius: 30px; }
+  .pc-lcd { min-height: 180px; padding: 16px; }
+  .pc-frente { flex-direction: column; align-items: flex-end; }
+  .pc-atajos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pc-ejemplos-teclas { grid-template-columns: minmax(0, 1fr); }
+  .pc-input { font-size: 1.35rem; }
+  .pc-mercado { transform: none; }
+  .pc-res-cifra { font-size: clamp(2.2rem, 11vw, 2.6rem); }
+  .pc-frente > div { max-width: 100%; }
+  /* La lectura de la oferta («55.50B tokens») baja debajo de la cifra: al
+     lado le dejaba al número tres dígitos de ancho a 320 px. */
+  .pc-caja { flex-wrap: wrap; column-gap: 8px; }
+  .pc-caja .pc-input { flex: 1 1 8rem; }
+  .pc-caja-lectura { margin: -4px 0 10px; }
+  .pc-campo { padding-inline: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pc-eyebrow-punto, .pc-gira { animation: none; }
-  .pc-medidor-marca, .pc-barra-relleno { transition: none; }
-}
-
-/* ── Móvil ── */
-
-@media (max-width: 860px) {
-  .pc-panel { grid-template-columns: 1fr; }
-  .pc-resultado { border-left: 0; border-top: 1px solid var(--pc-linea); min-height: 260px; }
-  .pc-mercado { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .pc-actualizar { grid-column: 1 / -1; justify-content: center; padding: 0.55rem; }
-}
-
-@media (max-width: 600px) {
-  .pc-mercado { grid-template-columns: 1fr; }
-  .pc-datos, .pc-resultado { padding: 1.3rem; }
-  .pc-ayuda { padding-left: 0; }
-  .pc-compara { padding: 1.3rem; }
-  .pc-barra { grid-template-columns: 72px minmax(0, 1fr) 70px; gap: 0.6rem; }
-  .pc-barra-nombre small { display: none; }
-  .pc-frente { grid-template-columns: 1fr 1fr; }
+  .pc-gira,
+  .pc-veredicto,
+  .pc-barra-relleno { animation: none; }
+  .pc-medidor-marca,
+  .pc-barra-relleno,
+  .pc-caja { transition: none; }
 }

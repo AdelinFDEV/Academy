@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RotateCcw } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * «Rehacer el curso» para mejorar la nota. Pide confirmación antes, porque
  * borra el progreso y las notas de los módulos de ese curso (el certificado se
  * conserva hasta que se apruebe otra vez el final). Ver api/cursos/rehacer.
+ *
+ * La confirmación es un aviso amarillo (riesgo) del sistema de diseño.
  */
 export default function BotonRehacer({ curso, notaActual }: { curso: string; notaActual: string }) {
   const router = useRouter();
@@ -30,6 +34,7 @@ export default function BotonRehacer({ curso, notaActual }: { curso: string; not
       router.push(`/aula/${curso}`);
       router.refresh();
     } catch (err) {
+      sonar("error");
       setError(err instanceof Error ? err.message : "No se pudo reiniciar el curso.");
     } finally {
       setEnviando(false);
@@ -38,9 +43,11 @@ export default function BotonRehacer({ curso, notaActual }: { curso: string; not
 
   if (!confirmando) {
     return (
-      <button type="button" className="aula-rehacer-btn" onClick={() => setConfirmando(true)}>
-        <RotateCcw size={15} aria-hidden="true" /> Rehacer el curso para mejorar tu nota
-      </button>
+      <div className="aula-rehacer">
+        <Tecla color="blanca" tamano="peq" onClick={() => { sonar("abrir"); setConfirmando(true); }}>
+          <RotateCcw size={15} strokeWidth={2.6} aria-hidden="true" /> Rehacer el curso para mejorar tu nota
+        </Tecla>
+      </div>
     );
   }
 
@@ -52,14 +59,14 @@ export default function BotonRehacer({ curso, notaActual }: { curso: string; not
         <li>Tu certificado <strong>sigue siendo tuyo</strong>, con su código y su nota actual ({notaActual}), mientras lo rehaces.</li>
         <li>Al aprobar de nuevo el examen final, el certificado se actualiza con la <strong>nueva nota, aunque sea más baja</strong>, y conserva el mismo código.</li>
       </ul>
-      {error && <p className="aula-error">{error}</p>}
+      {error && <p className="aula-error" role="alert">{error}</p>}
       <div className="aula-rehacer-acciones">
-        <button type="button" className="aula-btn aula-btn--ghost" onClick={() => setConfirmando(false)} disabled={enviando}>
+        <Tecla color="blanca" tamano="peq" onClick={() => { sonar("cerrar"); setConfirmando(false); }} disabled={enviando}>
           Cancelar
-        </button>
-        <button type="button" className="aula-btn" onClick={rehacer} disabled={enviando}>
-          <RotateCcw size={15} aria-hidden="true" /> {enviando ? "Reiniciando…" : "Sí, rehacer el curso"}
-        </button>
+        </Tecla>
+        <Tecla color="coral" tamano="peq" onClick={rehacer} disabled={enviando}>
+          <RotateCcw size={15} strokeWidth={2.6} aria-hidden="true" /> {enviando ? "Reiniciando…" : "Sí, rehacer el curso"}
+        </Tecla>
       </div>
     </div>
   );

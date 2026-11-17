@@ -1,12 +1,14 @@
 import type { YouTubeVideo } from "@/lib/youtube";
 import { ArrowUpRight, Play } from "lucide-react";
 import { YOUTUBE_URL } from "@/lib/contacto";
+import Tecla from "@/components/cuaderno/Tecla";
 import "./youtube-latest.css";
 
 /**
- * Los últimos vídeos del canal, en la portada. Rehecho el 13-11-2026: el más
- * reciente va en grande, con el título encima de la imagen, y los otros dos
- * en fila a su lado.
+ * Los últimos vídeos del canal, en la portada. El más reciente va en grande y
+ * los otros dos en fila a su lado. Estilo «Cuaderno de estudio» desde el
+ * 17-11-2026: cada vídeo es una tarjeta de papel con la miniatura enmarcada,
+ * en el naranja de la marca (el canal es de Adelin).
  *
  * Todo son enlaces a YouTube: aquí no se incrusta ningún reproductor, así que
  * no se carga nada de Google hasta que el visitante pulsa.
@@ -43,28 +45,29 @@ export default function YouTubeLatest({ videos }: { videos: YouTubeVideo[] }) {
       <div className="ytl-inner">
         <header className="ytl-cabecera">
           <div>
-            <span className="ytl-sello"><LogoYouTube size={15} /> YouTube</span>
-            <h2 id="ytl-titulo" className="ytl-titulo">Lo último del <em>canal</em></h2>
+            <p className="ytl-nota">El canal de YouTube</p>
+            <h2 id="ytl-titulo" className="ytl-titulo">
+              Lo último del <span className="fluor">canal</span>
+            </h2>
           </div>
-          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="ytl-canal">
-            Ver el canal
-            <span className="ytl-canal-flecha" aria-hidden="true"><ArrowUpRight size={16} strokeWidth={2.6} /></span>
-          </a>
+          <Tecla href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" color="blanca" tamano="peq">
+            <LogoYouTube size={17} /> Ver el canal <ArrowUpRight size={16} strokeWidth={2.8} aria-hidden="true" />
+          </Tecla>
         </header>
 
         <div className={`ytl-rejilla${resto.length === 0 ? " ytl-rejilla--uno" : ""}`}>
           {/* El más reciente, en grande. La miniatura grande de YouTube (640 px). */}
           <a href={principal.url} target="_blank" rel="noopener noreferrer" className="ytl-principal">
-            {/* eslint-disable-next-line @next/next/no-img-element -- miniatura de YouTube, ya servida a su tamaño */}
-            <img src={`https://i.ytimg.com/vi/${principal.id}/sddefault.jpg`} alt="" loading="lazy" className="ytl-imagen" />
-            <span className="ytl-principal-velo" aria-hidden="true" />
-            <span className="ytl-play" aria-hidden="true"><Play size={26} fill="currentColor" /></span>
+            <span className="ytl-marco">
+              {/* eslint-disable-next-line @next/next/no-img-element -- miniatura de YouTube, ya servida a su tamaño */}
+              <img src={`https://i.ytimg.com/vi/${principal.id}/sddefault.jpg`} alt="" loading="lazy" className="ytl-imagen" />
+              <span className="ytl-play" aria-hidden="true"><Play size={28} fill="currentColor" /></span>
+            </span>
+            <span className="ytl-postit" aria-hidden="true">Último vídeo</span>
             <span className="ytl-principal-texto">
-              <span className="ytl-etiquetas">
-                <span className="ytl-nuevo">Último vídeo</span>
-                <span className="ytl-fecha">{hace(principal.publishedAt)}</span>
-              </span>
+              <span className="ytl-fecha">{hace(principal.publishedAt)}</span>
               <span className="ytl-principal-titulo">{principal.title}</span>
+              <span className="ytl-ver">Ver en YouTube <ArrowUpRight size={15} strokeWidth={2.6} aria-hidden="true" /></span>
             </span>
           </a>
 
@@ -72,15 +75,15 @@ export default function YouTubeLatest({ videos }: { videos: YouTubeVideo[] }) {
             <div className="ytl-lado">
               {resto.map((v) => (
                 <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ytl-tarjeta">
-                  <span className="ytl-tarjeta-imagen">
+                  <span className="ytl-marco ytl-marco--mini">
                     {/* eslint-disable-next-line @next/next/no-img-element -- miniatura de YouTube */}
                     <img src={v.thumbnail} alt="" loading="lazy" className="ytl-imagen" />
-                    <span className="ytl-play ytl-play--mini" aria-hidden="true"><Play size={15} fill="currentColor" /></span>
+                    <span className="ytl-play ytl-play--mini" aria-hidden="true"><Play size={16} fill="currentColor" /></span>
                   </span>
                   <span className="ytl-tarjeta-texto">
                     <span className="ytl-fecha">{hace(v.publishedAt)}</span>
                     <span className="ytl-tarjeta-titulo">{v.title}</span>
-                    <span className="ytl-ver">Ver en YouTube <ArrowUpRight size={14} strokeWidth={2.4} aria-hidden="true" /></span>
+                    <span className="ytl-ver">Ver en YouTube <ArrowUpRight size={14} strokeWidth={2.6} aria-hidden="true" /></span>
                   </span>
                 </a>
               ))}

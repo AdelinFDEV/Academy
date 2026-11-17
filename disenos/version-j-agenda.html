@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión J · Agenda con separadores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Gochi+Hand&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --mesa: #f0e7d8; --hoja: #fffdf8; --tinta: #26223a; --tinta-2: #716b85; --linea: #ece4d4; --naranja: #ff8a1f; --naranja-o: #cf6905; --menta: #39c98c; --menta-o: #1f9b67; --lila: #9b89ff; --lila-o: #7563e6; --rosa: #ff8fa3; --rosa-o: #e0607a; --amarillo: #ffd23f; --amarillo-o: #d9a900; --gris-o: #cfc6b5; --serif: "Fraunces", Georgia, serif; --mano: "Gochi Hand", cursive; --f: "Nunito", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--mesa); color: var(--tinta); font-family: var(--f); padding: 30px 0 60px; }
+  a { color: inherit; text-decoration: none; }
+  .mano { font-family: var(--mano); }
+  .boton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 16px; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: .03em; color: #fff; background: var(--naranja); box-shadow: 0 5px 0 var(--naranja-o); transition: transform .08s, box-shadow .08s; }
+  .boton:hover { transform: translateY(3px); box-shadow: 0 2px 0 var(--naranja-o); }
+  .boton--blanco { background: #fff; color: var(--tinta); box-shadow: 0 5px 0 var(--gris-o); } .boton--blanco:hover { box-shadow: 0 2px 0 var(--gris-o); }
+
+  /* La agenda abierta */
+  .agenda { max-width: 1200px; margin: 0 auto; position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--hoja); border-radius: 18px; box-shadow: 0 30px 60px -30px rgba(38,34,58,.45), 0 0 0 1px var(--linea); }
+  .agenda::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; margin-left: -20px; background: linear-gradient(90deg, transparent, rgba(38,34,58,.08) 45%, rgba(38,34,58,.12) 50%, rgba(38,34,58,.08) 55%, transparent); pointer-events: none; }
+  .anillas { position: absolute; left: 50%; top: 40px; bottom: 40px; transform: translateX(-50%); display: flex; flex-direction: column; justify-content: space-between; z-index: 3; }
+  .anillas i { width: 34px; height: 14px; border-radius: 7px; background: linear-gradient(#d9d3c8, #9e978a); box-shadow: 0 2px 2px rgba(0,0,0,.2); }
+  .pagina { padding: 40px 54px 50px; min-height: 640px; position: relative; }
+  .pagina--izq { background-image: repeating-linear-gradient(transparent 0 33px, var(--linea) 33px 34px); background-position: 0 120px; }
+
+  /* Separadores */
+  .separadores { position: absolute; right: -46px; top: 60px; display: flex; flex-direction: column; gap: 8px; z-index: 0; }
+  .sep { width: 58px; padding: 18px 0; border-radius: 0 14px 14px 0; color: #fff; font-weight: 900; font-size: 13px; writing-mode: vertical-rl; text-align: center; letter-spacing: .1em; text-transform: uppercase; transition: transform .2s; padding-left: 12px; }
+  .sep:hover { transform: translateX(8px); }
+
+  .cab { display: flex; justify-content: space-between; align-items: center; }
+  .marca { font-family: var(--serif); font-weight: 800; font-size: 26px; }
+  .marca em { color: var(--naranja); font-style: normal; }
+  .dia { font-family: var(--mano); font-size: 24px; color: var(--tinta-2); }
+  h1 { font-family: var(--serif); font-weight: 800; font-size: 56px; line-height: 1.04; letter-spacing: -0.02em; margin: 50px 0 0; }
+  h1 i { font-weight: 500; color: var(--naranja); }
+  .lead { font-size: 18px; line-height: 34px; color: var(--tinta-2); margin: 16px 0 0; font-weight: 600; }
+  .acciones { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+
+  .titulo-pag { font-family: var(--serif); font-weight: 800; font-size: 26px; margin: 0; display: flex; align-items: center; gap: 10px; }
+  .titulo-pag span { font-family: var(--mano); font-weight: 400; color: var(--naranja); font-size: 24px; }
+  .tareas { list-style: none; padding: 0; margin: 18px 0 0; }
+  .tarea { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 2px dashed var(--linea); transition: background .2s; }
+  .tarea:hover { background: #fff7ec; }
+  .casilla { width: 30px; height: 30px; border-radius: 9px; border: 3px solid var(--tinta); display: grid; place-items: center; font-weight: 900; color: #fff; }
+  .casilla.ok { background: var(--menta); border-color: var(--menta-o); }
+  .tarea h3 { margin: 0; font-size: 18px; font-weight: 800; }
+  .tarea.hecha h3 { text-decoration: line-through; text-decoration-color: var(--naranja); text-decoration-thickness: 3px; color: var(--tinta-2); }
+  .tarea small { color: var(--tinta-2); font-weight: 700; }
+  .chip { padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 900; color: #fff; }
+
+  .widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; }
+  .widget { border-radius: 18px; padding: 18px; position: relative; }
+  .widget small { font-weight: 800; font-size: 13px; opacity: .8; }
+  .widget strong { display: block; font-family: var(--serif); font-size: 38px; margin-top: 2px; }
+  .widget .mano { font-size: 20px; }
+  .racha { display: flex; gap: 5px; margin-top: 8px; }
+  .racha i { flex: 1; height: 22px; border-radius: 6px; background: rgba(255,255,255,.55); }
+  .racha i.on { background: #fff; }
+  .clip { position: absolute; top: -14px; right: 20px; width: 18px; height: 46px; border: 4px solid #a9a296; border-radius: 10px; }
+
+  .premium { margin-top: 26px; background: var(--tinta); color: #fff; border-radius: 18px; padding: 22px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .premium b { font-family: var(--serif); font-size: 22px; }
+  .premium p { margin: 4px 0 0; color: #bdb8cf; font-size: 14px; font-weight: 600; }
+
+  .sello { position: absolute; right: 40px; bottom: 40px; width: 120px; height: 120px; border: 3px solid var(--rosa); border-radius: 50%; color: var(--rosa); display: grid; place-items: center; text-align: center; font-weight: 900; font-size: 13px; text-transform: uppercase; transform: rotate(-14deg); opacity: .8; }
+  .pie { text-align: center; margin-top: 30px; color: var(--tinta-2); font-weight: 600; font-size: 14px; }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--tinta); color: #fff; font-weight: 800; font-size: 13px; padding: 10px 16px; border-radius: 14px; z-index: 5; }
+</style>
+</head>
+<body>
+<div class="agenda">
+  <div class="anillas"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <div class="pagina pagina--izq">
+    <div class="cab"><span class="marca">Adelin<em>BTC</em></span><a class="boton boton--blanco" href="#" style="padding:10px 16px;font-size:13px">Entrar</a></div>
+    <h1>Tu agenda para <i>aprender</i> cripto, un día cada vez.</h1>
+    <p class="lead">Guías gratuitas con ejercicios y quiz, organizadas como tareas. Tachas lo que terminas, sumas logros y mantienes tu racha.</p>
+    <div class="acciones"><a class="boton" href="#">Empezar hoy</a><a class="boton boton--blanco" href="#">Ver Premium</a></div>
+    <span class="sello">Guías<br>100 %<br>gratis</span>
+  </div>
+
+  <div class="pagina">
+    <div class="separadores">
+      <a class="sep" href="#" style="background:var(--naranja)">Guías</a>
+      <a class="sep" href="#" style="background:var(--lila)">Diario</a>
+      <a class="sep" href="#" style="background:var(--menta)">Portfolio</a>
+      <a class="sep" href="#" style="background:var(--rosa)">Cursos</a>
+      <a class="sep" href="#" style="background:var(--amarillo);color:var(--tinta)">Foro</a>
+    </div>
+    <div class="cab"><span class="dia">Martes · semana 3</span><span class="mano" style="font-size:22px;color:var(--naranja)">¡vas genial!</span></div>
+    <h2 class="titulo-pag" style="margin-top:22px">Para esta semana <span>(3 de 5)</span></h2>
+    <ul class="tareas">
+      <li class="tarea hecha"><span class="casilla ok">✓</span><span><h3>Qué es Bitcoin</h3><small>Básico · 10 min</small></span><span class="chip" style="background:var(--menta)">Hecha</span></li>
+      <li class="tarea hecha"><span class="casilla ok">✓</span><span><h3>Blockchain</h3><small>Básico · 12 min</small></span><span class="chip" style="background:var(--menta)">Hecha</span></li>
+      <li class="tarea"><span class="casilla"></span><span><h3>Hyperliquid</h3><small>Intermedio · 14 min · nueva</small></span><a class="boton" href="#" style="padding:8px 14px;font-size:12px">Hacer</a></li>
+      <li class="tarea"><span class="casilla"></span><span><h3>XRP y Ripple</h3><small>Básico · 11 min</small></span><span class="chip" style="background:var(--gris-o)">Pendiente</span></li>
+    </ul>
+    <div class="widgets">
+      <div class="widget" style="background:var(--naranja);color:#fff"><span class="clip"></span><small>Tu racha</small><strong>5 días</strong><div class="racha"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+      <div class="widget" style="background:var(--lila);color:#fff"><small>Portfolio Adelin · ejemplo</small><strong>+24,6 %</strong><span class="mano">también las que pierden</span></div>
+    </div>
+    <div class="premium"><span><b>Premium</b><p>Diario con Nova, cartera real y cursos · 19,99 €/mes</p></span><a class="boton" href="#" style="padding:11px 18px;font-size:13px">Ver</a></div>
+  </div>
+</div>
+<p class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No es asesoramiento financiero</p>
+<span class="etiqueta-maqueta">Versión J · Agenda (maqueta)</span>
+</body>
+</html>

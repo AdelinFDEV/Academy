@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión A · Editorial clara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --papel: #f5f0e6;
+    --papel-2: #ece5d6;
+    --tinta: #16130f;
+    --tinta-2: #5b544a;
+    --linea: #d8cfbd;
+    --naranja: #e8730c;
+    --verde: #1f7a4d;
+    --rojo: #b3261e;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papel); color: var(--tinta); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Cabecera de periódico */
+  .barra-fecha { border-bottom: 1px solid var(--linea); font-size: 12px; color: var(--tinta-2); }
+  .barra-fecha .ancho { display: flex; justify-content: space-between; padding-top: 10px; padding-bottom: 10px; }
+  .cabecera { border-bottom: 3px double var(--tinta); }
+  .cabecera .ancho { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-top: 22px; padding-bottom: 18px; }
+  .marca { font-family: var(--serif); font-size: 44px; font-weight: 600; letter-spacing: -0.02em; text-align: center; }
+  .marca i { color: var(--naranja); font-weight: 400; }
+  .marca small { display: block; font-family: var(--sans); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--tinta-2); margin-top: 4px; }
+  .nav { display: flex; gap: 22px; font-size: 14px; font-weight: 500; }
+  .nav a:hover { color: var(--naranja); }
+  .nav-dcha { justify-content: flex-end; align-items: center; }
+  .boton { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; background: var(--tinta); color: var(--papel); font-size: 14px; font-weight: 500; border-radius: 999px; transition: background .2s; }
+  .boton:hover { background: var(--naranja); }
+  .boton--linea { background: transparent; color: var(--tinta); box-shadow: inset 0 0 0 1px var(--tinta); }
+  .boton--linea:hover { background: var(--tinta); color: var(--papel); }
+
+  /* Cinta de precios */
+  .cinta { border-bottom: 1px solid var(--linea); overflow: hidden; white-space: nowrap; font-size: 13px; }
+  .cinta-in { display: inline-flex; gap: 40px; padding: 10px 0; animation: correr 40s linear infinite; }
+  .cinta b { font-weight: 600; }
+  .sube { color: var(--verde); } .baja { color: var(--rojo); }
+  @keyframes correr { to { transform: translateX(-50%); } }
+
+  /* Portada */
+  .portada .ancho { display: grid; grid-template-columns: 1.35fr 1fr; gap: 56px; padding-top: 56px; padding-bottom: 64px; }
+  .seccion-etq { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--naranja); }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 76px; line-height: 0.98; letter-spacing: -0.03em; margin: 16px 0 0; }
+  h1 em { font-style: italic; color: var(--naranja); }
+  .entradilla { font-family: var(--serif); font-size: 21px; line-height: 1.5; color: var(--tinta-2); margin: 26px 0 0; max-width: 34ch; }
+  .entradilla::first-letter { font-size: 3.2em; float: left; line-height: 0.85; padding: 6px 10px 0 0; color: var(--tinta); font-weight: 600; }
+  .acciones { display: flex; gap: 12px; margin-top: 34px; }
+  .firma { display: flex; align-items: center; gap: 12px; margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--linea); font-size: 13px; color: var(--tinta-2); }
+  .firma-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--tinta); color: var(--papel); display: grid; place-items: center; font-family: var(--serif); font-size: 18px; }
+
+  /* Las tres piezas, como columnas de periódico */
+  .columnas { border-left: 1px solid var(--linea); padding-left: 40px; }
+  .pieza { padding: 22px 0; border-bottom: 1px solid var(--linea); display: grid; grid-template-columns: 56px 1fr; gap: 16px; transition: padding .3s; }
+  .pieza:first-child { padding-top: 0; }
+  .pieza:hover { padding-left: 8px; }
+  .pieza-num { font-family: var(--serif); font-size: 44px; line-height: 1; color: var(--naranja); }
+  .pieza h3 { font-family: var(--serif); font-size: 25px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .pieza p { margin: 6px 0 0; font-size: 15px; line-height: 1.55; color: var(--tinta-2); }
+  .pieza-dato { margin-top: 10px; font-size: 13px; font-weight: 600; }
+
+  /* Ilustración del producto: recorte de periódico */
+  .recorte { margin-top: 26px; background: #fffdf8; border: 1px solid var(--linea); padding: 18px 20px; transform: rotate(-1.2deg); box-shadow: 0 18px 30px -22px rgba(22,19,15,.45); }
+  .recorte-cab { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--tinta-2); }
+  .recorte-cifra { font-family: var(--serif); font-size: 46px; margin-top: 6px; color: var(--verde); }
+  .recorte svg { display: block; width: 100%; height: 70px; margin-top: 6px; }
+
+  /* Guías: sumario de revista */
+  .franja { background: var(--papel-2); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+  .franja .ancho { padding-top: 64px; padding-bottom: 72px; }
+  .franja-cab { display: flex; justify-content: space-between; align-items: end; border-bottom: 1px solid var(--tinta); padding-bottom: 16px; }
+  h2 { font-family: var(--serif); font-weight: 400; font-size: 52px; letter-spacing: -0.02em; margin: 8px 0 0; line-height: 1; }
+  h2 em { color: var(--naranja); }
+  .sumario { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 0; margin-top: 28px; }
+  .guia { padding: 0 26px; border-right: 1px solid var(--linea); }
+  .guia:first-child { padding-left: 0; }
+  .guia:last-child { border-right: 0; padding-right: 0; }
+  .guia-img { aspect-ratio: 4/3; background: var(--tinta); position: relative; overflow: hidden; }
+  .guia-img span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--serif); font-size: 96px; font-style: italic; color: var(--naranja); transition: transform .6s; }
+  .guia:hover .guia-img span { transform: scale(1.1); }
+  .guia-cat { margin-top: 16px; font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--naranja); }
+  .guia h3 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin: 8px 0 0; line-height: 1.15; }
+  .guia:first-child h3 { font-size: 34px; }
+  .guia p { font-size: 15px; line-height: 1.55; color: var(--tinta-2); margin: 8px 0 0; }
+  .guia-meta { margin-top: 12px; font-size: 13px; color: var(--tinta-2); }
+
+  /* Premium: suscripción de revista */
+  .suscripcion .ancho { display: grid; grid-template-columns: 1fr 420px; gap: 64px; padding-top: 80px; padding-bottom: 80px; align-items: center; }
+  .cita { font-family: var(--serif); font-size: 40px; line-height: 1.2; font-style: italic; margin: 0; }
+  .cita::before { content: "\201C"; display: block; font-size: 110px; line-height: .6; color: var(--naranja); }
+  .cita-pie { margin-top: 18px; font-size: 14px; color: var(--tinta-2); }
+  .ticket { background: #fffdf8; border: 1px solid var(--tinta); padding: 32px; position: relative; }
+  .ticket::after { content: ""; position: absolute; inset: 6px; border: 1px solid var(--linea); pointer-events: none; }
+  .ticket-plan { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--naranja); font-weight: 600; }
+  .ticket-precio { font-family: var(--serif); font-size: 72px; line-height: 1; margin-top: 12px; }
+  .ticket-precio small { font-family: var(--sans); font-size: 16px; color: var(--tinta-2); }
+  .ticket ul { list-style: none; padding: 0; margin: 22px 0 26px; }
+  .ticket li { padding: 10px 0; border-bottom: 1px dashed var(--linea); font-size: 15px; display: flex; gap: 10px; }
+  .ticket li::before { content: "—"; color: var(--naranja); }
+  .ticket .boton { width: 100%; justify-content: center; position: relative; z-index: 1; }
+
+  .pie { border-top: 3px double var(--tinta); }
+  .pie .ancho { display: flex; justify-content: space-between; padding-top: 24px; padding-bottom: 36px; font-size: 13px; color: var(--tinta-2); }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--tinta); color: var(--papel); font-size: 12px; padding: 8px 14px; border-radius: 999px; }
+</style>
+</head>
+<body>
+
+<div class="barra-fecha"><div class="ancho"><span>Lunes, 16 de noviembre de 2026</span><span>Educación cripto en español</span></div></div>
+
+<header class="cabecera">
+  <div class="ancho">
+    <nav class="nav"><a href="#">Guías</a><a href="#">Diccionario</a><a href="#">Cursos</a><a href="#">Foro</a></nav>
+    <div class="marca">Adelin<i>BTC</i><small>Academy</small></div>
+    <div class="nav nav-dcha"><a href="#">Entrar</a><a class="boton" href="#">Hazte Premium</a></div>
+  </div>
+</header>
+
+<div class="cinta"><div class="cinta-in">
+  <span><b>BTC</b> 91.240 $ <span class="sube">+1,8 %</span></span><span><b>ETH</b> 3.412 $ <span class="baja">−0,6 %</span></span><span><b>SOL</b> 182 $ <span class="sube">+3,2 %</span></span><span><b>XRP</b> 1,12 $ <span class="sube">+0,9 %</span></span><span><b>HYPE</b> 38,4 $ <span class="baja">−2,1 %</span></span><span><b>RENDER</b> 7,9 $ <span class="sube">+4,4 %</span></span>
+  <span><b>BTC</b> 91.240 $ <span class="sube">+1,8 %</span></span><span><b>ETH</b> 3.412 $ <span class="baja">−0,6 %</span></span><span><b>SOL</b> 182 $ <span class="sube">+3,2 %</span></span><span><b>XRP</b> 1,12 $ <span class="sube">+0,9 %</span></span><span><b>HYPE</b> 38,4 $ <span class="baja">−2,1 %</span></span><span><b>RENDER</b> 7,9 $ <span class="sube">+4,4 %</span></span>
+</div></div>
+
+<section class="portada">
+  <div class="ancho">
+    <div>
+      <span class="seccion-etq">La academia</span>
+      <h1>Aprende cripto <em>con criterio</em>, no con prisa.</h1>
+      <p class="entradilla">Guías gratuitas que explican cada proyecto por dentro, un diario para operar con método y la cartera real de Adelin, a la vista, también cuando pierde.</p>
+      <div class="acciones"><a class="boton" href="#">Empezar por las guías</a><a class="boton boton--linea" href="#">Ver Premium</a></div>
+      <div class="firma"><span class="firma-avatar">A</span><span>Escrito y revisado por Adelin · Actualizado cada semana</span></div>
+    </div>
+
+    <div class="columnas">
+      <a class="pieza" href="#"><span class="pieza-num">I</span><span><h3>Diario de Trading</h3><p>Apunta cada operación en un minuto. Nova lee tus datos y te avisa de lo que se te escapa.</p><div class="pieza-dato">10 estadísticas · calendario · emociones</div></span></a>
+      <a class="pieza" href="#"><span class="pieza-num">II</span><span><h3>Portfolio Adelin</h3><p>Mis compras reales con su precio de entrada.</p>
+        <div class="recorte"><div class="recorte-cab"><span>Cartera spot</span><span>Ejemplo</span></div><div class="recorte-cifra">+24,6 %</div>
+        <svg viewBox="0 0 300 70" preserveAspectRatio="none"><path d="M0 60 L30 55 L60 58 L90 44 L120 48 L150 34 L180 38 L210 24 L240 28 L270 14 L300 10" fill="none" stroke="#16130f" stroke-width="1.6"/></svg></div>
+      </span></a>
+      <a class="pieza" href="#"><span class="pieza-num">III</span><span><h3>Cursos</h3><p>Por módulos, con examen y certificado verificable.</p></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="franja">
+  <div class="ancho">
+    <div class="franja-cab"><div><span class="seccion-etq">Guías gratuitas</span><h2>Criptomonedas, <em>explicadas a fondo</em></h2></div><a class="boton boton--linea" href="#">Todas las guías</a></div>
+    <div class="sumario">
+      <a class="guia" href="#"><div class="guia-img"><span>H</span></div><div class="guia-cat">Nueva · Explicaciones</div><h3>Hyperliquid: qué es y cómo funciona</h3><p>El exchange descentralizado que compite con los grandes, explicado sin tecnicismos.</p><div class="guia-meta">Intermedio · 14 min · Quiz final</div></a>
+      <a class="guia" href="#"><div class="guia-img"><span>X</span></div><div class="guia-cat">Criptomonedas</div><h3>XRP y Ripple</h3><p>Pagos internacionales, la demanda de la SEC y qué queda de ella.</p><div class="guia-meta">Básico · 11 min</div></a>
+      <a class="guia" href="#"><div class="guia-img"><span>R</span></div><div class="guia-cat">Criptomonedas</div><h3>Render</h3><p>Potencia de cálculo repartida para gráficos e IA.</p><div class="guia-meta">Intermedio · 12 min</div></a>
+    </div>
+  </div>
+</section>
+
+<section class="suscripcion">
+  <div class="ancho">
+    <div><p class="cita">Una suscripción, las tres piezas: el diario, mi cartera real y todos los cursos.</p><p class="cita-pie">Adelin · fundador de la academia</p></div>
+    <div class="ticket">
+      <div class="ticket-plan">Premium · mensual</div>
+      <div class="ticket-precio">19,99 €<small> /mes</small></div>
+      <ul><li>Diario de Trading con Nova</li><li>Portfolio Adelin: spot y DCA</li><li>Todos los cursos, con certificado</li><li>Sin permanencia</li></ul>
+      <a class="boton" href="#">Hazte Premium</a>
+    </div>
+  </div>
+</section>
+
+<footer class="pie"><div class="ancho"><span>AdelinBTC Academy · Aviso legal · Privacidad · Cookies</span><span>No es asesoramiento financiero.</span></div></footer>
+
+<span class="etiqueta-maqueta">Versión A · Editorial clara (maqueta)</span>
+</body>
+</html>

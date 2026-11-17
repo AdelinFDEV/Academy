@@ -1,0 +1,88 @@
+/* Postit: la nota pegada del «Cuaderno de estudio». Papel de color, cinta
+   arriba, un poco torcida y con su sombra de hoja despegada. */
+
+.postit {
+  --p-fondo: color-mix(in srgb, var(--amarillo) 42%, var(--papel));
+  --p-o: var(--amarillo-o);
+  position: relative;
+  margin: 34px 0 26px;
+  padding: 26px 22px 20px;
+  border-radius: 4px 4px 26px 4px;
+  background:
+    linear-gradient(168deg, transparent 72%, rgba(29, 27, 51, 0.045)),
+    var(--p-fondo);
+  box-shadow: 0 1px 0 rgba(29, 27, 51, 0.06), 0 16px 18px -14px rgba(29, 27, 51, 0.5);
+  color: var(--tinta);
+  transform: rotate(var(--postit-giro, -1.5deg));
+  transition: transform 0.4s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.postit:hover { transform: rotate(0deg) translateY(-2px); }
+
+.postit--amarillo { --p-fondo: color-mix(in srgb, var(--amarillo) 42%, var(--papel)); --p-o: var(--amarillo-o); }
+.postit--coral { --p-fondo: var(--coral-s); --p-o: var(--coral-o); }
+.postit--menta { --p-fondo: var(--menta-s); --p-o: var(--menta-o); }
+.postit--cielo { --p-fondo: var(--cielo-s); --p-o: var(--cielo-o); }
+.postit--lila { --p-fondo: var(--lila-s); --p-o: var(--lila-o); }
+.postit--naranja { --p-fondo: var(--naranja-s); --p-o: var(--naranja-o); }
+.postit--azul { --p-fondo: var(--azul-s); --p-o: var(--azul-o); }
+
+/* La cinta: una tira translúcida, torcida al revés que el pósit. */
+.postit::before {
+  content: "";
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 96px;
+  height: 26px;
+  margin-left: -48px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--papel) 62%, transparent);
+  box-shadow: 0 1px 2px rgba(29, 27, 51, 0.12);
+  transform: rotate(calc(var(--postit-giro, -1.5deg) * -2));
+}
+
+.postit--sin-cinta::before { display: none; }
+
+.postit-titulo {
+  margin: 0 0 8px;
+  font-family: var(--letra-mano);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--p-o);
+}
+
+.postit-cuerpo {
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta);
+}
+
+.postit-cuerpo p { margin: 0; }
+.postit-cuerpo p + p { margin-top: 10px; }
+.postit-cuerpo strong { font-weight: 900; color: var(--tinta); }
+
+.postit a {
+  color: var(--azul-o);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--azul);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.postit a:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; border-radius: 4px; }
+
+/* Un símbolo (SimboloEstudio) clavado en la esquina: el NB, el ¡ojo! */
+.postit .postit-esquina { --se-tam: 34px; position: absolute; top: -18px; right: -10px; }
+
+@media (max-width: 480px) {
+  .postit { padding: 24px 18px 18px; transform: rotate(calc(var(--postit-giro, -1.5deg) * 0.6)); }
+  .postit .postit-esquina { --se-tam: 28px; right: -4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postit { transition: none; }
+}

@@ -1,0 +1,1269 @@
+/*
+ * Diario de Trading — el calendario de papel y el ánimo del día
+ * (17-11-2026, estilo «Cuaderno de estudio»). Prefijo djc-.
+ *
+ * Componentes: src/components/trading/TjCalendar.tsx (vista Mes, vista Año,
+ * el detalle de un día y el resumen de un mes) y TjDayJournal.tsx (las caras
+ * del ánimo y la nota, dentro del formulario de la operación).
+ *
+ * La base (hoja, ficha, etiquetas, chips, barras, ventanas) está en
+ * diario.css. El verde y el rojo (--sube/--baja) solo tiñen lo que tiene
+ * signo: el resultado de un día, de una semana o de un mes.
+ *
+ * El calendario es un contenedor (`container: djc`): la casilla se adapta al
+ * ancho del CALENDARIO, no al de la pantalla, así que sirve igual a todo el
+ * ancho que dentro de una columna.
+ */
+
+/* ── El signo de un resultado, como variables (--sg base, -s suave, -o canto) ── */
+.djc-gana {
+  --sg: var(--sube);
+  --sg-s: color-mix(in srgb, var(--sube) 14%, #fff);
+  --sg-o: color-mix(in srgb, var(--sube) 50%, #fff);
+}
+
+.djc-pierde {
+  --sg: var(--baja);
+  --sg-s: color-mix(in srgb, var(--baja) 12%, #fff);
+  --sg-o: color-mix(in srgb, var(--baja) 45%, #fff);
+}
+
+.djc-be {
+  --sg: var(--tinta-3);
+  --sg-s: var(--gris);
+  --sg-o: var(--gris-o);
+}
+
+/* ══ LA HOJA DE CALENDARIO ═════════════════════════════════════════════════ */
+
+.dj-hoja.djc {
+  container: djc / inline-size;
+  margin-top: 14px;
+  padding-top: 42px;
+}
+
+/* Las anillas: cada una, un aro que entra en su agujero del papel. */
+.djc-anillas {
+  position: absolute;
+  top: -15px;
+  left: clamp(26px, 7%, 70px);
+  right: clamp(26px, 7%, 70px);
+  display: flex;
+  justify-content: space-between;
+  height: 34px;
+  pointer-events: none;
+}
+
+.djc-anillas i {
+  position: relative;
+  width: 16px;
+  height: 34px;
+}
+
+/* El agujero: deja ver el fondo lavanda. */
+.djc-anillas i::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--fondo);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.16);
+}
+
+/* El aro. */
+.djc-anillas i::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 8px;
+  height: 27px;
+  border-radius: 6px;
+  background: var(--tinta-2);
+  box-shadow: inset -2px 0 0 rgba(0, 0, 0, 0.25), inset 2px 0 0 rgba(255, 255, 255, 0.22);
+}
+
+@container djc (max-width: 700px) {
+  .djc-anillas i:nth-child(n + 9) { display: none; }
+}
+
+@container djc (max-width: 420px) {
+  .djc-anillas i:nth-child(n + 7) { display: none; }
+}
+
+/* ── Cabecera: el mes en grande y los mandos ── */
+.djc-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 22px;
+}
+
+.djc-titulo {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.trading-journal .djc-mes {
+  font-size: clamp(2.4rem, 7cqi, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.djc-anio { color: var(--tinta-3); }
+
+.djc-avance {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.djc-avance .dj-barra {
+  --c: var(--azul);
+  width: 120px;
+}
+
+.djc-mandos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+}
+
+.djc-nav,
+.djc-vistas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+/* ── La franja de datos del mes (o del año) ── */
+.djc-franja {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 26px;
+}
+
+.djc-dato {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--fondo);
+}
+
+.djc-dato .dj-cifra {
+  font-size: 1.4rem;
+  overflow-wrap: anywhere;
+}
+
+.djc-dato .dj-barra { --c: var(--azul); }
+.djc-dato .dj-chip { justify-self: start; white-space: normal; }
+
+.djc-dato--total {
+  grid-column: 1 / -1;
+  background: var(--sg-s, var(--fondo));
+  box-shadow: inset 0 0 0 2px var(--sg-o, var(--gris));
+}
+
+.djc-dato .djc-dato-grande { font-size: clamp(1.8rem, 5cqi, 2.4rem); }
+
+.djc-dato-ico {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: var(--papel);
+  color: var(--sg, var(--tinta-2));
+}
+
+.djc-dato-sub {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.djc-dato.is-mejor { background: var(--amarillo-s); }
+
+.djc-dato--animo {
+  grid-column: 1 / -1;
+  background: var(--mood-s, var(--fondo));
+}
+
+.djc-dato-animo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.djc-dato-animo .djc-cara { width: 32px; height: 32px; }
+
+@container djc (min-width: 520px) {
+  .djc-franja { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .djc-dato--total,
+  .djc-dato--animo { grid-column: auto; }
+}
+
+@container djc (min-width: 980px) {
+  .djc-franja { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .djc-dato--total { grid-column: span 2; }
+}
+
+/* ── La pegatina del mejor día: una estrella pequeña, ladeada ── */
+.djc-estrella {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: var(--amarillo);
+  color: var(--tinta);
+  box-shadow: 0 4px 8px -3px rgba(29, 27, 51, 0.45);
+  transform: rotate(12deg);
+  animation: djc-pegar 0.5s var(--muelle) both;
+}
+
+.djc-estrella svg { fill: currentColor; }
+
+/* Dentro de una casilla o de una tecla: pegada en la esquina. */
+.trading-journal .tecla > .djc-estrella {
+  position: absolute;
+  z-index: 2;
+  top: -9px;
+  right: -7px;
+}
+
+/* En una línea de texto. */
+.djc-estrella.djc-estrella--linea {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  margin-right: 2px;
+  box-shadow: 0 2px 4px -2px rgba(29, 27, 51, 0.45);
+}
+
+.djc-estrella--linea svg { width: 10px; height: 10px; }
+
+@keyframes djc-pegar { from { opacity: 0; transform: scale(0.3) rotate(-40deg); } }
+
+/* ── La mesa: los días de la semana y la cuadrícula ── */
+.djc-cols {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: 8px;
+}
+
+.djc-dias-sem span {
+  padding-bottom: 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.djc-dias-sem span.is-finde { color: var(--tinta-3); }
+.djc-dias-sem .djc-dias-sem-tot { display: none; }
+
+/* La cuadrícula entra de lado al cambiar de mes: se recorta solo en
+   horizontal, con margen para las pegatinas y los cantos. */
+.djc-ventanilla {
+  margin: -10px -8px 0;
+  padding: 10px 8px 0;
+  overflow-x: clip;
+}
+
+.djc-rejilla { row-gap: 3px; }
+
+/* ── La casilla de un día ── */
+.djc-num {
+  position: relative;
+  justify-self: start;
+  padding: 1px 3px;
+  font-family: var(--letra-titular);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+
+/* Un día pulsable es una tecla blanca, teñida por su signo. */
+.trading-journal .tecla.djc-dia {
+  --h: 5px;
+  --r: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "num emoji"
+    "pnl pnl"
+    "puntos nota";
+  align-items: start;
+  justify-content: stretch;
+  align-content: stretch;
+  gap: 2px 4px;
+  width: 100%;
+  min-width: 0;
+  min-height: 94px;
+  padding: 8px 9px;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+}
+
+.trading-journal .tecla.djc-dia:is(.djc-gana, .djc-pierde, .djc-be) {
+  --c: var(--sg-s);
+  --o: var(--sg-o);
+}
+
+.djc-dia .djc-num { grid-area: num; }
+.djc-dia.is-finde.is-vacio .djc-num { color: var(--tinta-2); }
+
+.djc-emoji {
+  grid-area: emoji;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.djc-pnl {
+  grid-area: pnl;
+  align-self: center;
+  justify-self: center;
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--letra-titular);
+  font-size: clamp(11px, 1.5cqi, 15px);
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.djc-puntos {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+}
+
+.djc-dia .djc-puntos { grid-area: puntos; align-self: end; }
+
+.djc-puntos i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.djc-puntos em {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+  color: var(--tinta-2);
+}
+
+/* El punto único del móvil: el signo del día. */
+.djc-punto { display: none; }
+
+.djc-con-nota {
+  grid-area: nota;
+  align-self: end;
+  display: grid;
+  color: var(--azul-o);
+}
+
+/* El «+» de un día pasado sin operaciones: apunta una operación ese día. */
+.djc-mas {
+  grid-area: pnl;
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: var(--fondo);
+  color: var(--tinta-3);
+  opacity: 0.7;
+  transition: background 0.15s, color 0.15s, opacity 0.15s, transform 0.3s var(--muelle);
+}
+
+.djc-dia:focus-visible .djc-mas { opacity: 1; background: var(--azul-s); color: var(--azul-o); }
+
+@media (hover: hover) {
+  .djc-dia:hover .djc-mas {
+    opacity: 1;
+    background: var(--azul-s);
+    color: var(--azul-o);
+    transform: scale(1.12) rotate(90deg);
+  }
+}
+
+/* Hoy: el número rodeado a boli azul. */
+.djc-dia.is-hoy .djc-num { color: var(--azul-o); }
+
+.djc-dia.is-hoy .djc-num::after {
+  content: "";
+  position: absolute;
+  inset: -5px -8px;
+  border: 2.5px solid var(--azul);
+  border-radius: 58% 42% 52% 48% / 50% 58% 42% 50%;
+  transform: rotate(-9deg);
+  pointer-events: none;
+  animation: djc-rodear 0.6s var(--muelle) 0.25s both;
+}
+
+@keyframes djc-rodear { from { opacity: 0; transform: rotate(-60deg) scale(0.5); } }
+
+/* Días que aún no han llegado: papel apagado, sin tecla. */
+.djc-dia.is-futuro {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  min-height: 94px;
+  margin-bottom: 5px;
+  padding: 8px 9px;
+  border: 2px dashed var(--gris);
+  border-radius: 16px;
+}
+
+.djc-dia.is-futuro .djc-num { color: var(--tinta-3); }
+.djc-dia.is-futuro.is-hoy .djc-num { color: var(--azul-o); }
+
+.djc-hueco { min-width: 0; }
+
+/* ── El resumen de cada semana: una tira debajo (o una columna, si cabe) ── */
+.djc-semana {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  min-width: 0;
+  margin: 0 0 12px;
+  padding: 7px 14px;
+  border-radius: 14px;
+  background: var(--sg-s, var(--fondo));
+  font-size: 13px;
+}
+
+.djc-semana.is-quieta { display: none; }
+
+.djc-semana-n {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.djc-semana-pnl {
+  font-family: var(--letra-titular);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.djc-semana-meta {
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djc-semana .djc-semana-barra {
+  --c: var(--azul);
+  flex: 1 1 60px;
+  max-width: 120px;
+}
+
+/* A todo el ancho: la semana es una octava columna. */
+@container djc (min-width: 800px) {
+  .djc-cols { grid-template-columns: repeat(7, minmax(0, 1fr)) minmax(104px, 1.15fr); }
+  .djc-dias-sem .djc-dias-sem-tot { display: block; }
+
+  .djc-semana,
+  .djc-semana.is-quieta {
+    grid-column: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    min-height: 94px;
+    margin: 0 0 5px;
+    padding: 10px 12px;
+    border-radius: 16px;
+  }
+
+  .djc-semana.is-quieta {
+    background: none;
+    border: 2px dashed var(--gris);
+  }
+
+  .djc-semana.is-quieta .djc-semana-meta { color: var(--tinta-3); }
+  .djc-semana .djc-semana-barra { flex: none; width: 100%; max-width: none; }
+}
+
+/* ── Móvil: la casilla mínima (número, ánimo y un punto de color) ── */
+@container djc (max-width: 599px) {
+  .djc-cols { column-gap: 4px; }
+  .djc-dias-sem span { font-size: 12px; letter-spacing: 0.02em; }
+
+  .trading-journal .tecla.djc-dia {
+    --h: 4px;
+    --r: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: "num" "emoji" "punto";
+    justify-items: center;
+    align-items: center;
+    gap: 1px;
+    min-height: 60px;
+    padding: 6px 1px 7px;
+  }
+
+  .djc-dia .djc-num { justify-self: center; font-size: 13.5px; }
+  .djc-dia.is-hoy .djc-num::after { inset: -4px -6px; border-width: 2px; }
+  .djc-emoji { font-size: 13px; }
+
+  .djc-pnl,
+  .djc-dia .djc-puntos,
+  .djc-con-nota { display: none; }
+
+  .djc-punto {
+    display: block;
+    grid-area: punto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .djc-mas {
+    grid-area: punto;
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+  }
+
+  .djc-mas svg { width: 11px; height: 11px; }
+
+  .djc-dia.is-futuro {
+    justify-items: center;
+    min-height: 60px;
+    margin-bottom: 4px;
+    padding: 6px 1px;
+    border-radius: 12px;
+  }
+
+  .djc-dia.is-futuro .djc-num { font-size: 13.5px; }
+
+  .trading-journal .tecla.djc-dia > .djc-estrella {
+    top: -7px;
+    right: -5px;
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+  }
+
+  .trading-journal .tecla.djc-dia > .djc-estrella svg { width: 9px; height: 9px; }
+}
+
+/* ── La leyenda ── */
+.djc-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 2px dashed var(--gris);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djc-leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.djc-muestra {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--sg-s);
+  box-shadow: 0 2px 0 var(--sg-o);
+}
+
+.djc-leyenda-mas {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: var(--fondo);
+  color: var(--tinta-3);
+}
+
+/* ══ VISTA AÑO ═════════════════════════════════════════════════════════════ */
+
+/* El año de un vistazo: doce teclas, cada una con la barra de su mes. */
+.djc-anual {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.trading-journal .tecla.djc-ab {
+  --h: 5px;
+  --r: 12px;
+  display: grid;
+  grid-template-rows: 46px 46px auto;
+  justify-content: stretch;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 4px 6px;
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.djc-ab-arriba,
+.djc-ab-abajo {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.djc-ab-arriba { align-items: flex-end; border-bottom: 2px solid var(--gris); }
+.djc-ab-abajo { align-items: flex-start; }
+
+.djc-ab i {
+  display: block;
+  width: min(62%, 18px);
+  background: var(--sg);
+  animation: djc-crecer 0.8s var(--llegar) both;
+}
+
+.djc-ab-arriba i { border-radius: 5px 5px 0 0; transform-origin: bottom; }
+.djc-ab-abajo i { border-radius: 0 0 5px 5px; transform-origin: top; }
+
+/* El peor mes del año: su barra, rayada. */
+.djc-ab.is-peor i {
+  background: repeating-linear-gradient(-45deg, var(--baja) 0 4px, color-mix(in srgb, var(--baja) 65%, #fff) 4px 8px);
+}
+
+@keyframes djc-crecer { from { transform: scaleY(0); } }
+
+.djc-ab-mes {
+  margin-top: 5px;
+  font-weight: 900;
+  text-align: center;
+  color: var(--tinta-2);
+}
+
+.djc-ab.is-quieta .djc-ab-mes { color: var(--tinta-3); }
+
+/* Estrecho (móvil): doce columnas dejaban teclas de 22 px con letra de 9 px.
+   En dos filas de seis, cada mes es una tecla que se lee y se pulsa. */
+@container djc (max-width: 520px) {
+  .djc-anual { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px 6px; }
+
+  .trading-journal .tecla.djc-ab {
+    --h: 4px;
+    --r: 10px;
+    grid-template-rows: 30px 30px auto;
+    padding: 6px 2px 5px;
+    font-size: 12px;
+  }
+
+  .trading-journal .tecla.djc-ab > .djc-estrella {
+    top: -7px;
+    right: -5px;
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  .trading-journal .tecla.djc-ab > .djc-estrella svg { width: 8px; height: 8px; }
+}
+
+/* Doce hojitas de calendario, una por mes. */
+.djc-hojitas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 18px 14px;
+  padding-top: 4px;
+}
+
+.trading-journal .tecla.djc-hojita {
+  --h: 6px;
+  --r: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 22px 14px 14px;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+}
+
+/* Sus anillas, en pequeño. */
+.trading-journal .tecla.djc-hojita::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 18px;
+  right: 18px;
+  height: 12px;
+  background: radial-gradient(circle, var(--tinta-3) 0 3.5px, transparent 4px) 0 0 / 22px 12px repeat-x;
+}
+
+.trading-journal .tecla.djc-hojita.is-ahora { --o: var(--azul); }
+.trading-journal .tecla.djc-hojita.is-mejor { --o: var(--amarillo-o); }
+
+.djc-hojita-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 6px;
+}
+
+.djc-hojita-mes {
+  font-family: var(--letra-titular);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.djc-hojita-pnl {
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.djc-hojita.is-quieta .djc-hojita-pnl { color: var(--tinta-3); }
+
+.djc-hojita-dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.djc-hojita-dias i {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: var(--gris);
+}
+
+.djc-hojita-dias i.is-hueco { background: none; }
+
+.djc-hojita-dias i:is(.djc-gana, .djc-pierde, .djc-be) {
+  background: var(--sg);
+  opacity: var(--intensidad, 1);
+}
+
+.djc-hojita .djc-hojita-barra { --c: var(--azul); }
+
+.djc-hojita-meta {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta-2);
+}
+
+@container djc (max-width: 520px) {
+  .djc-hojitas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; }
+  .trading-journal .tecla.djc-hojita { padding: 20px 10px 12px; }
+  .djc-hojita-mes { font-size: 16px; }
+  .djc-hojita-pnl { font-size: 17px; }
+  .djc-hojita-dias { gap: 2px; }
+}
+
+/* ══ LAS VENTANAS: el detalle de un día y el resumen de un mes ═════════════ */
+
+.dj-ventana.djc-ventana { width: min(600px, 100%); }
+.dj-ventana.djc-ventana--mes { width: min(700px, 100%); }
+
+.dj-ventana.djc-ventana.is-mejor {
+  box-shadow: inset 0 0 0 3px var(--amarillo-s), 0 8px 0 var(--gris-o), 0 40px 80px -30px rgba(29, 27, 51, 0.6);
+}
+
+.djc-v-cab {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding-right: 56px;
+}
+
+.trading-journal .djc-v-fecha { font-size: clamp(1.6rem, 5vw, 2.1rem); }
+
+.djc-v-meta {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djc-v-mejor {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding: 4px 12px 4px 5px;
+  border-radius: 999px;
+  background: var(--amarillo-s);
+  color: #7a5d00;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.djc-v-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-bottom: 14px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: var(--sg-s, var(--fondo));
+  box-shadow: inset 0 0 0 2px var(--sg-o, var(--gris));
+}
+
+.djc-v-total .dj-cifra { font-size: clamp(1.8rem, 7vw, 2.4rem); }
+.djc-v-total .dj-etq { flex-basis: 100%; }
+
+.djc-v-total small {
+  flex-basis: 100%;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* El ánimo y la nota de ese día, si se apuntaron. */
+.djc-v-animo {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--mood-s, var(--fondo));
+}
+
+.djc-v-animo-cara {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+}
+
+.djc-v-animo-cara > .djc-cara { font-size: 22px; }
+
+.djc-v-nota {
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  line-height: 1.25;
+  color: var(--tinta);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* La lista de operaciones del día. */
+.djc-v-lista {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.djc-v-op {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  grid-template-areas:
+    "hora par r pnl editar"
+    "hora est r pnl editar";
+  align-items: center;
+  gap: 0 12px;
+  padding: 8px 8px 8px 16px;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: inset 5px 0 0 var(--sg);
+}
+
+.djc-v-hora { grid-area: hora; font-size: 13px; font-weight: 800; color: var(--tinta-2); }
+
+.djc-v-par {
+  grid-area: par;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.djc-v-estrategia {
+  grid-area: est;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-2);
+  overflow-wrap: anywhere;
+}
+
+.djc-v-r { grid-area: r; font-size: 13px; font-weight: 800; white-space: nowrap; }
+
+.djc-v-pnl {
+  grid-area: pnl;
+  font-family: var(--letra-titular);
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.trading-journal .tecla.djc-v-editar {
+  --h: 4px;
+  --r: 12px;
+  grid-area: editar;
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 480px) {
+  .djc-v-op {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "par pnl editar"
+      "hora r editar"
+      "est est editar";
+    gap: 2px 10px;
+  }
+
+  .djc-v-r { justify-self: end; }
+}
+
+.djc-v-vacio {
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--fondo);
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djc-v-pestanas { margin-bottom: 10px; }
+
+.djc-v-panel { margin-bottom: 18px; }
+
+.djc-v-datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.djc-v-datos > div {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--fondo);
+}
+
+.djc-v-datos .dj-cifra { font-size: 1.25rem; overflow-wrap: anywhere; }
+.djc-v-datos .dj-barra { --c: var(--azul); }
+.djc-v-datos > div.is-mejor { background: var(--amarillo-s); }
+.djc-v-datos > div:is(.mood-1, .mood-2, .mood-3, .mood-4) { background: var(--mood-s); }
+
+/* Los días del mes, uno a uno. */
+.djc-v-dias {
+  display: grid;
+  gap: 6px;
+}
+
+.djc-v-dias li {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto auto 24px auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px 7px 7px;
+  border-radius: 14px;
+  background: var(--fondo);
+}
+
+.djc-v-dias li.is-mejor { box-shadow: inset 0 0 0 2px var(--amarillo); }
+
+.djc-v-dia-n {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--sg-s);
+  box-shadow: 0 3px 0 var(--sg-o);
+  font-family: var(--letra-titular);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.djc-v-dia-sem { font-size: 14px; font-weight: 700; color: var(--tinta-2); }
+
+.djc-v-dias strong {
+  font-family: var(--letra-titular);
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .djc-v-dias li { grid-template-columns: 36px minmax(0, 1fr) 24px auto; }
+  .djc-v-dias li > .djc-puntos,
+  .djc-v-dias li > .djc-tabla-meta { display: none; }
+}
+
+/* Pares y estrategias. */
+.djc-v-dos {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .djc-v-dos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.djc-tabla { min-width: 0; }
+.djc-tabla h4 { margin-bottom: 8px; }
+
+.djc-tabla ul {
+  display: grid;
+  gap: 6px;
+}
+
+.djc-tabla li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "nombre pnl" "meta pnl";
+  align-items: center;
+  gap: 0 10px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: var(--fondo);
+}
+
+.djc-tabla-nombre {
+  grid-area: nombre;
+  overflow: hidden;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.djc-tabla-meta {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
+
+.djc-tabla li .djc-tabla-meta { grid-area: meta; }
+
+.djc-tabla li strong {
+  grid-area: pnl;
+  font-family: var(--letra-titular);
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.trading-journal .tecla.djc-v-pie { white-space: normal; text-align: center; }
+
+/* ══ EL ÁNIMO DEL DÍA (TjDayJournal) ═══════════════════════════════════════ */
+
+/* La cara de cada ánimo: un círculo de su color con el gesto en tinta. */
+.djc-cara {
+  width: 1.6em;
+  height: 1.6em;
+  flex: none;
+  overflow: visible;
+}
+
+.djc-cara-fondo { fill: var(--mood, var(--gris)); stroke: none; }
+
+.djc-cara path {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.djc-cara .djc-cara-boca,
+.djc-cara .djc-cara-ojo { fill: var(--tinta); }
+.djc-cara .djc-cara-ojo { stroke: none; }
+
+.djc-diario {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.djc-diario-cab {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.djc-diario-ico {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--azul-s);
+  color: var(--azul-o);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--azul) 35%, #fff);
+}
+
+.trading-journal .djc-diario-tit { font-size: 1.4rem; }
+
+.djc-diario-sub {
+  margin-top: 3px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+/* Las cuatro caras: teclas grandes, cada una del color de su ánimo. */
+.djc-caras {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.trading-journal .tecla.djc-cara-tecla {
+  --c: var(--mood-s);
+  --o: color-mix(in srgb, var(--mood) 55%, #fff);
+  --t: var(--tinta);
+  --h: 7px;
+  --r: 20px;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 16px 6px 12px;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}
+
+.trading-journal .tecla.djc-cara-tecla.is-on {
+  --c: var(--mood);
+  --o: var(--mood-o);
+  --t: #fff;
+}
+
+/* Sobre amarillo, cielo y menta, tinta (ESTILO.md): solo el coral lleva blanco. */
+.trading-journal .tecla.djc-cara-tecla.is-on:is(.mood-2, .mood-3, .mood-4) { --t: var(--tinta); }
+
+.djc-cara-tecla .djc-cara {
+  width: 52px;
+  height: 52px;
+  transition: transform 0.35s var(--muelle);
+}
+
+.djc-cara-tecla.is-on .djc-cara { transform: scale(1.12) rotate(-6deg); }
+.djc-cara-tecla.is-on .djc-cara-fondo { fill: #fff; }
+
+@media (max-width: 520px) {
+  .djc-caras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .djc-cara-tecla .djc-cara { width: 44px; height: 44px; }
+}
+
+/* Lo que dice cada ánimo. */
+.djc-lectura {
+  padding: 12px 16px;
+  border: 2px dashed var(--mood, var(--gris-o));
+  border-radius: 16px;
+  background: var(--mood-s, var(--fondo));
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta);
+}
+
+/* La nota: papel de cuaderno, con su margen y sus renglones. */
+.trading-journal .djc-nota-campo textarea.djc-renglones {
+  min-height: 146px;
+  padding: 6px 16px 6px 46px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  background-color: var(--papel);
+  background-image:
+    linear-gradient(90deg, transparent 32px, var(--coral-s) 32px, var(--coral-s) 34px, transparent 34px),
+    repeating-linear-gradient(180deg, transparent 0, transparent 27px, var(--azul-s) 27px, var(--azul-s) 28px);
+  background-position: 0 0, 0 6px;
+  background-attachment: local;
+}
+
+.djc-nota-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+.djc-cuenta {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tinta-3);
+}
+
+.djc-cuenta.is-cerca { color: var(--coral-o); }
+
+.djc-nota-error {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--coral-o);
+}
+
+/* ── Movimiento reducido ── */
+@media (prefers-reduced-motion: reduce) {
+  .djc-estrella,
+  .djc-dia.is-hoy .djc-num::after,
+  .djc-ab i { animation: none; }
+  .djc-mas,
+  .djc-cara-tecla .djc-cara { transition: none; }
+}

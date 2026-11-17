@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Lock, Hourglass, Check, ArrowRight } from "lucide-react";
 import AulaShell from "@/components/aula/AulaShell";
+import Tecla from "@/components/cuaderno/Tecla";
 import Examen from "@/components/aula/Examen";
 import { exigirAula } from "../../../contexto";
 import { claveDesdeTexto, estadoDeExamen, moduloDeExamen, preguntasDeIntento } from "@/lib/cursos-examen";
@@ -47,21 +47,21 @@ export default async function ExamenPage({ params }: Props) {
 
   if (examen.tipo === "bloqueado") {
     cuerpo = (
-      <div className="aula-cerrada">
-        <span className="aula-cerrada-icono"><Lock size={26} strokeWidth={1.8} aria-hidden="true" /></span>
+      <div className="aula-hoja aula-cerrada">
+        <span className="aula-cerrada-icono"><Lock size={28} strokeWidth={2.4} aria-hidden="true" /></span>
         <h1 className="aula-h1">{titulo}</h1>
         <p className="aula-lead">
           {modulo
             ? `Se abre al completar las ${modulo.lecciones.length} lecciones del módulo.`
             : `Se abre al aprobar los ${curso.modulos.length} módulos del curso.`}
         </p>
-        <Link href={`/aula/${slug}`} className="aula-btn aula-btn--grande">Volver al curso</Link>
+        <Tecla href={`/aula/${slug}`} color="lila" tamano="grande">Volver al curso</Tecla>
       </div>
     );
   } else if (examen.tipo === "espera") {
     cuerpo = (
-      <div className="aula-cerrada">
-        <span className="aula-cerrada-icono"><Hourglass size={26} strokeWidth={1.8} aria-hidden="true" /></span>
+      <div className="aula-hoja aula-cerrada is-espera">
+        <span className="aula-cerrada-icono"><Hourglass size={28} strokeWidth={2.4} aria-hidden="true" /></span>
         <h1 className="aula-h1">{titulo}</h1>
         <p className="aula-lead">
           Tu último intento sacó un {formatoNota(examen.ultimaNota)}. Podrás repetirlo a partir del{" "}
@@ -71,18 +71,18 @@ export default async function ExamenPage({ params }: Props) {
           </strong>
           , con otras preguntas. Aprovecha para repasar las lecciones que te recomendó la corrección.
         </p>
-        <Link href={`/aula/${slug}`} className="aula-btn aula-btn--grande">Volver al curso</Link>
+        <Tecla href={`/aula/${slug}`} color="lila" tamano="grande">Volver al curso</Tecla>
       </div>
     );
   } else if (examen.tipo === "aprobado") {
     cuerpo = (
-      <div className="aula-cerrada is-aprobado">
-        <span className="aula-cerrada-icono"><Check size={26} strokeWidth={2.4} aria-hidden="true" /></span>
+      <div className="aula-hoja aula-cerrada is-aprobado">
+        <span className="aula-cerrada-icono"><Check size={30} strokeWidth={3.2} aria-hidden="true" /></span>
         <h1 className="aula-h1">{titulo}</h1>
         <p className="aula-lead">Aprobado con un <strong>{formatoNota(examen.nota)}</strong>.</p>
-        <Link href={siguiente.href} className="aula-btn aula-btn--grande">
-          {siguiente.etiqueta} <ArrowRight size={17} aria-hidden="true" />
-        </Link>
+        <Tecla href={siguiente.href} tamano="grande">
+          {siguiente.etiqueta} <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+        </Tecla>
       </div>
     );
   } else {

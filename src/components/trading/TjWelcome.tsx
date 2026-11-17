@@ -26,6 +26,12 @@ function useFechaDeHoy(): string | null {
   return useSyncExternalStore(noSubscribe, fechaDeHoy, () => null);
 }
 
+/**
+ * La portada del cuaderno (estilo «Cuaderno de estudio», 17-11-2026): la
+ * etiqueta del cuaderno con la foto pegada con cinta, el saludo con el nombre
+ * en rotulador y, a la derecha, el balance. Debajo, cuatro fichas con la
+ * semana, el mes, el trimestre y el año.
+ */
 export default function TjWelcome({
   name,
   avatar,
@@ -43,7 +49,7 @@ export default function TjWelcome({
   now: Date;
   /** El balance de la cuenta (TjBalance), a la derecha del saludo. */
   balance: React.ReactNode;
-  /** Nova, el asistente (TjBot), bajo el saludo. */
+  /** Nova, la asistente (TjBot). Hoy oculta: llega null (ver nova-visible.ts). */
   bot: React.ReactNode;
 }) {
   const { texto: saludo, Icono: IconoMomento, momento } = useGreeting();
@@ -51,30 +57,33 @@ export default function TjWelcome({
   const reads = useMemo(() => periodReads(trades, now), [trades, now]);
 
   return (
-    <header className="tjw">
-      <div className="tjw-top">
-        <div className="tjw-hello">
-          {/* El saludo (rehecho el 13-11-2026): una franja del mismo ancho que la
-              habitación de Nova, que hace de marquesina sobre ella. La foto con su
-              aro, el momento del día con su icono, el nombre en grande y la fecha. */}
-          <div className={`tjw-saludo is-${momento}`}>
-            <span className="tjw-foto-aro">
-              <AvatarUsuario avatar={avatar} inicial={(name.charAt(0) || "U").toUpperCase()} className="tjw-foto" />
-            </span>
-            <h1 className="tjw-title">
-              <span className="tjw-momento"><IconoMomento size={14} aria-hidden="true" /> {saludo}</span>
-              <span className="tjw-name">{name}</span>
+    <header className="djp">
+      <div className="djp-portada">
+        <div className={`djp-hola is-${momento}`}>
+          <span className="djp-foto">
+            <AvatarUsuario avatar={avatar} inicial={(name.charAt(0) || "U").toUpperCase()} className="djp-foto-img" />
+            <i className="djp-cinta" aria-hidden="true" />
+          </span>
+          <div className="djp-hola-texto">
+            <p className="dj-nota djp-momento">
+              <IconoMomento size={18} strokeWidth={2.4} aria-hidden="true" /> {saludo}
+            </p>
+            <h1 className="djp-titulo">
+              Diario de <span className="fluor">{name}</span>
             </h1>
-            {hoy && <span className="tjw-fecha"><CalendarDays size={13} aria-hidden="true" /> {hoy}</span>}
+            <p className="djp-lead">
+              Cada operación, cada día y cómo te sentiste, en un mismo cuaderno.
+            </p>
+            {hoy && <span className="dj-chip dj-chip--azul djp-fecha"><CalendarDays size={14} aria-hidden="true" /> {hoy}</span>}
           </div>
-          {/* Nova: lo que antes era la frase de la cabecera ahora lo cuenta él, y mucho más. */}
-          {bot}
         </div>
         {balance}
       </div>
 
+      {bot}
+
       {trades.length > 0 && (
-        <dl className="tjw-periods" aria-label="Tu operativa por periodos">
+        <dl className="djp-periodos" aria-label="Tu operativa por periodos">
           {reads.map(p => {
             const diff = p.pnl - p.prevPnl;
             // Comparar solo tiene sentido si hay operaciones en los dos periodos.
@@ -83,29 +92,29 @@ export default function TjWelcome({
             return (
               <div
                 key={p.id}
-                className={`tjw-period tone-${toneOf(p.pnl)}${p.count ? "" : " is-quiet"}`}
+                className={`djp-periodo${p.count ? "" : " is-vacio"}`}
                 title={capital && p.count ? `${p.sub}: ${pctStr((p.pnl / capital) * 100)} sobre tu capital inicial` : p.sub}
               >
                 {/* Tres datos y nada más (sin gráfica desde el 13-11-2026, pedido por el
                     admin): periodo, resultado y cuántas con qué acierto. La flecha compara
                     con el periodo anterior; el resto, al pasar el ratón. */}
                 <dt>
-                  <span className="tjw-label">{p.label}</span>
+                  <span className="dj-etq">{p.label}</span>
                   {showTrend && (
-                    <span className={`tjw-trend tone-${toneOf(diff)}`} title={`Frente al periodo anterior (${pnlStr(p.prevPnl)})`}>
-                      <Trend size={12} /> {diff > 0 ? "Mejor" : diff < 0 ? "Peor" : "Igual"}
+                    <span className={`dj-chip tone-${toneOf(diff)}`} title={`Frente al periodo anterior (${pnlStr(p.prevPnl)})`}>
+                      <Trend size={12} strokeWidth={2.8} aria-hidden="true" /> {diff > 0 ? "Mejor" : diff < 0 ? "Peor" : "Igual"}
                     </span>
                   )}
                 </dt>
                 {p.count ? (
                   <>
-                    <dd className="tjw-pnl">{pnlStr(p.pnl)}</dd>
-                    <dd className="tjw-meta">
+                    <dd className={`dj-cifra djp-periodo-pnl tone-${toneOf(p.pnl)}`}>{pnlStr(p.pnl)}</dd>
+                    <dd className="djp-periodo-meta">
                       {p.count} {p.count === 1 ? "operación" : "operaciones"} · {Math.round(p.winRate)} % de acierto
                     </dd>
                   </>
                 ) : (
-                  <dd className="tjw-empty">Sin operaciones</dd>
+                  <dd className="djp-periodo-meta">Sin operaciones</dd>
                 )}
               </div>
             );

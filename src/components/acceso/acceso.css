@@ -1,0 +1,501 @@
+/* Las pantallas de acceso (AccesoShell.tsx y Campos.tsx): /login, /register,
+   /forgot-password, /auth/reset-password y /mfa-challenge.
+   Estilo «Cuaderno de estudio»: campos y avisos como en disenos/sistema.html. */
+
+.acc {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0 clamp(1rem, 4vw, 2rem) clamp(2.5rem, 6vw, 4rem);
+  /* Papel de cuaderno: una cuadrícula de puntos muy suave sobre el lavanda. */
+  background-color: var(--fondo);
+  background-image: radial-gradient(circle, var(--gris) 1.6px, transparent 1.8px);
+  background-size: 26px 26px;
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+}
+
+/* ── Cabecera: la marca y el altavoz ── */
+.acc-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1.1rem 0 0.4rem;
+}
+
+.acc-marca {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--letra-titular);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.acc-marca em {
+  font-style: normal;
+  color: var(--naranja);
+}
+
+@media (hover: hover) {
+  .acc-marca:hover { transform: rotate(-3deg) scale(1.03); }
+}
+
+.acc-marca:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* ── La mesa: la hoja a la izquierda, el apunte a la derecha ── */
+.acc-mesa {
+  display: grid;
+  grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  max-width: 1080px;
+  margin: clamp(1rem, 3vw, 2rem) auto 0;
+}
+
+/* La hoja: papel blanco con los agujeros de la anilla arriba. */
+.acc-hoja {
+  position: relative;
+  padding: 3.1rem clamp(1.4rem, 4vw, 2.6rem) clamp(1.8rem, 4vw, 2.4rem);
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow:
+    0 7px 0 var(--gris-o),
+    0 34px 60px -40px rgba(29, 27, 51, 0.45);
+  animation: acc-entra 0.55s cubic-bezier(0.34, 1.5, 0.5, 1) both;
+}
+
+.acc-hoja::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 28px;
+  right: 28px;
+  height: 14px;
+  background: radial-gradient(circle at 7px 7px, var(--fondo) 6px, var(--gris) 6.5px, var(--gris) 7px, transparent 7.5px) left center / 34px 14px repeat-x;
+}
+
+@keyframes acc-entra {
+  from { opacity: 0; transform: translateY(18px) rotate(-1deg); }
+  to { opacity: 1; transform: none; }
+}
+
+.acc-sello {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.9rem;
+  border-radius: 18px;
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--naranja-o);
+  transform: rotate(-4deg);
+}
+
+.acc-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.acc-titulo {
+  margin: 0.2rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 4.4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+
+.acc-lead {
+  margin: 0.8rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.acc-cuerpo {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 1.6rem;
+}
+
+/* ── Formularios ── */
+.acc-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.acc-campo {
+  display: grid;
+  gap: 8px;
+}
+
+.acc-campo-cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.acc-campo label {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--tinta);
+}
+
+.acc-input {
+  width: 100%;
+  min-height: 56px;
+  padding: 15px 16px;
+  border: 3px solid var(--gris);
+  border-radius: 14px;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 700 16px var(--letra-texto);
+  outline: none;
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.acc-input::placeholder {
+  color: var(--tinta-3);
+  font-weight: 600;
+}
+
+.acc-input:focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px var(--azul-s);
+}
+
+.acc-input[aria-invalid="true"] { border-color: var(--coral); }
+
+/* El autocompletado de Chrome pinta su propio fondo: se tapa con el papel. */
+.acc-input:-webkit-autofill,
+.acc-input:-webkit-autofill:hover {
+  -webkit-text-fill-color: var(--tinta);
+  -webkit-box-shadow: 0 0 0 100px var(--papel) inset;
+  caret-color: var(--tinta);
+}
+
+.acc-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px var(--papel) inset, 0 0 0 5px var(--azul-s);
+}
+
+/* El campo con su tecla al lado (ver u ocultar la contraseña). */
+.acc-control {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.acc-control .acc-input { flex: 1; min-width: 0; }
+
+.acc .acc-ojo { flex: none; }
+
+.acc-ayuda {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--tinta-2);
+}
+
+/* El código del 2FA: seis cifras grandes, separadas como en la app. */
+.acc-codigo {
+  padding-left: calc(16px + 0.45em);
+  font-family: var(--letra-titular);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.45em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.acc-codigo::placeholder { color: var(--gris-o); }
+
+.acc-olvido {
+  /* Un enlace de una línea de 14 px: el relleno negativo le da 44 px de alto
+     al dedo sin mover nada de sitio. */
+  display: inline-block;
+  padding: 12px 0;
+  margin: -12px 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* ── Requisitos de la contraseña: una lista de tareas que se va marcando ── */
+.acc-req {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--fondo);
+}
+
+.acc-req-titulo {
+  margin: 0 0 6px;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.acc-req ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 8px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.acc-req li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tinta-2);
+  transition: color 0.2s;
+}
+
+.acc-req-caja {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--gris-o);
+  border-radius: 7px;
+  background: var(--papel);
+  color: transparent;
+  transition: background 0.2s, border-color 0.2s, transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.acc-req li.is-ok { color: var(--menta-o); }
+
+.acc-req li.is-ok .acc-req-caja {
+  border-color: var(--menta-o);
+  background: var(--menta);
+  color: #fff;
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* ── Avisos ── */
+.acc-aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 3px solid;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  animation: acc-aviso 0.4s cubic-bezier(0.34, 1.8, 0.5, 1) both;
+}
+
+.acc-aviso b {
+  display: block;
+  font-family: var(--letra-titular);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.acc-aviso strong { font-weight: 900; overflow-wrap: anywhere; }
+
+.acc-aviso-ic {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.acc-aviso--info { background: var(--cielo-s); border-color: var(--cielo); color: var(--cielo-o); }
+.acc-aviso--info .acc-aviso-ic { background: var(--cielo); }
+.acc-aviso--ok { background: var(--menta-s); border-color: var(--menta); color: var(--menta-o); }
+.acc-aviso--ok .acc-aviso-ic { background: var(--menta); }
+.acc-aviso--error { background: var(--coral-s); border-color: var(--coral); color: var(--coral-o); }
+.acc-aviso--error .acc-aviso-ic { background: var(--coral); }
+
+@keyframes acc-aviso {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* El captcha de Cloudflare, centrado en la hoja. */
+.acc .turnstile-widget { min-height: 65px; }
+
+/* Las teclas a todo el ancho pueden partir su texto: en un móvil de 360 px
+   «Enviar enlace de recuperación» no cabe en una línea. */
+.acc .tecla--ancho {
+  white-space: normal;
+  text-align: center;
+}
+
+/* La tecla pequeña (cerrar sesión en el 2FA) mide 34 px: con el dedo, su zona
+   de toque se amplía por fuera hasta los 44 px sin cambiar cómo se ve. */
+@media (pointer: coarse) {
+  .acc .tecla--peq::after {
+    content: "";
+    position: absolute;
+    inset: -5px -3px;
+  }
+}
+
+.acc-separador {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0.2rem 0;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.acc-separador::before,
+.acc-separador::after {
+  content: "";
+  flex: 1;
+  border-top: 2px dashed var(--gris-o);
+}
+
+.acc-pie {
+  margin: 0.4rem 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--tinta-2);
+}
+
+.acc-pie a {
+  display: inline-block;
+  padding: 11px 4px;
+  margin: -11px -4px;
+  font-weight: 900;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.acc-olvido:focus-visible,
+.acc-pie a:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.acc-cargando {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* ── El apunte: la tarjeta de estudio con su pósit ── */
+.acc-lado {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 1.6rem;
+  padding: 2.5rem 1rem;
+}
+
+/* Un círculo de color detrás, como una mancha de rotulador. */
+.acc-lado::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(380px, 90%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--naranja-s);
+  transform: translate(-50%, -54%);
+}
+
+.acc-tarjeta {
+  position: relative;
+  transform: rotate(3deg);
+}
+
+.acc-postit {
+  position: absolute;
+  z-index: 2;
+  top: 1.2rem;
+  left: calc(50% - 170px);
+  padding: 8px 16px;
+  background: var(--amarillo);
+  font-family: var(--letra-mano);
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--tinta);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+  transform: rotate(-6deg);
+}
+
+.acc-apunte {
+  position: relative;
+  max-width: 30ch;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--tinta-2);
+  transform: rotate(-1.5deg);
+}
+
+/* ── Tableta y móvil: solo la hoja, el apunte estorbaría ── */
+@media (max-width: 900px) {
+  .acc-mesa {
+    grid-template-columns: minmax(0, 520px);
+    justify-content: center;
+  }
+
+  .acc-lado { display: none; }
+}
+
+@media (max-width: 480px) {
+  .acc { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .acc-hoja { border-radius: 26px; padding-left: 1.1rem; padding-right: 1.1rem; }
+  .acc-hoja::before { left: 18px; right: 18px; }
+  .acc-marca { font-size: 1.5rem; }
+  .acc-codigo { font-size: 24px; letter-spacing: 0.32em; padding-left: calc(10px + 0.32em); padding-right: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acc-hoja,
+  .acc-aviso { animation: none; }
+  .acc-marca,
+  .acc-req-caja { transition: none; }
+}

@@ -96,6 +96,18 @@ async function preciosDe(ids: string[]): Promise<Precios> {
   }
 }
 
+/**
+ * Lo que la portada enseña de la cartera: solo porcentajes y recuentos, nunca
+ * importes. Se recorta en `page.tsx` porque lo que llega a un componente de
+ * cliente viaja en el HTML (ver la nota de `MOSTRAR_IMPORTES`).
+ */
+export type ResumenHero = {
+  posiciones: number;
+  rentabilidadPct: number;
+  desdeAnio: number | null;
+  dca: { rentabilidadPct: number; compras: number } | null;
+} | null;
+
 export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> {
   // El DCA no depende de la cartera spot: se pide a la vez, no al final.
   const dcaPromesa = resumenDCA().catch(() => null);

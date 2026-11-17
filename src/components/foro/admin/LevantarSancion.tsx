@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { pedirForo } from "@/components/foro/pedir";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /** Levantar una sanción antes de tiempo. Los puntos que costó no vuelven. */
 export default function LevantarSancion({ sancionId }: { sancionId: string }) {
@@ -15,15 +17,20 @@ export default function LevantarSancion({ sancionId }: { sancionId: string }) {
     setError("");
     const r = await pedirForo("/api/admin/foro/levantar", { sancion: sancionId });
     setEnviando(false);
-    if (!r.ok) setError(r.mensaje);
-    else router.refresh();
+    if (!r.ok) {
+      setError(r.mensaje);
+      sonar("error");
+      return;
+    }
+    sonar("guardado");
+    router.refresh();
   }
 
   return (
     <>
-      <button type="button" className="fa-btn" disabled={enviando} onClick={levantar}>
+      <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={levantar}>
         {enviando ? "Levantando…" : "Levantar"}
-      </button>
+      </Tecla>
       {error && <span className="fa-error" role="alert">{error}</span>}
     </>
   );

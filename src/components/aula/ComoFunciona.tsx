@@ -1,7 +1,8 @@
 import { BookOpen, CalendarClock, ClipboardCheck, Award } from "lucide-react";
 
 /**
- * «Cómo funciona un curso», en cuatro pasos. Lo pintan el catálogo y la ficha
+ * «Cómo funciona un curso», en cuatro pasos. Solo los datos: los pinta
+ * `PasosCurso` (src/app/cursos/PasosCurso.tsx), en el catálogo y en la ficha
  * de cada curso. Describe lo que hace el aula DE VERDAD (`cursos-progreso.ts`):
  * si cambia una regla, se cambia aquí también, o la página promete otra cosa.
  */
@@ -27,23 +28,3 @@ export const PASOS = [
     texto: "Nota de 0 a 10, todas las preguntas obligatorias y las incorrectas restando. Al aprobar, certificado verificable y un logro en tu perfil.",
   },
 ];
-
-export default function ComoFunciona() {
-  return (
-    <ol className="cur-pasos">
-      {PASOS.map((p, i) => {
-        const Icon = p.icon;
-        return (
-          <li key={p.titulo} className="cur-paso">
-            <span className="cur-paso-num">{String(i + 1).padStart(2, "0")}</span>
-            <span className="cur-paso-icon" aria-hidden="true">
-              <Icon size={18} strokeWidth={1.9} />
-            </span>
-            <span className="cur-paso-title">{p.titulo}</span>
-            <span className="cur-paso-text">{p.texto}</span>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}

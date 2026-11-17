@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Cuánto puede crecer la oferta de Canton Coin en el plazo que elija el
@@ -60,15 +61,15 @@ export default function GuideCantonEmision() {
         <span id="cc-plazo-lbl" className="cc-sim-etiqueta">Plazo desde noviembre de 2026</span>
         <div className="cc-sim-plazos" role="group" aria-labelledby="cc-plazo-lbl">
           {PLAZOS.map((p) => (
-            <button
+            <Tecla
               key={p}
-              type="button"
+              tamano="peq"
+              color={plazo === p ? "cielo" : "blanca"}
               aria-pressed={plazo === p}
-              className={plazo === p ? "is-activo" : ""}
               onClick={() => setPlazo(p)}
             >
               {p} {p === 1 ? "año" : "años"}
-            </button>
+            </Tecla>
           ))}
         </div>
       </div>

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Heart, Bookmark, Share2 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 interface Props {
   guideSlug: string;
@@ -20,6 +23,7 @@ export default function GuideInteractions({
   initialShares,
   isLoggedIn,
 }: Props) {
+  const router = useRouter();
   const [likes, setLikes]           = useState(initialLikes);
   const [liked, setLiked]           = useState(initialLiked);
   const [saved, setSaved]           = useState(initialSaved);
@@ -29,7 +33,7 @@ export default function GuideInteractions({
   const [saving, setSaving]         = useState(false);
 
   async function handleLike() {
-    if (!isLoggedIn) { window.location.href = "/login"; return; }
+    if (!isLoggedIn) { router.push("/login"); return; }
     if (liking) return;
     setLiking(true);
     const next = !liked;
@@ -46,24 +50,29 @@ export default function GuideInteractions({
     } catch {
       setLiked(!next);
       setLikes((c) => c + (next ? -1 : 1));
+      sonar("error");
     }
     setLiking(false);
   }
 
   async function handleSave() {
-    if (!isLoggedIn) { window.location.href = "/login"; return; }
+    if (!isLoggedIn) { router.push("/login"); return; }
     if (saving) return;
     setSaving(true);
     const next = !saved;
     setSaved(next);
     try {
-      await fetch("/api/guide-saves", {
+      const res = await fetch("/api/guide-saves", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ guide_slug: guideSlug }),
       });
+      if (!res.ok) throw new Error(String(res.status));
+      // Guardarla suena a «clac»; quitarla ya hizo su clic de tecla.
+      if (next) sonar("guardado");
     } catch {
       setSaved(!next);
+      sonar("error");
     }
     setSaving(false);
   }
@@ -95,34 +104,48 @@ export default function GuideInteractions({
     }
   }
 
+  // Tres teclas pequeñas (estilo «Cuaderno de estudio»): blancas en reposo y,
+  // encendidas, del color de lo que significan: coral el me gusta, menta lo
+  // guardado y cielo lo compartido.
   return (
-    <div className="guide-interactions">
-      <button
-        className={`guide-int-btn guide-int-btn--like${liked ? " active" : ""}`}
+    <div className="gi-fila">
+      <Tecla
+        tamano="peq"
+        color={liked ? "coral" : "blanca"}
+        className="gi-tecla"
         onClick={handleLike}
+        aria-pressed={liked}
         aria-label={liked ? "Quitar me gusta" : "Me gusta"}
       >
-        <Heart size={17} fill={liked ? "currentColor" : "none"} strokeWidth={liked ? 0 : 2} aria-hidden="true" />
+        <Heart size={17} fill={liked ? "currentColor" : "none"} strokeWidth={liked ? 0 : 2.4} aria-hidden="true" />
         <span>{likes > 0 ? likes : "Me gusta"}</span>
-      </button>
+      </Tecla>
 
-      <button
-        className={`guide-int-btn guide-int-btn--save${saved ? " active" : ""}`}
+      <Tecla
+        tamano="peq"
+        color={saved ? "menta" : "blanca"}
+        className="gi-tecla"
         onClick={handleSave}
+        aria-pressed={saved}
         aria-label={saved ? "Quitar de guardados" : "Guardar guía"}
       >
-        <Bookmark size={17} fill={saved ? "currentColor" : "none"} strokeWidth={saved ? 0 : 2} aria-hidden="true" />
+        <Bookmark size={17} fill={saved ? "currentColor" : "none"} strokeWidth={saved ? 0 : 2.4} aria-hidden="true" />
         <span>{saved ? "Guardado" : "Guardar"}</span>
-      </button>
+      </Tecla>
 
-      <button
-        className={`guide-int-btn guide-int-btn--share${shareLabel ? " active" : ""}`}
+      {/* El «¡Copiado!» se ve en la tecla; aquí se anuncia al lector de pantalla. */}
+      <span className="sr-only" role="status">{shareLabel ?? ""}</span>
+
+      <Tecla
+        tamano="peq"
+        color={shareLabel ? "cielo" : "blanca"}
+        className="gi-tecla"
         onClick={handleShare}
         aria-label="Compartir guía"
       >
-        <Share2 size={17} aria-hidden="true" />
+        <Share2 size={17} strokeWidth={2.4} aria-hidden="true" />
         <span>{shareLabel ?? (shares > 0 ? `Compartir · ${shares}` : "Compartir")}</span>
-      </button>
+      </Tecla>
     </div>
   );
 }

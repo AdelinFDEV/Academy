@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Scale, Target } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Los dos cálculos que un diario de trading tiene que poder hacer, para
@@ -29,6 +30,7 @@ function Campo({
         <input
           type="number"
           inputMode="decimal"
+          autoComplete="off"
           step={paso}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -76,12 +78,12 @@ export default function GuideDiarioCalc() {
         <div className="dtg-calc-cab">
           <span className="dtg-calc-ey"><Target size={14} aria-hidden="true" /> Apunta una operación</span>
           <div className="dtg-dir" role="group" aria-label="Dirección de la operación">
-            <button type="button" className={dir === "long" ? "is-activo" : ""} onClick={() => setDir("long")}>
+            <Tecla tamano="peq" color={dir === "long" ? "cielo" : "blanca"} aria-pressed={dir === "long"} onClick={() => setDir("long")}>
               <ArrowUpRight size={14} aria-hidden="true" /> Long
-            </button>
-            <button type="button" className={dir === "short" ? "is-activo" : ""} onClick={() => setDir("short")}>
+            </Tecla>
+            <Tecla tamano="peq" color={dir === "short" ? "cielo" : "blanca"} aria-pressed={dir === "short"} onClick={() => setDir("short")}>
               <ArrowDownRight size={14} aria-hidden="true" /> Short
-            </button>
+            </Tecla>
           </div>
         </div>
 
@@ -93,32 +95,34 @@ export default function GuideDiarioCalc() {
           <Campo label="Precio de salida" value={salida} onChange={setSalida} />
         </div>
 
-        {!valido ? (
-          <p className="dtg-aviso">Rellena todos los campos con números mayores que cero.</p>
-        ) : !stopBienPuesto ? (
-          <p className="dtg-aviso">
-            En un {dir === "long" ? "long el stop va por debajo" : "short el stop va por encima"} de la entrada.
-            Sin un stop bien puesto no hay riesgo que medir.
-          </p>
-        ) : (
-          <div className="dtg-resultados">
-            <div>
-              <small>Riesgo de la operación</small>
-              <b>{eur.format(riesgo)}</b>
-              <span className={riesgoPct > 2 ? "es-mal" : "es-bien"}>{num(riesgoPct)} % del capital</span>
+        <div aria-live="polite">
+          {!valido ? (
+            <p className="dtg-aviso">Rellena todos los campos con números mayores que cero.</p>
+          ) : !stopBienPuesto ? (
+            <p className="dtg-aviso">
+              En un {dir === "long" ? "long el stop va por debajo" : "short el stop va por encima"} de la entrada.
+              Sin un stop bien puesto no hay riesgo que medir.
+            </p>
+          ) : (
+            <div className="dtg-resultados">
+              <div>
+                <small>Riesgo de la operación</small>
+                <b>{eur.format(riesgo)}</b>
+                <span className={riesgoPct > 2 ? "es-mal" : "es-bien"}>{num(riesgoPct)} % del capital</span>
+              </div>
+              <div>
+                <small>Resultado</small>
+                <b className={resultado >= 0 ? "es-bien" : "es-mal"}>{resultado >= 0 ? "+" : ""}{eur.format(resultado)}</b>
+                <span>{num((resultado / c) * 100)} % del capital</span>
+              </div>
+              <div className="dtg-resultado-r">
+                <small>En múltiplos de R</small>
+                <b className={r >= 0 ? "es-bien" : "es-mal"}>{r >= 0 ? "+" : ""}{num(r)} R</b>
+                <span>Lo que ganaste por cada euro que arriesgabas</span>
+              </div>
             </div>
-            <div>
-              <small>Resultado</small>
-              <b className={resultado >= 0 ? "es-bien" : "es-mal"}>{resultado >= 0 ? "+" : ""}{eur.format(resultado)}</b>
-              <span>{num((resultado / c) * 100)} % del capital</span>
-            </div>
-            <div className="dtg-resultado-r">
-              <small>En múltiplos de R</small>
-              <b className={r >= 0 ? "es-bien" : "es-mal"}>{r >= 0 ? "+" : ""}{num(r)} R</b>
-              <span>Lo que ganaste por cada euro que arriesgabas</span>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
         {stopBienPuesto && riesgoPct > 2 && (
           <p className="dtg-nota">
             Arriesgar más del 2 % por operación hace que una racha normal de pérdidas se coma una parte grande de la
@@ -142,7 +146,7 @@ export default function GuideDiarioCalc() {
           <input type="range" min={0.3} max={5} step={0.1} value={ratio} onChange={(ev) => setRatio(Number(ev.target.value))} />
         </label>
 
-        <div className="dtg-resultados dtg-resultados--dos">
+        <div className="dtg-resultados dtg-resultados--dos" aria-live="polite">
           <div>
             <small>Esperanza por operación</small>
             <b className={esperanza >= 0 ? "es-bien" : "es-mal"}>{esperanza >= 0 ? "+" : ""}{num(esperanza)} R</b>

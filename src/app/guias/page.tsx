@@ -3,13 +3,14 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Star } from "lucide-react";
+import { ArrowRight, BookOpen, Trophy, BarChart2, Star } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 import JsonLd from "@/components/JsonLd";
 import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
 import { itemListSchema } from "@/lib/schema";
+import Tecla from "@/components/cuaderno/Tecla";
 import "./listado.css";
 
 export const metadata: Metadata = {
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
     "Aprende criptomonedas gratis desde cero: 6 guías interactivas sobre blockchain, proyectos cripto reales y fiscalidad en España. Con quiz y badges.",
 };
 
-// Clase CSS por dificultad (las clases guides-diff--* ya existen en globals.css).
+// El chip de cada nivel, con su color (disenos/sistema.html, «Etiquetas»).
 const DIFF_CLASS: Record<string, string> = {
-  "básico": "basic",
-  "intermedio": "intermediate",
-  "avanzado": "advanced",
+  "básico": "basico",
+  "intermedio": "intermedio",
+  "avanzado": "avanzado",
 };
 
 const GUIA_POR_SLUG = new Map(GUIDES.map((g) => [g.slug, g]));
@@ -41,7 +42,7 @@ function enlaceGuia(slug: string) {
   return (
     <li key={g.slug}>
       <Link href={`/guias/${g.slug}`}>{g.shortTitle}</Link>
-      <span className="guias-ruta-meta">{g.readTime}</span>
+      <span className="gl-ruta-meta">{g.readTime}</span>
     </li>
   );
 }
@@ -60,47 +61,58 @@ export default async function GuiasPage() {
   const isAdmin = role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
 
+  // Estilo «Cuaderno de estudio» (17-11-2026): el color de las guías es el
+  // cielo. Las guías son mazos de tarjetas, como en la portada; el itinerario,
+  // un camino de tres paradas. Los textos son los de siempre (SEO auditado).
+  const mesa = recientes.slice(0, 3);
+
   return (
-    <div className="blog-page">
+    <div className="gl">
       <JsonLd
         data={itemListSchema(
           "Guías interactivas de AdelinBTC Academy",
           recientes.map((g) => ({ name: g.title, path: `/guias/${g.slug}` }))
         )}
       />
-      <div className="bg-ambient" />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       <main className="guias-page">
 
-        {/* Hero */}
-        <div className="guias-hero">
-          <div className="guias-hero-glow" aria-hidden="true" />
-          <div className="guias-hero-inner">
-            <div className="guias-hero-eyebrow">
-              <Zap size={14} aria-hidden="true" />
-              Guías Interactivas · AdelinBTC Academy
-            </div>
-            <h1 className="guias-hero-title">
+        {/* Hero: el titular a la izquierda y, a la derecha, las portadas de las
+            tres guías más recientes como un mazo sobre la mesa (decorativo). */}
+        <div className="gl-hero">
+          <div className="gl-hero-texto">
+            <p className="gl-hero-nota">Guías Interactivas · AdelinBTC Academy</p>
+            <h1 className="gl-hero-titulo">
               Aprende crypto<br />
-              <span className="guias-hero-title-gold">como nunca antes.</span>
+              <span className="fluor">como nunca antes.</span>
             </h1>
-            <p className="guias-hero-subtitle">
+            <p className="gl-hero-sub">
               No listas de bullets ni teoría aburrida. Cada guía combina contenido experto,
               gráficas animadas, flashcards, quizzes con puntuación y badges de logro que
               demuestran lo que sabes.
             </p>
-            <div className="guias-hero-buscar">
+            <div className="gl-buscar">
               <GuideSearch />
             </div>
-            <div className="guias-hero-pills">
-              <span className="guias-hero-pill"><BarChart2 size={13} aria-hidden="true" /> Gráficas animadas</span>
-              <span className="guias-hero-pill"><BookOpen size={13} aria-hidden="true" /> Flashcards</span>
-              <span className="guias-hero-pill"><Star size={13} aria-hidden="true" /> Quiz 0–10</span>
-              <span className="guias-hero-pill"><Trophy size={13} aria-hidden="true" /> Badges de logro</span>
+            <div className="gl-chips">
+              <span className="gl-chip gl-chip--cielo"><BarChart2 size={14} strokeWidth={2.6} aria-hidden="true" /> Gráficas animadas</span>
+              <span className="gl-chip gl-chip--naranja"><BookOpen size={14} strokeWidth={2.6} aria-hidden="true" /> Flashcards</span>
+              <span className="gl-chip gl-chip--lila"><Star size={14} strokeWidth={2.6} aria-hidden="true" /> Quiz 0–10</span>
+              <span className="gl-chip gl-chip--amarillo"><Trophy size={14} strokeWidth={2.6} aria-hidden="true" /> Badges de logro</span>
             </div>
           </div>
+
+          {mesa.length > 0 && (
+            <div className="gl-mesa" aria-hidden="true">
+              {mesa.map((g, i) => (
+                <span key={g.slug} className={`gl-mesa-carta gl-mesa-carta--${i + 1}`}>
+                  <GuiaPortada guia={g} className="gl-mesa-portada" sizes="(max-width: 900px) 60vw, 320px" />
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* ── Contenido pilar (punto 9 del plan SEO) ──────────────────────
@@ -108,12 +120,12 @@ export default async function GuiasPage() {
             palabra que la gente busca —«aprender criptomonedas gratis»— entra
             aquí, en el título de Google y en los h2. Antes esta página tenía
             unas 80 palabras indexables: era un escaparate de tarjetas. */}
-        <section className="guias-bloque guias-intro">
-          <div className="guias-intro-cabeza">
-            <span className="guias-kicker">Formación gratuita</span>
-            <h2 className="guias-pilar-title">Aprende criptomonedas gratis, empezando desde cero</h2>
+        <section className="gl-bloque gl-intro">
+          <div className="gl-intro-cabeza">
+            <span className="gl-kicker">Formación gratuita</span>
+            <h2 className="gl-titulo">Aprende criptomonedas gratis, empezando desde cero</h2>
           </div>
-          <div className="guias-pilar">
+          <div className="gl-hoja">
             <p>
               Estas guías son el itinerario de formación gratuita de la academia. No hacen falta
               conocimientos previos, ni tener dinero invertido, ni comprar nada: se leen enteras sin
@@ -133,78 +145,53 @@ export default async function GuiasPage() {
           </div>
         </section>
 
-        {/* Guías publicadas */}
-        <div className="guias-bloque guias-section">
-          <h2 className="guias-section-title">Disponibles ahora</h2>
-          <div className="guias-grid">
-            {recientes.map((g) => (
-              <Link key={g.slug} href={`/guias/${g.slug}`} className="guias-card">
-                <div className="guias-card-glow" aria-hidden="true" />
-                <GuiaPortada guia={g} className="guias-card-portada" />
-                <div className="guias-card-top">
-                  <span className={`guides-diff-badge guides-diff--${DIFF_CLASS[g.difficulty]}`}>
-                    {g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1)}
-                  </span>
-                  <span className="guides-access-badge">Gratis</span>
-                </div>
-                <h3 className="guias-card-title">{g.title}</h3>
-                <p className="guias-card-desc">{g.description}</p>
-                <div className="guias-card-meta">
-                  <span><BookOpen size={13} aria-hidden="true" /> {g.sections} secciones</span>
-                  <span><Trophy size={13} aria-hidden="true" /> {g.badge}</span>
-                </div>
-                <div className="guias-card-cta">
-                  Empezar <ArrowRight size={14} aria-hidden="true" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-
         {/* Itinerario: los nombres y los tiempos salen de GUIDES, no escritos a
-            mano, para que no se desincronicen si cambia una guía. */}
-        <section className="guias-bloque">
-          <span className="guias-kicker">El itinerario</span>
-          <h2 className="guias-pilar-title">Por dónde empezar</h2>
+            mano, para que no se desincronicen si cambia una guía. Se pinta como
+            el camino de los cursos: tres paradas unidas por un trazo. Va antes
+            del listado completo (repaso del 17-11-2026): quien llega sin saber
+            nada ve primero por dónde empezar, y no un muro de tarjetas. */}
+        <section className="gl-bloque">
+          <span className="gl-kicker">El itinerario</span>
+          <h2 className="gl-titulo">Por dónde empezar</h2>
 
-          <div className="guias-ruta">
-            <article className="guias-ruta-paso">
-              <span className="guias-ruta-num" aria-hidden="true">1</span>
-              <span className="guias-ruta-nivel">Si empiezas de cero</span>
+          <div className="gl-ruta">
+            <article className="gl-ruta-paso gl-ruta-paso--1">
+              <span className="gl-ruta-num" aria-hidden="true">1</span>
+              <span className="gl-ruta-nivel">Si empiezas de cero</span>
               <p>
                 Solo hay una imprescindible, y es esta. Cuenta de dónde sale todo esto, cómo
                 funciona una cadena de bloques y por qué nadie puede reescribirla a su antojo.
                 Saltársela hace que el resto se lea cuesta arriba.
               </p>
-              <ul className="guias-ruta-lista">
+              <ul className="gl-ruta-lista">
                 {enlaceGuia("que-es-la-blockchain")}
               </ul>
             </article>
 
-            <article className="guias-ruta-paso">
-              <span className="guias-ruta-num" aria-hidden="true">2</span>
-              <span className="guias-ruta-nivel">Cuando ya entiendes la base</span>
+            <article className="gl-ruta-paso gl-ruta-paso--2">
+              <span className="gl-ruta-num" aria-hidden="true">2</span>
+              <span className="gl-ruta-nivel">Cuando ya entiendes la base</span>
               <p>
                 Aquí se pasa de la teoría a lo que ocurre de verdad. Cada una de estas tres
                 disecciona un proyecto real, que es la mejor forma de aprender a mirar cualquier
                 otro: qué problema resuelve, cómo funciona por dentro y qué riesgos tiene.
               </p>
-              <ul className="guias-ruta-lista">
+              <ul className="gl-ruta-lista">
                 {enlaceGuia("worldcoin")}
                 {enlaceGuia("render")}
                 {enlaceGuia("hyperliquid")}
               </ul>
             </article>
 
-            <article className="guias-ruta-paso">
-              <span className="guias-ruta-num" aria-hidden="true">3</span>
-              <span className="guias-ruta-nivel">Cuando ya te mueves solo</span>
+            <article className="gl-ruta-paso gl-ruta-paso--3">
+              <span className="gl-ruta-num" aria-hidden="true">3</span>
+              <span className="gl-ruta-nivel">Cuando ya te mueves solo</span>
               <p>
                 XRP entra en cómo funciona una red que no usa minería y en el juicio que marcó al
                 sector entero. La de fiscalidad es la que evita disgustos con Hacienda: modelo 721,
                 método FIFO y cómo se declaran el staking y los airdrops.
               </p>
-              <ul className="guias-ruta-lista">
+              <ul className="gl-ruta-lista">
                 {enlaceGuia("xrp")}
                 {enlaceGuia("fiscalidad-cripto-espana")}
               </ul>
@@ -212,12 +199,45 @@ export default async function GuiasPage() {
           </div>
         </section>
 
-        <section className="guias-bloque">
-          <span className="guias-kicker">Preguntas frecuentes</span>
-          <h2 className="guias-pilar-title">Lo que suele preguntar la gente</h2>
+        {/* Guías publicadas: cada una, un mazo de tarjetas cielo */}
+        <section className="gl-bloque">
+          <h2 className="gl-titulo">Disponibles ahora</h2>
+          <ul className="gl-mazos">
+            {recientes.map((g) => (
+              <li key={g.slug}>
+                <Link href={`/guias/${g.slug}`} className="gl-mazo">
+                  <span className="gl-mazo-hoja gl-mazo-hoja--1" aria-hidden="true" />
+                  <span className="gl-mazo-hoja gl-mazo-hoja--2" aria-hidden="true" />
+                  <span className="gl-mazo-top">
+                    <GuiaPortada guia={g} className="gl-portada" sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 360px" />
+                    <span className="gl-mazo-chips">
+                      <span className={`gl-chip gl-chip--${DIFF_CLASS[g.difficulty]}`}>
+                        {g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1)}
+                      </span>
+                      <span className="gl-chip gl-chip--gratis">Gratis</span>
+                    </span>
+                    <h3 className="gl-mazo-titulo">{g.title}</h3>
+                    <span className="gl-mazo-desc">{g.description}</span>
+                    <span className="gl-mazo-meta">
+                      <span><BookOpen size={14} strokeWidth={2.6} aria-hidden="true" /> {g.sections} secciones</span>
+                      <span className="gl-mazo-logro"><Trophy size={14} strokeWidth={2.6} aria-hidden="true" /> {g.badge}</span>
+                    </span>
+                    <span className="gl-mazo-cta">
+                      Empezar <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-          <dl className="guias-faq">
-            <div className="guias-faq-item">
+        <section className="gl-bloque">
+          <span className="gl-kicker">Preguntas frecuentes</span>
+          <h2 className="gl-titulo">Lo que suele preguntar la gente</h2>
+
+          <dl className="gl-faq">
+            <div className="gl-faq-item">
               <dt>¿Es gratis de verdad?</dt>
               <dd>
                 Sí. Todas las guías se leen enteras gratis y sin registrarte. Solo el quiz final de
@@ -226,7 +246,7 @@ export default async function GuiasPage() {
               </dd>
             </div>
 
-            <div className="guias-faq-item">
+            <div className="gl-faq-item">
               <dt>¿Necesito saber algo antes de empezar?</dt>
               <dd>
                 No. La primera guía da por hecho que no has tocado una criptomoneda en tu vida y
@@ -234,7 +254,7 @@ export default async function GuiasPage() {
               </dd>
             </div>
 
-            <div className="guias-faq-item">
+            <div className="gl-faq-item">
               <dt>¿Tengo que comprar criptomonedas para seguirlas?</dt>
               <dd>
                 No hace falta invertir un euro. Ninguna guía te dice qué comprar ni cuándo: explican
@@ -242,7 +262,7 @@ export default async function GuiasPage() {
               </dd>
             </div>
 
-            <div className="guias-faq-item">
+            <div className="gl-faq-item">
               <dt>¿Cuánto tiempo me van a llevar?</dt>
               <dd>
                 Las seis suman unas dos horas en total, entre 18 y 28 minutos cada una. No
@@ -250,7 +270,7 @@ export default async function GuiasPage() {
               </dd>
             </div>
 
-            <div className="guias-faq-item">
+            <div className="gl-faq-item">
               <dt>¿Y si me pierdo con alguna palabra?</dt>
               <dd>
                 Para eso está el <Link href="/glosario">diccionario cripto</Link>, con los términos
@@ -262,16 +282,15 @@ export default async function GuiasPage() {
 
         {/* CTA registro */}
         {!user && (
-          <div className="guias-cta-band">
-            <div className="guias-cta-band-glow" aria-hidden="true" />
-            <div className="guias-cta-band-inner">
-              <h3 className="guias-cta-band-title">Crea tu cuenta gratis y empieza a aprender</h3>
-              <p className="guias-cta-band-sub">Accede a las guías gratuitas, acumula puntos y desbloquea badges.</p>
-              <div className="guias-cta-band-actions">
-                <Link href="/register" className="guias-cta-primary">
-                  Registrarme gratis <ArrowRight size={16} aria-hidden="true" />
-                </Link>
-                <Link href="/login" className="guias-cta-secondary">Ya tengo cuenta</Link>
+          <div className="gl-cta">
+            <div className="gl-cta-inner">
+              <h3 className="gl-cta-titulo">Crea tu cuenta gratis y empieza a aprender</h3>
+              <p className="gl-cta-sub">Accede a las guías gratuitas, acumula puntos y desbloquea badges.</p>
+              <div className="gl-cta-acciones">
+                <Tecla href="/register" color="naranja" tamano="grande">
+                  Registrarme gratis <ArrowRight size={18} strokeWidth={2.8} aria-hidden="true" />
+                </Tecla>
+                <Tecla href="/login" color="blanca" tamano="grande">Ya tengo cuenta</Tecla>
               </div>
             </div>
           </div>

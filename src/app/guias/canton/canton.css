@@ -1,46 +1,95 @@
-/* Guía «Qué es Canton Network». Prefijo: cc-. Lo común está en ../guias.css. */
+/* Guía «Qué es Canton Network». Prefijo: cc-. Lo común está en ../guias.css.
+   Estilo «Cuaderno de estudio» (ESTILO.md): papel sobre lavanda, color cielo de Guías. */
 
-/* ── Simulador de emisión ── */
-.cc-sim { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.cc-sim-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+/* ── Simulador de emisión: una hoja de papel ── */
+.cc-sim {
+  margin-top: 24px;
+  padding: 26px;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+.cc-sim-titulo {
+  display: inline-block;
+  margin: 0 0 20px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .cc-sim-campo { display: grid; gap: 10px; margin-bottom: 20px; }
-.cc-sim-etiqueta { font-size: 15px; color: #fff; }
-.cc-sim-etiqueta strong { color: var(--gold); }
-.cc-sim-ayuda { font-size: 13.5px; line-height: 1.5; color: #b0c4d8; }
+.cc-sim-etiqueta { font-size: 15px; font-weight: 800; color: var(--tinta); }
+.cc-sim-etiqueta strong { font-family: var(--letra-titular); font-size: 20px; font-weight: 800; color: var(--cielo-o); font-variant-numeric: tabular-nums; }
+.cc-sim-ayuda { font-family: var(--letra-mano); font-size: 22px; font-weight: 600; line-height: 1.2; color: var(--tinta-2); }
 
-.cc-sim-plazos { display: flex; flex-wrap: wrap; gap: 6px; }
-.cc-sim-plazos button { padding: 10px 16px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 14.5px; font-weight: 700; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
-.cc-sim-plazos button.is-activo { border-color: var(--accent-orange); background: var(--accent-orange); color: #fff; }
-.cc-sim-plazos button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* Los plazos: teclas pequeñas (la elegida, cielo). */
+.cc-sim-plazos { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.cc-sim-plazos .tecla { min-height: 44px; }
 
-.cc-sim input[type="range"] { width: 100%; accent-color: var(--accent-orange); }
-.cc-sim input[type="range"]:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+/* El deslizador es el común de las guías (guias.css): aquí no se redibuja. */
 
-.cc-sim-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 6px; }
-.cc-sim-resultados > div { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(6,15,31,0.6); }
-.cc-sim-resultados span { font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #9db2d3; }
-.cc-sim-resultados strong { font-size: 24px; color: #fff; font-variant-numeric: tabular-nums; }
-.cc-sim-resultados small { font-size: 13.5px; line-height: 1.45; color: #dce8f8; }
-.cc-sim-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
-.cc-sim-resultados .es-principal strong { color: var(--gold); }
-.cc-sim-nota { margin: 16px 0 0; font-size: 13.5px; line-height: 1.6; color: #b0c4d8; }
+.cc-sim-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 6px; }
+.cc-sim-resultados > div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: 0 4px 0 var(--gris-o);
+}
+.cc-sim-resultados span { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.cc-sim-resultados strong { font-family: var(--letra-titular); font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--tinta); font-variant-numeric: tabular-nums; }
+.cc-sim-resultados small { font-size: 13.5px; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
+/* La dilución es el riesgo para quien tiene CC: amarillo de aviso. */
+.cc-sim-resultados .es-principal { background: var(--amarillo-s); box-shadow: 0 4px 0 var(--amarillo); }
+.cc-sim-resultados .es-principal span,
+.cc-sim-resultados .es-principal small { color: #7a5d00; }
+.cc-sim-resultados .es-principal strong { font-size: 30px; color: var(--tinta); }
+.cc-sim-nota { margin: 18px 0 0; font-size: 13.5px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 /* ── Lo que puedes hacer y lo que no ── */
-.cc-puedes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
-.cc-puedes-col { padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top-width: 3px; border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
-.cc-puedes-col--si { border-top-color: #4ade80; }
-.cc-puedes-col--no { border-top-color: #f87171; }
-.cc-puedes-titulo { margin: 0 0 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
-.cc-puedes-col ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
-.cc-puedes-col li { font-size: 15px; line-height: 1.6; color: #dce8f8; }
+.cc-puedes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 26px; }
+.cc-puedes-col {
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+.cc-puedes-titulo {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cc-puedes-col--si .cc-puedes-titulo { background: var(--menta-s); color: var(--menta-o); }
+.cc-puedes-col--no .cc-puedes-titulo { background: var(--coral-s); color: var(--coral-o); }
+.cc-puedes-col ul { margin: 0; padding-left: 20px; display: grid; gap: 9px; }
+.cc-puedes-col li { font-size: 15px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
+.cc-puedes-col--si li::marker { color: var(--menta-o); }
+.cc-puedes-col--no li::marker { color: var(--coral-o); }
+
+/* ══ El cuaderno de quien la ha estudiado (marcas de estudio, 17-11-2026) ══
+   Anotacion, SimboloEstudio y Postit (src/components/cuaderno/). Lo común
+   (margen de los pósits, estrella de la respuesta) está en ../guias.css. */
+
+/* Lo que sí y lo que no: su check y su «¡ojo!», en la esquina de cada hoja. */
+.cc-puedes-col { position: relative; }
+.cc-puedes-simbolo { --se-tam: 30px; position: absolute; top: 16px; right: 18px; }
 
 @media (max-width: 760px) {
-  .cc-sim { padding: 18px 16px; }
-  .cc-sim-plazos button { flex: 1 1 calc(33% - 6px); padding: 10px 8px; }
+  .cc-sim { padding: 18px 16px; border-radius: 24px; }
+  .cc-sim-plazos .tecla { flex: 1 1 calc(33% - 10px); padding-left: 8px; padding-right: 8px; }
   .cc-sim-resultados { grid-template-columns: 1fr; }
-  .cc-sim-resultados strong { font-size: 21px; }
+  .cc-sim-resultados strong { font-size: 22px; }
   .cc-puedes { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cc-sim-plazos button { transition: none; }
+  .cc-puedes-col { padding: 20px 18px; }
 }

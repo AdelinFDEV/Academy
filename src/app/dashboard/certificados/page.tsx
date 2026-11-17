@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { certificadosDelAlumno, cursoPorSlug, cursosPublicados } from "@/lib/cursos";
 import VitrinaCertificados, { type EjemploVitrina } from "@/components/VitrinaCertificados";
+import Tecla from "@/components/cuaderno/Tecla";
+import { ArrowLeft } from "lucide-react";
 import "./certificados.css";
 
 export const metadata: Metadata = {
@@ -38,32 +40,24 @@ export default async function CertificadosPage() {
   }
 
   return (
-    <main className="dashboard-main">
-      <div className="imm cv-page">
-        <div className="imm-backdrop" aria-hidden="true">
-          <span className="imm-grid" />
-          <span className="imm-orb imm-orb--1" />
-          <span className="imm-orb imm-orb--2" />
-        </div>
+    <main className="dashboard-main cv-page">
+      <header className="pn-cab tono-lila">
+        <Tecla href="/dashboard" color="blanca" tamano="peq" className="pn-volver">
+          <ArrowLeft size={14} strokeWidth={2.6} aria-hidden="true" /> Mi panel
+        </Tecla>
+        <p className="pn-mano">tu vitrina</p>
+        <h1 className="pn-titulo">
+          Mis certificados
+          {certificados.length > 0 && <span className="pn-cuenta tono-lila">{certificados.length}</span>}
+        </h1>
+        <p className="pn-lead">
+          <strong>Lo que aprobaste, para siempre.</strong> Cada curso que apruebas deja aquí su certificado.
+          Descárgalo en PDF cuando quieras: se queda en tu cuenta aunque cambies de plan, y cualquiera puede
+          comprobar que es auténtico con su código.
+        </p>
+      </header>
 
-        <header className="imm-head">
-          {certificados.length > 0 && <span className="imm-watermark" aria-hidden="true">{certificados.length}</span>}
-          <span className="imm-eyebrow">
-            <span className="imm-eyebrow-dot" aria-hidden="true" />
-            Tu vitrina
-          </span>
-          <h1 className="imm-title">
-            Mis certificados
-            <span className="imm-title-grad">Lo que aprobaste, para siempre.</span>
-          </h1>
-          <p className="imm-sub">
-            Cada curso que apruebas deja aquí su certificado. Descárgalo en PDF cuando quieras: se queda en tu
-            cuenta aunque cambies de plan, y cualquiera puede comprobar que es auténtico con su código.
-          </p>
-        </header>
-
-        <VitrinaCertificados certificados={certificados} forma="completa" nombre={nombre} ejemplo={ejemplo} />
-      </div>
+      <VitrinaCertificados certificados={certificados} forma="completa" nombre={nombre} ejemplo={ejemplo} />
     </main>
   );
 }

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
-  ArrowRight, Lock, ShieldCheck, NotebookPen, BarChart3, Search,
+  ArrowRight, ShieldCheck, NotebookPen, BarChart3, Search,
   LineChart, CalendarRange, Crosshair, EyeOff, Trophy, Check, X,
   CreditCard, RefreshCw, Crown, Sparkles, Gauge, ListChecks, MousePointerClick, Cpu, HeartPulse, Scale,
+  Laugh, Smile, Meh, Frown, type LucideIcon,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
@@ -12,10 +13,13 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema, webAppSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { ANIMOS } from "@/components/trading/tjDias";
-import { VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
+import { MILESTONES, VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
+import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import NovaSaludo from "./NovaSaludo";
 import NovaMini from "@/components/NovaMini";
+import Tecla from "@/components/cuaderno/Tecla";
+import Anotacion from "@/components/cuaderno/Anotacion";
 import "../ficha.css";
 import "./diario.css";
 
@@ -25,7 +29,8 @@ import "./diario.css";
  * Rehecha el 08-11-2026, a petición del admin, para vender: Nova en grande en
  * la cabecera con su saludo, una sección para Nova y su objetivo semanal, otra para las
  * sensaciones, el SÚPER HITO como protagonista y la llamada a suscribirse en la
- * cabecera, en el cierre y en la barra del móvil. Lo común con la ficha del
+ * cabecera, en el súper hito y en el cierre (la barra fija del móvil se quitó el
+ * 17-11-2026: el admin no quiere nada anclado al hacer scroll). Lo común con la ficha del
  * Portfolio sigue en `../ficha.css`; lo propio de esta, en `./diario.css`.
  *
  * Escrita sobre lo que la herramienta hace DE VERDAD, revisado en
@@ -46,6 +51,14 @@ import "./diario.css";
  * así que no hay datos reales que enseñar. Sin rótulo de «ejemplo» por
  * decisión del admin (04-11-2026); las cifras son redondas y no se atribuyen a
  * nadie.
+ *
+ * Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md): el Diario es
+ * azul; Premium y el pago, naranja; los hitos, amarillo (logros). Todos los
+ * botones son `<Tecla>`. Nova está oculta mientras llega la mascota
+ * (`MOSTRAR_NOVA`, nova-visible.ts): con el interruptor apagado, la cabecera
+ * enseña una hoja del diario en vez de a Nova en su sala, y su cara no sale en
+ * ningún sitio. Los hitos salen de `MILESTONES` (tjStats.ts): ni la lista ni la
+ * cuenta se escriben a mano.
  */
 // Título y descripción rehechos el 10-11-2026: «Nova» no lo busca nadie, y
 // gastaba la parte del título que Google enseña. Delante, lo que se busca.
@@ -87,6 +100,9 @@ const [CURVA_X, CURVA_Y] = CURVA[CURVA.length - 1];
 
 /** Circunferencia del anillo del win rate (r = 15.9, la del 100 = 100). */
 const ANILLO = 2 * Math.PI * 15.9;
+
+/** La cara de cada ánimo (sin emojis en la web pública: ESTILO.md). */
+const CARA_ANIMO: Record<number, LucideIcon> = { 4: Laugh, 3: Smile, 2: Meh, 1: Frown };
 
 /** Lo que trae, en una línea, bajo el botón de la cabecera. */
 const INCLUYE_CORTO = ["Nova y tu objetivo semanal", "10 estadísticas", "Sensaciones", "17 hitos + el súper hito"];
@@ -145,18 +161,8 @@ const ADEMAS = [
   { icon: EyeOff, title: "Privado de verdad", text: "Nadie más ve tus operaciones: ni otros suscriptores ni un ranking." },
 ];
 
-const HITOS = [
-  "Muestra fiable",
-  "Disciplina de riesgo",
-  "Diario con porqué",
-  "Sin revancha",
-  "Semanas apuntando",
-  "Pérdidas controladas",
-  "Objetivos cumplidos",
-  "Meses en verde",
-  "Rentabilidad sobre tu capital",
-  "Vuelta a máximos",
-];
+/** Los hitos con niveles, de la misma lista que usa el diario (sin el súper hito). */
+const HITOS = MILESTONES.filter((m) => m.group !== "leyenda").map((m) => m.title);
 
 /** La racha de la maqueta del súper hito: 9 meses válidos (uno en rojo) y 3 por llegar. */
 const RACHA: ("ok" | "red" | "pend")[] = ["ok", "ok", "ok", "red", "ok", "ok", "ok", "ok", "ok", "pend", "pend", "pend"];
@@ -211,7 +217,7 @@ const FAQ = [
   },
   {
     q: "¿Tiene más niveles o recompensas?",
-    a: "Además del súper hito, diez hitos con niveles y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde.",
+    a: `Además del súper hito, ${HITOS.length} hitos con niveles y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde.`,
   },
   {
     q: "¿Puedo usarlo si opero en varios mercados?",
@@ -238,23 +244,56 @@ function ConTermino({ text, termino }: { text: string; termino?: { texto: string
 
 /** El botón principal. Quien ya es Premium abre su diario; el resto paga. */
 function Cta({ premium, grande = false, texto = "Empezar mi diario" }: { premium: boolean; grande?: boolean; texto?: string }) {
-  const clase = `fh-btn${grande ? " fh-btn--grande" : ""}`;
   if (premium) {
     return (
-      <Link href="/dashboard/trading" className={clase}>
+      <Tecla href="/dashboard/trading" color="azul" tamano={grande ? "grande" : "normal"}>
         Abrir mi diario
-        <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
-      </Link>
+        <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+      </Tecla>
     );
   }
   // /api/checkout manda primero al registro si no hay sesión y vuelve solo
   // al pago (ver su ruta): un paso menos que pasar por /premium.
   return (
-    <Link href="/api/checkout" prefetch={false} className={clase}>
-      <Lock size={16} strokeWidth={2.4} aria-hidden="true" />
+    <Tecla href="/api/checkout" prefetch={false} tamano={grande ? "grande" : "normal"}>
+      <Crown size={17} aria-hidden="true" />
       {texto}
-      <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
-    </Link>
+      <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+    </Tecla>
+  );
+}
+
+/**
+ * La cabecera mientras Nova está oculta: una hoja del diario con una operación
+ * a medio apuntar y lo que el diario calcula solo. Decorativa: las cifras son
+ * las redondas de `DEMO`, no de nadie.
+ */
+function HojaDiario() {
+  return (
+    <div className="dj-hoja" aria-hidden="true">
+      <span className="dj-hoja-anillas"><i /><i /><i /><i /><i /><i /></span>
+      <span className="dj-hoja-cab">
+        <span>Operación nueva</span>
+        <span className="dj-hoja-fecha">hoy</span>
+      </span>
+      <span className="dj-hoja-chips">
+        <span className="dj-chip dj-chip--azul">BTC/USDT</span>
+        <span className="dj-chip dj-chip--menta">Long</span>
+        <span className="dj-chip">Ruptura</span>
+      </span>
+      <span className="dj-hoja-linea"><small>Riesgo</small><b>1 % de la cuenta</b></span>
+      <span className="dj-hoja-linea"><small>Por qué entro</small><b className="dj-hoja-mano">rompe el máximo semanal</b></span>
+      <span className="dj-hoja-linea"><small>Cómo me siento</small><b className="dj-hoja-animo"><Smile size={16} /> Bien</b></span>
+      <span className="dj-hoja-linea"><small>Resultado</small><b className="es-sube">+184 $</b></span>
+
+      <span className="dj-hoja-sale">
+        <span><small>Win rate</small><b>{DEMO.winRate} %</b></span>
+        <span><small>Operaciones</small><b>{DEMO.operaciones}</b></span>
+        <span><small>P&amp;L medio</small><b className="es-sube">{DEMO.plMedio}</b></span>
+      </span>
+
+      <span className="dj-hoja-postit">el diario hace las cuentas</span>
+    </div>
   );
 }
 
@@ -269,8 +308,7 @@ export default async function FichaDiarioPage() {
   const isPremium = role === "premium" || role === "admin";
 
   return (
-    <div className="blog-page">
-      <div className="bg-ambient" />
+    <div className="blog-page fh-pagina">
       <JsonLd
         data={[
           breadcrumbSchema([
@@ -296,27 +334,24 @@ export default async function FichaDiarioPage() {
 
       <SiteNav user={!!user} isPremium={isPremium} isAdmin={role === "admin"} />
 
-      <main
-        className={`fh dj${isPremium ? "" : " fh--con-barra"}`}
-        style={{ "--fh-acento": "#ff9a4d", "--fh-acento-2": "#ffcfa3" } as React.CSSProperties}
-      >
+      <main className="fh fh-c-azul dj">
         <nav className="fh-migas" aria-label="Migas de pan">
           <Link href="/">Inicio</Link>
           <span aria-hidden="true">›</span>
           <span>Diario de Trading</span>
         </nav>
 
-        {/* ── Cabecera: Nova en grande, saludando, y la llamada ── */}
+        {/* ── Cabecera: la promesa, el botón y la hoja del diario (o Nova) ── */}
         <section className="fh-hero dj-hero">
           <div className="fh-hero-texto">
             <span className="fh-eyebrow">
-              <span className="fh-eyebrow-punto" aria-hidden="true" />
+              <NotebookPen size={14} aria-hidden="true" />
               El diario de trading más completo en español
             </span>
 
             <h1 className="fh-titulo">
-              Diario de Trading
-              <span>Con Nova, que lee tus números por ti.</span>
+              Diario de <span className="fluor">Trading</span>
+              <span className="fh-titulo-2">Con Nova, que lee tus números por ti.</span>
             </h1>
 
             <p className="fh-lead">
@@ -325,11 +360,11 @@ export default async function FichaDiarioPage() {
             </p>
 
             <div className="fh-cta">
-              <Cta premium={isPremium} />
+              <Cta premium={isPremium} grande />
               {!isPremium && (
                 <p className="fh-cta-nota">
                   <ShieldCheck size={14} aria-hidden="true" />
-                  {PRECIO}/mes · Sin permanencia · Cancela en 1 clic
+                  {PRECIO}/mes · Sin permanencia · Cancela cuando quieras
                 </p>
               )}
               {!user && (
@@ -342,19 +377,20 @@ export default async function FichaDiarioPage() {
 
             <ul className="dj-incluye-corto">
               {INCLUYE_CORTO.map((t) => (
-                <li key={t}><Check size={14} strokeWidth={2.8} aria-hidden="true" />{t}</li>
+                <li key={t}><Check size={14} strokeWidth={3} aria-hidden="true" />{t}</li>
               ))}
             </ul>
           </div>
 
-          <NovaSaludo />
+          {MOSTRAR_NOVA ? <NovaSaludo /> : <HojaDiario />}
         </section>
 
         {/* ── La respuesta, arriba (10-11-2026): quien busca «diario de trading»
             casi siempre quiere saber qué es antes que comprar. Se le contesta
             aquí en dos frases, y quien quiere aprender a llevarlo tiene la guía
             gratuita. ── */}
-        <section className="fh-bloque fh-bloque--estrecho dj-que-es">
+        <section className="fh-bloque fh-bloque--estrecho fh-papel dj-que-es">
+          <p className="fh-mano">primero, lo básico</p>
           <h2 className="fh-h2">Qué es un diario de trading</h2>
           <p className="dj-p">
             Un <Link href="/glosario/diario-de-trading">diario de trading</Link> es el registro de todas tus
@@ -372,7 +408,9 @@ export default async function FichaDiarioPage() {
         {/* ── Nova ── */}
         <section className="fh-bloque dj-nova">
           <div className="dj-nova-texto">
-            <span className="dj-kicker"><NovaMini size={22} /> Tu asistente de trading</span>
+            <span className="fh-kicker">
+              {MOSTRAR_NOVA ? <NovaMini size={20} /> : <Sparkles size={14} aria-hidden="true" />} Tu asistente de trading
+            </span>
             <h2 className="fh-h2">Nova lee tu diario y te dice lo que importa</h2>
             <p className="dj-p">
               Un diario lleno de números no sirve si nadie los lee. Nova los lee por ti cada vez que apuntas algo, y
@@ -383,7 +421,7 @@ export default async function FichaDiarioPage() {
                 const Icon = p.icon;
                 return (
                   <div key={p.title} className="dj-nova-punto">
-                    <span className="dj-icono" aria-hidden="true"><Icon size={18} strokeWidth={2} /></span>
+                    <span className="fh-icono" aria-hidden="true"><Icon size={18} strokeWidth={2.2} /></span>
                     <div>
                       <h3>{p.title}</h3>
                       <p>{p.text}</p>
@@ -395,33 +433,30 @@ export default async function FichaDiarioPage() {
           </div>
 
           <div className="dj-nova-panel" aria-hidden="true">
-            <div className="dj-nova-panel-cab">
-              <span>
-                <strong>Lo más importante</strong>
-                <small>Hoy, según tus últimas operaciones</small>
-              </span>
-              <b>82<i>/100</i></b>
-            </div>
+            <span className="dj-nova-panel-cab">
+              <strong>Lo más importante</strong>
+              <small>Hoy, según tus últimas operaciones</small>
+            </span>
             <ul className="dj-nova-mensajes">
               {NOVA_MENSAJES.map((m) => (
                 <li key={m.texto} className={m.tono}>{m.texto}</li>
               ))}
             </ul>
-            <span className="dj-nova-accion">Revisar mis operaciones <ArrowRight size={14} /></span>
+            <span className="dj-nova-accion">Revisar mis operaciones <ArrowRight size={14} strokeWidth={2.6} /></span>
           </div>
         </section>
 
         {/* ── El panel ── */}
         <section className="fh-bloque dj-panel">
-          <div className="dj-centro">
-            <span className="dj-kicker"><BarChart3 size={14} aria-hidden="true" /> El panel</span>
-            <h2 className="fh-h2">Todo tu trading, en una pantalla</h2>
+          <div className="fh-centro">
+            <span className="fh-kicker"><BarChart3 size={14} aria-hidden="true" /> El panel</span>
+            <h2 className="fh-h2">Todo tu trading, en <Anotacion tipo="underline" color="var(--azul)">una pantalla</Anotacion></h2>
           </div>
 
           {/* Maqueta del panel. Decorativa: las cifras ilustran cómo se ve,
               no son de nadie. El admin pidió el 04-11-2026 no rotularla. */}
           <div className="fh-ventana-marco dj-ventana" aria-hidden="true">
-            <div className="fh-ventana fh-ventana--diario">
+            <div className="fh-ventana">
               <div className="fh-ventana-barra">
                 <span className="fh-ventana-puntos"><i /><i /><i /></span>
                 <span className="fh-ventana-nombre">Mi diario de trading</span>
@@ -432,69 +467,63 @@ export default async function FichaDiarioPage() {
                 </span>
               </div>
 
-              <div className="fh-dj-cuerpo">
-                <div className="fh-dj-kpis">
-                  <div className="fh-dj-pl">
+              <div className="dj-cuerpo">
+                <div className="dj-kpis">
+                  <div className="dj-pl">
                     <span className="fh-cifra-label">P&amp;L total</span>
-                    <span className="fh-dj-pl-valor es-sube">{DEMO.pl}</span>
-                    <span className="fh-dj-pl-pct">{DEMO.plPct} sobre tu capital</span>
+                    <span className="dj-pl-valor es-sube">{DEMO.pl}</span>
+                    <span className="dj-pl-pct">{DEMO.plPct} sobre tu capital</span>
                   </div>
 
-                  <div className="fh-dj-win">
-                    <svg viewBox="0 0 36 36" className="fh-dj-anillo">
-                      <circle cx="18" cy="18" r="15.9" className="fh-dj-anillo-fondo" />
+                  <div className="dj-win">
+                    <svg viewBox="0 0 36 36" className="dj-anillo">
+                      <circle cx="18" cy="18" r="15.9" className="dj-anillo-fondo" />
                       <circle
                         cx="18" cy="18" r="15.9"
-                        className="fh-dj-anillo-valor"
+                        className="dj-anillo-valor"
                         strokeDasharray={`${(ANILLO * DEMO.winRate) / 100} ${ANILLO}`}
                       />
                     </svg>
-                    <span className="fh-dj-win-texto">
+                    <span className="dj-win-texto">
                       <b>{DEMO.winRate} %</b>
                       <small>Win rate</small>
                     </span>
                   </div>
 
-                  <div className="fh-dj-mini">
+                  <div className="dj-mini">
                     <span><small>Operaciones</small><b>{DEMO.operaciones}</b></span>
                     <span><small>P&amp;L medio</small><b className="es-sube">{DEMO.plMedio}</b></span>
                   </div>
                 </div>
 
-                <div className="fh-dj-curva">
-                  <div className="fh-dj-curva-cab">
+                <div className="dj-curva">
+                  <div className="dj-curva-cab">
                     <span className="fh-cifra-label">Curva de capital</span>
-                    <span className="fh-dj-max">Máximo histórico</span>
+                    <span className="dj-max">Máximo histórico</span>
                   </div>
-                  <div className="fh-dj-grafica">
+                  <div className="dj-grafica">
                     <svg viewBox="0 0 320 110" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="fh-dj-relleno" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="var(--fh-acento)" stopOpacity="0.32" />
-                          <stop offset="100%" stopColor="var(--fh-acento)" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
                       {[28, 55, 82].map((y) => (
-                        <line key={y} x1="0" x2="320" y1={y} y2={y} className="fh-dj-guia" />
+                        <line key={y} x1="0" x2="320" y1={y} y2={y} className="dj-guia" />
                       ))}
-                      <polygon points={`${CURVA_PUNTOS} 320,110 0,110`} fill="url(#fh-dj-relleno)" />
-                      <polyline points={CURVA_PUNTOS} className="fh-dj-linea" />
+                      <polygon points={`${CURVA_PUNTOS} 320,110 0,110`} className="dj-relleno" />
+                      <polyline points={CURVA_PUNTOS} className="dj-linea" pathLength={1} />
                     </svg>
                     <span
-                      className="fh-dj-punto"
+                      className="dj-punto"
                       style={{ left: `${(CURVA_X / 320) * 100}%`, top: `${(CURVA_Y / 110) * 100}%` }}
                     />
                   </div>
                 </div>
 
-                <div className="fh-dj-ops">
+                <div className="dj-ops">
                   {DEMO_OPS.map((o) => (
-                    <div key={o.par} className="fh-dj-op">
-                      <span className="fh-dj-moneda">{o.par.slice(0, 1)}</span>
-                      <span className="fh-dj-par">{o.par}<small>/USDT</small></span>
-                      <span className={`fh-dj-dir ${o.dir === "Long" ? "es-long" : "es-short"}`}>{o.dir}</span>
-                      <span className="fh-dj-estrategia">{o.estrategia}</span>
-                      <span className={`fh-dj-res ${o.tono}`}>{o.res}</span>
+                    <div key={o.par} className="dj-op">
+                      <span className={`dj-moneda dj-moneda--${o.par.toLowerCase()}`}>{o.par.slice(0, 1)}</span>
+                      <span className="dj-par">{o.par}<small>/USDT</small></span>
+                      <span className={`dj-dir ${o.dir === "Long" ? "es-long" : "es-short"}`}>{o.dir}</span>
+                      <span className="dj-estrategia">{o.estrategia}</span>
+                      <span className={`dj-res ${o.tono}`}>{o.res}</span>
                     </div>
                   ))}
                 </div>
@@ -502,8 +531,8 @@ export default async function FichaDiarioPage() {
             </div>
 
             {/* El aviso de hito, como sale en la herramienta al subir de nivel. */}
-            <div className="fh-dj-hito">
-              <span className="fh-dj-hito-icono"><Trophy size={16} strokeWidth={2.2} /></span>
+            <div className="dj-hito-aviso">
+              <span className="dj-hito-aviso-ic"><Trophy size={16} strokeWidth={2.4} /></span>
               <span>
                 <small>Hito conseguido</small>
                 <b>Disciplina de riesgo · Nivel 2</b>
@@ -535,9 +564,10 @@ export default async function FichaDiarioPage() {
             {ANIMOS.map((a, i) => {
               const valores = [64, 38, -22, -55];
               const v = valores[i] ?? 0;
+              const Cara = CARA_ANIMO[a.value] ?? Smile;
               return (
                 <div key={a.value} className="dj-animo-fila">
-                  <span className="dj-animo-cara">{a.emoji}</span>
+                  <span className={`dj-animo-cara dj-animo-cara--${a.value}`}><Cara size={18} strokeWidth={2.4} /></span>
                   <span className="dj-animo-nombre">{a.label}</span>
                   <span className="dj-animo-barra">
                     <i className={v >= 0 ? "es-sube" : "es-baja"} style={{ width: `${Math.abs(v)}%` }} />
@@ -548,7 +578,7 @@ export default async function FichaDiarioPage() {
             })}
           </div>
           <div className="dj-animo-texto">
-            <span className="dj-kicker"><HeartPulse size={14} aria-hidden="true" /> Sensaciones</span>
+            <span className="fh-kicker"><HeartPulse size={14} aria-hidden="true" /> Sensaciones</span>
             <h2 className="fh-h2">Tus emociones, con números</h2>
             <p className="dj-p">
               Cada día apuntas cómo te sientes con un toque y, si quieres, una nota. El diario cruza tu ánimo con tus
@@ -569,8 +599,8 @@ export default async function FichaDiarioPage() {
               return (
                 <article key={d.title} className="fh-paso">
                   <span className="fh-paso-num" aria-hidden="true">{i + 1}</span>
-                  <span className="fh-paso-icono" aria-hidden="true">
-                    {d.nova ? <NovaMini size={30} /> : <Icon size={20} strokeWidth={1.9} />}
+                  <span className="fh-icono" aria-hidden="true">
+                    {d.nova && MOSTRAR_NOVA ? <NovaMini size={30} /> : <Icon size={20} strokeWidth={2.2} />}
                   </span>
                   <h3>{d.title}</h3>
                   <p>{d.text}</p>
@@ -583,12 +613,12 @@ export default async function FichaDiarioPage() {
         {/* ── Y además ── */}
         <section className="fh-bloque">
           <h2 className="fh-h2">Y además</h2>
-          <div className="fh-ademas dj-ademas">
+          <div className="fh-ademas">
             {ADEMAS.map((a) => {
               const Icon = a.icon;
               return (
                 <div key={a.title} className="fh-extra">
-                  <span className="fh-paso-icono" aria-hidden="true"><Icon size={18} strokeWidth={1.9} /></span>
+                  <span className="fh-icono" aria-hidden="true"><Icon size={18} strokeWidth={2.2} /></span>
                   <div>
                     <h3>{a.title}</h3>
                     <p><ConTermino text={a.text} termino={a.termino} /></p>
@@ -599,14 +629,11 @@ export default async function FichaDiarioPage() {
           </div>
         </section>
 
-        {/* ── EL SÚPER HITO ── */}
+        {/* ── EL SÚPER HITO: un logro, en amarillo ── */}
         <section className="dj-super" aria-labelledby="dj-super-titulo">
-          <span className="dj-super-rayos" aria-hidden="true" />
-          <div className="dj-super-corona" aria-hidden="true">
-            <span className="dj-super-medalla"><Crown size={54} strokeWidth={1.7} /></span>
-          </div>
+          <span className="dj-super-pegatina" aria-hidden="true"><Crown size={40} strokeWidth={2} /></span>
           <span className="dj-super-kicker">Súper hito · El más difícil del diario</span>
-          <h2 id="dj-super-titulo" className="dj-super-titulo">Conseguiste vivir del trading</h2>
+          <h2 id="dj-super-titulo" className="dj-super-titulo">Conseguiste <span className="fluor">vivir del trading</span></h2>
           <p className="dj-super-lead">
             Solo se consigue con <strong>un año entero de rentabilidad</strong>: doce meses cerrados seguidos operando
             de verdad, el año en beneficio y casi sin tropiezos. Un mes que no cumple y la cuenta vuelve a empezar.
@@ -626,16 +653,18 @@ export default async function FichaDiarioPage() {
             </div>
             <div className="dj-super-meses">
               {RACHA.map((m, i) => (
-                <span key={i} className={`es-${m}`}><i /></span>
+                <span key={i} className={`es-${m}`}>
+                  {m === "ok" ? <Check size={14} strokeWidth={3.4} /> : m === "red" ? <X size={13} strokeWidth={3.4} /> : null}
+                </span>
               ))}
             </div>
           </div>
 
           <div className="dj-super-hitos">
-            <h3>Y diez hitos con niveles para el camino</h3>
+            <h3>Y {HITOS.length} hitos con niveles para el camino</h3>
             <ul>
               {HITOS.map((h) => (
-                <li key={h}><Trophy size={14} strokeWidth={2} aria-hidden="true" />{h}</li>
+                <li key={h}><Trophy size={13} strokeWidth={2.4} aria-hidden="true" />{h}</li>
               ))}
             </ul>
             <p>Premian cómo operas, no cuánto: ninguno se consigue operando más.</p>
@@ -654,8 +683,8 @@ export default async function FichaDiarioPage() {
           <div className="fh-compara">
             {COMPARA.map((c) => (
               <div key={c.aqui} className="fh-compara-fila">
-                <span className="fh-compara-no"><X size={15} strokeWidth={2.6} aria-hidden="true" />{c.otros}</span>
-                <span className="fh-compara-si"><Check size={15} strokeWidth={2.6} aria-hidden="true" />{c.aqui}</span>
+                <span className="fh-compara-no"><span className="fh-marca"><X size={13} strokeWidth={3.2} aria-hidden="true" /></span>{c.otros}</span>
+                <span className="fh-compara-si"><span className="fh-marca"><Check size={13} strokeWidth={3.2} aria-hidden="true" /></span>{c.aqui}</span>
               </div>
             ))}
           </div>
@@ -665,7 +694,9 @@ export default async function FichaDiarioPage() {
         <section className="fh-bloque fh-bloque--estrecho">
           <h2 className="fh-h2 fh-h2--peq">Para que nadie se lleve otra idea</h2>
           <ul className="fh-noes">
-            {NO_ES.map((n) => <li key={n}>{n}</li>)}
+            {NO_ES.map((n) => (
+              <li key={n}><span className="fh-marca" aria-hidden="true"><X size={12} strokeWidth={3.2} /></span>{n}</li>
+            ))}
           </ul>
           <p className="fh-nota">
             Las operaciones las apuntas tú, desde la próxima. El diario mira
@@ -673,19 +704,16 @@ export default async function FichaDiarioPage() {
           </p>
         </section>
 
-        {/* ── Precio y llamada final ── */}
-        <section className="fh-precio dj-precio" id="suscribirse">
+        {/* ── Precio y llamada final, en el bloque de tinta de Premium ── */}
+        <section className="fh-precio" id="suscribirse">
           <div className="fh-precio-texto">
-            <span className="fh-eyebrow">
-              <span className="fh-eyebrow-punto" aria-hidden="true" />
-              Premium · todo incluido
-            </span>
+            <span className="fh-sello"><Crown size={14} aria-hidden="true" /> Premium · todo incluido</span>
             <h2 className="fh-precio-titulo">Tu mejor operación empieza por apuntar la próxima</h2>
             <ul className="fh-incluye">
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El Diario de Trading completo, con Nova y tu objetivo semanal</li>
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Sensaciones, análisis del riesgo, diecisiete hitos y el súper hito</li>
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA en directo</li>
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El Diario de Trading completo, con Nova y tu objetivo semanal</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Sensaciones, análisis del riesgo, diecisiete hitos y el súper hito</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA en directo</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
             </ul>
           </div>
 
@@ -695,14 +723,14 @@ export default async function FichaDiarioPage() {
             ) : (
               <>
                 <p className="fh-precio-cifra">{PRECIO}<span>/mes</span></p>
-                <p className="dj-precio-dia">Unos {PRECIO_DIA} al día. Menos que una mala operación.</p>
+                <p className="fh-precio-dia">Unos {PRECIO_DIA} al día. Menos que una mala operación.</p>
               </>
             )}
             <Cta premium={isPremium} grande />
             {!isPremium && (
               <ul className="fh-confianza">
                 <li><ShieldCheck size={14} aria-hidden="true" />Sin permanencia</li>
-                <li><RefreshCw size={14} aria-hidden="true" />Cancela en 1 clic</li>
+                <li><RefreshCw size={14} aria-hidden="true" />Cancela cuando quieras</li>
                 <li><CreditCard size={14} aria-hidden="true" />Pago seguro con Stripe</li>
               </ul>
             )}
@@ -713,10 +741,14 @@ export default async function FichaDiarioPage() {
         <section className="fh-bloque fh-bloque--estrecho">
           <h2 className="fh-h2">Preguntas frecuentes</h2>
           <div className="fh-faq">
-            {FAQ.map((f) => (
+            {FAQ.map((f, i) => (
               <details key={f.q} className="fh-faq-item">
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
+                <summary>
+                  <span className="fh-faq-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="fh-faq-q">{f.q}</span>
+                  <span className="fh-faq-icono" aria-hidden="true"><ArrowRight size={16} strokeWidth={3} /></span>
+                </summary>
+                <div className="fh-faq-respuesta"><p>{f.a}</p></div>
               </details>
             ))}
           </div>
@@ -724,14 +756,6 @@ export default async function FichaDiarioPage() {
 
         <DisclaimerRiesgo variante="diario" />
 
-        {!isPremium && (
-          <div className="fh-barra">
-            <span className="fh-barra-precio">{PRECIO}<small>/mes</small></span>
-            <Link href="/api/checkout" prefetch={false} className="fh-barra-btn">
-              Empezar mi diario <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
-            </Link>
-          </div>
-        )}
       </main>
 
       <Footer />

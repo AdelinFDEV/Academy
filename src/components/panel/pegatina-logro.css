@@ -1,0 +1,88 @@
+/* La pegatina de un logro (PegatinaLogro.tsx). Referencia: disenos/sistema.html,
+   «Etiquetas, notas y pegatinas». Redonda, borde blanco de 4px, sombra blanda y
+   torcida; al pasar el ratón se despega un poco, con muelle. Quien la contiene
+   puede llevar `pgl-anfitrion` para que se despegue al pasar por toda la ficha. */
+
+.pgl {
+  --c: var(--amarillo);
+  --o: var(--amarillo-o);
+  --t: #fff;
+  --lado: 84px;
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--lado);
+  height: var(--lado);
+  border: 4px solid var(--papel);
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--t);
+  box-shadow:
+    inset 0 -6px 0 rgba(0, 0, 0, 0.1),
+    inset 0 4px 0 rgba(255, 255, 255, 0.3),
+    0 6px 14px -6px rgba(29, 27, 51, 0.45);
+  transform: rotate(var(--giro, 0deg));
+  transition: transform 0.35s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.35s ease;
+}
+
+.pgl-icono { display: grid; place-items: center; line-height: 0; }
+.pgl-icono svg { width: calc(var(--lado) * 0.4); height: calc(var(--lado) * 0.4); }
+
+.pgl--naranja { --c: var(--naranja); --o: var(--naranja-o); }
+.pgl--azul { --c: var(--azul); --o: var(--azul-o); }
+.pgl--menta { --c: var(--menta); --o: var(--menta-o); --t: var(--tinta); }
+.pgl--lila { --c: var(--lila); --o: var(--lila-o); }
+.pgl--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); --t: var(--tinta); }
+/* Sobre menta, cielo y amarillo, el icono va en tinta (como el texto de las
+   teclas de esos colores): el blanco se pierde. */
+.pgl--coral { --c: var(--coral); --o: var(--coral-o); }
+.pgl--cielo { --c: var(--cielo); --o: var(--cielo-o); --t: var(--tinta); }
+
+.pgl--peq { --lado: 64px; border-width: 3px; }
+.pgl--grande { --lado: 112px; border-width: 5px; }
+
+/* Especial: un aro de rotulador amarillo alrededor. */
+.pgl.is-especial.is-conseguida {
+  box-shadow:
+    inset 0 -6px 0 rgba(0, 0, 0, 0.1),
+    inset 0 4px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 5px var(--amarillo),
+    0 8px 16px -6px rgba(29, 27, 51, 0.45);
+}
+
+/* Sin conseguir: gris, recta, con el icono apagado y su candado. */
+.pgl.is-bloqueada {
+  --c: var(--gris);
+  --t: var(--tinta-3);
+  transform: none;
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.05), 0 4px 0 var(--gris-o);
+  border-style: dashed;
+  border-color: var(--gris-o);
+}
+
+.pgl-candado {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 9px;
+  background: var(--papel);
+  color: var(--tinta-2);
+  box-shadow: 0 3px 0 var(--gris-o);
+}
+
+@media (hover: hover) {
+  .pgl.is-conseguida:hover,
+  .pgl-anfitrion:hover .pgl.is-conseguida {
+    transform: rotate(calc(var(--giro, 0deg) * -0.6)) scale(1.06) translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pgl { transition: none; }
+}

@@ -1,0 +1,522 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   PORTFOLIO ADELIN · el DCA de Bitcoin (DcaClient.tsx) y su gráfico
+   (DcaGrafico.tsx). Lo común está en portfolio.css. Bitcoin lleva su naranja
+   de marca (--btc); verde y rojo, solo en cifras con signo y en los puntos de
+   cada compra (ganancia o pérdida hoy).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* La hoja del DCA lleva el círculo en el naranja suave de Bitcoin. */
+.pv-resumen--dca .pv-hoja::before { background: var(--naranja-s); }
+
+/* ── El gráfico ────────────────────────────────────────────────────────── */
+
+.pv-grafico {
+  margin-bottom: 26px;
+  padding: clamp(20px, 3vw, 28px);
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+.pv-grafico-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pv-grafico-leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: var(--fondo);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.pv-grafico-leyenda i {
+  width: 18px;
+  height: 4px;
+  border-radius: 4px;
+}
+
+.pv-grafico-leyenda .es-compras i { background: var(--btc); }
+.pv-grafico-leyenda .es-medio i { background: repeating-linear-gradient(90deg, var(--lila) 0 5px, transparent 5px 8px); }
+.pv-grafico-leyenda .es-hoy i { background: var(--tinta); }
+
+/* El resumen del gráfico: cuatro fichitas. */
+.pv-g-resumen {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.pv-g-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--fondo);
+  box-shadow: 0 3px 0 var(--gris-o);
+}
+
+.pv-g-dato-valor {
+  font-family: var(--letra-titular);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+}
+
+.pv-g-dato-valor.es-sube { color: var(--sube); }
+
+.pv-g-dato-valor small {
+  font-size: 0.65em;
+  color: var(--tinta-2);
+}
+
+.pv-g-dato-texto {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta-2);
+}
+
+.pv-g-cuerpo {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+.pv-g-eje-y {
+  position: relative;
+  height: 290px;
+}
+
+.pv-g-eje-y span {
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-3);
+  transform: translateY(-50%);
+}
+
+.pv-g-zona { min-width: 0; }
+
+.pv-grafico-lienzo {
+  position: relative;
+  height: 290px;
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+
+.pv-grafico-lienzo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* La rejilla, tenue como los renglones de un cuaderno. */
+.pv-g-guia {
+  stroke: var(--gris);
+  stroke-width: 2;
+  stroke-dasharray: 3 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.pv-g-linea {
+  fill: none;
+  stroke: var(--btc);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.pv-g-medio {
+  stroke: var(--lila);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.pv-g-hoy {
+  stroke: var(--tinta);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.75;
+}
+
+/* Un punto por compra: verde si hoy gana, rojo si pierde. */
+.pv-g-punto {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: var(--btc);
+  box-shadow: 0 2px 0 rgba(29, 27, 51, 0.18);
+  pointer-events: none;
+  transition: transform 0.26s var(--muelle);
+}
+
+.pv-g-punto.es-sube { background: var(--sube); }
+.pv-g-punto.es-baja { background: var(--baja); }
+
+.pv-g-punto.is-activo {
+  z-index: 2;
+  transform: scale(1.8);
+}
+
+/* Las etiquetas del medio y de hoy, a la derecha, como chips. */
+.pv-g-etiqueta {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  padding: 4px 9px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.pv-g-etiqueta.es-medio {
+  background: var(--lila);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--lila-o);
+}
+
+.pv-g-etiqueta.es-hoy {
+  background: var(--tinta);
+  color: #fff;
+  box-shadow: 0 3px 0 #08070f;
+}
+
+/* La línea vertical de la compra bajo el puntero. */
+.pv-g-cruz {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px dashed var(--gris-o);
+  pointer-events: none;
+}
+
+/* La ficha de la compra: un papel con su canto. */
+.pv-g-ficha {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 200px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 0 0 2px var(--gris), 0 5px 0 var(--gris-o), 0 18px 30px -14px rgba(29, 27, 51, 0.45);
+  transform: translate(16px, -50%) rotate(-1deg);
+  pointer-events: none;
+}
+
+.pv-g-ficha.a-la-izquierda {
+  transform: translate(calc(-100% - 16px), -50%) rotate(1deg);
+}
+
+.pv-g-ficha-fecha {
+  margin-bottom: 2px;
+  font-family: var(--letra-titular);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.pv-g-ficha-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.pv-g-ficha-fila b {
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+}
+
+.pv-g-ficha-hoy {
+  margin-top: 4px;
+  padding-top: 7px;
+  border-top: 2px dashed var(--gris);
+  font-size: 13.5px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.pv-g-ficha-hoy.es-sube { color: var(--sube); }
+.pv-g-ficha-hoy.es-baja { color: var(--baja); }
+
+/* Los meses, debajo del gráfico. */
+.pv-g-eje-x {
+  position: relative;
+  height: 1.7rem;
+  margin-top: 0.5rem;
+}
+
+.pv-g-eje-x span {
+  position: absolute;
+  top: 0;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  color: var(--tinta-3);
+  transform: translateX(-50%);
+}
+
+.pv-g-pista {
+  margin: 0.3rem 0 0;
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  line-height: 1.15;
+  text-align: right;
+  color: var(--tinta-2);
+}
+
+/* ── La proyección: aviso de «dato», bien separado de lo real ──────────── */
+
+.pv-proyeccion {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 3px solid var(--cielo);
+  border-radius: 20px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+}
+
+.pv-proyeccion-ic {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--cielo);
+  color: var(--tinta);
+  box-shadow: 0 3px 0 var(--cielo-o);
+}
+
+.pv-proyeccion p { margin: 0; }
+
+.pv-proyeccion-titulo {
+  font-family: var(--letra-titular);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #0e5f85;
+}
+
+.pv-proyeccion .pv-proyeccion-cifras {
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: #0e5f85;
+}
+
+.pv-proyeccion-cifras strong { font-weight: 900; color: var(--tinta); }
+
+.pv-proyeccion .pv-proyeccion-aviso {
+  margin-top: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--cielo-o);
+}
+
+.pv-proyeccion-aviso strong { font-weight: 900; }
+
+/* ── Las compras: filas de cuaderno ────────────────────────────────────── */
+
+.pv-dca .pv-libreta {
+  --cols: minmax(150px, 1.3fr) repeat(3, minmax(0, 1fr)) minmax(0, 1fr);
+}
+
+.pv-dca .pv-libreta.con-admin {
+  --cols: minmax(150px, 1.3fr) repeat(3, minmax(0, 1fr)) minmax(0, 1fr) 100px;
+}
+
+.pv-libreta--dca .pv-fila { --c: var(--btc); }
+
+.pv-c-fecha {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  text-align: left;
+  font-weight: 900;
+}
+
+.pv-fecha-punto {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: var(--btc);
+  box-shadow: 0 0 0 2px var(--gris);
+}
+
+.pv-fecha-punto.es-sube { background: var(--sube); }
+.pv-fecha-punto.es-baja { background: var(--baja); }
+
+.pv-btc { font-weight: 800; color: var(--naranja-o); }
+
+/* La paginación: dos teclas y el texto en medio. */
+.pv-paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.pv-paginacion > span {
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-2);
+  text-align: center;
+}
+
+.pv-pie {
+  margin: 1.5rem 0 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  .pv-g-resumen { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Las compras pasan a ser fichas. */
+@media (max-width: 760px) {
+  .pv-dca .pv-libreta {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .pv-dca .pv-fila--cab { display: none; }
+
+  .pv-dca .pv-filas {
+    display: grid;
+    gap: 14px;
+  }
+
+  .pv-dca .pv-filas .pv-fila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "fecha   rent"
+      "importe precio"
+      "btc     btc"
+      "acciones acciones";
+    gap: 12px 14px;
+    padding: 16px 16px 14px;
+    border: 0;
+    border-radius: 20px;
+    background: var(--papel);
+    box-shadow: 0 5px 0 var(--gris-o);
+  }
+
+  @media (hover: hover) {
+    .pv-dca .pv-filas .pv-fila:hover { background-color: var(--papel); }
+  }
+
+  .pv-dca .pv-c { align-items: flex-start; text-align: left; }
+  .pv-dca .pv-c-rent { align-items: flex-end; text-align: right; }
+  .pv-dca .pv-c-fecha { align-items: center; }
+
+  .pv-dca .pv-c-etq {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    margin-bottom: 3px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .pv-dca .pv-c-rent .pv-c-etq { display: none; }
+
+  .pv-c-fecha { grid-area: fecha; }
+  .pv-c-rent { grid-area: rent; }
+  .pv-c-importe { grid-area: importe; }
+  .pv-c-precio { grid-area: precio; }
+  .pv-c-btc { grid-area: btc; }
+
+  .pv-dca .pv-c-acciones {
+    grid-area: acciones;
+    justify-content: flex-start;
+    padding-top: 10px;
+    border-top: 2px dashed var(--gris);
+  }
+}
+
+@media (max-width: 640px) {
+  .pv-g-eje-y,
+  .pv-grafico-lienzo { height: 210px; }
+
+  .pv-g-cuerpo { grid-template-columns: 2.2rem minmax(0, 1fr); gap: 0.4rem; }
+  /* En el móvil la ficha no cabe al lado del punto: va arriba, centrada.
+     Su posición llega en línea desde DcaGrafico, de ahí el !important. */
+  .pv-g-ficha,
+  .pv-g-ficha.a-la-izquierda {
+    left: 50% !important;
+    top: 0 !important;
+    min-width: 0;
+    width: min(240px, 100%);
+    transform: translate(-50%, -8px) rotate(-1deg);
+  }
+  .pv-g-pista { text-align: left; }
+  .pv-proyeccion { flex-direction: column; gap: 12px; }
+}
+
+@media (max-width: 380px) {
+  .pv-g-resumen { grid-template-columns: minmax(0, 1fr); }
+  .pv-paginacion { gap: 10px; }
+  .pv-paginacion > span { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pv-g-punto { transition: none; }
+}

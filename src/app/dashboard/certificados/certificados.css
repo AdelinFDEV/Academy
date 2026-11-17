@@ -1,24 +1,24 @@
 /*
  * Mis certificados — solo /dashboard/certificados y /dashboard/certificados/<codigo>.
- * El fondo y la cabecera son los imm-* compartidos de dashboard.css. Las
- * tarjetas, los botones y el diploma en miniatura son de la vitrina
- * (components/vitrina-certificados.css), que también sale en la portada del
- * dashboard. El certificado a tamaño completo trae su propio CSS
- * (components/aula/certificado.css), con la regla de impresión.
+ * Estilo «Cuaderno de estudio» (17-11-2026), en lila. La cabecera usa las
+ * piezas pn-* de dashboard.css; las fichas, la cinta y el marco son de la
+ * vitrina (components/vitrina-certificados.css). El certificado a tamaño
+ * completo trae su propio CSS (components/aula/certificado.css), con la regla
+ * de impresión.
  */
 
-.cv-page {
-  --imm-accent: #5ec8c4;
-  --imm-accent-2: #e6b455;
+.cv-page .pn-cab .cv-acciones { margin-top: 1rem; }
+
+/* El certificado a tamaño completo, sujeto a la hoja con dos tiras de cinta. */
+.cv-detalle {
   display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
+  justify-content: center;
+  padding-top: 14px;
 }
 
-/* ── El certificado a tamaño completo ── */
-.cv-detalle { display: flex; flex-direction: column; gap: 1.2rem; }
-.cv-volver { display: inline-flex; align-items: center; gap: 0.4rem; width: fit-content; font-size: 0.86rem; color: rgba(240, 244, 255, 0.6); text-decoration: none; }
-.cv-volver:hover { color: #fff; }
-.cv-detalle-cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
-.cv-detalle-titulo { margin: 0 0 0.35rem; font: 800 1.6rem var(--font-display); color: #fff; }
-.cv-detalle-sub { margin: 0; max-width: 60ch; font-size: 0.9rem; line-height: 1.55; color: rgba(240, 244, 255, 0.55); }
+.cv-marco--grande {
+  max-width: 900px;
+  transform: rotate(-0.6deg);
+}
+
+.cv-marco--grande .cv-cinta { height: 32px; }

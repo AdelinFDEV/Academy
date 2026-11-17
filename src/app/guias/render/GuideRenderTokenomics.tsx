@@ -37,7 +37,7 @@ export default function GuideRenderTokenomics() {
       <div className="render-bme-flow">
         {/* Lado quema */}
         <div className="render-bme-side">
-          <div className="render-bme-side-icon burn"><Flame size={20} /></div>
+          <div className="render-bme-side-icon burn"><Flame size={20} aria-hidden="true" /></div>
           <div className="render-bme-side-name">Artistas queman RENDER</div>
           <div className="render-bme-side-sub">Pagan por trabajos de render</div>
           <div className="render-bme-bar-track">
@@ -48,7 +48,7 @@ export default function GuideRenderTokenomics() {
 
         {/* Lado emisión */}
         <div className="render-bme-side">
-          <div className="render-bme-side-icon mint"><Coins size={20} /></div>
+          <div className="render-bme-side-icon mint"><Coins size={20} aria-hidden="true" /></div>
           <div className="render-bme-side-name">Node operators reciben RENDER</div>
           <div className="render-bme-side-sub">Recompensa por prestar su GPU</div>
           <div className="render-bme-bar-track">
@@ -80,7 +80,7 @@ export default function GuideRenderTokenomics() {
       </div>
 
       {/* Resultado */}
-      <div className={`render-bme-result ${state.cls}`}>
+      <div className={`render-bme-result ${state.cls}`} aria-live="polite">
         <StateIcon size={22} aria-hidden="true" />
         <div>
           <div className="render-bme-result-label">{state.label}</div>

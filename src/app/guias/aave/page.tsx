@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -80,7 +79,6 @@ export default async function AavePage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -93,7 +91,6 @@ export default async function AavePage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 15 min</div>
         <h1 className="gbc-hero-title">
           Qué es Aave (AAVE)<br />
@@ -589,7 +586,7 @@ export default async function AavePage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Aave</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Lejos del Uno</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Lejos del Uno</strong>.</p>
           </div>
           {d.isRegistered ? <GuideAaveQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

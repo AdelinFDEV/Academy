@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -68,7 +67,6 @@ export default async function EthenaPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -81,7 +79,6 @@ export default async function EthenaPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Ethena (ENA)<br />
@@ -524,7 +521,7 @@ export default async function EthenaPage() {
           <div className="gbc-body" style={{ marginBottom: 32 }}>
             <p>
               Cinco preguntas. Con las cinco acertadas desbloqueas el logro{" "}
-              <strong style={{ color: "var(--gold)" }}>Delta Cero</strong>. Si quieres ir más allá de Ethena, el
+              <strong className="gbc-logro">Delta Cero</strong>. Si quieres ir más allá de Ethena, el
               curso <Link href="/cursos/defi-y-stablecoins">DeFi y stablecoins</Link> compara cómo se sostienen
               las distintas monedas estables.
             </p>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Botones tipo tecla</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800&family=Caveat:wght@600&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --fondo: #f3f5ff; --tinta: #1d1b33; --tinta-2: #6a6886; --naranja: #ff8a1f; --naranja-o: #c96204; --azul: #4f5dff; --azul-o: #2f3cc9; --menta: #34c98b; --menta-o: #1b9563; --gris-o: #c1c6dc; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: "Nunito", system-ui, sans-serif; padding: 50px 40px; }
+  h1 { font-family: "Fraunces", serif; font-weight: 800; font-size: 44px; margin: 0; }
+  .nota { font-family: "Caveat", cursive; font-size: 24px; color: var(--tinta-2); margin: 6px 0 40px; }
+  .fila { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; margin-bottom: 40px; }
+  .rotulo { width: 170px; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-2); }
+
+  /* ── La tecla ──────────────────────────────────────────────
+     --h: altura del lateral (el recorrido de la tecla).
+     Al pasar el ratón la tecla «se prepara» (baja 1px).
+     Al pulsar baja ENTERA, rápido (60ms), y al soltar
+     rebota con un muelle (cubic-bezier con sobrepaso). */
+  .tecla {
+    --c: var(--naranja); --o: var(--naranja-o); --t: #fff; --h: 9px;
+    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px 28px; border: 0; border-radius: 16px; cursor: pointer;
+    font: 900 15px "Nunito", system-ui, sans-serif; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--t); background: var(--c); text-decoration: none; user-select: none;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.35),
+      inset 0 -2px 0 rgba(0,0,0,.08),
+      0 var(--h) 0 var(--o),
+      0 calc(var(--h) + 8px) 18px -6px rgba(29,27,51,.4);
+    transform: translateY(0);
+    transition: transform .26s cubic-bezier(.34,1.8,.5,1), box-shadow .26s cubic-bezier(.34,1.8,.5,1), filter .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tecla:hover { transform: translateY(2px); filter: brightness(1.04); box-shadow: inset 0 2px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.08), 0 calc(var(--h) - 2px) 0 var(--o), 0 calc(var(--h) + 5px) 14px -6px rgba(29,27,51,.38); }
+  .tecla:active, .tecla.pulsada {
+    transform: translateY(var(--h));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 5px 10px rgba(0,0,0,.22), 0 0 0 var(--o), 0 1px 2px rgba(29,27,51,.35);
+    filter: brightness(.93);
+    transition-duration: .06s; transition-timing-function: ease-out;
+  }
+  .tecla:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+  .azul { --c: var(--azul); --o: var(--azul-o); }
+  .menta { --c: var(--menta); --o: var(--menta-o); }
+  .blanca { --c: #fff; --o: var(--gris-o); --t: var(--tinta); }
+  .peq { --h: 6px; padding: 10px 16px; font-size: 13px; border-radius: 12px; }
+  .grande { --h: 12px; padding: 20px 36px; font-size: 17px; border-radius: 20px; }
+  .icono { --h: 8px; width: 54px; height: 54px; padding: 0; border-radius: 16px; font-size: 22px; }
+  .tecla[disabled] { --c: #e2e5f4; --o: #cfd3e6; --t: #a3a7c0; cursor: not-allowed; }
+  .tecla[disabled]:hover, .tecla[disabled]:active { transform: none; box-shadow: 0 var(--h) 0 var(--o); filter: none; }
+  @media (prefers-reduced-motion: reduce) { .tecla { transition-duration: .01s; } }
+
+  .teclado { display: inline-grid; grid-template-columns: repeat(4, 64px); gap: 12px; padding: 22px; background: #e6e9f8; border-radius: 22px; box-shadow: inset 0 2px 8px rgba(29,27,51,.1); }
+  .teclado .tecla { width: 64px; height: 64px; padding: 0; font-size: 20px; }
+  label { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--tinta-2); }
+</style>
+</head>
+<body>
+<h1>Botones tipo tecla</h1>
+<p class="nota">Púlsalos: bajan enteros, rápido, y al soltar rebotan como una tecla mecánica.</p>
+
+<div class="fila"><span class="rotulo">Principal</span><button class="tecla">Empezar gratis</button><button class="tecla azul">Seguir el curso</button><button class="tecla menta">Comprobar</button><button class="tecla blanca">Ver cursos</button></div>
+<div class="fila"><span class="rotulo">Tamaños</span><button class="tecla peq">Pequeño</button><button class="tecla">Normal</button><button class="tecla grande">Hazte Premium</button></div>
+<div class="fila"><span class="rotulo">Solo icono y desactivado</span><button class="tecla icono blanca" aria-label="Anterior">←</button><button class="tecla icono" aria-label="Siguiente">→</button><button class="tecla" disabled>Bloqueado</button></div>
+<div class="fila"><span class="rotulo">Respuestas de quiz</span><div class="teclado"><button class="tecla blanca">A</button><button class="tecla blanca">B</button><button class="tecla blanca">C</button><button class="tecla blanca">D</button></div><span class="nota" style="margin:0">también responden al teclado: pulsa A, B, C o D</span></div>
+<div class="fila"><span class="rotulo">Sonido (opcional)</span><label><input type="checkbox" id="sonido"> Clic suave al pulsar</label></div>
+
+<script>
+  // Las teclas del quiz se hunden también con el teclado físico.
+  const mapa = { a: 0, b: 1, c: 2, d: 3 };
+  const teclas = document.querySelectorAll(".teclado .tecla");
+  addEventListener("keydown", (e) => { const i = mapa[e.key.toLowerCase()]; if (i !== undefined) teclas[i].classList.add("pulsada"); });
+  addEventListener("keyup", (e) => { const i = mapa[e.key.toLowerCase()]; if (i !== undefined) teclas[i].classList.remove("pulsada"); });
+
+  // Clic sintetizado (sin archivos de audio): un golpe corto y grave.
+  let ctx;
+  function clic() {
+    if (!document.getElementById("sonido").checked) return;
+    ctx = ctx || new AudioContext();
+    const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+    o.type = "triangle"; o.frequency.setValueAtTime(320, t); o.frequency.exponentialRampToValueAtTime(90, t + 0.05);
+    g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.08);
+  }
+  document.querySelectorAll(".tecla").forEach((b) => b.addEventListener("pointerdown", () => { clic(); if (navigator.vibrate) navigator.vibrate(8); }));
+</script>
+</body>
+</html>

@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ShieldCheck, ShieldOff, X, Check, Loader2 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 type Status = "loading" | "off" | "on" | "enrolling";
 
 /**
+ * El asistente de la verificación en dos pasos de «Mi perfil». Activarla o
+ * desactivarla suena como un interruptor (`interruptor`); un código mal o un
+ * fallo, `error`.
+ *
  * `onCambio` avisa a quien la contiene cuando se activa o se desactiva, para
  * que refresque lo que dependa de ello (en «Mi perfil», el aviso destacado).
  */
@@ -63,6 +69,7 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
     if (error || !data) {
       console.error("[2FA enroll] error:", error);
       setError(error?.message ? `No se pudo iniciar la activación: ${error.message}` : "No se pudo iniciar la activación. Inténtalo de nuevo.");
+      sonar("error");
       return;
     }
     setFactorId(data.id);
@@ -94,8 +101,10 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
     if (error) {
       setError("Código incorrecto. Comprueba tu app de autenticación e inténtalo de nuevo.");
       setCode("");
+      sonar("error");
       return;
     }
+    sonar("interruptor");
     setQrCode("");
     setSecret("");
     setCode("");
@@ -111,8 +120,10 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
     setShowDisableConfirm(false);
     if (error) {
       setError("No se pudo desactivar. Inténtalo de nuevo.");
+      sonar("error");
       return;
     }
+    sonar("interruptor");
     setFactorId(null);
     setStatus("off");
     onCambio?.();
@@ -120,8 +131,8 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
 
   if (status === "loading") {
     return (
-      <div className="cuenta-2fa-loading">
-        <Loader2 size={16} className="cuenta-2fa-spin" /> Comprobando…
+      <div className="cuenta-2fa-loading" role="status">
+        <Loader2 size={16} className="cuenta-2fa-spin" aria-hidden="true" /> Comprobando…
       </div>
     );
   }
@@ -130,7 +141,7 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
     return (
       <div className="cuenta-2fa">
         <div className="cuenta-2fa-status cuenta-2fa-status--on">
-          <ShieldCheck size={16} />
+          <ShieldCheck size={16} aria-hidden="true" />
           <span>Verificación en dos pasos activada</span>
         </div>
         <p className="cuenta-2fa-hint">
@@ -138,23 +149,23 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
         </p>
 
         {!showDisableConfirm ? (
-          <button className="cuenta-2fa-btn-disable" onClick={() => setShowDisableConfirm(true)}>
-            <ShieldOff size={14} /> Desactivar
-          </button>
+          <Tecla color="blanca" tamano="peq" onClick={() => setShowDisableConfirm(true)}>
+            <ShieldOff size={14} aria-hidden="true" /> Desactivar
+          </Tecla>
         ) : (
           <div className="cuenta-2fa-confirm">
             <p>¿Seguro? Tu cuenta quedará protegida solo con la contraseña.</p>
             <div className="cuenta-2fa-confirm-actions">
-              <button className="cuenta-2fa-btn-disable" onClick={disable2FA} disabled={busy}>
-                {busy ? "Desactivando..." : "Sí, desactivar"}
-              </button>
-              <button className="cuenta-2fa-btn-cancel" onClick={() => setShowDisableConfirm(false)}>
+              <Tecla color="coral" tamano="peq" onClick={disable2FA} disabled={busy}>
+                {busy ? "Desactivando…" : "Sí, desactivar"}
+              </Tecla>
+              <Tecla color="blanca" tamano="peq" onClick={() => setShowDisableConfirm(false)}>
                 Cancelar
-              </button>
+              </Tecla>
             </div>
           </div>
         )}
-        {error && <p className="auth-error">{error}</p>}
+        {error && <p className="pn-error" role="alert">{error}</p>}
       </div>
     );
   }
@@ -166,6 +177,7 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
         <div className="cuenta-2fa-qr">
           {/* data.totp.qr_code ya es un data: URI completo y listo para usar
               como src — así lo documenta Supabase, sin envolverlo de más. */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- un data: URI generado al momento: no hay nada que optimizar */}
           <img src={qrCode} alt="Código QR para activar la verificación en dos pasos" />
         </div>
 
@@ -182,18 +194,19 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             placeholder="000000"
-            className="mfa-challenge-input"
+            className="cuenta-2fa-codigo"
+            aria-label="Código de 6 dígitos"
             required
           />
-          <button type="submit" className="btn-primary" disabled={busy || code.length < 6}>
-            {busy ? "Verificando..." : <><Check size={15} /> Activar</>}
-          </button>
+          <Tecla type="submit" color="menta" disabled={busy || code.length < 6}>
+            {busy ? "Verificando…" : <><Check size={15} aria-hidden="true" /> Activar</>}
+          </Tecla>
         </form>
-        {error && <p className="auth-error">{error}</p>}
+        {error && <p className="pn-error" role="alert">{error}</p>}
 
-        <button className="cuenta-2fa-btn-cancel" onClick={cancelEnroll}>
-          <X size={14} /> Cancelar
-        </button>
+        <Tecla color="blanca" tamano="peq" onClick={cancelEnroll}>
+          <X size={14} aria-hidden="true" /> Cancelar
+        </Tecla>
       </div>
     );
   }
@@ -201,18 +214,18 @@ export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void 
   return (
     <div className="cuenta-2fa">
       <div className="cuenta-2fa-status">
-        <ShieldOff size={16} />
+        <ShieldOff size={16} aria-hidden="true" />
         <span>Verificación en dos pasos desactivada</span>
       </div>
       <p className="cuenta-2fa-hint">
         Añade una capa extra de seguridad: además de tu contraseña, pedirá un código
         de una app como Google Authenticator al iniciar sesión.
       </p>
-      <button className="cuenta-btn-manage" onClick={startEnroll} disabled={busy}>
-        <ShieldCheck size={15} />
-        {busy ? "Cargando..." : "Activar verificación en dos pasos"}
-      </button>
-      {error && <p className="auth-error">{error}</p>}
+      <Tecla color="amarillo" onClick={startEnroll} disabled={busy}>
+        <ShieldCheck size={15} aria-hidden="true" />
+        {busy ? "Preparando…" : "Activar verificación en dos pasos"}
+      </Tecla>
+      {error && <p className="pn-error" role="alert">{error}</p>}
     </div>
   );
 }

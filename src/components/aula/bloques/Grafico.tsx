@@ -31,7 +31,13 @@ export interface DatosGrafico {
   series: { clave: string; nombre: string; color?: string }[];
 }
 
-const PALETA = ["#e6b455", "#7ea6ff", "#4ade80", "#f472b6", "#c084fc", "#22d3ee"];
+// Los colores del sistema (ESTILO.md), en el orden en que se reparten las series.
+const PALETA = ["#8f7cff", "#ff8a1f", "#2fbff5", "#2fc488", "#ff6b81", "#4f5dff"];
+// Tinta, gris y papel del cuaderno, para ejes, rejilla y la ficha flotante.
+const TINTA = "#1d1b33";
+const TINTA_2 = "#5f5c7d";
+const GRIS = "#e2e5f4";
+const GRIS_O = "#c1c6dc";
 
 export function validarGrafico(d: unknown): d is DatosGrafico {
   const x = d as DatosGrafico;
@@ -49,22 +55,22 @@ export default function Grafico({ datos: g }: { datos: DatosGrafico }) {
   };
   const ejes = (
     <>
-      <CartesianGrid stroke="rgba(240,244,255,0.07)" vertical={false} />
-      <XAxis dataKey="etiqueta" tick={{ fill: "rgba(240,244,255,0.55)", fontSize: 12 }} axisLine={false} tickLine={false} />
+      <CartesianGrid stroke={GRIS} strokeDasharray="4 6" vertical={false} />
+      <XAxis dataKey="etiqueta" tick={{ fill: TINTA_2, fontSize: 12, fontWeight: 700 }} axisLine={false} tickLine={false} />
       <YAxis
         tickFormatter={fmt}
-        tick={{ fill: "rgba(240,244,255,0.45)", fontSize: 11 }}
+        tick={{ fill: TINTA_2, fontSize: 11, fontWeight: 700 }}
         axisLine={false}
         tickLine={false}
         width={72}
       />
       <Tooltip
         formatter={(v) => fmt(Number(v))}
-        contentStyle={{ background: "#0d1322", border: "1px solid rgba(240,244,255,0.12)", borderRadius: 10, fontSize: 13 }}
-        labelStyle={{ color: "rgba(240,244,255,0.7)" }}
-        cursor={{ fill: "rgba(240,244,255,0.04)" }}
+        contentStyle={{ background: "#fff", border: 0, borderRadius: 14, fontSize: 13, fontWeight: 700, color: TINTA, boxShadow: `0 4px 0 ${GRIS_O}` }}
+        labelStyle={{ color: TINTA_2, fontWeight: 900 }}
+        cursor={{ fill: "rgba(143,124,255,0.08)" }}
       />
-      {g.series.length > 1 && <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />}
+      {g.series.length > 1 && <Legend wrapperStyle={{ fontSize: 12, fontWeight: 800, paddingTop: 8, color: TINTA_2 }} />}
     </>
   );
 
@@ -82,7 +88,7 @@ export default function Grafico({ datos: g }: { datos: DatosGrafico }) {
                     dataKey={s.clave}
                     name={s.nombre}
                     fill={color(i)}
-                    radius={[6, 6, 0, 0]}
+                    radius={[8, 8, 0, 0]}
                     stackId={g.apilado ? "a" : undefined}
                     animationDuration={1100}
                     animationBegin={i * 180}
@@ -99,8 +105,8 @@ export default function Grafico({ datos: g }: { datos: DatosGrafico }) {
                     dataKey={s.clave}
                     name={s.nombre}
                     stroke={color(i)}
-                    strokeWidth={2.4}
-                    dot={{ r: 3, fill: color(i) }}
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: "#fff", stroke: color(i), strokeWidth: 2.5 }}
                     animationDuration={1400}
                     animationBegin={i * 200}
                   />
@@ -117,8 +123,8 @@ export default function Grafico({ datos: g }: { datos: DatosGrafico }) {
                     name={s.nombre}
                     stroke={color(i)}
                     fill={color(i)}
-                    fillOpacity={0.18}
-                    strokeWidth={2.2}
+                    fillOpacity={0.22}
+                    strokeWidth={3}
                     stackId={g.apilado ? "a" : undefined}
                     animationDuration={1400}
                     animationBegin={i * 200}

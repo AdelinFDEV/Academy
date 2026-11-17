@@ -2,11 +2,12 @@
 
 import { useRef, useState } from "react";
 import { Brain, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { ANIMOS, NOTA_MAX, type Animo, type DiaDiario } from "./tjDias";
 
 const errorMessage = (err: unknown) => (err instanceof Error ? err.message : "No se pudo guardar");
 
-/** Lo que Nova diría de cada ánimo: una frase útil, no un adorno. */
+/** La lectura de cada ánimo: una frase útil, no un adorno. */
 const LECTURA: Record<Animo, string> = {
   4: "En tu mejor versión. Vigila el exceso de confianza: es cuando más se arriesga.",
   3: "Sereno. Es el estado en el que mejor se sigue un plan.",
@@ -15,29 +16,32 @@ const LECTURA: Record<Animo, string> = {
 };
 
 /**
- * La cara de cada ánimo, dibujada: cuatro expresiones con el mismo trazo. Se
- * pintan con el color del ánimo (`--mood`), así que no dependen de los emojis
- * del sistema, que en cada dispositivo salen distintos.
+ * La cara de cada ánimo, dibujada: cuatro expresiones con el mismo trazo. Lleva
+ * su clase `mood-N`, así que se pinta con el color de su ánimo donde se ponga.
+ * Es la ÚNICA forma de enseñar un ánimo en el Diario: nada de emojis, que en
+ * cada dispositivo salen distintos (y el estilo no los quiere).
+ * `peq`: del tamaño de la letra que la rodea, para ir dentro de un texto o de
+ * un circulito.
  */
-export function Cara({ valor }: { valor: Animo }) {
+export function Cara({ valor, peq = false }: { valor: Animo; peq?: boolean }) {
   return (
-    <svg viewBox="0 0 48 48" className="tjd-cara" aria-hidden="true">
-      <circle cx="24" cy="24" r="21" className="tjd-cara-fondo" />
+    <svg viewBox="0 0 48 48" className={`djc-cara mood-${valor}${peq ? " djc-cara--peq" : ""}`} aria-hidden="true">
+      <circle cx="24" cy="24" r="21" className="djc-cara-fondo" />
       {valor === 4 && (
         <>
           <path d="M13 21 q3.5 -5 7 0" /><path d="M28 21 q3.5 -5 7 0" />
-          <path d="M14 28 q10 11 20 0 z" className="tjd-cara-boca" />
+          <path d="M14 28 q10 11 20 0 z" className="djc-cara-boca" />
         </>
       )}
       {valor === 3 && (
         <>
-          <circle cx="17" cy="20" r="2.1" className="tjd-cara-ojo" /><circle cx="31" cy="20" r="2.1" className="tjd-cara-ojo" />
+          <circle cx="17" cy="20" r="2.1" className="djc-cara-ojo" /><circle cx="31" cy="20" r="2.1" className="djc-cara-ojo" />
           <path d="M16 29 q8 6 16 0" />
         </>
       )}
       {valor === 2 && (
         <>
-          <circle cx="17" cy="21" r="2.1" className="tjd-cara-ojo" /><circle cx="31" cy="21" r="2.1" className="tjd-cara-ojo" />
+          <circle cx="17" cy="21" r="2.1" className="djc-cara-ojo" /><circle cx="31" cy="21" r="2.1" className="djc-cara-ojo" />
           <path d="M13 15 l7 2" /><path d="M35 15 l-7 2" />
           <path d="M17 32 q7 -5 14 0" />
         </>
@@ -119,57 +123,54 @@ export default function TjDayJournal({
   const sinGuardar = nota.trim() !== guardada.trim();
 
   return (
-    <div className="tjd">
-      <div className="tjd-cab">
-        <span className="tjd-cab-icono" aria-hidden="true"><Brain size={18} /></span>
+    <div className="djc-diario">
+      <div className="djc-diario-cab">
+        <span className="djc-diario-ico" aria-hidden="true"><Brain size={20} /></span>
         <div>
-          <span className="tjd-titulo">{isToday ? "Tu cabeza, hoy" : "Tu cabeza, ese día"}</span>
-          <span className="tjd-sub">El mercado es el mismo para todos. Lo que cambia de un día a otro eres tú.</span>
+          <h3 className="djc-diario-tit">{isToday ? "Tu cabeza, hoy" : "Tu cabeza, ese día"}</h3>
+          <p className="djc-diario-sub">El mercado es el mismo para todos. Lo que cambia de un día a otro eres tú.</p>
         </div>
       </div>
 
-      <div className="tjd-cuerpo">
-        <div className="tjd-animo">
-          <div className="tjd-escala" role="radiogroup" aria-label={isToday ? "Cómo te sientes hoy" : "Cómo te sentiste ese día"}>
-            {ANIMOS.map(a => (
-              <button
-                key={a.value}
-                type="button"
-                role="radio"
-                aria-checked={animo === a.value}
-                className={`tjd-opcion mood-${a.value}${animo === a.value ? " is-on" : ""}`}
-                onClick={() => void elegir(a.value)}
-              >
-                <Cara valor={a.value} />
-                <span>{a.label}</span>
-              </button>
-            ))}
-          </div>
-          <p className={`tjd-lectura${animo ? ` mood-${animo}` : ""}`} aria-live="polite">
-            {animo ? LECTURA[animo] : isToday ? "¿Cómo llegas hoy al mercado? Elige una cara." : "¿Cómo estabas ese día? Elige una cara."}
-          </p>
-        </div>
+      <div className="djc-caras" role="radiogroup" aria-label={isToday ? "Cómo te sientes hoy" : "Cómo te sentiste ese día"}>
+        {ANIMOS.map(a => (
+          <Tecla
+            key={a.value}
+            color="blanca"
+            role="radio"
+            aria-checked={animo === a.value}
+            className={`djc-cara-tecla mood-${a.value}${animo === a.value ? " is-on" : ""}`}
+            onClick={() => void elegir(a.value)}
+          >
+            <Cara valor={a.value} />
+            <span>{a.label}</span>
+          </Tecla>
+        ))}
+      </div>
+      <p className={`djc-lectura${animo ? ` mood-${animo}` : ""}`} aria-live="polite">
+        {animo ? LECTURA[animo] : isToday ? "¿Cómo llegas hoy al mercado? Elige una cara." : "¿Cómo estabas ese día? Elige una cara."}
+      </p>
 
-        <div className="tjd-nota">
-          <label htmlFor={`tjd-nota-${fecha}`}>
-            {isToday ? "Lo que te llevas de hoy" : "Lo que te llevaste de ese día"}
-          </label>
-          <textarea
-            id={`tjd-nota-${fecha}`}
-            value={nota}
-            maxLength={NOTA_MAX}
-            rows={4}
-            placeholder="Qué hiciste bien, qué te sacó del plan, qué repetirías mañana..."
-            onChange={e => { setNota(e.target.value); setAvisoGuardado(false); }}
-            onBlur={sinGuardar ? () => void guardarNota() : undefined}
-          />
-          <div className="tjd-pie">
-            <span className={`tjd-cuenta${nota.length > NOTA_MAX - 60 ? " is-cerca" : ""}`}>{nota.length}/{NOTA_MAX}</span>
-            {error && <span className="tjd-error" role="alert">{error}</span>}
-            {avisoGuardado && !sinGuardar && !error && <span className="tjd-guardado"><Check size={13} /> Guardado</span>}
-            {guardando && <span className="tjd-cuenta">Guardando...</span>}
-            {!guardando && !avisoGuardado && !error && <span className="tjd-cuenta">Se guarda sola</span>}
-          </div>
+      <div className="dj-campo djc-nota-campo">
+        <label htmlFor={`djc-nota-${fecha}`}>
+          {isToday ? "Lo que te llevas de hoy" : "Lo que te llevaste de ese día"}
+        </label>
+        <textarea
+          id={`djc-nota-${fecha}`}
+          className="djc-renglones"
+          value={nota}
+          maxLength={NOTA_MAX}
+          rows={4}
+          placeholder="Qué hiciste bien, qué te sacó del plan, qué repetirías mañana..."
+          onChange={e => { setNota(e.target.value); setAvisoGuardado(false); }}
+          onBlur={sinGuardar ? () => void guardarNota() : undefined}
+        />
+        <div className="djc-nota-pie">
+          <span className={`djc-cuenta${nota.length > NOTA_MAX - 60 ? " is-cerca" : ""}`}>{nota.length}/{NOTA_MAX}</span>
+          {error && <span className="djc-nota-error" role="alert">{error}</span>}
+          {avisoGuardado && !sinGuardar && !error && <span className="dj-chip dj-chip--menta"><Check size={13} strokeWidth={3} /> Guardado</span>}
+          {guardando && <span className="djc-cuenta">Guardando...</span>}
+          {!guardando && !avisoGuardado && !error && <span className="ayuda">Se guarda sola</span>}
         </div>
       </div>
     </div>

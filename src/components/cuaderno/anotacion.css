@@ -1,0 +1,6 @@
+/* Anotacion (rough-notation). El trazo es un SVG que pinta la librería; aquí
+   solo va lo que necesita el texto marcado. */
+
+/* Dos o tres palabras rodeadas no se parten de línea: un círculo partido en
+   dos no se entiende. */
+.anotacion--junta { white-space: nowrap; }

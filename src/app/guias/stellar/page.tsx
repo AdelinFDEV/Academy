@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideStellarReserva from "./GuideStellarReserva";
 import GuideStellarQuiz from "./GuideStellarQuiz";
@@ -66,7 +68,6 @@ export default async function StellarPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -79,15 +80,15 @@ export default async function StellarPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel básico · 12 min</div>
         <h1 className="gbc-hero-title">
           Qué es Stellar (XLM)<br />
           <span className="gbc-hero-gold">y en qué se diferencia de XRP</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Stellar es una red para emitir y enviar dinero digital, sea cual sea: dólares, euros o fondos
-          de inversión convertidos en fichas.</strong> Su moneda, el lumen o XLM, no es el producto: es lo que
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Stellar es una red para emitir y enviar dinero digital, sea cual sea: dólares, euros o fondos
+          de inversión convertidos en fichas.</Anotacion></strong> Su moneda, el lumen o XLM, <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>no es el producto</Anotacion>: es lo que
           se paga por usar la red y lo que impide que se llene de basura. Una operación cuesta una fracción
           de céntimo y tarda unos cinco segundos.
         </p>
@@ -107,14 +108,14 @@ export default async function StellarPage() {
           <div className="gbc-body">
             <p>
               La mayoría de las <Termino slug="blockchain">blockchains</Termino> nacieron para tener su propia
-              moneda. Stellar nació para mover las de siempre. La idea es sencilla: que enviar 50 euros de
+              moneda. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Stellar nació para mover las de siempre.</Anotacion> La idea es sencilla: que enviar 50 euros de
               Madrid a Manila sea tan rápido y tan barato como enviar un correo.
             </p>
             <p>
               La fundó en 2014 Jed McCaleb, que venía de crear Ripple, la empresa detrás de
               <Link href="/guias/xrp"> XRP</Link>. Se marchó por desacuerdos y montó un proyecto con el mismo
               objetivo y otra filosofía. Detrás no hay una empresa con accionistas, sino una fundación sin
-              ánimo de lucro: la Stellar Development Foundation.
+              ánimo de lucro: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>la Stellar Development Foundation</Anotacion>.
             </p>
             <p>
               En Stellar, cualquier entidad puede emitir un activo: un banco, una empresa de pagos o una
@@ -132,8 +133,8 @@ export default async function StellarPage() {
           <h2 className="gbc-title">Tres cosas que sorprenden al usar Stellar por primera vez</h2>
           <div className="gbc-body">
             <p>
-              Quien viene de Bitcoin o de Ethereum se encuentra en Stellar con tres reglas que no esperaba.
-              Ninguna es un fallo. Las tres salen de la misma decisión de diseño, y conocerlas ahorra el
+              Quien viene de Bitcoin o de Ethereum se encuentra en Stellar con tres reglas que no esperaba.{" "}
+              <Anotacion tipo="underline" color="var(--menta)" grosor={2} retraso={300}>Ninguna es un fallo.</Anotacion> Las tres salen de la misma decisión de diseño, y conocerlas ahorra el
               primer susto.
             </p>
           </div>
@@ -146,14 +147,15 @@ export default async function StellarPage() {
               </div>
             ))}
           </div>
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 26 }}>
-            <div className="gbc-box-title">El error que más dinero cuesta</div>
-            <div className="gbc-box-body">
-              <p>Enviar XLM a un <Termino slug="exchange">exchange</Termino> sin el <Termino slug="memo">memo</Termino>. La operación sale bien, es definitiva, y el exchange no
-              sabe de quién es. Recuperarlo depende de su servicio de soporte, que puede tardar semanas, cobrar
-              por ello o negarse. Copia siempre los dos datos: dirección y memo.</p>
+          <Postit color="coral" giro={-1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error que más dinero cuesta</div>
+            <div className="postit-cuerpo">
+              <p>Enviar XLM a un <Termino slug="exchange">exchange</Termino> sin el <Termino slug="memo">memo</Termino>. La operación sale bien, es definitiva, y <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>el exchange no
+              sabe de quién es</Anotacion>. Recuperarlo depende de su servicio de soporte, que puede tardar semanas, cobrar
+              por ello o negarse. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Copia siempre los dos datos: dirección y memo.</Anotacion></p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -169,7 +171,7 @@ export default async function StellarPage() {
               registro exige dejar una pequeña fianza en XLM.
             </p>
             <p>
-              La unidad se llama reserva base y vale 0,5 XLM. Una cuenta necesita dos, es decir, 1 XLM. Cada
+              La unidad se llama reserva base y vale <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} retraso={300} junta>0,5 XLM</Anotacion>. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={900}>Una cuenta necesita dos, es decir, 1 XLM.</Anotacion> Cada
               <Termino slug="linea-de-confianza">línea de confianza</Termino>, cada orden de compraventa abierta y cada firmante añadido cuesta una más.
               Calcula lo que retendría la tuya:
             </p>
@@ -179,12 +181,12 @@ export default async function StellarPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Ese XLM no se pierde. Sigue siendo tuyo, pero no puedes gastarlo mientras lo que lo retiene siga
-              abierto. Si cierras una línea de confianza, recuperas sus 0,5 XLM. Si fusionas la cuenta con
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Ese XLM no se pierde.</Anotacion> Sigue siendo tuyo, pero no puedes gastarlo mientras lo que lo retiene siga
+              abierto. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Si cierras una línea de confianza, recuperas sus 0,5 XLM.</Anotacion> Si fusionas la cuenta con
               otra, recuperas todo.
             </p>
             <p>
-              La comisión es aparte y es mínima: 0,00001 XLM por operación. Con un solo XLM se pagan cien mil.
+              La comisión es aparte y es mínima: <Anotacion tipo="circle" junta animar={false}>0,00001 XLM</Anotacion> por operación. Con un solo XLM se pagan cien mil.
               Solo sube cuando la red está saturada, y entonces pasan primero quienes ofrecen más.
             </p>
           </div>
@@ -210,14 +212,16 @@ export default async function StellarPage() {
             <p>
               Cada <Termino slug="validador">validador</Termino> publica una lista de otros validadores de los
               que se fía. Una operación se da por buena cuando suficientes de esos grupos, que se solapan
-              entre sí, coinciden. Como nadie compite, no hay recompensa que repartir: validar no se paga.
+              entre sí, coinciden. Como nadie compite, no hay recompensa que repartir: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>validar no se paga.</Anotacion>
             </p>
             <p>De ahí salen tres consecuencias, y conviene tener las tres en la cabeza.</p>
+            <Llave color="azul" semilla={7}>
             <ul>
               <li><strong>Es rápida y casi gratuita.</strong> Cierra un registro cada cinco o seis segundos, y lo confirmado es definitivo.</li>
-              <li><strong>XLM no rinde nada por tenerlo.</strong> No hay <Termino slug="staking">staking</Termino> en la red. Si alguien te ofrece un rendimiento por tus XLM, lo paga una empresa por su cuenta, con el riesgo de esa empresa.</li>
-              <li><strong>La validan pocos.</strong> Los validadores de más peso pertenecen a menos de una decena de organizaciones, entre ellas la propia fundación.</li>
+              <li><strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={600}>XLM no rinde nada por tenerlo.</Anotacion></strong> No hay <Termino slug="staking">staking</Termino> en la red. Si alguien te ofrece un rendimiento por tus XLM, lo paga una empresa por su cuenta, con el riesgo de esa empresa.</li>
+              <li><strong><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>La validan pocos.</Anotacion></strong> Los validadores de más peso pertenecen a menos de una decena de organizaciones, entre ellas la propia fundación.</li>
             </ul>
+            </Llave>
             <p>
               Desde febrero de 2024, Stellar admite además
               <Termino slug="smart-contract"> contratos inteligentes</Termino>, con una plataforma llamada
@@ -246,7 +250,7 @@ export default async function StellarPage() {
               <tbody>
                 <tr><td><strong>Quién está detrás</strong></td><td>Una fundación sin ánimo de lucro</td><td>Ripple, una empresa privada</td></tr>
                 <tr><td><strong>A quién se dirige</strong></td><td>Personas, empresas de pagos y emisores de activos</td><td>Bancos y grandes entidades financieras</td></tr>
-                <tr><td><strong>Monedas que existen</strong></td><td>50.000 millones, tras destruir más de la mitad en 2019</td><td>100.000 millones creados al inicio</td></tr>
+                <tr><td><strong>Monedas que existen</strong></td><td><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>50.000 millones, tras destruir más de la mitad en 2019</Anotacion></td><td>100.000 millones creados al inicio</td></tr>
                 <tr><td><strong>Reserva para abrir cuenta</strong></td><td>1 XLM</td><td>1 XRP</td></tr>
                 <tr><td><strong>Rendimiento por tenerla</strong></td><td>Ninguno</td><td>Ninguno</td></tr>
                 <tr><td><strong>Tamaño</strong></td><td>Varias veces más pequeña por <Termino slug="market-cap">capitalización</Termino></td><td>Entre las cinco mayores criptomonedas</td></tr>
@@ -255,8 +259,8 @@ export default async function StellarPage() {
           </div>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              En el mercado suelen moverse juntas, y muchas veces XLM sigue a XRP con retraso. Eso es un
-              hábito de los operadores, no una ley. Son dos redes distintas, con riesgos distintos. Si te
+              En el mercado suelen moverse juntas, y muchas veces XLM sigue a XRP con retraso. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>Eso es un
+              hábito de los operadores, no una ley.</Anotacion> Son dos redes distintas, con riesgos distintos. Si te
               interesa la otra mitad de la historia, la tienes en la <Link href="/guias/xrp">guía de XRP</Link>.
             </p>
           </div>
@@ -277,16 +281,17 @@ export default async function StellarPage() {
           <ol className="xlm-oferta">
             <li><span>2014</span><div><strong>100.000 millones</strong><p>Se crean todos de una vez. Además, la red crea un 1 % nuevo cada año.</p></div></li>
             <li><span>Octubre de 2019</span><div><strong>Se elimina la <Termino slug="inflacion">inflación</Termino></strong><p>Los validadores votan quitarla: casi nadie la reclamaba y no cumplía su función.</p></div></li>
-            <li><span>Noviembre de 2019</span><div><strong>Se destruyen 55.000 millones</strong><p>La fundación <Termino slug="quema-de-tokens">quema</Termino> más de la mitad de lo que existía. Quedan unos 50.000 millones, y no se crearán más.</p></div></li>
+            <li><span>Noviembre de 2019</span><div><strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Se destruyen 55.000 millones</Anotacion></strong><p>La fundación <Termino slug="quema-de-tokens">quema</Termino> más de la mitad de lo que existía. Quedan unos 50.000 millones, y no se crearán más.</p></div></li>
             <li><span>Mediados de 2026</span><div><strong>34.000 millones en circulación</strong><p>El resto, unos 16.000 millones, sigue en manos de la fundación, que los va repartiendo.</p></div></li>
           </ol>
           <p className="gbc-fuente">XLM en circulación al cierre del segundo trimestre de 2026: informe de Blockworks sobre Stellar.</p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Lo último es lo que importa a quien compra. No hay inflación, pero sí un vendedor que conoce
-              todo el mundo. Cerca de un tercio de los XLM está todavía en la fundación, que los destina a
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} retraso={200} />
+              Lo último es lo que importa a quien compra. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>No hay inflación, pero sí un vendedor que conoce
+              todo el mundo.</Anotacion> Cerca de un tercio de los XLM está todavía en la fundación, que los destina a
               subvenciones, inversiones y desarrollo. Cada XLM que reparte es uno más en el mercado: entre
-              abril y junio de 2026, la circulación creció un 2,8 %.
+              abril y junio de 2026, la circulación creció un <Anotacion tipo="circle" junta animar={false}>2,8 %</Anotacion>.
             </p>
           </div>
         </div>
@@ -299,8 +304,8 @@ export default async function StellarPage() {
           <h2 className="gbc-title">Quién usa Stellar hoy</h2>
           <div className="gbc-body">
             <p>
-              Stellar lleva años anunciando acuerdos. Conviene separar lo que funciona de lo que fue una nota
-              de prensa. A noviembre de 2026, lo comprobable es esto.
+              Stellar lleva años anunciando acuerdos. <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={300}>Conviene separar lo que funciona de lo que fue una nota
+              de prensa.</Anotacion> A noviembre de 2026, lo comprobable es esto.
             </p>
             <ul>
               <li><strong>Fondos convertidos en fichas.</strong> Es su uso más grande. La gestora Franklin Templeton lleva en Stellar el registro de un fondo monetario. Los activos de este tipo en la red rondaban los 3.000 millones de dólares a mediados de 2026.</li>
@@ -309,8 +314,8 @@ export default async function StellarPage() {
             </ul>
             <p>
               Esa última cifra pone a Stellar en su sitio. En la red <Link href="/guias/tron">TRON</Link> circulan
-              más de 90.000 millones de dólares solo en USDT. Stellar es una red seria y bien diseñada, con un
-              uso real que todavía es pequeño frente al de sus competidoras.
+              más de 90.000 millones de dólares solo en USDT. <Anotacion tipo="underline" color="var(--menta)" grosor={2} retraso={300}>Stellar es una red seria y bien diseñada, con un
+              uso real que todavía es pequeño frente al de sus competidoras.</Anotacion>
             </p>
           </div>
         </div>
@@ -324,7 +329,7 @@ export default async function StellarPage() {
           <div className="gbc-body">
             <ul>
               <li><strong>La fundación tiene un tercio de las monedas.</strong> Su ritmo de reparto pesa sobre el precio, y lo decide ella.</li>
-              <li><strong>El uso no obliga a comprar XLM.</strong> Con comisiones de cienmilésimas, una empresa puede mover millones en la red con un puñado de monedas. Que Stellar crezca no significa que XLM suba.</li>
+              <li><strong><Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>El uso no obliga a comprar XLM.</Anotacion></strong> Con comisiones de cienmilésimas, una empresa puede mover millones en la red con un puñado de monedas. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={800}>Que Stellar crezca no significa que XLM suba.</Anotacion></li>
               <li><strong>La red se ha parado.</strong> El 15 de mayo de 2019 estuvo 67 minutos sin cerrar registros. En abril de 2021 fallaron los validadores de la fundación y varios exchanges pausaron las retiradas.</li>
               <li><strong>La competencia es enorme.</strong> Otras redes mueven mucho más dinero en stablecoins, y los bancos prueban las suyas.</li>
               <li><strong>Quien emite un activo puede bloquearlo.</strong> En Stellar, el emisor puede reservarse el permiso de congelar o retirar lo que ha emitido. Mira quién emite lo que tienes.</li>
@@ -332,7 +337,7 @@ export default async function StellarPage() {
             </ul>
             <p>
               Sobre Hacienda no hay nada particular: vender XLM o cambiarlo por otro activo tributa como con
-              cualquier criptomoneda. La reserva bloqueada no cuenta como venta, porque no sale de tu cuenta.
+              cualquier criptomoneda. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>La reserva bloqueada no cuenta como venta, porque no sale de tu cuenta.</Anotacion>{" "}
               El detalle, en la guía de
               <Link href="/guias/fiscalidad-cripto-espana"> fiscalidad de las criptomonedas en España</Link>.
             </p>
@@ -350,7 +355,7 @@ export default async function StellarPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Stellar</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Línea de Confianza</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Línea de Confianza</strong>.</p>
           </div>
           {d.isRegistered ? <GuideStellarQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

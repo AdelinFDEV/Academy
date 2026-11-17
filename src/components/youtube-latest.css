@@ -1,44 +1,23 @@
-/* Los últimos vídeos del canal, en la portada (YouTubeLatest.tsx). Prefijo: ytl-.
-   Rehecho el 13-11-2026. El rojo es el de YouTube, y solo sale aquí. */
+/* Los últimos vídeos del canal en la portada (YouTubeLatest.tsx).
+   Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md,
+   disenos/sistema.html), en el naranja de la marca. Prefijo: ytl-.
+
+   El más reciente, en grande; los otros dos, en columna a su lado. Cada vídeo
+   es una tarjeta de papel con su canto y la miniatura enmarcada dentro. Todo
+   son enlaces: no se incrusta ningún reproductor. */
 
 .ytl {
-  --ytl-rojo: #ff3d3d;
-  position: relative;
-  isolation: isolate;
-  padding: 4.2rem 1.25rem 4.6rem;
-  overflow: hidden;
-  /* Su propio fondo: casi negro, cálido, como una sala de cine. Distinto del
-     índigo del foro que tiene encima. */
-  background:
-    radial-gradient(ellipse 55% 240px at 50% 0%, rgba(255, 61, 61, 0.16), transparent 70%),
-    linear-gradient(180deg, #0c0a14 0%, #0b0a12 60%, #0a0b16 100%);
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2rem);
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
 }
 
-/* El separador: la misma rendija de luz que el foro, en rojo. */
-.ytl::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: min(880px, 86%);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 61, 61, 0.95) 40%, rgba(255, 150, 110, 0.9) 60%, transparent);
-  transform: translateX(-50%);
+.ytl-inner {
+  max-width: 1180px;
+  margin: 0 auto;
 }
-
-/* Rayas finas en diagonal, que se apagan hacia abajo. */
-.ytl::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 14px);
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
-  mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.ytl-inner { max-width: 1200px; margin: 0 auto; }
 
 .ytl-cabecera {
   display: flex;
@@ -46,181 +25,239 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.8rem 1.5rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.8rem;
 }
 
-.ytl-sello {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 5px 12px;
-  border: 1px solid rgba(255, 61, 61, 0.4);
-  border-radius: 999px;
-  background: rgba(255, 61, 61, 0.1);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #ff8f8f;
+.ytl-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
 }
-.ytl-sello svg { color: var(--ytl-rojo); }
 
 .ytl-titulo {
-  margin: 0.9rem 0 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  margin: 0.3rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 4.2vw, 2.8rem);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
-  color: #fff;
-}
-.ytl-titulo em {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-style: italic;
-  font-weight: 600;
+  line-height: 1.06;
   letter-spacing: -0.02em;
-  background: linear-gradient(100deg, #ff7a7a 0%, var(--ytl-rojo) 55%, #ffc2a8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--tinta);
 }
 
-.ytl-canal {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.85rem;
-  height: 46px;
-  padding: 0 0.35rem 0 1.25rem;
-  border: 1px solid rgba(255, 61, 61, 0.45);
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 61, 61, 0.16), rgba(255, 61, 61, 0.05));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  font-size: 0.9rem;
-  font-weight: 700;
-  white-space: nowrap;
-  color: #fff;
-  text-decoration: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+.ytl-rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
 }
-.ytl-canal-flecha {
-  display: inline-flex;
-  align-items: center;
+
+.ytl-rejilla--uno {
+  grid-template-columns: minmax(0, 760px);
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--ytl-rojo);
-  color: #fff;
 }
-.ytl-canal:hover { border-color: #ff7a7a; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 12px 28px -16px var(--ytl-rojo); transform: translateY(-1px); }
-.ytl-canal:focus-visible, .ytl-principal:focus-visible, .ytl-tarjeta:focus-visible { outline: 2px solid #ff8f8f; outline-offset: 3px; }
 
-/* ── La rejilla: uno grande y dos al lado ── */
-.ytl-rejilla { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.1rem; }
-.ytl-rejilla--uno { grid-template-columns: 1fr; }
-
-.ytl-imagen { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+/* ── Las tarjetas ── */
+.ytl-principal,
+.ytl-tarjeta {
+  position: relative;
+  display: flex;
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
 
 .ytl-principal {
+  flex-direction: column;
+  gap: 1rem;
+  padding: 14px 14px 1.3rem;
+}
+
+.ytl-tarjeta {
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px 12px 12px;
+  border-radius: 24px;
+}
+
+/* Solo con ratón: en el móvil el «hover» se queda pegado tras tocar. */
+@media (hover: hover) {
+  .ytl-principal:hover,
+  .ytl-tarjeta:hover {
+    transform: translateY(-3px) rotate(-0.4deg);
+    box-shadow: 0 9px 0 var(--gris-o);
+  }
+
+  .ytl-principal:hover .ytl-imagen,
+  .ytl-tarjeta:hover .ytl-imagen { scale: 1.04; }
+
+  .ytl-principal:hover .ytl-play,
+  .ytl-tarjeta:hover .ytl-play { transform: scale(1.1); }
+}
+
+.ytl-principal:active,
+.ytl-tarjeta:active {
+  transform: translateY(6px);
+  box-shadow: 0 0 0 var(--gris-o);
+  transition-duration: 0.06s;
+}
+
+.ytl-principal:focus-visible,
+.ytl-tarjeta:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+}
+
+/* La miniatura, enmarcada dentro de la tarjeta. */
+.ytl-marco {
   position: relative;
   display: block;
-  aspect-ratio: 16 / 9;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
-  background: #0b1426;
-  box-shadow: 0 34px 70px -40px rgba(255, 61, 61, 0.55);
-  text-decoration: none;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  background: var(--gris);
 }
-.ytl-principal:hover .ytl-imagen, .ytl-tarjeta:hover .ytl-imagen { transform: scale(1.05); }
-.ytl-principal-velo { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 12, 26, 0) 35%, rgba(6, 12, 26, 0.92) 100%); }
 
+.ytl-marco--mini {
+  flex: none;
+  width: 42%;
+  max-width: 200px;
+  border-radius: 16px;
+}
+
+.ytl-imagen {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* El play: un botón redondo naranja, con su canto, como una tecla. */
 .ytl-play {
   position: absolute;
-  top: 42%;
+  top: 50%;
   left: 50%;
   display: grid;
   place-items: center;
-  width: 76px;
-  height: 76px;
+  width: 74px;
+  height: 74px;
+  padding-left: 4px;
   border-radius: 50%;
-  background: var(--ytl-rojo);
+  translate: -50% -50%;
+  background: var(--naranja);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 7px 0 var(--naranja-o), 0 14px 22px -8px rgba(29, 27, 51, 0.5);
   color: #fff;
-  box-shadow: 0 0 0 10px rgba(255, 61, 61, 0.22), 0 18px 40px -12px rgba(0, 0, 0, 0.8);
-  transform: translate(-50%, -50%);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
-.ytl-play svg { margin-left: 3px; }
-.ytl-principal:hover .ytl-play { transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 0 0 16px rgba(255, 61, 61, 0.16), 0 18px 40px -12px rgba(0, 0, 0, 0.8); }
-.ytl-play--mini { top: 50%; width: 40px; height: 40px; box-shadow: 0 0 0 5px rgba(255, 61, 61, 0.22); opacity: 0; }
-.ytl-play--mini svg { margin-left: 2px; }
-.ytl-tarjeta:hover .ytl-play--mini { opacity: 1; }
 
-.ytl-principal-texto { position: absolute; left: 0; right: 0; bottom: 0; display: grid; gap: 0.55rem; padding: 1.4rem 1.5rem; }
-.ytl-etiquetas { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
-.ytl-nuevo { padding: 3px 10px; border-radius: 999px; background: var(--ytl-rojo); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
-.ytl-fecha { font-size: 0.78rem; font-weight: 600; color: rgba(226, 232, 240, 0.72); }
+.ytl-play--mini {
+  width: 42px;
+  height: 42px;
+  padding-left: 3px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 4px 0 var(--naranja-o), 0 8px 14px -6px rgba(29, 27, 51, 0.5);
+}
+
+/* «Último vídeo»: un pósit amarillo pegado en la esquina. */
+.ytl-postit {
+  position: absolute;
+  top: -10px;
+  right: 18px;
+  z-index: 2;
+  padding: 5px 13px;
+  border-radius: 4px;
+  background: var(--amarillo);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--tinta);
+  transform: rotate(5deg);
+}
+
+.ytl-principal-texto,
+.ytl-tarjeta-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.ytl-principal-texto { padding: 0 0.6rem; }
+
+.ytl-fecha {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 9px;
+  background: var(--gris);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
 .ytl-principal-titulo {
-  display: -webkit-box;
-  overflow: hidden;
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-family: var(--letra-titular);
+  font-size: clamp(1.3rem, 2.4vw, 1.65rem);
   font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: #fff;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
 }
 
-.ytl-lado { display: grid; gap: 1.1rem; grid-template-rows: 1fr 1fr; }
-
-.ytl-tarjeta {
-  display: grid;
-  grid-template-columns: minmax(0, 46%) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: center;
-  padding: 0.7rem;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 20px;
-  background: linear-gradient(160deg, rgba(30, 38, 66, 0.9), rgba(13, 20, 38, 0.92));
-  text-decoration: none;
-  transition: border-color 0.25s ease, transform 0.25s ease;
-}
-.ytl-tarjeta:hover { border-color: rgba(255, 61, 61, 0.5); transform: translateY(-3px); }
-.ytl-tarjeta-imagen { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 13px; background: #0b1426; }
-.ytl-tarjeta-texto { display: grid; gap: 0.4rem; min-width: 0; padding-right: 0.5rem; }
 .ytl-tarjeta-titulo {
   display: -webkit-box;
   overflow: hidden;
-  font-size: 0.98rem;
-  font-weight: 700;
-  line-height: 1.35;
-  color: #fff;
+  font-family: var(--letra-titular);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.22;
+  overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   line-clamp: 3;
 }
-.ytl-ver { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; font-weight: 700; color: #ff8f8f; }
 
-@media (max-width: 900px) {
-  .ytl-rejilla { grid-template-columns: 1fr; }
-  .ytl-lado { grid-template-rows: none; }
+.ytl-ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--naranja-o);
 }
-@media (max-width: 640px) {
-  .ytl { padding: 3.2rem 1.1rem 3.4rem; }
-  .ytl-canal { width: 100%; }
+
+.ytl-lado {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+@media (max-width: 860px) {
+  .ytl-rejilla { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .ytl-cabecera .tecla { flex: 1 1 100%; }
+  .ytl-principal { border-radius: 24px; }
   .ytl-play { width: 60px; height: 60px; }
-  .ytl-principal-texto { padding: 1rem 1.1rem; }
-  .ytl-tarjeta { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); gap: 0.8rem; }
-  .ytl-tarjeta-titulo { font-size: 0.9rem; }
-  .ytl-ver { display: none; }
+  .ytl-play svg { width: 22px; height: 22px; }
+  .ytl-tarjeta { gap: 12px; padding: 10px 12px 10px 10px; }
+  .ytl-tarjeta .ytl-ver { display: none; }
+  .ytl-tarjeta-titulo { font-size: 0.98rem; }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .ytl-imagen, .ytl-play, .ytl-canal, .ytl-tarjeta { transition: none; }
-  .ytl-principal:hover .ytl-imagen, .ytl-tarjeta:hover .ytl-imagen { transform: none; }
-  .ytl-principal:hover .ytl-play { transform: translate(-50%, -50%); }
-  .ytl-canal:hover, .ytl-tarjeta:hover { transform: none; }
+  .ytl-principal, .ytl-tarjeta, .ytl-imagen, .ytl-play { transition: none; }
+  .ytl-principal:hover, .ytl-tarjeta:hover, .ytl-principal:active, .ytl-tarjeta:active { transform: none; }
+  .ytl-principal:hover .ytl-imagen, .ytl-tarjeta:hover .ytl-imagen { scale: none; }
+  .ytl-principal:hover .ytl-play, .ytl-tarjeta:hover .ytl-play { transform: none; }
 }

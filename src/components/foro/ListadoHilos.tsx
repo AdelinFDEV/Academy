@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Check, MessageCircle, PenLine, Pin, Trophy, Users } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
 import MarcoForo from "@/components/foro/MarcoForo";
 import { aspectoDe, colorDe } from "@/components/foro/categorias";
@@ -11,11 +13,13 @@ import "@/app/foro/listado.css";
  * El listado de preguntas: la portada del foro (`/foro`) y la de cada
  * categoría (`/foro/<categoria>`). Es la misma pantalla con otro filtro.
  *
- * Tres zonas (rediseño del 12-11-2026):
- *   · la cabecera, con el titular, lo que se puede hacer y las cifras del foro;
- *   · las categorías, cada una con su color y su icono;
- *   · las preguntas a la izquierda y, a la derecha, quién ayuda más este mes
- *     y cómo funciona el foro.
+ * Estilo «Cuaderno de estudio» (17-11-2026), en coral:
+ *   · la cabecera, con el titular, las teclas de lo que se puede hacer y las
+ *     cifras del foro en una ficha con su pegatina;
+ *   · las categorías, una tecla por cada una con su color;
+ *   · las preguntas como tarjetas de papel con la pestaña del color de su
+ *     categoría, y a la derecha quién ayuda más este mes (con pegatinas) y un
+ *     pósit con cómo funciona.
  *
  * Es igual para todo el mundo: aquí no hay nada que dependa de quién mira,
  * salvo la barra de arriba y el enlace a «lo mío».
@@ -36,25 +40,23 @@ export default function ListadoHilos({
   const cat = datos.categoria;
   const base = cat ? `/foro/${cat.slug}` : "/foro";
   const pagina = (n: number) => (n <= 1 ? base : `${base}?pagina=${n}`);
-  const acento = cat ? aspectoDe(cat.slug).color : undefined;
 
   return (
-    <MarcoForo conSesion={conSesion} acento={acento}>
+    <MarcoForo conSesion={conSesion} tono={cat ? colorDe(cat.slug) : undefined}>
       {/* ── Cabecera ── */}
       <header className="fl-cabecera">
         <div className="fl-cabecera-texto">
-          <span className="fo-antetitulo">
-            <span className="fo-antetitulo-punto" aria-hidden="true" />
-            {cat ? <Link href="/foro">Foro</Link> : "Comunidad"}
-            <span aria-hidden="true">/</span>
-            {cat ? cat.nombre : "Preguntas y respuestas"}
-          </span>
+          <p className="fo-nota">
+            {cat ? <><Link href="/foro">Foro</Link> · {cat.nombre}</> : "Foro de la comunidad"}
+          </p>
 
           {cat ? (
             <h1 className="fo-titulo">{cat.nombre}</h1>
           ) : (
             <h1 className="fo-titulo">
-              Las dudas de cripto, <em>resueltas</em> entre todos.
+              Las dudas de cripto,{" "}
+              <Anotacion tipo="circle" color="var(--coral)" retraso={300}>resueltas</Anotacion>{" "}
+              entre todos.
             </h1>
           )}
 
@@ -65,57 +67,73 @@ export default function ListadoHilos({
           </p>
 
           <div className="fl-acciones">
-            <Link href="/foro/preguntar" className="fp-btn fp-btn--firme fp-btn--grande">
-              <PenLine size={17} strokeWidth={2.4} aria-hidden="true" />
+            <Tecla href="/foro/preguntar" color="coral" tamano="grande">
+              <PenLine size={19} strokeWidth={2.6} aria-hidden="true" />
               Hacer una pregunta
-            </Link>
-            <Link href="/foro/ranking" className="fp-btn fp-btn--grande">Ranking</Link>
-            {conSesion && <Link href="/foro/mio" className="fp-btn fp-btn--grande">Lo mío</Link>}
+            </Tecla>
+            <Tecla href="/foro/ranking" color="blanca">
+              <Trophy size={17} strokeWidth={2.5} aria-hidden="true" />
+              Ranking
+            </Tecla>
+            {conSesion && <Tecla href="/foro/mio" color="blanca">Lo mío</Tecla>}
           </div>
         </div>
 
-        {/* Las cifras del foro entero, sobre un signo de interrogación enorme. */}
-        <dl className="fl-cifras fo-tarjeta">
-          <span className="fl-cifras-marca" aria-hidden="true">?</span>
-          <div>
-            <dt>Preguntas</dt>
-            <dd>{datos.cifras.preguntas}</dd>
-          </div>
-          <div>
-            <dt>Respuestas</dt>
-            <dd>{datos.cifras.respuestas}</dd>
-          </div>
-          <div className="es-verde">
-            <dt>Resueltas</dt>
-            <dd>{datos.cifras.resueltas}</dd>
-          </div>
-        </dl>
+        {/* Las cifras del foro entero, en una ficha con su pegatina. */}
+        <div className="fl-ficha">
+          <span className="fl-ficha-pegatina" aria-hidden="true">?</span>
+          {/* Las cifras son siempre las del foro entero: dentro de una
+              categoría se dice, para que no se lean como suyas. */}
+          {cat && <p className="fl-ficha-nota">en todo el foro</p>}
+          <dl className="fl-cifras">
+            <div>
+              <dt>Preguntas</dt>
+              <dd>{datos.cifras.preguntas}</dd>
+            </div>
+            <div>
+              <dt>Respuestas</dt>
+              <dd>{datos.cifras.respuestas}</dd>
+            </div>
+            <div className="es-resueltas">
+              <dt>Resueltas</dt>
+              <dd>{datos.cifras.resueltas}</dd>
+            </div>
+          </dl>
+        </div>
       </header>
 
       {aviso && <p className="fo-aviso" role="status">{aviso}</p>}
 
-      {/* ── Categorías ── */}
+      {/* ── Categorías: una tecla por cada una ── */}
       <nav className="fl-categorias" aria-label="Categorías del foro">
-        <Link href="/foro" className={`fl-categoria fl-categoria--todas${cat ? "" : " is-activa"}`} aria-current={cat ? undefined : "page"}>
-          <span className="fl-categoria-icono" aria-hidden="true"><MessageCircle size={17} strokeWidth={2.2} /></span>
-          <span className="fl-categoria-nombre">Todas</span>
+        <Tecla
+          href="/foro"
+          color="blanca"
+          tamano="peq"
+          className={`fl-categoria${cat ? "" : " is-activa"}`}
+          aria-current={cat ? undefined : "page"}
+        >
+          <span className="fl-categoria-icono" aria-hidden="true"><MessageCircle size={15} strokeWidth={2.5} /></span>
+          Todas
           <span className="fl-categoria-cuenta">{datos.cifras.preguntas}</span>
-        </Link>
+        </Tecla>
         {datos.categorias.map((c) => {
           const { Icono } = aspectoDe(c.slug);
           const activa = cat?.slug === c.slug;
           return (
-            <Link
+            <Tecla
               key={c.slug}
               href={`/foro/${c.slug}`}
+              color="blanca"
+              tamano="peq"
               className={`fl-categoria${activa ? " is-activa" : ""}`}
               style={colorDe(c.slug)}
               aria-current={activa ? "page" : undefined}
             >
-              <span className="fl-categoria-icono" aria-hidden="true"><Icono size={17} strokeWidth={2.2} /></span>
-              <span className="fl-categoria-nombre">{c.nombre}</span>
+              <span className="fl-categoria-icono" aria-hidden="true"><Icono size={15} strokeWidth={2.5} /></span>
+              {c.nombre}
               <span className="fl-categoria-cuenta">{c.hilos}</span>
-            </Link>
+            </Tecla>
           );
         })}
       </nav>
@@ -142,31 +160,39 @@ export default function ListadoHilos({
                 const estado = h.resuelto ? "resuelto" : h.respuestas > 0 ? "con" : "sin";
                 return (
                   <li key={h.id} style={colorDe(h.categoria.slug)}>
-                    <article className={`fl-hilo fo-tarjeta is-${estado}`}>
+                    <article className={`fl-hilo is-${estado}`}>
                       {/* La cifra que se mira primero: cuántas respuestas tiene. */}
                       <div className="fl-marcador" aria-hidden="true">
-                        {h.resuelto ? <Check size={20} strokeWidth={3} /> : <b>{h.respuestas}</b>}
+                        {h.resuelto ? <Check size={22} strokeWidth={3.4} /> : <b>{h.respuestas}</b>}
                         <span>{h.resuelto ? "resuelta" : h.respuestas === 1 ? "respuesta" : "respuestas"}</span>
                       </div>
 
                       <div className="fl-contenido">
                         <div className="fl-etiquetas">
                           <Link href={`/foro/${h.categoria.slug}`} className="fo-cat">
-                            <Icono size={12} strokeWidth={2.4} aria-hidden="true" />
+                            <Icono size={13} strokeWidth={2.6} aria-hidden="true" />
                             {h.categoria.nombre}
                           </Link>
                           {h.fijado && (
-                            <span className="fo-sello"><Pin size={10} strokeWidth={2.6} aria-hidden="true" /> Fijada</span>
+                            <span className="fo-sello"><Pin size={12} strokeWidth={2.8} aria-hidden="true" /> Fijada</span>
                           )}
                           {h.resuelto && (
                             <span className="fo-sello fo-sello--resuelto">
+                              <Check size={12} strokeWidth={3.4} aria-hidden="true" />
                               {h.respuestas} {h.respuestas === 1 ? "respuesta" : "respuestas"}
                             </span>
                           )}
                         </div>
 
+                        {/* El enlace del título cubre la tarjeta entera (`::after`). */}
                         <h3 className="fl-titulo">
-                          <Link href={`/foro/${h.id}-${h.slug}`}>{h.titulo}</Link>
+                          <Link href={`/foro/${h.id}-${h.slug}`}>
+                            {h.titulo}
+                            {/* El marcador de la izquierda es solo visual: su dato, para el lector de pantalla. */}
+                            <span className="sr-only">
+                              {" "}({h.resuelto ? "resuelta, " : ""}{h.respuestas} {h.respuestas === 1 ? "respuesta" : "respuestas"})
+                            </span>
+                          </Link>
                         </h3>
                         {h.extracto && <p className="fl-extracto">{h.extracto}</p>}
 
@@ -174,14 +200,14 @@ export default function ListadoHilos({
                           <Firma autor={h.autor} fecha={h.fecha} compacta />
                           {h.yoTambien > 0 && (
                             <span className="fl-misma-duda">
-                              <Users size={13} strokeWidth={2.2} aria-hidden="true" />
+                              <Users size={14} strokeWidth={2.5} aria-hidden="true" />
                               {h.yoTambien} con la misma duda
                             </span>
                           )}
                         </div>
                       </div>
 
-                      <ArrowRight className="fl-flecha" size={18} strokeWidth={2.2} aria-hidden="true" />
+                      <ArrowRight className="fl-flecha" size={20} strokeWidth={2.6} aria-hidden="true" />
                     </article>
                   </li>
                 );
@@ -191,9 +217,17 @@ export default function ListadoHilos({
 
           {datos.paginas > 1 && (
             <nav className="fo-paginas" aria-label="Páginas">
-              {datos.pagina > 1 ? <Link href={pagina(datos.pagina - 1)} rel="prev" className="fp-btn">Anteriores</Link> : <span aria-hidden="true" />}
-              <span>Página {datos.pagina} de {datos.paginas}</span>
-              {datos.pagina < datos.paginas ? <Link href={pagina(datos.pagina + 1)} rel="next" className="fp-btn">Siguientes</Link> : <span aria-hidden="true" />}
+              {datos.pagina > 1 ? (
+                <Tecla href={pagina(datos.pagina - 1)} rel="prev" color="blanca" tamano="peq">Anteriores</Tecla>
+              ) : (
+                <span aria-hidden="true" />
+              )}
+              <span>página {datos.pagina} de {datos.paginas}</span>
+              {datos.pagina < datos.paginas ? (
+                <Tecla href={pagina(datos.pagina + 1)} rel="next" color="blanca" tamano="peq">Siguientes</Tecla>
+              ) : (
+                <span aria-hidden="true" />
+              )}
             </nav>
           )}
         </section>
@@ -202,7 +236,7 @@ export default function ListadoHilos({
         <aside className="fl-lateral">
           <section className="fl-caja fo-tarjeta" aria-labelledby="fl-top">
             <h2 id="fl-top" className="fl-caja-titulo">
-              <Trophy size={15} strokeWidth={2.3} aria-hidden="true" />
+              <span className="fl-caja-icono" aria-hidden="true"><Trophy size={16} strokeWidth={2.5} /></span>
               Quién ayuda más este mes
             </h2>
             {destacados.length === 0 ? (
@@ -211,31 +245,32 @@ export default function ListadoHilos({
               <ol className="fl-top">
                 {destacados.map((f) => (
                   <li key={f.posicion}>
-                    <span className="fl-top-puesto">{f.posicion}</span>
+                    <span className={`fl-top-puesto fl-top-puesto--${f.posicion}`}>{f.posicion}</span>
                     <AvatarUsuario avatar={f.avatar} inicial={f.alias.slice(0, 1).toUpperCase()} className="fl-top-foto" />
                     <span className="fl-top-quien">
                       <b>{f.alias}</b>
                       <small>{f.nivel}</small>
                     </span>
-                    <span className="fl-top-puntos">{f.cifra}</span>
+                    <span className="fl-top-puntos">{f.cifra}<small> pts</small></span>
                   </li>
                 ))}
               </ol>
             )}
-            <Link href="/foro/ranking" className="fl-caja-enlace">
-              Ver el ranking <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
-            </Link>
+            <Tecla href="/foro/ranking" color="blanca" tamano="peq" ancho>
+              Ver el ranking <ArrowRight size={15} strokeWidth={2.8} aria-hidden="true" />
+            </Tecla>
           </section>
 
-          <section className="fl-caja fo-tarjeta" aria-labelledby="fl-como">
-            <h2 id="fl-como" className="fl-caja-titulo">Cómo funciona</h2>
+          {/* Cómo funciona: un pósit pegado en la mesa. */}
+          <section className="fl-postit" aria-labelledby="fl-como">
+            <h2 id="fl-como" className="fl-postit-titulo">Cómo funciona</h2>
             <ol className="fl-pasos">
               <li><b>Pregunta</b> con contexto: qué has hecho y qué esperabas.</li>
               <li><b>Responde</b> lo que sepas. Las mejores respuestas suben.</li>
               <li><b>Elige</b> la que te ha servido: el hilo queda resuelto.</li>
             </ol>
-            <Link href="/foro/normas" className="fl-caja-enlace">
-              Normas del foro <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
+            <Link href="/foro/normas" className="fl-postit-enlace">
+              Normas del foro <ArrowRight size={14} strokeWidth={2.6} aria-hidden="true" />
             </Link>
           </section>
         </aside>

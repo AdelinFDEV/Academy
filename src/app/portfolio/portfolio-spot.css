@@ -1,0 +1,547 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   PORTFOLIO ADELIN · la cartera spot (PortfolioClient.tsx) y el registro de
+   movimientos (UltimosMovimientos.tsx). Lo común está en portfolio.css.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Destacadas: mejor, peor y la que más pesa, con su pegatina ────────── */
+
+.pv-destacadas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0 0 26px;
+  padding: 12px 0 0;
+  list-style: none;
+}
+
+.pv-destacada {
+  --c: var(--menta);
+  --t: var(--tinta);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 20px 20px 18px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  transition: transform 0.4s var(--sobrepaso);
+  animation: pv-entrar 0.6s var(--sobrepaso) both;
+}
+
+.pv-destacada:nth-child(2) { animation-delay: 0.08s; }
+.pv-destacada:nth-child(3) { animation-delay: 0.16s; }
+
+.pv-destacada--menta { --c: var(--menta); }
+.pv-destacada--coral { --c: var(--coral); --t: #fff; }
+.pv-destacada--amarillo { --c: var(--amarillo); --t: var(--tinta); }
+
+@media (hover: hover) {
+  .pv-destacada:hover { transform: translateY(-4px) rotate(-0.5deg); }
+  .pv-destacada:hover .pv-pegatina-peq { transform: rotate(-4deg) scale(1.08); }
+}
+
+.pv-destacada .pv-etiqueta { padding-right: 64px; }
+
+.pv-pegatina-peq {
+  position: absolute;
+  top: -14px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  padding: 6px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--t);
+  font-size: 10.5px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px -6px rgba(29, 27, 51, 0.45);
+  transform: rotate(10deg);
+  transition: transform 0.45s var(--muelle);
+  animation: pv-pegar 0.7s 0.3s var(--muelle) both;
+}
+
+.pv-destacada:nth-child(2) .pv-pegatina-peq { transform: rotate(-8deg); animation-delay: 0.4s; }
+.pv-destacada:nth-child(3) .pv-pegatina-peq { transform: rotate(6deg); animation-delay: 0.5s; }
+
+.pv-destacada-moneda {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.pv-destacada-moneda b {
+  min-width: 0;
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.pv-destacada-cifra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 2px;
+  font-family: var(--letra-titular);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+}
+
+.pv-destacada-cifra small {
+  font-family: var(--letra-texto);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.pv-destacada-cifra:not(.pv-signo) small { color: var(--tinta-2); }
+
+/* ── El reparto y el registro, lado a lado ─────────────────────────────── */
+
+.pv-dos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.pv-reparto,
+.pv-movs {
+  min-width: 0;
+  padding: clamp(20px, 3vw, 26px);
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+
+/* Sin posiciones, el registro va solo, encima del vacío. */
+.pv-spot > .pv-movs { margin-bottom: 4px; }
+
+.pv-reparto-cuerpo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.pv-donut {
+  position: relative;
+  flex: none;
+  width: 190px;
+  height: 190px;
+  filter: drop-shadow(0 4px 0 rgba(29, 27, 51, 0.1));
+}
+
+.pv-donut svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pv-donut-fondo {
+  fill: none;
+  stroke: var(--gris);
+  stroke-width: 7;
+}
+
+.pv-donut-tramo {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 7;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pv-tramo 0.9s var(--sobrepaso) both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+@keyframes pv-tramo {
+  from { opacity: 0; transform: scale(0.82) rotate(-25deg); }
+}
+
+.pv-donut-centro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.pv-donut-centro b {
+  font-family: var(--letra-titular);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.pv-donut-centro small {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pv-leyenda {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pv-leyenda li {
+  display: grid;
+  grid-template-columns: 14px 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.pv-leyenda i {
+  width: 14px;
+  height: 14px;
+  border-radius: 5px;
+  background: var(--c);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 60%, #1d1b33);
+}
+
+.pv-leyenda b { font-weight: 900; overflow-wrap: anywhere; }
+
+.pv-leyenda-barra {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--gris);
+}
+
+.pv-leyenda-barra em {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+  animation: pv-llenar 1.2s var(--sobrepaso) both;
+}
+
+.pv-leyenda-pct {
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-2);
+}
+
+/* ── El registro de movimientos ────────────────────────────────────────── */
+
+.pv-movs-auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: var(--menta-s);
+  color: var(--menta-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pv-movs-vacio {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--tinta-2);
+}
+
+.pv-movs-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pv-mov {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 2px dashed var(--gris);
+}
+
+.pv-mov:first-child { padding-top: 4px; }
+.pv-mov:last-child { padding-bottom: 0; border-bottom: 0; }
+
+.pv-mov-fecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: start;
+  padding: 8px 4px 7px;
+  border-radius: 14px;
+  background: var(--fondo);
+  box-shadow: 0 3px 0 var(--gris-o);
+  text-align: center;
+}
+
+.pv-mov-fecha b {
+  font-family: var(--letra-titular);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pv-mov-fecha span {
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pv-mov-fecha small {
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-2);
+}
+
+.pv-mov-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pv-mov-tipo,
+.pv-mov-moneda {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pv-mov.es-compra .pv-mov-tipo { background: var(--menta-s); color: var(--menta-o); }
+.pv-mov.es-venta .pv-mov-tipo { background: var(--naranja-s); color: var(--naranja-o); }
+.pv-mov-moneda { background: var(--gris); color: var(--tinta); }
+
+.pv-mov-texto {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta);
+}
+
+.pv-mov-nota {
+  margin: 4px 0 0;
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--tinta-2);
+}
+
+/* ── Las posiciones: filas de cuaderno ─────────────────────────────────── */
+
+.pv-spot .pv-libreta {
+  --cols: minmax(170px, 1.7fr) repeat(4, minmax(0, 1fr)) minmax(0, 1.05fr) minmax(0, 0.85fr) minmax(0, 1fr);
+}
+
+.pv-spot .pv-libreta.con-admin {
+  --cols: minmax(160px, 1.6fr) repeat(4, minmax(0, 1fr)) minmax(0, 1.05fr) minmax(0, 0.85fr) minmax(0, 1fr) 100px;
+}
+
+.pv-c-moneda {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+.pv-moneda-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pv-moneda-texto b {
+  font-family: var(--letra-titular);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.pv-moneda-texto small {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tinta-2);
+  overflow-wrap: anywhere;
+}
+
+.pv-pnl {
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+}
+
+.pv-pnl b { font-size: 15.5px; font-weight: 900; }
+.pv-pnl small { font-size: 12.5px; font-weight: 800; opacity: 0.85; }
+
+.pv-peso {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+}
+
+.pv-peso-barra {
+  width: 52px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--gris);
+}
+
+.pv-peso-barra i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+  animation: pv-llenar 1.2s var(--sobrepaso) both;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  .pv-dos { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Las posiciones pasan a ser fichas, con un trozo de cinta del color de la
+   moneda arriba, como pegadas en el cuaderno. */
+@media (max-width: 1040px) {
+  .pv-spot .pv-libreta {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .pv-spot .pv-fila--cab { display: none; }
+
+  .pv-spot .pv-filas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 26px 18px;
+    padding-top: 10px;
+  }
+
+  .pv-spot .pv-filas .pv-fila {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "moneda   pnl"
+      "compra   actual"
+      "invertido valor"
+      "d24      peso"
+      "acciones acciones";
+    gap: 14px 16px;
+    padding: 22px 18px 16px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--papel);
+    box-shadow: 0 6px 0 var(--gris-o);
+  }
+
+  .pv-spot .pv-filas .pv-fila::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    width: 70px;
+    height: 20px;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--c) 55%, transparent);
+    transform: translateX(-50%) rotate(-3deg);
+  }
+
+  @media (hover: hover) {
+    .pv-spot .pv-filas .pv-fila:hover { background-color: var(--papel); }
+  }
+
+  .pv-spot .pv-c { align-items: flex-start; text-align: left; }
+  .pv-spot .pv-c-pnl { align-items: flex-end; text-align: right; }
+  .pv-spot .pv-c-moneda { align-items: center; }
+
+  .pv-spot .pv-c-etq {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    margin-bottom: 3px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .pv-c-moneda { grid-area: moneda; }
+  .pv-c-pnl { grid-area: pnl; }
+  .pv-c-compra { grid-area: compra; }
+  .pv-c-actual { grid-area: actual; }
+  .pv-c-invertido { grid-area: invertido; }
+  .pv-c-valor { grid-area: valor; }
+  .pv-c-24h { grid-area: d24; }
+  .pv-c-peso { grid-area: peso; }
+
+  .pv-spot .pv-c-acciones {
+    grid-area: acciones;
+    justify-content: flex-start;
+    padding-top: 12px;
+    border-top: 2px dashed var(--gris);
+  }
+
+  .pv-spot .pv-pnl b { font-family: var(--letra-titular); font-size: 22px; font-weight: 800; }
+}
+
+@media (max-width: 760px) {
+  .pv-destacadas { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+
+@media (max-width: 560px) {
+  .pv-reparto-cuerpo { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .pv-leyenda { width: 100%; }
+  .pv-orden-rotulo { flex-basis: 100%; margin-bottom: 0; }
+}
+
+@media (max-width: 380px) {
+  .pv-spot .pv-filas .pv-fila { padding-left: 14px; padding-right: 14px; gap: 12px 10px; }
+  .pv-mov { grid-template-columns: 56px minmax(0, 1fr); gap: 10px; }
+}

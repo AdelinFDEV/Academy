@@ -1,8 +1,8 @@
 /**
  * Catálogo de las herramientas de la academia. **Fuente única.**
  *
- * Cada herramienta lleva su texto corto y comercial (`desc`) para el hero de
- * la portada (`HeroSlider`); lo largo vive en su ficha pública.
+ * Cada herramienta lleva su texto corto y comercial (`desc`); lo largo vive
+ * en su ficha pública.
  *
  * Desde el 31-10-2026 la web se queda con Portfolio Adelin, Diario de Trading,
  * Predicción de Precio, Logros y los Cursos. Se retiraron Watchlist,

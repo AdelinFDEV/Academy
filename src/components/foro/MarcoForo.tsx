@@ -3,36 +3,30 @@ import SiteNav from "@/components/SiteNav";
 import "@/app/foro/foro.css";
 
 /**
- * El marco de todas las pantallas del foro: la barra, el fondo técnico (una
- * rejilla que se desvanece y dos luces fijas) y el pie.
+ * El marco de todas las pantallas del foro: la barra, la hoja y el pie.
  *
- * El fondo es un degradado quieto, sin desenfoque ni animación: se pinta una
- * vez y no cuesta nada al desplazarse.
+ * Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md): el fondo
+ * lavanda de la casa con una cuadrícula de cuaderno que se desvanece hacia
+ * abajo, quieta (un degradado que se pinta una vez), y el coral del foro.
  *
- * `acento` tiñe las luces del fondo: el naranja de la marca en el foro, y el
- * color de su categoría dentro de un hilo.
+ * `tono` cambia el color de acento de la pantalla (las variables `--cat`,
+ * `--cat-o` y `--cat-s`): el de su categoría dentro de un hilo o de un
+ * listado filtrado, el amarillo de los logros en el ranking. Sin él, coral.
  */
 export default function MarcoForo({
   conSesion,
-  ancho = "normal",
-  acento,
+  tono,
   children,
 }: {
   conSesion: boolean;
-  /** `lectura` para un texto que se lee entero; `ancho` para una rejilla. */
-  ancho?: "normal" | "lectura" | "ancho";
-  acento?: string;
+  tono?: React.CSSProperties;
   children: React.ReactNode;
 }) {
   return (
-    <div className="blog-page fo-pagina" style={acento ? ({ "--cat": acento } as React.CSSProperties) : undefined}>
+    <div className="blog-page fo-pagina" style={tono}>
       <SiteNav user={conSesion} />
-      <div className="fo-fondo" aria-hidden="true">
-        <span className="fo-fondo-rejilla" />
-        <span className="fo-fondo-luz fo-fondo-luz--1" />
-        <span className="fo-fondo-luz fo-fondo-luz--2" />
-      </div>
-      <main className={`fo-main fo-main--${ancho}`}>{children}</main>
+      <div className="fo-cuadricula" aria-hidden="true" />
+      <main className="fo-main">{children}</main>
       <Footer />
     </div>
   );

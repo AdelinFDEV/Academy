@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideChainlinkMediana from "./GuideChainlinkMediana";
 import GuideChainlinkQuiz from "./GuideChainlinkQuiz";
@@ -66,7 +68,6 @@ export default async function ChainlinkPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -79,15 +80,15 @@ export default async function ChainlinkPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 12 min</div>
         <h1 className="gbc-hero-title">
           Qué es Chainlink (LINK)<br />
           <span className="gbc-hero-gold">explicado con un solo ejemplo</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Chainlink es la red que le dice a las blockchains lo que pasa fuera de ellas.</strong> Una
-          blockchain no puede consultar el precio de nada ni ningún otro dato del mundo: alguien tiene que
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Chainlink es la red que le dice a las blockchains lo que pasa fuera de ellas.</Anotacion></strong> <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={1300}>Una
+          blockchain no puede consultar el precio de nada ni ningún otro dato del mundo</Anotacion>: alguien tiene que
           traérselo. Chainlink lo hace con muchos operadores independientes que se vigilan entre sí, y
           <strong> LINK</strong> es la moneda con la que se les paga.
         </p>
@@ -107,12 +108,12 @@ export default async function ChainlinkPage() {
           <div className="gbc-body">
             <p>
               Lo primero que hay que deshacer es un malentendido. Bitcoin, Ethereum o Solana son
-              <Termino slug="blockchain"> blockchains</Termino>: redes con su propio registro. Chainlink no. Es un
+              <Termino slug="blockchain"> blockchains</Termino>: redes con su propio registro. <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={300}>Chainlink no.</Anotacion> Es un
               servicio que trabaja <strong>para</strong> ellas.
             </p>
             <p>
-              Su oficio es el de un <Termino slug="oraculo">oráculo</Termino>: llevar datos de fuera a los
-              programas que viven en una blockchain. Lo fundaron Sergey Nazarov y Steve Ellis, que publicaron su
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Su oficio es el de un <Termino slug="oraculo">oráculo</Termino>: llevar datos de fuera a los
+              programas que viven en una blockchain</Anotacion>. Lo fundaron Sergey Nazarov y Steve Ellis, que publicaron su
               diseño en 2017, y funciona sobre Ethereum desde el 30 de mayo de 2019. Hoy da servicio a decenas de
               redes.
             </p>
@@ -128,13 +129,13 @@ export default async function ChainlinkPage() {
 
       {/* ── 2 ── */}
       <section id="problema" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Por qué existe</div>
           <h2 className="gbc-title">El problema del oráculo: una blockchain no ve el mundo</h2>
           <div className="gbc-body">
             <p>
-              Un <Termino slug="smart-contract">contrato inteligente</Termino> solo conoce lo que está escrito en
-              su propia blockchain. No puede abrir una web, ni llamar a un banco, ni mirar a cuánto cotiza nada.
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>Un <Termino slug="smart-contract">contrato inteligente</Termino> solo conoce lo que está escrito en
+              su propia blockchain.</Anotacion> No puede abrir una web, ni llamar a un banco, ni mirar a cuánto cotiza nada.
               Está hecho así a propósito: todos los ordenadores de la red tienen que llegar al mismo resultado,
               y eso es imposible si cada uno consulta internet por su cuenta.
             </p>
@@ -146,17 +147,18 @@ export default async function ChainlinkPage() {
             </p>
             <p>
               La pregunta es evidente: <strong>¿cómo sabe el contrato cuánto vale el ether?</strong> Alguien tiene
-              que decírselo. Y quien se lo diga tiene un poder enorme. Si un único servidor le da un precio falso
+              que decírselo. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Y quien se lo diga tiene un poder enorme.</Anotacion> Si un único servidor le da un precio falso
               durante un minuto, puede provocar liquidaciones por millones y quedarse con las garantías.
             </p>
           </div>
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El punto débil de cualquier aplicación</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El punto débil de cualquier aplicación</div>
+            <div className="postit-cuerpo">
               <p>De nada sirve que una blockchain sea imposible de manipular si el dato que la alimenta viene de
-              un solo sitio. La aplicación es tan segura como su oráculo.</p>
+              un solo sitio. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>La aplicación es tan segura como su oráculo.</Anotacion></p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -175,6 +177,7 @@ export default async function ChainlinkPage() {
           <ol className="link-pasos">
             {PASOS.map((p, i) => (
               <li key={p.titulo}>
+                {i === 2 && <SimboloEstudio tipo="estrella" className="link-paso-estrella" semilla={8} animar={false} />}
                 <span className="link-paso-n">{i + 1}</span>
                 <div><strong>{p.titulo}</strong><p>{p.texto}</p></div>
               </li>
@@ -183,9 +186,9 @@ export default async function ChainlinkPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              El paso 3 es el que lo sostiene todo. Se usa el valor del medio, la <Termino slug="mediana">mediana</Termino>, y no la media, por una
-              razón concreta: un solo mentiroso puede arrastrar una media, pero no puede mover el valor del
-              centro. Compruébalo tú. Haz mentir a los <Termino slug="nodo">nodos</Termino>, de uno en uno, y mira cuántos hacen falta para
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>El paso 3 es el que lo sostiene todo.</Anotacion> Se usa el valor del medio, la <Termino slug="mediana">mediana</Termino>, y no la media, por una
+              razón concreta: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={700}>un solo mentiroso puede arrastrar una media, pero no puede mover el valor del
+              centro</Anotacion>. Compruébalo tú. Haz mentir a los <Termino slug="nodo">nodos</Termino>, de uno en uno, y mira cuántos hacen falta para
               falsear el precio:
             </p>
           </div>
@@ -224,7 +227,7 @@ export default async function ChainlinkPage() {
             <p>
               El de los mensajes entre redes es el que más ha crecido, porque es el que interesa a la banca. La
               red de mensajería bancaria Swift lleva desde 2023 haciendo pruebas con él para mover activos
-              digitales entre entidades. Que haya pruebas no significa que los bancos lo usen a diario: son
+              digitales entre entidades. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>Que haya pruebas no significa que los bancos lo usen a diario</Anotacion>: son
               pilotos, y así hay que leerlos.
             </p>
             <p>
@@ -242,8 +245,8 @@ export default async function ChainlinkPage() {
           <h2 className="gbc-title">Para qué sirve el token LINK</h2>
           <div className="gbc-body">
             <p>
-              LINK tiene dos trabajos. El primero es <strong>pagar</strong>: las aplicaciones que quieren datos
-              pagan por ellos, y los operadores cobran en LINK. El segundo es <strong>responder</strong>: quien
+              LINK tiene dos trabajos. El primero es <strong><Anotacion tipo="circle" junta retraso={200}>pagar</Anotacion></strong>: las aplicaciones que quieren datos
+              pagan por ellos, y los operadores cobran en LINK. El segundo es <strong><Anotacion tipo="circle" junta animar={false}>responder</Anotacion></strong>: quien
               participa puede dejar LINK bloqueado como fianza, y perder una parte si el servicio falla. Eso es
               su <Termino slug="staking">staking</Termino>.
             </p>
@@ -258,7 +261,7 @@ export default async function ChainlinkPage() {
               <tbody>
                 <tr><td><strong>Cuánto cabe</strong></td><td>45 millones de LINK en total. La parte abierta al público está llena</td></tr>
                 <tr><td><strong>Cuánto paga</strong></td><td>En torno al 4,3 % anual, variable</td></tr>
-                <tr><td><strong>Qué protege</strong></td><td>De momento, solo el precio de ETH en dólares en Ethereum</td></tr>
+                <tr><td><strong>Qué protege</strong></td><td><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>De momento, solo el precio de ETH en dólares en Ethereum</Anotacion></td></tr>
                 <tr><td><strong>Cuánto tarda la retirada</strong></td><td>28 días de espera y, después, 7 días para retirar</td></tr>
               </tbody>
             </table>
@@ -269,9 +272,10 @@ export default async function ChainlinkPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
+              <SimboloEstudio tipo="estrella" color="naranja" margen semilla={12} />
               La tercera fila es la importante. El staking que existe hoy es una primera versión: no asegura
-              todos los servicios de Chainlink, sino uno solo. Y como la parte pública está llena, comprar LINK
-              no significa poder ponerlo a rendir. Si declaras en España y sí consigues entrar, lo que cobres
+              todos los servicios de Chainlink, sino uno solo. Y como la parte pública está llena, <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>comprar LINK
+              no significa poder ponerlo a rendir</Anotacion>. Si declaras en España y sí consigues entrar, lo que cobres
               tributa al recibirlo, como explica la guía de
               <Link href="/guias/fiscalidad-cripto-espana"> fiscalidad cripto</Link>.
             </p>
@@ -288,17 +292,17 @@ export default async function ChainlinkPage() {
             <p>
               En mayo de 2022 se hundió la criptomoneda LUNA: en pocos días pasó de valer decenas de dólares a
               fracciones de céntimo. El precio que Chainlink daba de LUNA tenía un suelo de seguridad, un mínimo
-              por debajo del cual dejaba de actualizarse. Estaba en 0,10 dólares.
+              por debajo del cual dejaba de actualizarse. Estaba en <Anotacion tipo="circle" junta retraso={200}>0,10 dólares</Anotacion>.
             </p>
             <p>
-              Cuando LUNA cayó por debajo, el oráculo siguió diciendo 0,10 mientras en el mercado valía cien
-              veces menos. Hubo quien lo aprovechó: compró LUNA casi regalada, la dejó como garantía en
+              Cuando LUNA cayó por debajo, <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>el oráculo siguió diciendo 0,10 mientras en el mercado valía cien
+              veces menos</Anotacion>. Hubo quien lo aprovechó: compró LUNA casi regalada, la dejó como garantía en
               aplicaciones de préstamos que la valoraban a 0,10 y se llevó dinero bueno. Una de ellas, Venus,
               reconoció unos 11 millones de dólares en pérdidas.
             </p>
             <p>
               La lección no es que Chainlink mintiera: el precio lo dieron sus nodos tal como estaba
-              configurado. La lección es que <strong>un oráculo es una pieza más que puede fallar</strong>, y que
+              configurado. La lección es que <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>un oráculo es una pieza más que puede fallar</Anotacion></strong>, y que
               la responsabilidad se reparte entre quien da el dato y la aplicación que decide fiarse de él sin
               más protecciones.
             </p>
@@ -313,20 +317,20 @@ export default async function ChainlinkPage() {
           <h2 className="gbc-title">Tres ideas equivocadas sobre Chainlink</h2>
           <div className="link-ideas">
             <div>
-              <p className="link-idea-mal">«Si Chainlink se usa mucho, LINK tiene que subir»</p>
+              <p className="link-idea-mal"><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1}>«Si Chainlink se usa mucho, LINK tiene que subir»</Anotacion></p>
               <p>El uso de la red y el precio del token son cosas distintas. Las aplicaciones pueden pagar con
-              otras monedas, y parte del servicio se ha dado durante años subvencionado. Que una tecnología
+              otras monedas, y parte del servicio se ha dado durante años subvencionado. <SimboloEstudio tipo="check" color="menta" className="link-idea-check" animar={false} />Que una tecnología
               triunfe no garantiza nada sobre su moneda.</p>
             </div>
             <div>
-              <p className="link-idea-mal">«Chainlink es descentralizado, así que no depende de nadie»</p>
+              <p className="link-idea-mal"><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={250}>«Chainlink es descentralizado, así que no depende de nadie»</Anotacion></p>
               <p>Los operadores de cada servicio no se apuntan libremente: se seleccionan. Y los cambios en la
-              configuración los aprueba un grupo reducido de firmantes. Es mucho más robusto que un solo
+              configuración los aprueba un grupo reducido de firmantes. <SimboloEstudio tipo="check" color="menta" className="link-idea-check" semilla={4} animar={false} />Es mucho más robusto que un solo
               servidor, pero no es una red abierta como Bitcoin.</p>
             </div>
             <div>
-              <p className="link-idea-mal">«Con el staking, si el oráculo falla me compensan»</p>
-              <p>El staking cubre hoy un único precio. Si usas una aplicación que depende de cualquier otro dato
+              <p className="link-idea-mal"><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={500}>«Con el staking, si el oráculo falla me compensan»</Anotacion></p>
+              <p><SimboloEstudio tipo="check" color="menta" className="link-idea-check" semilla={6} animar={false} />El staking cubre hoy un único precio. Si usas una aplicación que depende de cualquier otro dato
               y ese dato falla, no hay fianza que responda por ti.</p>
             </div>
           </div>
@@ -340,11 +344,11 @@ export default async function ChainlinkPage() {
           <h2 className="gbc-title">Los riesgos de Chainlink y de LINK</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Demasiado depende de él.</strong> Es el oráculo de buena parte de las finanzas descentralizadas. Un fallo grave no afectaría a una aplicación, sino a muchas a la vez.</li>
+              <li><strong>Demasiado depende de él.</strong> Es el oráculo de buena parte de las finanzas descentralizadas. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>Un fallo grave no afectaría a una aplicación, sino a muchas a la vez.</Anotacion></li>
               <li><strong>La competencia.</strong> Otros oráculos, como Pyth o RedStone, ofrecen datos más rápidos o más baratos, y algunas aplicaciones ya combinan varios.</li>
-              <li><strong>El vínculo entre el token y el negocio.</strong> Lo que LINK captura de los ingresos de la red sigue siendo la gran pregunta abierta para quien lo compra.</li>
+              <li><strong>El vínculo entre el token y el negocio.</strong> <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Lo que LINK captura de los ingresos de la red sigue siendo la gran pregunta abierta para quien lo compra.</Anotacion></li>
               <li><strong>El control.</strong> Las decisiones importantes las toma un grupo pequeño. Es eficaz, y es un punto de confianza.</li>
-              <li><strong>El precio.</strong> LINK superó los 50 dólares en mayo de 2021 y llegó a caer cerca de un 90 % después. Su <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda.</li>
+              <li><strong>El precio.</strong> LINK superó los 50 dólares en mayo de 2021 y llegó a caer <Anotacion tipo="circle" junta animar={false}>cerca de un 90 %</Anotacion> después. Su <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda.</li>
             </ul>
             <p>
               Sobre Hacienda no hay nada particular: comprar, vender o cambiar LINK tributa como cualquier otra
@@ -364,7 +368,7 @@ export default async function ChainlinkPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Chainlink</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Mensajero Fiable</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Mensajero Fiable</strong>.</p>
           </div>
           {d.isRegistered ? <GuideChainlinkQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

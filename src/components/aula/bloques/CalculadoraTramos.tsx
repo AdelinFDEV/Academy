@@ -32,7 +32,9 @@ export function validarTramos(d: unknown): d is DatosTramos {
     && x.tramos.every((t) => typeof t.tipo === "number" && (t.hasta === null || typeof t.hasta === "number"));
 }
 
-const COLORES = ["#4ade80", "#a3e635", "#e6b455", "#fb923c", "#f87171", "#f472b6"];
+// Un color del sistema por tramo, de más suave a más caro (ESTILO.md). Van en
+// hexadecimal porque framer-motion los pinta en línea.
+const COLORES = ["#2fc488", "#2fbff5", "#4f5dff", "#8f7cff", "#ff8a1f", "#ff6b81"];
 
 export default function CalculadoraTramos({ datos }: { datos: DatosTramos }) {
   const [valor, setValor] = useState(datos.valorInicial);

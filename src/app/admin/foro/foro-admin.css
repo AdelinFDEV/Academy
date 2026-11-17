@@ -1,121 +1,145 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   MODERACIÓN DEL FORO — /admin/foro
+   MODERACIÓN DEL FORO — /admin/foro, estilo «Cuaderno de estudio»
    ══════════════════════════════════════════════════════════════════════════
 
    Solo lo de esta página (FORO.md §16: un CSS por pantalla, nada del foro en
    globals.css ni en admin.css). Prefijo: fa-.
 
    Es una herramienta de trabajo, no un escaparate: texto que se lee de un
-   vistazo, la acción a mano y el rojo reservado para lo que no se deshace. */
+   vistazo, la acción a mano y el coral reservado para lo que no se deshace.
+   Color de la sección: coral, el del Foro. */
 
-/* Color de la sección: violeta. Los tonos vienen de admin.css. */
 .fa {
-  --sec: var(--c-violeta);
-  --sec-rgb: var(--c-violeta-rgb);
+  --sec: var(--coral);
+  --sec-o: var(--coral-o);
+  --sec-s: var(--coral-s);
   max-width: 1020px;
 }
 
-.fa-seccion { margin-bottom: 1.5rem; }
+.fa-seccion { margin-bottom: 1.6rem; }
 
 .fa-titulo {
   display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  margin-bottom: 0.8rem;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ad-texto);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.35rem, 3vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--tinta);
 }
 
 .fa-titulo::before {
   content: "";
-  align-self: center;
-  width: 9px;
-  height: 9px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
-  border-radius: 3px;
-  background: var(--sec);
-  box-shadow: 0 0 0 4px rgb(var(--sec-rgb) / 0.16);
+  border-radius: 5px;
+  background: var(--coral);
+  box-shadow: 0 3px 0 var(--coral-o);
 }
 
 .fa-cuenta {
-  padding: 1px 8px;
-  border-radius: 999px;
-  background: rgb(var(--sec-rgb) / 0.14);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--sec);
+  padding: 3px 11px;
+  border-radius: 10px;
+  background: var(--coral-s);
+  font-family: var(--letra-texto);
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--coral-o);
   font-variant-numeric: tabular-nums;
 }
 
-.fa-vacio,
+.fa-vacio {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 1.4rem;
+  line-height: 1.2;
+  color: var(--tinta-3);
+}
+
 .fa-nota {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.fa-nota { margin: -0.4rem 0 0.8rem; }
-
-.fa-aviso {
-  margin-bottom: 1.5rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--premium-gold-soft);
-  border-radius: 12px;
-  background: rgba(230, 180, 85, 0.07);
-  font-size: 0.85rem;
+  margin: -0.45rem 0 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 600;
   line-height: 1.5;
-  color: var(--text-secondary);
+  color: var(--tinta-2);
 }
+
+/* Aviso de «ojo»: amarillo, como en el sistema. */
+.fa-aviso {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 0 0 1.6rem;
+  padding: 16px 18px;
+  border: 3px solid var(--amarillo);
+  border-radius: 18px;
+  background: var(--amarillo-s);
+  font-weight: 700;
+  line-height: 1.5;
+  color: #7a5d00;
+}
+.fa-aviso-ic { display: grid; place-items: center; width: 34px; height: 34px; flex: none; border-radius: 11px; background: var(--amarillo-o); color: #fff; font-weight: 900; }
 
 .fa-error {
-  margin-top: 0.6rem;
-  font-size: 0.8rem;
-  color: #ff8a8a;
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--coral-o);
 }
 
-/* ── Un mensaje de la cola ─────────────────────────────────────────────── */
+/* ── Un mensaje de la cola: una ficha de papel ─────────────────────────── */
 
 .fa-mensaje {
-  margin-bottom: 0.9rem;
-  padding: 1.1rem 1.25rem;
-  border: 1px solid var(--ad-borde);
-  border-left: 3px solid rgb(var(--sec-rgb) / 0.6);
-  border-radius: 16px;
-  background: linear-gradient(180deg, var(--ad-tarjeta-2), var(--ad-tarjeta));
-  box-shadow: var(--ad-sombra);
+  margin-bottom: 1.1rem;
+  padding: 1.2rem 1.35rem 1.1rem;
+  border: 3px solid transparent;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
 }
 
-.fa-mensaje.is-estafa { border-left-color: #ff6b6b; }
+/* La posible estafa salta a la vista: borde y canto en coral. */
+.fa-mensaje.is-estafa { border-color: var(--coral); box-shadow: 0 6px 0 var(--coral-o); }
 
 .fa-mensaje-cab {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem 0.6rem;
-  margin-bottom: 0.7rem;
-  font-size: 0.78rem;
-  color: var(--text-muted);
+  gap: 0.45rem 0.55rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tinta-2);
 }
 
 .fa-clase {
-  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--coral-s);
+  font-size: 0.74rem;
+  font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-size: 0.68rem;
-  color: var(--text-secondary);
+  color: var(--coral-o);
 }
 
 .fa-chip {
-  padding: 0.12rem 0.5rem;
-  border: 1px solid var(--ad-borde);
-  border-radius: 999px;
-  font-size: 0.7rem;
-  color: var(--text-secondary);
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--gris);
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: var(--tinta-2);
 }
 
-.fa-chip--oculto { border-color: var(--premium-gold-soft); color: var(--premium-gold); }
-.fa-chip--estafa { border-color: rgba(255, 107, 107, 0.5); color: #ff8a8a; }
+.fa-chip--oculto { background: var(--amarillo-s); color: #7a5d00; }
+.fa-chip--estafa { background: var(--coral); color: #fff; }
 
 .fa-hilo {
   flex: 1 1 12rem;
@@ -125,19 +149,26 @@
   white-space: nowrap;
 }
 
-.fa-cuando { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fa-cuando { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--tinta-3); }
 
-/* Lo que escribió el usuario, tal cual: se respetan sus saltos de línea y
-   una palabra larguísima no rompe la tarjeta. */
+/* Lo que escribió el usuario, tal cual, en una hoja de cuaderno con renglones:
+   se respetan sus saltos de línea y una palabra larguísima no rompe la ficha. */
 .fa-texto {
-  max-height: 14rem;
+  --renglon: 1.6em;
+  max-height: 15rem;
+  margin: 0;
   overflow-y: auto;
-  padding: 0.75rem 0.9rem;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.22);
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
+  padding: 0.25rem 1rem 0.35rem 1.4rem;
+  border-radius: 14px;
+  background:
+    linear-gradient(90deg, transparent 0.7rem, var(--coral-s) 0.7rem, var(--coral-s) calc(0.7rem + 2px), transparent calc(0.7rem + 2px)),
+    repeating-linear-gradient(transparent 0 calc(var(--renglon) - 1px), var(--gris) calc(var(--renglon) - 1px) var(--renglon)),
+    var(--fondo);
+  background-attachment: local;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: var(--renglon);
+  color: var(--tinta);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   scrollbar-width: thin;
@@ -146,157 +177,161 @@
 .fa-autor {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.4rem;
-  margin: 0.8rem 0 0;
-  font-size: 0.78rem;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+}
+
+.fa-autor > div {
+  padding: 0.45rem 0.75rem;
+  border-radius: 12px;
+  background: var(--fondo);
 }
 
 .fa-autor dt {
-  font-size: 0.66rem;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--tinta-3);
 }
 
-.fa-autor dd { color: var(--text-primary); font-variant-numeric: tabular-nums; }
-.fa-autor dd.es-malo { color: #ff8a8a; }
+.fa-autor dd { margin: 0.1rem 0 0; font-size: 0.88rem; font-weight: 800; color: var(--tinta); font-variant-numeric: tabular-nums; }
+.fa-autor dd.es-malo { color: var(--coral-o); }
 
 .fa-reportes {
-  margin-top: 0.8rem;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--ad-borde);
+  margin: 0.9rem 0 0;
+  padding: 0.8rem 0 0;
+  border-top: 2px dashed var(--gris);
   list-style: none;
 }
 
 .fa-reportes li {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.25rem 0.6rem;
-  padding: 0.2rem 0;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  padding: 0.25rem 0 0.25rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tinta-2);
 }
 
-.fa-reportes b { color: var(--text-primary); font-weight: 600; }
+.fa-reportes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--coral);
+}
+
+.fa-reportes b { color: var(--tinta); font-weight: 900; }
 .fa-reportes span { flex: 1 1 14rem; min-width: 0; overflow-wrap: anywhere; }
-.fa-reportes time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+.fa-reportes time { font-size: 0.78rem; font-weight: 700; color: var(--tinta-3); white-space: nowrap; }
 
 /* ── Acciones ──────────────────────────────────────────────────────────── */
 
-.fa-acciones { margin-top: 0.9rem; }
+.fa-acciones { margin-top: 1rem; }
 
+/* Separadas lo bastante para el dedo: el admin modera desde el móvil y
+   «Borrar» o «Banear» no pueden caer por error al pulsar la de al lado. */
 .fa-botones {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.8rem 0.65rem;
 }
 
-.fa-btn {
-  padding: 0.42rem 0.8rem;
-  border: 1px solid var(--ad-borde);
-  border-radius: 9px;
-  background: transparent;
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
-}
-
-.fa-btn:hover:not(:disabled) { border-color: rgba(240, 244, 255, 0.28); color: var(--text-primary); }
-.fa-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.fa-btn:focus-visible { outline: 2px solid var(--sec); outline-offset: 2px; }
-
-.fa-btn--peligro { border-color: rgba(255, 107, 107, 0.35); color: #ff8a8a; }
-.fa-btn--peligro:hover:not(:disabled) { border-color: #ff6b6b; color: #ffb3b3; }
-
-.fa-btn--firme { background: rgb(var(--sec-rgb) / 0.16); border-color: rgb(var(--sec-rgb) / 0.4); color: #fff; }
-.fa-btn--firme.fa-btn--peligro { background: rgba(255, 107, 107, 0.12); }
-
+/* El panel de confirmación: una hoja dentro de la ficha. */
 .fa-panel {
-  margin-top: 0.8rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--ad-borde);
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.18);
+  margin-top: 0.6rem;
+  padding: 1rem 1.1rem 0.8rem;
+  border: 3px solid var(--gris);
+  border-radius: 18px;
+  background: var(--fondo);
 }
 
 .fa-panel-fila {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-bottom: 0.7rem;
+  gap: 0.9rem;
+  margin-bottom: 0.8rem;
 }
 
 .fa-panel label {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: var(--tinta);
 }
 
-.fa-panel label span { font-weight: 400; color: var(--text-muted); }
+.fa-panel label span { font-family: var(--letra-mano); font-size: 1.15rem; font-weight: 600; color: var(--tinta-2); }
 
+/* Campos como en el sistema: borde grueso que se enciende en azul. */
 .fa-panel select,
 .fa-panel textarea {
-  padding: 0.5rem 0.65rem;
-  border: 1px solid var(--ad-borde);
-  border-radius: 9px;
-  background: var(--bg-dark);
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--text-primary);
+  padding: 0.7rem 0.85rem;
+  border: 3px solid var(--gris);
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
+  /* 16 px: con menos, el iPhone amplía la página al tocar el campo. */
+  font: 700 16px var(--letra-texto);
+  color: var(--tinta);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.fa-panel textarea { width: 100%; resize: vertical; }
-.fa-panel-motivo { margin-bottom: 0.7rem; }
-.fa-panel .fa-nota { margin: 0.6rem 0 0; }
+.fa-panel select { min-width: 10rem; cursor: pointer; }
+.fa-panel select:focus,
+.fa-panel textarea:focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
 
-/* ── El interruptor ────────────────────────────────────────────────────── */
+.fa-panel textarea { width: 100%; resize: vertical; line-height: 1.5; }
+.fa-panel-motivo { margin-bottom: 0.8rem; }
+.fa-panel .fa-nota { margin: 0.3rem 0 0; color: var(--coral-o); font-weight: 800; }
+
+/* ── El interruptor: tres teclas, la del modo actual hundida ───────────── */
 
 .fa-modo-opciones {
-  display: inline-flex;
-  padding: 3px;
-  border: 1px solid var(--ad-borde-fuerte);
-  border-radius: 12px;
-  background: rgba(8, 18, 34, 0.55);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
-.fa-modo-opcion {
-  padding: 0.45rem 0.95rem;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
+/* El modo actual: una tecla que se queda abajo, en menta. Está desactivada
+   (no se puede «pasar» al modo en el que ya está), pero no gris. */
+.fa-modo-opciones .tecla.is-actual,
+.fa-modo-opciones .tecla.is-actual:hover,
+.fa-modo-opciones .tecla.is-actual:active {
+  --c: var(--menta);
+  --o: var(--menta-o);
+  --t: var(--tinta);
+  cursor: default;
+  transform: translateY(calc(var(--h) - 2px));
+  filter: none;
+  box-shadow:
+    inset 0 4px 8px rgba(0, 0, 0, 0.18),
+    0 2px 0 var(--o);
 }
-
-.fa-modo-opcion:hover:not(:disabled) { color: var(--text-primary); }
-.fa-modo-opcion:disabled { cursor: default; }
-.fa-modo-opcion.is-actual { background: linear-gradient(135deg, #b9a2ff, #8b6cf2); color: #fff; box-shadow: 0 8px 18px -8px rgb(var(--sec-rgb) / 0.9); }
-.fa-modo-opcion.is-pendiente { outline: 1px solid var(--sec); color: var(--text-primary); }
-.fa-modo-opcion:focus-visible { outline: 2px solid var(--sec); outline-offset: 2px; }
 
 .fa-modo-ayuda {
-  margin: 0.7rem 0 0.8rem;
-  font-size: 0.82rem;
-  color: var(--text-secondary);
+  margin: 0.4rem 0 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
 }
 
 /* ── Listas: sanciones, alertas y registro ─────────────────────────────── */
 
-.fa-lista { list-style: none; font-size: 0.84rem; color: var(--text-secondary); }
-.fa-lista li { padding: 0.45rem 0; border-top: 1px solid var(--ad-borde); }
+.fa-lista { margin: 0; padding: 0; list-style: none; font-size: 0.92rem; font-weight: 600; color: var(--tinta-2); }
+.fa-lista li { padding: 0.65rem 0; border-top: 2px dashed var(--gris); }
 .fa-lista li:first-child { border-top: 0; }
-.fa-lista b { color: var(--text-primary); font-weight: 600; }
+.fa-lista b { color: var(--tinta); font-weight: 900; }
 
 .fa-lista--filas li {
   display: flex;
@@ -308,35 +343,50 @@
 .fa-lista small,
 .fa-registro small {
   display: block;
-  margin-top: 0.15rem;
-  font-size: 0.76rem;
-  color: var(--text-muted);
+  margin-top: 0.2rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--tinta-3);
   overflow-wrap: anywhere;
 }
 
+/* El registro: un cuaderno de bitácora, con su margen rojo a la izquierda. */
 .fa-registro {
-  max-height: 26rem;
+  max-height: 28rem;
+  margin: 0;
+  padding: 0 0.3rem 0 0;
   overflow-y: auto;
   list-style: none;
-  font-size: 0.82rem;
-  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tinta-2);
   scrollbar-width: thin;
 }
 
 .fa-registro li {
   display: grid;
-  grid-template-columns: 7.5rem 1fr;
-  gap: 0.8rem;
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--ad-borde);
+  grid-template-columns: 7.8rem 1fr;
+  gap: 0.9rem;
+  padding: 0.6rem 0;
+  border-top: 2px dashed var(--gris);
 }
 
 .fa-registro li:first-child { border-top: 0; }
-.fa-registro time { font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-.fa-registro b { color: var(--text-primary); font-weight: 600; }
+.fa-registro time {
+  padding-right: 0.8rem;
+  border-right: 2px solid var(--coral-s);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--tinta-3);
+  font-variant-numeric: tabular-nums;
+}
+.fa-registro b { color: var(--tinta); font-weight: 900; }
 
 @media (max-width: 600px) {
-  .fa-mensaje { padding: 0.95rem 1rem; }
-  .fa-registro li { grid-template-columns: 1fr; gap: 0.15rem; }
+  .fa-mensaje { padding: 1rem 1rem 0.9rem; border-radius: 20px; }
+  .fa-registro li { grid-template-columns: 1fr; gap: 0.2rem; }
+  .fa-registro time { border-right: 0; padding-right: 0; }
   .fa-lista--filas li { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .fa-panel select { min-width: 0; width: 100%; }
+  .fa-panel-fila label { flex: 1 1 8rem; }
 }

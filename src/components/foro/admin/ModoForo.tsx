@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { pedirForo } from "@/components/foro/pedir";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 const MODOS = [
   { id: "cerrado", nombre: "Cerrado", ayuda: "Solo tú ves y usas el foro. Para todos los demás no existe." },
@@ -13,6 +15,9 @@ const MODOS = [
 /**
  * El interruptor del foro (FORO.md §6.1). Cambiarlo es inmediato: las
  * funciones de la base de datos leen el modo en cada acción.
+ *
+ * Tres teclas: la del modo actual se queda hundida, en menta; la elegida y
+ * aún sin confirmar, en amarillo. El cambio confirmado suena `interruptor`.
  */
 export default function ModoForo({ modo, puedeModerar }: { modo: string; puedeModerar: boolean }) {
   const router = useRouter();
@@ -28,8 +33,10 @@ export default function ModoForo({ modo, puedeModerar }: { modo: string; puedeMo
     setEnviando(false);
     if (!r.ok) {
       setError(r.mensaje);
+      sonar("error");
       return;
     }
+    sonar("interruptor");
     setPendiente(null);
     router.refresh();
   }
@@ -41,27 +48,28 @@ export default function ModoForo({ modo, puedeModerar }: { modo: string; puedeMo
     <div className="fa-modo">
       <div className="fa-modo-opciones" role="group" aria-label="Modo del foro">
         {MODOS.map((m) => (
-          <button
+          <Tecla
             key={m.id}
-            type="button"
-            className={`fa-modo-opcion${m.id === modo ? " is-actual" : ""}${m.id === pendiente ? " is-pendiente" : ""}`}
+            color={m.id === pendiente ? "amarillo" : "blanca"}
+            tamano="peq"
+            className={`fa-modo-opcion${m.id === modo ? " is-actual" : ""}`}
             aria-pressed={m.id === modo}
             disabled={!puedeModerar || enviando || m.id === modo}
             onClick={() => setPendiente(m.id)}
           >
             {m.nombre}
-          </button>
+          </Tecla>
         ))}
       </div>
       <p className="fa-modo-ayuda">{(elegido ?? actual).ayuda}</p>
       {elegido && (
         <div className="fa-botones">
-          <button type="button" className="fa-btn fa-btn--firme" disabled={enviando} onClick={confirmar}>
+          <Tecla tamano="peq" disabled={enviando} onClick={confirmar}>
             {enviando ? "Cambiando…" : `Pasar a «${elegido.nombre}»`}
-          </button>
-          <button type="button" className="fa-btn" disabled={enviando} onClick={() => setPendiente(null)}>
+          </Tecla>
+          <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={() => setPendiente(null)}>
             Cancelar
-          </button>
+          </Tecla>
         </div>
       )}
       {error && <p className="fa-error" role="alert">{error}</p>}

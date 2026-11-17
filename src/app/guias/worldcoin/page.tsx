@@ -4,7 +4,6 @@ import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideAnimatedStat from "@/components/GuideAnimatedStat";
 import GuideSpotlightCards from "@/components/GuideSpotlightCards";
@@ -14,6 +13,9 @@ import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideVideoEmbed from "@/components/GuideVideoEmbed";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import GuideOrbScanner from "./GuideOrbScanner";
 import GuideWorldTokenomics from "./GuideWorldTokenomics";
 import GuideWorldQuiz from "./GuideWorldQuiz";
@@ -161,7 +163,6 @@ export default async function WorldcoinPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
@@ -176,7 +177,6 @@ export default async function WorldcoinPage() {
 
       {/* Hero */}
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           ¿Qué es Worldcoin?<br />
@@ -184,8 +184,8 @@ export default async function WorldcoinPage() {
         </h1>
         <p className="gbc-hero-desc">
           Sam Altman, el CEO de OpenAI, cree que en un mundo lleno de IA vamos a necesitar una forma
-          de demostrar que somos humanos. Su respuesta: un dispositivo esférico llamado Orb que escanea
-          tu iris y te regala criptomoneda a cambio. Esto es Worldcoin — cómo funciona, y por qué
+          de demostrar que somos humanos. Su respuesta: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>un dispositivo esférico llamado Orb que escanea
+          tu iris y te regala criptomoneda a cambio</Anotacion>. Esto es Worldcoin — cómo funciona, y por qué
           medio mundo lo está investigando.
         </p>
         <div className="gbc-hero-pills">
@@ -206,12 +206,13 @@ export default async function WorldcoinPage() {
             <p>
               En 2019, Sam Altman dirigía OpenAI y veía de primera mano hacia dónde iba la inteligencia
               artificial. Llegó a una conclusión incómoda: la IA ya puede generar texto, voces, caras y
-              comportamientos indistinguibles de los humanos. Y eso deja a internet con un problema de fondo: ya
-              no vamos a poder saber si hay una persona real al otro lado de la pantalla.
+              comportamientos indistinguibles de los humanos. Y eso deja a internet con un problema de fondo: <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>ya
+              no vamos a poder saber si hay una persona real al otro lado de la pantalla</Anotacion>.
             </p>
             <p>
-              Junto al físico Alex Blania y Max Novendstern fundó Tools for Humanity. La propuesta era radical:
-              un sistema biométrico que verifica que eres un humano único, sin depender de un DNI, un gobierno
+              <SimboloEstudio tipo="estrella" margen semilla={7} retraso={200} />
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Junto al físico Alex Blania y Max Novendstern fundó Tools for Humanity</Anotacion>. La propuesta era radical:{" "}
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>un sistema biométrico que verifica que eres un humano único</Anotacion>, sin depender de un DNI, un gobierno
               ni una red social. Y que, de paso, reparte una nueva criptomoneda entre todos los verificados,
               como una especie de renta básica universal experimental.
             </p>
@@ -228,8 +229,8 @@ export default async function WorldcoinPage() {
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
               El proyecto se presentó públicamente en 2021 y lanzó su token en julio de 2023. En 2025, la compañía renombró el ecosistema de <strong>Worldcoin</strong> a
-              <strong>World</strong>. Quería dejar claro que el proyecto es mucho más que un token: es una
-              identidad digital (World ID), una app (World App) y su propia red blockchain (World Chain). El token sigue llamándose WLD.
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}><strong>World</strong></Anotacion>. Quería dejar claro que el proyecto es mucho más que un token: es una
+              identidad digital (World ID), una app (World App) y su propia red blockchain (World Chain). El token sigue llamándose <Anotacion tipo="circle" junta animar={false}>WLD</Anotacion>.
             </p>
           </div>
         </div>
@@ -237,35 +238,38 @@ export default async function WorldcoinPage() {
 
       {/* ── SECCIÓN 2: CÓMO FUNCIONA ── FREE */}
       <section id="como-funciona" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Sección 2 <span className="gbc-free-pill">Gratis</span></div>
           <h2 className="gbc-title">Cómo funciona: el Orb, World ID y World Chain</h2>
           <div className="gbc-body">
             <p>
               El proceso, en teoría, es sencillo. Te acercas a un Orb, un dispositivo esférico pulido del tamaño de un balón de playa. Miras a su
-              cámara durante unos segundos y el aparato captura el patrón único de tu iris con sensores
+              cámara durante unos segundos y el aparato <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>captura el patrón único de tu iris</Anotacion> con sensores
               infrarrojos y de luz visible.
             </p>
             <p>
-              Ese patrón se convierte en un código matemático (un <em>hash</em>) que representa tu iris sin ser
+              Ese patrón se convierte en <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>un código matemático (un <em>hash</em>)</Anotacion> que representa tu iris sin ser
               una imagen legible. Según Tools for Humanity, la fotografía original se elimina del dispositivo tras
               el procesado — solo el hash, cifrado, se usa para comprobar en el futuro que ese iris no se ha
-              verificado ya con otra cuenta. A cambio, recibes tu <strong>World ID</strong> y un primer reparto de
+              verificado ya con otra cuenta. A cambio, recibes tu <strong><Anotacion tipo="circle" junta retraso={500}>World ID</Anotacion></strong> y un primer reparto de
               tokens WLD en la app.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La pieza clave: pruebas de conocimiento cero</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">La pieza clave: pruebas de conocimiento cero</div>
+            <div className="postit-cuerpo">
               <p>Cuando usas World ID para verificarte en una app, no le envías tu iris ni tu hash — le envías una
-              <em> prueba matemática</em> de que posees un World ID válido y único, sin revelar cuál. Es como
+              <em> prueba matemática</em> <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>de que posees un World ID válido y único, sin revelar cuál</Anotacion>. Es como
               demostrar que tienes carné de conducir sin enseñar el carné: la app solo aprende «sí, es un
               humano único verificado», nada más.</p>
             </div>
-          </div>
+          </Postit>
 
-          <GuideOrbScanner />
+          <div className="gbc-ancho">
+            <GuideOrbScanner />
+          </div>
         </div>
       </section>
 
@@ -277,12 +281,12 @@ export default async function WorldcoinPage() {
           <div className="gbc-body">
             <p>
               Lo que empezó como un proyecto experimental con un puñado de Orbs en San Francisco y Nairobi
-              se ha convertido en una de las redes de identidad digital más grandes del mundo. Más de 26
-              millones de personas han pasado por un Orb, y la compañía sigue desplegando dispositivos —
+              se ha convertido en una de las redes de identidad digital más grandes del mundo. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>Más de 26
+              millones de personas han pasado por un Orb</Anotacion>, y la compañía sigue desplegando dispositivos —
               ahora también en tiendas, quioscos y puntos de venta en más de 160 países.
             </p>
             <p>
-              World Chain, la Layer 2 de <Link href="/guias/ethereum">Ethereum</Link> del proyecto, prioriza el tráfico de usuarios verificados
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={500}>World Chain, la Layer 2 de <Link href="/guias/ethereum">Ethereum</Link> del proyecto</Anotacion>, prioriza el tráfico de usuarios verificados
               con World ID frente al de bots — una propuesta directa contra el problema del spam y el MEV
               (extracción de valor por bots) que afecta a otras redes.
             </p>
@@ -295,15 +299,16 @@ export default async function WorldcoinPage() {
             <GuideAnimatedStat end={10} suffix="B" decimals={0} label="Tope máximo de tokens WLD" source="Worldcoin Foundation" />
           </div>
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">De Worldcoin a World</div>
-            <div className="gbc-box-body">
+          <Postit color="menta" giro={1.5} className="wld-nota">
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={4} animar={false} />
+            <div className="postit-titulo">De Worldcoin a World</div>
+            <div className="postit-cuerpo">
               <p>En 2025 la marca «Worldcoin» pasó a un segundo plano y la compañía adoptó «World» como
               nombre paraguas de todo el ecosistema: World ID (identidad), World App (la super-app/wallet)
               y World Chain (la red). El token conserva el ticker WLD. El cambio refleja la ambición del
-              proyecto: dejar de ser «una cripto más» para convertirse en la capa de identidad de internet.</p>
+              proyecto: dejar de ser «una cripto más» para convertirse en <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>la capa de identidad de internet</Anotacion>.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -317,7 +322,7 @@ export default async function WorldcoinPage() {
           <h2 className="gbc-title">Para qué sirve World ID más allá de cobrar tokens</h2>
           <div className="gbc-body">
             <p>
-              El reparto de WLD es solo el gancho inicial. El verdadero producto es World ID, y ya se está
+              El reparto de WLD es solo el gancho inicial. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>El verdadero producto es World ID</Anotacion>, y ya se está
               usando — o probando — para resolver problemas muy concretos de la era digital.
             </p>
           </div>
@@ -341,24 +346,25 @@ export default async function WorldcoinPage() {
           <h2 className="gbc-title">Tokenomics: cómo se reparten los 10.000 millones de WLD</h2>
           <div className="gbc-body">
             <p>
-              El suministro de WLD tiene un tope máximo de 10.000 millones de tokens. La mayor parte —
-              tres de cada cuatro tokens — está reservada para repartirse entre los humanos verificados a
-              lo largo de unos 15 años, en forma de grants periódicos. El resto se divide entre el equipo
+              El suministro de WLD tiene un tope máximo de 10.000 millones de tokens. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>La mayor parte —
+              tres de cada cuatro tokens — está reservada para repartirse entre los humanos verificados</Anotacion> <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>a
+              lo largo de unos 15 años</Anotacion>, en forma de grants periódicos. El resto se divide entre el equipo
               de Tools for Humanity, los inversores que financiaron el proyecto antes del lanzamiento, y
               una reserva gestionada por la Worldcoin Foundation.
             </p>
           </div>
           <GuideWorldTokenomics />
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Por qué importa el reparto a 15 años</div>
-            <div className="gbc-box-body">
-              <p>Repartir el 75% del suministro tan lentamente busca dos cosas: evitar que la entrada masiva
-              de tokens dispare la inflación de golpe, y dar tiempo a que la red crezca — cuantos más humanos
+          <Postit color="amarillo" giro={-1} className="wld-nota">
+            <SimboloEstudio tipo="estrella" color="naranja" className="postit-esquina" semilla={15} retraso={300} />
+            <div className="postit-titulo">Por qué importa el reparto a 15 años</div>
+            <div className="postit-cuerpo">
+              <p>Repartir el 75% del suministro tan lentamente busca dos cosas: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>evitar que la entrada masiva
+              de tokens dispare la inflación de golpe</Anotacion>, y dar tiempo a que la red crezca — cuantos más humanos
               se verifiquen con el tiempo, más «tarta» queda por repartir entre los que llegan tarde. Los
               tokens del equipo e inversores, como en la mayoría de proyectos cripto, están sujetos a
               periodos de bloqueo (vesting) para evitar ventas masivas nada más salir a bolsa.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -370,12 +376,13 @@ export default async function WorldcoinPage() {
           <div className="gbc-body">
             <p>
               Worldcoin no ha sido bien recibido en todas partes. Pedir a millones de personas que entreguen
-              su dato biométrico más único e irremplazable — el iris no se puede «cambiar» como una
-              contraseña si se filtra — ha puesto al proyecto bajo la lupa de reguladores de todo el mundo.
+              su dato biométrico más único e irremplazable — <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>el iris no se puede «cambiar» como una
+              contraseña si se filtra</Anotacion> — ha puesto al proyecto bajo la lupa de reguladores de todo el mundo.
             </p>
             <p>
-              Hay dos críticas centrales. La <strong>de privacidad</strong>: ¿qué pasa si esa base de datos
-              biométrica se filtra o se usa para algo distinto a lo prometido? Y la <strong>ética</strong>:
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={9} animar={false} />
+              Hay dos críticas centrales. La <strong><Anotacion tipo="circle" junta animar={false}>de privacidad</Anotacion></strong>: ¿qué pasa si esa base de datos
+              biométrica se filtra o se usa para algo distinto a lo prometido? Y la <strong><Anotacion tipo="circle" junta animar={false}>ética</Anotacion></strong>:
               varios de los primeros despliegues del Orb se hicieron en países con ingresos bajos —
               Kenia, Indonesia — pagando cantidades pequeñas a cambio del escaneo, lo que generó dudas
               sobre si el consentimiento era realmente libre o si se estaba explotando la necesidad económica
@@ -388,16 +395,17 @@ export default async function WorldcoinPage() {
             <GuideFlipCards cards={COUNTRY_CARDS} />
           </div>
 
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">El riesgo que no tiene marcha atrás</div>
-            <div className="gbc-box-body">
-              <p>Una contraseña filtrada se puede cambiar. Una tarjeta de crédito robada se puede cancelar.
-              Un iris filtrado es para siempre — es la razón por la que los reguladores tratan los datos
-              biométricos con un estándar de protección mucho más alto que cualquier otro dato personal.
+          <Postit color="coral" giro={1.5} className="wld-nota">
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">El riesgo que no tiene marcha atrás</div>
+            <div className="postit-cuerpo">
+              <p>Una contraseña filtrada se puede cambiar. Una tarjeta de crédito robada se puede cancelar.{" "}
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>Un iris filtrado es para siempre</Anotacion> — es la razón por la que <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>los reguladores tratan los datos
+              biométricos con un estándar de protección mucho más alto</Anotacion> que cualquier otro dato personal.
               Tools for Humanity insiste en que no almacena imágenes y en que el sistema está diseñado para
               minimizar ese riesgo, pero la discusión sobre si es suficiente sigue abierta en varios países.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -417,7 +425,7 @@ export default async function WorldcoinPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Prueba de Humanidad</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong className="gbc-logro">Prueba de Humanidad</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideWorldQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

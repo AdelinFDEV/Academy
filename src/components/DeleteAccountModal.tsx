@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { X, AlertTriangle, Trash2 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { useEnviarALaVista } from "@/components/acceso/EnviarALaVista";
+import { bloquearScroll } from "@/components/trading/useVentanaMovil";
+import { sonar } from "@/lib/sonidos";
 
 interface Props {
   open: boolean;
@@ -19,23 +23,35 @@ export default function DeleteAccountModal({ open, onClose, isPremium }: Props) 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  useEnviarALaVista();
 
+  // Suena `abrir` al abrirse y `cerrar` cuando la persona lo cierra.
+  const cerrar = useCallback(() => {
+    sonar("cerrar");
+    onClose();
+  }, [onClose]);
+
+  // Quien lo usa lo monta solo mientras está abierto: cada vez empieza de
+  // cero, sin tener que vaciar el estado a mano.
   useEffect(() => {
     if (!open) return;
-    setConfirmText(""); setError(""); setLoading(false);
-    setTimeout(() => inputRef.current?.focus(), 80);
+    sonar("abrir");
+    const t = window.setTimeout(() => inputRef.current?.focus(), 80);
+    return () => window.clearTimeout(t);
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape" && !loading) onClose(); };
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape" && !loading) cerrar(); };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [open, onClose, loading]);
+  }, [open, cerrar, loading]);
 
+  // En <html> y en <body>: con solo <body>, la página de detrás seguía
+  // corriendo en el móvil (globals.css pone overflow-x en <html>).
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!open) return;
+    return bloquearScroll();
   }, [open]);
 
   async function handleDelete() {
@@ -49,6 +65,7 @@ export default function DeleteAccountModal({ open, onClose, isPremium }: Props) 
 
       if (!res.ok) {
         setError(data.error || "No se pudo eliminar la cuenta. Inténtalo de nuevo.");
+        sonar("error");
         setLoading(false);
         return;
       }
@@ -62,6 +79,7 @@ export default function DeleteAccountModal({ open, onClose, isPremium }: Props) 
       router.refresh();
     } catch {
       setError("No se pudo conectar con el servidor. Inténtalo de nuevo.");
+      sonar("error");
       setLoading(false);
     }
   }
@@ -71,18 +89,18 @@ export default function DeleteAccountModal({ open, onClose, isPremium }: Props) 
   return (
     <div
       className="tool-modal-backdrop"
-      onClick={(e) => { if (e.target === e.currentTarget && !loading) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget && !loading) cerrar(); }}
       role="dialog"
       aria-modal="true"
       aria-label="Eliminar cuenta"
     >
       <div className="tool-modal" style={{ maxWidth: 440 }}>
-        <button className="tool-modal-close" onClick={onClose} disabled={loading} aria-label="Cerrar">
-          <X size={18} />
-        </button>
+        <Tecla color="blanca" tamano="peq" icono className="tool-modal-close" onClick={cerrar} disabled={loading} aria-label="Cerrar">
+          <X size={18} aria-hidden="true" />
+        </Tecla>
 
         <div className="tool-modal-icon-wrap tool-modal-icon-wrap--danger">
-          <AlertTriangle size={26} strokeWidth={1.8} />
+          <AlertTriangle size={26} strokeWidth={1.8} aria-hidden="true" />
         </div>
 
         <div className="tool-modal-content">
@@ -110,24 +128,30 @@ export default function DeleteAccountModal({ open, onClose, isPremium }: Props) 
               onChange={(e) => setConfirmText(e.target.value)}
               placeholder={CONFIRM_WORD}
               autoComplete="off"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="done"
               disabled={loading}
             />
           </div>
 
-          {error && <p className="auth-error">{error}</p>}
+          {error && <p className="auth-error" role="alert">{error}</p>}
 
           <div className="tool-modal-actions">
-            <button
-              className="tool-modal-btn-danger"
+            <Tecla
+              color="coral"
+              ancho
+              data-enviar
               onClick={handleDelete}
               disabled={confirmText !== CONFIRM_WORD || loading}
             >
-              <Trash2 size={16} />
-              {loading ? "Eliminando..." : "Eliminar mi cuenta para siempre"}
-            </button>
-            <button className="tool-modal-btn-secondary" onClick={onClose} disabled={loading}>
+              <Trash2 size={16} aria-hidden="true" />
+              {loading ? "Eliminando…" : "Eliminar mi cuenta para siempre"}
+            </Tecla>
+            <Tecla color="blanca" ancho onClick={cerrar} disabled={loading}>
               Cancelar
-            </button>
+            </Tecla>
           </div>
         </div>
       </div>

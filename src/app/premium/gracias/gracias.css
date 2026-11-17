@@ -1,0 +1,215 @@
+/* /premium/gracias — la pantalla tras pagar (page.tsx). Estilo «Cuaderno de
+   estudio» (17-11-2026, ESTILO.md): una hoja de papel sobre el fondo lavanda,
+   los pasos como un camino corto y los botones-tecla. Antes vivía en
+   globals.css (`premium-gate-*` y `gracias-*`), que solo usaba esta página. */
+
+.gr-pagina {
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+}
+
+.gr-pagina * { color-scheme: light; }
+
+.gr {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: clamp(2.5rem, 8vw, 5rem) clamp(1rem, 4vw, 2rem);
+}
+
+.gr-hoja {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 640px;
+  padding: clamp(2.25rem, 6vw, 3.25rem) clamp(1.25rem, 5vw, 2.75rem) clamp(1.75rem, 5vw, 2.5rem);
+  border-radius: clamp(28px, 5vw, 36px);
+  background: var(--papel);
+  text-align: center;
+  box-shadow: 0 8px 0 var(--gris-o), 0 40px 60px -40px rgba(29, 27, 51, 0.45);
+}
+
+.gr-pegatina {
+  position: absolute;
+  top: -24px;
+  right: clamp(12px, 6vw, 40px);
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--naranja);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px -6px rgba(29, 27, 51, 0.45);
+  transform: rotate(10deg);
+  animation: gr-pegar 0.7s 0.2s cubic-bezier(0.34, 1.8, 0.5, 1) both;
+}
+
+@keyframes gr-pegar {
+  from { opacity: 0; transform: rotate(40deg) scale(0.4); }
+}
+
+.gr-icono {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  background: var(--naranja-s);
+  color: var(--naranja-o);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+
+.gr-hoja.is-activa .gr-icono {
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--naranja-o);
+}
+
+.gr-girando { animation: gr-girar 0.9s linear infinite; }
+
+@keyframes gr-girar { to { transform: rotate(360deg); } }
+
+.gr-mano {
+  margin: 18px 0 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.gr-titulo {
+  margin: 6px 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.gr-sub {
+  max-width: 44ch;
+  margin: 12px 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+/* Los pasos: un camino corto, de arriba abajo. */
+.gr-pasos {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+/* El tramo que une los nodos. */
+.gr-pasos::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 33px;
+  width: 6px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(180deg, var(--gris-o) 0 8px, transparent 8px 14px);
+}
+
+.gr-paso {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px 13px 14px;
+  border-radius: 20px;
+  background: var(--fondo);
+}
+
+.gr-paso-num {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gris);
+  color: var(--tinta-3);
+  font-weight: 900;
+  font-size: 16px;
+  box-shadow: 0 4px 0 var(--gris-o);
+}
+
+.gr-paso--hecho { background: var(--menta-s); }
+.gr-paso--hecho .gr-paso-num { background: var(--menta); color: var(--tinta); box-shadow: 0 4px 0 var(--menta-o); }
+
+.gr-paso--activo { background: var(--naranja-s); box-shadow: inset 0 0 0 3px var(--naranja); }
+
+.gr-paso--activo .gr-paso-num {
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--naranja-o), 0 0 0 7px rgba(255, 138, 31, 0.2);
+  animation: gr-latir 1.6s ease-in-out infinite;
+}
+
+@keyframes gr-latir {
+  50% { box-shadow: 0 4px 0 var(--naranja-o), 0 0 0 12px rgba(255, 138, 31, 0.05); }
+}
+
+.gr-paso div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.gr-paso strong { font-family: var(--letra-titular); font-size: 18px; font-weight: 800; color: var(--tinta); }
+.gr-paso span { font-size: 14.5px; font-weight: 600; line-height: 1.5; color: var(--tinta-2); }
+.gr-paso b { font-weight: 900; color: var(--tinta); }
+.gr-paso a { font-weight: 900; color: var(--tinta); text-decoration: underline; text-decoration-color: var(--menta); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+.gr-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.gr-ayuda {
+  margin: 14px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.gr-ayuda a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--azul-o);
+  font-weight: 900;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .gr-acciones .tecla { flex: 1 1 100%; white-space: normal; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-pegatina,
+  .gr-paso--activo .gr-paso-num { animation: none; }
+  .gr-girando { animation-duration: 2.4s; }
+}

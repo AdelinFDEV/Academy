@@ -13,7 +13,7 @@ export default function CookiesPage() {
   return (
     <LegalShell title="Política de Cookies" lastUpdated={LEGAL.ultimaActualizacion}>
 
-      <p className="legal-intro">
+      <p className="lg-intro">
         Esta política explica qué cookies y tecnologías de almacenamiento utilizamos, con qué finalidad y
         cómo puedes gestionarlas. Usamos las estrictamente necesarias para que el Sitio funcione y,
         <strong> solo si lo autorizas</strong>, cookies de analítica que nos dicen qué contenidos se
@@ -32,7 +32,7 @@ export default function CookiesPage() {
 
       <section>
         <h2>2. Tecnologías propias que utilizamos</h2>
-        <table className="legal-table">
+        <table className="lg-tabla">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -70,7 +70,7 @@ export default function CookiesPage() {
           Se activan al aceptarlas o al usar determinadas funciones, y en ningún caso las utilizamos
           para publicidad personalizada:
         </p>
-        <table className="legal-table">
+        <table className="lg-tabla">
           <thead>
             <tr>
               <th>Proveedor</th>

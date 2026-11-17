@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión L · Pizarra de clase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Patrick+Hand&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --pizarra: #1f3b32; --pizarra-2: #24443a; --marco: #8a5a32; --marco-o: #5e3a1d; --tiza: #f3f1e8; --tiza-2: #b9c4bd; --naranja: #ffa24a; --amarilla: #ffe27a; --rosa: #ff9db0; --azul: #8fd3ff; --verde: #a8f0b8; --f: "Nunito", system-ui, sans-serif; --tizaf: "Cabin Sketch", cursive; --mano: "Patrick Hand", cursive; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e0cf; font-family: var(--f); color: var(--tiza); padding: 26px; }
+  a { color: inherit; text-decoration: none; }
+  .aula { max-width: 1240px; margin: 0 auto; background: var(--pizarra); border: 18px solid var(--marco); border-radius: 10px; box-shadow: inset 0 0 120px rgba(0,0,0,.35), 0 12px 0 var(--marco-o), 0 30px 50px -20px rgba(0,0,0,.5); position: relative; overflow: hidden; background-image: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.06), transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(255,255,255,.04), transparent 50%); }
+  .bandeja { height: 22px; background: var(--marco); margin: 0 auto; max-width: 1240px; border-radius: 0 0 10px 10px; position: relative; box-shadow: 0 8px 0 var(--marco-o); }
+  .bandeja i { position: absolute; top: -8px; width: 46px; height: 10px; border-radius: 4px; }
+  .dentro { padding: 30px 50px 50px; }
+  .tiza { font-family: var(--tizaf); }
+  .mano { font-family: var(--mano); }
+
+  .boton { display: inline-flex; align-items: center; justify-content: center; padding: 14px 24px; border-radius: 14px; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: .03em; color: var(--pizarra); background: var(--amarilla); box-shadow: 0 5px 0 #c9a93a; transition: transform .08s, box-shadow .08s; }
+  .boton:hover { transform: translateY(3px); box-shadow: 0 2px 0 #c9a93a; }
+  .boton--rosa { background: var(--rosa); box-shadow: 0 5px 0 #d06a80; } .boton--rosa:hover { box-shadow: 0 2px 0 #d06a80; }
+  .boton--tiza { background: transparent; color: var(--tiza); border: 3px dashed var(--tiza-2); box-shadow: none; }
+  .boton--tiza:hover { border-color: var(--tiza); transform: none; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; }
+  .marca { font-family: var(--tizaf); font-weight: 700; font-size: 34px; }
+  .marca span { color: var(--naranja); }
+  .enlaces { display: flex; gap: 26px; font-family: var(--mano); font-size: 24px; color: var(--tiza-2); }
+  .enlaces a:hover { color: var(--amarilla); text-decoration: underline wavy; }
+
+  .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; margin-top: 40px; }
+  .fecha { font-family: var(--mano); font-size: 24px; color: var(--tiza-2); }
+  h1 { font-family: var(--tizaf); font-weight: 700; font-size: 74px; line-height: 1; margin: 8px 0 0; text-shadow: 0 0 1px rgba(255,255,255,.6); }
+  h1 em { font-style: normal; color: var(--amarilla); }
+  .lead { font-family: var(--mano); font-size: 26px; line-height: 1.35; color: var(--tiza-2); margin: 20px 0 0; }
+  .acciones { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+
+  .ecuacion { font-family: var(--tizaf); font-size: 38px; line-height: 1.4; position: relative; }
+  .ecuacion .linea { display: block; }
+  .ecuacion .c1 { color: var(--azul); } .ecuacion .c2 { color: var(--rosa); } .ecuacion .c3 { color: var(--verde); } .ecuacion .c4 { color: var(--amarilla); }
+  .dibujo { width: 100%; height: 190px; margin-top: 10px; }
+  .borrado { display: inline-block; position: relative; color: var(--tiza-2); }
+  .borrado::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 4px; background: var(--rosa); transform: rotate(-4deg); }
+
+  hr.tiza-linea { border: 0; height: 4px; margin: 60px 0 40px; background: repeating-linear-gradient(90deg, var(--tiza-2) 0 30px, transparent 30px 44px); opacity: .5; }
+  h2 { font-family: var(--tizaf); font-weight: 700; font-size: 50px; margin: 0; }
+  .sec { display: flex; justify-content: space-between; align-items: end; margin-bottom: 26px; }
+  .lecciones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .leccion { border: 3px solid var(--tiza-2); border-radius: 16px; padding: 18px; transition: transform .15s, border-color .15s, background .15s; position: relative; }
+  .leccion:hover { transform: rotate(-1deg) translateY(-4px); border-color: var(--amarilla); background: var(--pizarra-2); }
+  .leccion .letra { font-family: var(--tizaf); font-size: 74px; line-height: 1; }
+  .leccion h3 { font-family: var(--tizaf); font-size: 28px; margin: 8px 0 0; }
+  .leccion small { font-family: var(--mano); font-size: 20px; color: var(--tiza-2); }
+  .nueva { position: absolute; top: -14px; right: 12px; background: var(--rosa); color: var(--pizarra); font-weight: 900; font-size: 12px; padding: 4px 10px; border-radius: 8px; transform: rotate(6deg); }
+
+  .premium { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+  .premium p { font-family: var(--mano); font-size: 26px; color: var(--tiza-2); }
+  .tabla-tiza { font-family: var(--tizaf); font-size: 30px; border: 3px solid var(--tiza-2); border-radius: 12px; }
+  .tabla-tiza div { display: flex; justify-content: space-between; padding: 14px 20px; border-bottom: 3px dashed rgba(185,196,189,.4); }
+  .tabla-tiza div:last-child { border-bottom: 0; color: var(--amarilla); }
+  .pie { text-align: center; margin-top: 46px; font-family: var(--mano); font-size: 20px; color: var(--tiza-2); }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--amarilla); color: var(--pizarra); font-weight: 900; font-size: 13px; padding: 10px 16px; border-radius: 12px; z-index: 5; }
+</style>
+</head>
+<body>
+<div class="aula"><div class="dentro">
+  <nav class="nav"><span class="marca">Adelin<span>BTC</span></span><span class="enlaces"><a href="#">Guías</a><a href="#">Diccionario</a><a href="#">Cursos</a><a href="#">Foro</a></span><a class="boton boton--tiza" href="#">Entrar</a></nav>
+
+  <div class="hero">
+    <div>
+      <span class="fecha">Clase de hoy:</span>
+      <h1>Cripto, explicada como en <em>la mejor clase</em> que tuviste.</h1>
+      <p class="lead">Guías gratuitas paso a paso, con ejercicios y quiz al final. Sin prisa y sin tecnicismos.</p>
+      <div class="acciones"><a class="boton" href="#">Entrar en clase</a><a class="boton boton--rosa" href="#">Ver Premium</a></div>
+    </div>
+    <div class="ecuacion">
+      <span class="linea c1">Bitcoin = 21 millones</span>
+      <span class="linea c2">halving → recompensa ÷ 2</span>
+      <span class="linea c3">DCA &gt; <span class="borrado">comprar en el pico</span></span>
+      <svg class="dibujo" viewBox="0 0 500 190"><path d="M20 170 L480 170 M20 170 L20 20" stroke="#f3f1e8" stroke-width="4" fill="none" stroke-linecap="round" opacity=".8"/><path d="M30 150 C 90 140, 120 110, 170 120 S 250 70, 300 80 S 400 30, 470 26" stroke="#ffe27a" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="1 0"/><circle cx="300" cy="80" r="16" fill="none" stroke="#ff9db0" stroke-width="4"/></svg>
+      <span class="linea c4 mano" style="font-size:24px">↑ aquí el halving de 2024</span>
+    </div>
+  </div>
+
+  <hr class="tiza-linea">
+  <div class="sec"><h2>Lecciones de esta semana</h2><a class="boton boton--tiza" href="#">Todas</a></div>
+  <div class="lecciones">
+    <a class="leccion" href="#"><span class="nueva">NUEVA</span><span class="letra" style="color:var(--azul)">H</span><h3>Hyperliquid</h3><small>Intermedio · 14 min</small></a>
+    <a class="leccion" href="#"><span class="letra" style="color:var(--rosa)">X</span><h3>XRP y Ripple</h3><small>Básico · 11 min</small></a>
+    <a class="leccion" href="#"><span class="letra" style="color:var(--verde)">R</span><h3>Render</h3><small>Intermedio · 12 min</small></a>
+    <a class="leccion" href="#"><span class="letra" style="color:var(--amarilla)">W</span><h3>Worldcoin</h3><small>Básico · 10 min</small></a>
+  </div>
+
+  <hr class="tiza-linea">
+  <div class="premium">
+    <div><h2>Clases particulares: Premium</h2><p>Para cuando pases de aprender a operar.</p><a class="boton" href="#">Hazte Premium</a></div>
+    <div class="tabla-tiza"><div><span>Diario + Nova</span><span>✓</span></div><div><span>Portfolio Adelin</span><span>✓</span></div><div><span>Cursos + certificado</span><span>✓</span></div><div><span>Total</span><span>19,99 €/mes</span></div></div>
+  </div>
+  <p class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No es asesoramiento financiero</p>
+</div></div>
+<div class="bandeja"><i style="left:80px;background:#fff"></i><i style="left:140px;background:#ffe27a"></i><i style="left:200px;background:#ff9db0"></i></div>
+<span class="etiqueta-maqueta">Versión L · Pizarra (maqueta)</span>
+</body>
+</html>

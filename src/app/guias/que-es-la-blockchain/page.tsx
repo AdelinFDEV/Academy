@@ -4,7 +4,6 @@ import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideFlashcards from "./GuideFlashcards";
 import GuideCharts from "./GuideCharts";
@@ -19,6 +18,9 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import "./que-es-la-blockchain.css";
 
 export const metadata: Metadata = {
@@ -139,7 +141,6 @@ export default async function QueEsLaBlockchainPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
 
       {/* Nav */}
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
@@ -156,7 +157,6 @@ export default async function QueEsLaBlockchainPage() {
 
       {/* Hero */}
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía fundamental · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           ¿Qué es la Blockchain?<br />
@@ -165,7 +165,7 @@ export default async function QueEsLaBlockchainPage() {
         <p className="gbc-hero-desc">
           Desde el whitepaper de Satoshi hasta los $2.17 billones en capitalización actual.
           Entiende el mecanismo que está rehaciendo las finanzas, la identidad y el contrato social —
-          y qué amenaza representa la computación cuántica para su futuro.
+          y <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={400}>qué amenaza representa la computación cuántica para su futuro</Anotacion>.
         </p>
         <div className="gbc-hero-pills">
           <span className="gbc-pill">8 secciones</span>
@@ -183,10 +183,10 @@ export default async function QueEsLaBlockchainPage() {
           <h2 className="gbc-title">El origen: un problema de confianza de 5.000 años</h2>
           <div className="gbc-body">
             <p>
-              El dinero siempre ha dependido de un intermediario de confianza: el orfebre que guardaba el oro, el banco que anotaba el depósito, el banco central que garantizaba el billete. El problema no era técnico — era la confianza. ¿Quién certifica que el registro es verdadero?
+              El dinero siempre ha dependido de un intermediario de confianza: el orfebre que guardaba el oro, el banco que anotaba el depósito, el banco central que garantizaba el billete. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>El problema no era técnico — era la confianza.</Anotacion> ¿Quién certifica que el registro es verdadero?
             </p>
             <p>
-              En 2008, en pleno colapso financiero global, un mensaje apareció en una lista de correo de criptografía. Lo firmaba alguien llamado Satoshi Nakamoto. La propuesta era radical: un sistema de efectivo electrónico entre pares que funcionara sin ninguna institución de confianza. El mecanismo que lo hacía posible se llamaba blockchain.
+              En 2008, en pleno colapso financiero global, un mensaje apareció en una lista de correo de criptografía. Lo firmaba alguien llamado Satoshi Nakamoto. La propuesta era radical: <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={800}>un sistema de efectivo electrónico entre pares que funcionara sin ninguna institución de confianza</Anotacion>. El mecanismo que lo hacía posible se llamaba blockchain.
             </p>
           </div>
 
@@ -199,7 +199,7 @@ export default async function QueEsLaBlockchainPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              La idea no era completamente nueva. En 1991, los criptógrafos Stuart Haber y W. Scott Stornetta habían descrito un sistema para marcar documentos con un sello temporal inmutable. En 1997, Adam Back inventó Hashcash — prueba de trabajo computacional para frenar el spam. En 2004, Hal Finney refinó el concepto con «reusable proofs of work». Satoshi unió todas estas piezas.
+              La idea no era completamente nueva. En 1991, los criptógrafos Stuart Haber y W. Scott Stornetta habían descrito un sistema para marcar documentos con un sello temporal inmutable. En 1997, Adam Back inventó Hashcash — prueba de trabajo computacional para frenar el spam. En 2004, Hal Finney refinó el concepto con «reusable proofs of work». <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Satoshi unió todas estas piezas.</Anotacion>
             </p>
           </div>
 
@@ -229,18 +229,20 @@ export default async function QueEsLaBlockchainPage() {
           <h2 className="gbc-title">Cómo funciona: bloques, hashes y consenso</h2>
           <div className="gbc-body">
             <p>
-              Una blockchain es, literalmente, una cadena de bloques. Cada bloque contiene un conjunto de transacciones, una marca de tiempo, y el hash del bloque anterior. Este último detalle es lo que lo hace inviolable.
+              <SimboloEstudio tipo="estrella" color="naranja" margen semilla={13} retraso={200} />
+              Una blockchain es, literalmente, una cadena de bloques. Cada bloque contiene un conjunto de transacciones, una marca de tiempo, y <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} retraso={500}>el hash del bloque anterior</Anotacion>. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={1100}>Este último detalle es lo que lo hace inviolable.</Anotacion>
             </p>
           </div>
 
           <GuideFlipCards cards={BLOCK_FLOW_CARDS} />
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La analogía del libro contable público</div>
-            <div className="gbc-box-body">
-              <p>Imagina un libro contable que una ciudad entera tiene en copia. Cada vez que alguien quiere añadir una entrada, la mayoría de los ciudadanos debe confirmarla. Si alguien intenta borrar una página antigua, todos los demás tienen la versión correcta. Eso es la blockchain — pero con miles de copias en todo el mundo, actualización en segundos y verificación matemática automática.</p>
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" semilla={4} animar={false} />
+            <div className="postit-titulo">La analogía del libro contable público</div>
+            <div className="postit-cuerpo">
+              <p>Imagina un libro contable que una ciudad entera tiene en copia. Cada vez que alguien quiere añadir una entrada, la mayoría de los ciudadanos debe confirmarla. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>Si alguien intenta borrar una página antigua, todos los demás tienen la versión correcta.</Anotacion> Eso es la blockchain — pero con miles de copias en todo el mundo, actualización en segundos y verificación matemática automática.</p>
             </div>
-          </div>
+          </Postit>
 
           <GuideMineBlock />
         </div>
@@ -256,10 +258,10 @@ export default async function QueEsLaBlockchainPage() {
           <h2 className="gbc-title">El estado de la blockchain en 2026: los números reales</h2>
           <div className="gbc-body">
             <p>
-              La blockchain ya no es un experimento marginal. En junio de 2026, la capitalización total del mercado crypto supera los $2.17 billones (trillion), con Bitcoin representando el 52% y Ethereum el 18%. Más de 350 millones de personas tienen algún tipo de exposición a activos digitales.
+              La blockchain ya no es un experimento marginal. En junio de 2026, la capitalización total del mercado crypto supera los <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} retraso={300} junta>$2.17 billones</Anotacion> (trillion), con Bitcoin representando el 52% y Ethereum el 18%. Más de 350 millones de personas tienen algún tipo de exposición a activos digitales.
             </p>
             <p>
-              Los gobiernos de más de 130 países están desarrollando activamente CBDCs (monedas digitales de banco central). El Banco Central Europeo tiene el Digital Euro en fase piloto. China ya tiene 260 millones de usuarios en el e-CNY.
+              Los gobiernos de <Anotacion tipo="circle" junta animar={false}>más de 130 países</Anotacion> están desarrollando activamente CBDCs (monedas digitales de banco central). El Banco Central Europeo tiene el Digital Euro en fase piloto. China ya tiene 260 millones de usuarios en el e-CNY.
             </p>
           </div>
 
@@ -276,12 +278,13 @@ export default async function QueEsLaBlockchainPage() {
           <GuideCharts chart="market" />
           <GuideDefiChart />
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Institucionalización acelerada</div>
-            <div className="gbc-box-body">
-              <p>BlackRock, el mayor gestor de activos del mundo, lanzó su ETF de Bitcoin (IBIT) en enero de 2024. En 2026 gestiona más de $18B en Bitcoin. Fidelity, ARK y Franklin Templeton también operan ETFs spot. JPMorgan procesa pagos en blockchain mediante JPM Coin. El mundo institucional ya no ignora la blockchain — la integra.</p>
+          <Postit color="menta" giro={1.5}>
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={6} retraso={300} />
+            <div className="postit-titulo">Institucionalización acelerada</div>
+            <div className="postit-cuerpo">
+              <p>BlackRock, el mayor gestor de activos del mundo, lanzó su ETF de Bitcoin (IBIT) en enero de 2024. En 2026 gestiona más de $18B en Bitcoin. Fidelity, ARK y Franklin Templeton también operan ETFs spot. JPMorgan procesa pagos en blockchain mediante JPM Coin. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>El mundo institucional ya no ignora la blockchain — la integra.</Anotacion></p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -292,17 +295,18 @@ export default async function QueEsLaBlockchainPage() {
           <h2 className="gbc-title">Para qué sirve realmente: 8 casos de uso que ya existen</h2>
           <div className="gbc-body">
             <p>
-              Más allá del precio de Bitcoin, la blockchain resuelve problemas concretos en industrias reales. Estos no son casos hipotéticos — están en producción hoy, con millones de usuarios y miles de millones en valor.
+              Más allá del precio de Bitcoin, la blockchain resuelve problemas concretos en industrias reales. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Estos no son casos hipotéticos — están en producción hoy</Anotacion>, con millones de usuarios y miles de millones en valor.
             </p>
           </div>
           <GuideSpotlightCards uses={USES} />
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">El caso Ethereum: el ordenador mundial</div>
-            <div className="gbc-box-body">
-              <p><Link href="/guias/ethereum">Ethereum</Link> es la segunda blockchain por capitalización y la primera en actividad de desarrolladores. Su propuesta es ser un ordenador global descentralizado donde cualquiera puede desplegar código que se ejecuta exactamente como está programado, sin downtime, sin censura, sin intermediarios. En 2026 procesa más de 1.2 millones de transacciones diarias y tiene más de 4,000 aplicaciones desplegadas.</p>
+          <Postit color="amarillo" giro={-1}>
+            <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={11} animar={false} />
+            <div className="postit-titulo">El caso Ethereum: el ordenador mundial</div>
+            <div className="postit-cuerpo">
+              <p><Link href="/guias/ethereum">Ethereum</Link> es la segunda blockchain por capitalización y la primera en actividad de desarrolladores. Su propuesta es ser un ordenador global descentralizado donde <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>cualquiera puede desplegar código que se ejecuta exactamente como está programado, sin downtime, sin censura, sin intermediarios</Anotacion>. En 2026 procesa más de 1.2 millones de transacciones diarias y tiene más de 4,000 aplicaciones desplegadas.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -322,7 +326,7 @@ export default async function QueEsLaBlockchainPage() {
           <h2 className="gbc-title">El potencial: lo que todavía no hemos visto</h2>
           <div className="gbc-body">
             <p>
-              Todo lo que existe hoy — $2 billones en cripto, $71B en DeFi, $32B en RWA — es la fase 0. La blockchain aún no ha alcanzado ni el 5% de su potencial de disrupción. Las estimaciones más conservadoras sitúan el mercado total addressable en $16 billones para 2030.
+              Todo lo que existe hoy — $2 billones en cripto, $71B en DeFi, $32B en RWA — es <Anotacion tipo="circle" junta retraso={300}>la fase 0</Anotacion>. La blockchain aún no ha alcanzado ni el 5% de su potencial de disrupción. Las estimaciones más conservadoras sitúan el mercado total addressable en $16 billones para 2030.
             </p>
           </div>
 
@@ -331,7 +335,7 @@ export default async function QueEsLaBlockchainPage() {
               <div className="gbc-card-title">Tokenización de todo</div>
               <div className="gbc-card-text">
                 <p>El mercado inmobiliario global vale $330 billones. Las acciones privadas, $13 billones. La deuda global, $300 billones. La tokenización de estos activos significaría liquidez instantánea, fraccionalización y acceso global para inversores de cualquier tamaño.</p>
-                <p>BlackRock estima que el mercado de activos tokenizados alcanzará los $10 billones en 2030.</p>
+                <p><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>BlackRock estima que el mercado de activos tokenizados alcanzará los $10 billones en 2030.</Anotacion></p>
               </div>
             </div>
             <div className="gbc-card">
@@ -357,12 +361,13 @@ export default async function QueEsLaBlockchainPage() {
             </div>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La curva S de la adopción tecnológica</div>
-            <div className="gbc-box-body">
-              <p>Internet tardó 15 años en pasar de 1 millón a 1.000 millones de usuarios (1993-2008). El móvil tardó 12 años. La blockchain lleva 15 años y está en ~350 millones de usuarios — exactamente donde estaba internet en 2000, justo antes de la explosión masiva. La infraestructura (wallets, on-ramps, regulación) está llegando a la madurez necesaria para la adopción masiva.</p>
+          <Postit color="amarillo" giro={1.5}>
+            <SimboloEstudio tipo="flecha" color="naranja" className="postit-esquina" semilla={9} giro={60} animar={false} />
+            <div className="postit-titulo">La curva S de la adopción tecnológica</div>
+            <div className="postit-cuerpo">
+              <p>Internet tardó 15 años en pasar de 1 millón a 1.000 millones de usuarios (1993-2008). El móvil tardó 12 años. La blockchain lleva 15 años y está en ~350 millones de usuarios — <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>exactamente donde estaba internet en 2000</Anotacion>, justo antes de la explosión masiva. La infraestructura (wallets, on-ramps, regulación) está llegando a la madurez necesaria para la adopción masiva.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -376,7 +381,8 @@ export default async function QueEsLaBlockchainPage() {
               En diciembre de 2024, Google presentó Willow, un chip cuántico de 105 qubits capaz de resolver en 5 minutos un cálculo que los mejores superordenadores clásicos tardarían 10 septillones de años. La noticia sacudió el mundo de la blockchain: ¿es esto el fin de la criptografía actual?
             </p>
             <p>
-              La respuesta es matizada: la amenaza es real, pero está lejos — y la industria ya está preparando la defensa.
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={17} retraso={200} />
+              La respuesta es matizada: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>la amenaza es real, pero está lejos — y la industria ya está preparando la defensa.</Anotacion>
             </p>
           </div>
 
@@ -391,8 +397,8 @@ export default async function QueEsLaBlockchainPage() {
             <div className="gbc-card">
               <div className="gbc-card-title">La vulnerabilidad real</div>
               <div className="gbc-card-text">
-                <p>Bitcoin y la mayoría de blockchains usan ECDSA (Elliptic Curve Digital Signature Algorithm) para las firmas. El algoritmo de Shor, ejecutado en un ordenador cuántico suficientemente potente, podría derivar la clave privada desde la clave pública.</p>
-                <p>El problema: si tu dirección ha recibido pero no enviado, la clave pública no está expuesta. Pero si has reutilizado direcciones o has enviado transacciones, tu clave pública es pública — y vulnerable.</p>
+                <p>Bitcoin y la mayoría de blockchains usan ECDSA (Elliptic Curve Digital Signature Algorithm) para las firmas. El algoritmo de Shor, ejecutado en un ordenador cuántico suficientemente potente, <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>podría derivar la clave privada desde la clave pública</Anotacion>.</p>
+                <p>El problema: si tu dirección ha recibido pero no enviado, la clave pública no está expuesta. Pero <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>si has reutilizado direcciones o has enviado transacciones, tu clave pública es pública — y vulnerable.</Anotacion></p>
               </div>
             </div>
             <div className="gbc-card">
@@ -413,19 +419,21 @@ export default async function QueEsLaBlockchainPage() {
 
           <GuideQuantumGame />
 
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">El riesgo más inmediato: «harvest now, decrypt later»</div>
-            <div className="gbc-box-body">
-              <p>Los actores más peligrosos — estados-nación — no esperarán a tener un ordenador cuántico para actuar. Ya están recopilando tráfico cifrado hoy para descifrarlo cuando tengan la capacidad cuántica. Para transacciones financieras con datos sensibles a largo plazo, la migración a PQC no puede esperar. Para Bitcoin, el riesgo es más lejano pero igualmente real.</p>
+          <Postit color="coral" giro={-1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" semilla={12} retraso={300} />
+            <div className="postit-titulo">El riesgo más inmediato: «harvest now, decrypt later»</div>
+            <div className="postit-cuerpo">
+              <p>Los actores más peligrosos — estados-nación — no esperarán a tener un ordenador cuántico para actuar. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Ya están recopilando tráfico cifrado hoy para descifrarlo cuando tengan la capacidad cuántica.</Anotacion> Para transacciones financieras con datos sensibles a largo plazo, la migración a PQC no puede esperar. Para Bitcoin, el riesgo es más lejano pero igualmente real.</p>
             </div>
-          </div>
+          </Postit>
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 16 }}>
-            <div className="gbc-box-title">Conclusión: la blockchain sobrevivirá al cuántico</div>
-            <div className="gbc-box-body">
-              <p>La blockchain no es un protocolo fijo — es software que se puede actualizar. La transición a criptografía post-cuántica es un problema técnico con soluciones conocidas. El verdadero riesgo es la complacencia: asumir que la amenaza está lejos y no prepararse. Las blockchains que sobrevivan serán las que migren antes.</p>
+          <Postit color="menta" giro={1}>
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={3} animar={false} />
+            <div className="postit-titulo">Conclusión: la blockchain sobrevivirá al cuántico</div>
+            <div className="postit-cuerpo">
+              <p><Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>La blockchain no es un protocolo fijo — es software que se puede actualizar.</Anotacion> La transición a criptografía post-cuántica es un problema técnico con soluciones conocidas. El verdadero riesgo es la complacencia: asumir que la amenaza está lejos y no prepararse. Las blockchains que sobrevivan serán las que migren antes.</p>
             </div>
-          </div>
+          </Postit>
 
           <div className="gbc-stats" style={{ marginTop: 28 }}>
             <div className="gbc-stat-c">
@@ -457,7 +465,7 @@ export default async function QueEsLaBlockchainPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Arquitecto de Cadenas</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong className="gbc-logro">Arquitecto de Cadenas</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

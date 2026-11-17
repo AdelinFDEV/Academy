@@ -4,6 +4,9 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
+import Tecla from "@/components/cuaderno/Tecla";
+import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import { Aviso, Campo, useSonidoDeError } from "@/components/acceso/Campos";
 
 export default function ForgotPasswordPage() {
   const supabase = createClient();
@@ -14,6 +17,7 @@ export default function ForgotPasswordPage() {
   const [cooldown, setCooldown] = useState(0);
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaKey, setCaptchaKey] = useState(0);
+  useSonidoDeError(error);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -51,60 +55,71 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="bg-ambient" />
-      <div className="auth-card">
-        <Link href="/" className="auth-brand" style={{ textDecoration: "none" }}>
-          adelin<span>btc</span>
-        </Link>
-        <p className="auth-subtitle">Recupera tu contraseña</p>
+    <AccesoShell
+      nota="Le pasa a cualquiera"
+      titulo={<>Recupera tu <span className="fluor">contraseña</span></>}
+      lead={sent ? undefined : "Escribe tu correo y te enviamos un enlace para elegir una nueva."}
+      apunte={APUNTE}
+    >
+      {sent ? (
+        <>
+          <Aviso tipo="ok" titulo="Enlace enviado">
+            Revisa tu bandeja de entrada. Te hemos enviado un enlace para restablecer tu contraseña.
+          </Aviso>
+          <Tecla href="/login" tamano="grande" ancho>
+            Volver al inicio de sesión
+          </Tecla>
+        </>
+      ) : (
+        <form onSubmit={handleSubmit} className="acc-form">
+          <Campo
+            id="email"
+            name="email"
+            etiqueta="Tu correo"
+            type="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="tu@email.com"
+            required
+          />
 
-        {sent ? (
-          <div className="auth-success">
-            <p>
-              Revisa tu bandeja de entrada. Te hemos enviado un enlace para
-              restablecer tu contraseña.
-            </p>
-            <Link
-              href="/login"
-              className="btn-primary"
-              style={{ marginTop: "16px", display: "block", textAlign: "center" }}
-            >
-              Volver al inicio de sesión
-            </Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                required
-              />
-            </div>
+          {error && (
+            <Aviso tipo="error" titulo="No se ha enviado">
+              {error}
+            </Aviso>
+          )}
 
-            {error && <p className="auth-error">{error}</p>}
+          <Turnstile
+            onVerify={setCaptchaToken}
+            onExpire={() => setCaptchaToken("")}
+            resetKey={captchaKey}
+          />
 
-            <Turnstile
-              onVerify={setCaptchaToken}
-              onExpire={() => setCaptchaToken("")}
-              resetKey={captchaKey}
-            />
+          <Tecla type="submit" tamano="grande" ancho disabled={loading || cooldown > 0 || !captchaToken}>
+            {loading ? "Enviando…" : cooldown > 0 ? `Reenviar en ${cooldown}s` : "Enviar enlace de recuperación"}
+          </Tecla>
+        </form>
+      )}
 
-            <button type="submit" className="btn-primary" disabled={loading || cooldown > 0 || !captchaToken}>
-              {loading ? "Enviando..." : cooldown > 0 ? `Reenviar en ${cooldown}s` : "Enviar enlace de recuperación"}
-            </button>
-          </form>
-        )}
-
-        <p className="auth-footer">
+      {!sent && (
+        <p className="acc-pie">
           <Link href="/login">← Volver al inicio de sesión</Link>
         </p>
-      </div>
-    </div>
+      )}
+    </AccesoShell>
   );
 }
+
+/** El apunte de la derecha: cómo no volver a olvidarla. */
+const APUNTE: Apunte = {
+  tema: "Truco",
+  pregunta: "¿Cómo no volver a olvidarla?",
+  respuesta: "Un gestor",
+  detalle: "Un gestor de contraseñas las recuerda por ti, y las crea largas y distintas para cada web.",
+  color: "naranja",
+  postit: "Sin agobios",
+  nota: "Si no lo ves, mira en la carpeta de spam",
+};

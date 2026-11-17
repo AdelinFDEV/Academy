@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BadgeCheck, CornerDownRight, Flag, Pencil, Trash2 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { pedirForo } from "@/components/foro/pedir";
 import { LIMITES, MOTIVOS_REPORTE, type MotivoReporteId } from "@/lib/foro/limites";
+import { sonar } from "@/lib/sonidos";
+import { celebrarGanadora } from "./celebrar";
 import { useHilo } from "./ContextoHilo";
 import Invitacion from "./Invitacion";
 import Responder from "./Responder";
@@ -60,11 +63,18 @@ export default function AccionesMensaje({
   // Solo decide si se ENSEÑA el botón: el plazo de verdad lo cuenta la base de datos.
   const editable = esMio && !esGanadora && Date.now() - new Date(fecha).getTime() < LIMITES.minutosParaEditar * 60 * 1000;
 
-  /** Abre un panel, o la invitación si no puede participar. */
+  /** Abre un panel, o la invitación si no puede participar. Pulsar el mismo otra vez lo cierra. */
   const abrir = (cual: Exclude<Panel, null | "invitar">) => {
     setError("");
     setHecho("");
-    setPanel(panel === cual ? null : mio.puede || cual === "borrar" ? cual : "invitar");
+    const siguiente = panel === cual ? null : mio.puede || cual === "borrar" ? cual : "invitar";
+    sonar(siguiente === null ? "cerrar" : "abrir");
+    setPanel(siguiente);
+  };
+
+  const cerrar = () => {
+    sonar("cerrar");
+    setPanel(null);
   };
 
   const guardarEdicion = () =>
@@ -78,15 +88,18 @@ export default function AccionesMensaje({
       () => router.refresh(),
     );
 
-  async function enviar(ruta: string, cuerpo: Record<string, unknown>, despues: () => void) {
+  /** Manda la acción. Suena `guardado` al salir bien (o lo que diga `alAcertar`) y `error` si no. */
+  async function enviar(ruta: string, cuerpo: Record<string, unknown>, despues: () => void, alAcertar: () => void = () => sonar("guardado")) {
     setEnviando(true);
     setError("");
     const r = await pedirForo(ruta, cuerpo);
     setEnviando(false);
     if (!r.ok) {
+      sonar("error");
       setError(r.mensaje);
       return;
     }
+    alAcertar();
     setPanel(null);
     despues();
   }
@@ -104,45 +117,49 @@ export default function AccionesMensaje({
       else router.push("/foro");
     });
 
-  const elegir = () => enviar("/api/foro/ganadora", { pregunta: preguntaId, respuesta: respuestaId }, () => router.refresh());
+  // Elegir la respuesta que te resolvió la duda es un logro: fanfarria y confeti.
+  const elegir = () =>
+    enviar("/api/foro/ganadora", { pregunta: preguntaId, respuesta: respuestaId }, () => router.refresh(), celebrarGanadora);
 
   return (
     <div className="fp-acciones">
       <div className="fp-fila">
         {respuestaId && !hiloCerrado && (
-          <button type="button" className="fp-accion" onClick={() => abrir("replicar")}>
-            <CornerDownRight size={14} strokeWidth={2.3} aria-hidden="true" /> Replicar
-          </button>
+          <Tecla color="blanca" tamano="peq" className="fp-accion" aria-expanded={panel === "replicar"} onClick={() => abrir("replicar")}>
+            <CornerDownRight size={15} strokeWidth={2.6} aria-hidden="true" /> Replicar
+          </Tecla>
         )}
         {esRespuesta && !esGanadora && !hiloCerrado && mio.esAutorDeLaPregunta && !esMio && (
-          <button type="button" className="fp-accion fp-accion--elegir" onClick={() => abrir("ganadora")}>
-            <BadgeCheck size={14} strokeWidth={2.3} aria-hidden="true" /> Elegir como respuesta
-          </button>
+          <Tecla color="menta" tamano="peq" className="fp-accion" aria-expanded={panel === "ganadora"} onClick={() => abrir("ganadora")}>
+            <BadgeCheck size={15} strokeWidth={2.6} aria-hidden="true" /> Elegir como respuesta
+          </Tecla>
         )}
         {!esMio && (
-          <button type="button" className="fp-accion" disabled={yaReportado} onClick={() => abrir("reportar")}>
-            <Flag size={13} strokeWidth={2.3} aria-hidden="true" /> {yaReportado ? "Reportado" : "Reportar"}
-          </button>
+          <Tecla color="blanca" tamano="peq" className="fp-accion" disabled={yaReportado} aria-expanded={panel === "reportar"} onClick={() => abrir("reportar")}>
+            <Flag size={14} strokeWidth={2.6} aria-hidden="true" /> {yaReportado ? "Reportado" : "Reportar"}
+          </Tecla>
         )}
         {editable && (
-          <button
-            type="button"
+          <Tecla
+            color="blanca"
+            tamano="peq"
             className="fp-accion"
+            aria-expanded={panel === "editar"}
             onClick={() => { setNuevoTexto(texto); setNuevoTitulo(titulo ?? ""); abrir("editar"); }}
           >
-            <Pencil size={13} strokeWidth={2.3} aria-hidden="true" /> Editar
-          </button>
+            <Pencil size={14} strokeWidth={2.6} aria-hidden="true" /> Editar
+          </Tecla>
         )}
         {esMio && !esGanadora && (
-          <button type="button" className="fp-accion" onClick={() => abrir("borrar")}>
-            <Trash2 size={13} strokeWidth={2.3} aria-hidden="true" /> Borrar
-          </button>
+          <Tecla color="blanca" tamano="peq" className="fp-accion" aria-expanded={panel === "borrar"} onClick={() => abrir("borrar")}>
+            <Trash2 size={14} strokeWidth={2.6} aria-hidden="true" /> Borrar
+          </Tecla>
         )}
       </div>
 
-      {panel === "invitar" && <Invitacion motivo={mio.motivo} onCerrar={() => setPanel(null)} />}
+      {panel === "invitar" && <Invitacion motivo={mio.motivo} onCerrar={cerrar} />}
 
-      {panel === "replicar" && respuestaId && <Responder a={respuestaId} alTerminar={() => setPanel(null)} />}
+      {panel === "replicar" && respuestaId && <Responder a={respuestaId} alTerminar={() => setPanel(null)} alCancelar={cerrar} />}
 
       {panel === "editar" && (
         <div className="fp-panel">
@@ -157,15 +174,15 @@ export default function AccionesMensaje({
             <textarea value={nuevoTexto} onChange={(e) => setNuevoTexto(e.target.value)} rows={respuestaId ? 5 : 9} maxLength={LIMITES.pregunta.max * 2} />
           </label>
           <div className="fp-fila">
-            <button
-              type="button"
-              className="fp-btn fp-btn--firme"
+            <Tecla
+              color="coral"
+              tamano="peq"
               disabled={enviando || nuevoTexto.trim() === "" || (nuevoTexto.trim() === texto.trim() && nuevoTitulo.trim() === (titulo ?? "").trim())}
               onClick={guardarEdicion}
             >
               {enviando ? "Guardando…" : "Guardar cambios"}
-            </button>
-            <button type="button" className="fp-btn" disabled={enviando} onClick={() => setPanel(null)}>Cancelar</button>
+            </Tecla>
+            <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={cerrar}>Cancelar</Tecla>
           </div>
         </div>
       )}
@@ -177,10 +194,10 @@ export default function AccionesMensaje({
             cambiarla después.
           </p>
           <div className="fp-fila">
-            <button type="button" className="fp-btn fp-btn--firme" disabled={enviando} onClick={elegir}>
+            <Tecla color="menta" tamano="peq" disabled={enviando} onClick={elegir}>
               {enviando ? "Guardando…" : "Sí, es la respuesta"}
-            </button>
-            <button type="button" className="fp-btn" disabled={enviando} onClick={() => setPanel(null)}>Cancelar</button>
+            </Tecla>
+            <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={cerrar}>Cancelar</Tecla>
           </div>
         </div>
       )}
@@ -198,10 +215,10 @@ export default function AccionesMensaje({
             <textarea value={detalle} onChange={(e) => setDetalle(e.target.value)} rows={2} maxLength={500} />
           </label>
           <div className="fp-fila">
-            <button type="button" className="fp-btn fp-btn--firme" disabled={enviando} onClick={reportar}>
+            <Tecla color="coral" tamano="peq" disabled={enviando} onClick={reportar}>
               {enviando ? "Enviando…" : "Enviar reporte"}
-            </button>
-            <button type="button" className="fp-btn" disabled={enviando} onClick={() => setPanel(null)}>Cancelar</button>
+            </Tecla>
+            <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={cerrar}>Cancelar</Tecla>
           </div>
         </div>
       )}
@@ -210,10 +227,10 @@ export default function AccionesMensaje({
         <div className="fp-panel">
           <p>{respuestaId ? "Vas a borrar este mensaje." : "Vas a borrar tu pregunta."} No se puede deshacer.</p>
           <div className="fp-fila">
-            <button type="button" className="fp-btn fp-btn--peligro" disabled={enviando} onClick={borrar}>
+            <Tecla color="coral" tamano="peq" disabled={enviando} onClick={borrar}>
               {enviando ? "Borrando…" : "Borrar"}
-            </button>
-            <button type="button" className="fp-btn" disabled={enviando} onClick={() => setPanel(null)}>Cancelar</button>
+            </Tecla>
+            <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={cerrar}>Cancelar</Tecla>
           </div>
         </div>
       )}

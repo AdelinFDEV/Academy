@@ -1,0 +1,1006 @@
+/*
+ * Diario de Trading — la lista de operaciones, las últimas y los hitos
+ * (17-11-2026, estilo «Cuaderno de estudio»).
+ *
+ *   djo-  Operaciones (TjTradeLog.tsx): la franja de cifras, las herramientas,
+ *         la lista por días con su taco de calendario, el detalle desplegable
+ *         y la tarjeta «Últimas operaciones» del Resumen.
+ *   djh-  Hitos (TjMilestones.tsx): el resumen, la leyenda (vivir del trading),
+ *         las pegatinas de cada hito y la tarjeta «Próximo hito» del Resumen.
+ *
+ * Las piezas comunes (.dj-hoja, .dj-ficha, .dj-chip, .dj-pegatina, .dj-barra…)
+ * viven en diario.css. Verde y rojo, solo en cifras con signo (tone-*).
+ */
+
+/* ══ EL TACO DE CALENDARIO ═════════════════════════════════════════════════ */
+
+.djo-taco {
+  display: inline-grid;
+  flex: none;
+  width: 46px;
+  overflow: hidden;
+  border-radius: 11px;
+  background: var(--papel);
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--gris), 0 4px 0 var(--gris-o);
+}
+
+.djo-taco > small {
+  padding: 3px 0 2px;
+  background: var(--azul);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.djo-taco > b {
+  padding: 3px 0 4px;
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--tinta);
+}
+
+.djo-taco > em {
+  padding: 3px 0 4px;
+  border-top: 2px dashed var(--gris);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--tinta-2);
+}
+
+.djo-taco.is-grande { width: 56px; border-radius: 13px; transform: rotate(-3deg); }
+.djo-taco.is-grande > small { font-size: 11px; padding: 4px 0 3px; }
+.djo-taco.is-grande > b { font-size: 25px; padding: 4px 0 6px; }
+
+/* El par y su dirección; la línea de debajo, en pequeño. */
+.djo-par {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-width: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--tinta);
+  overflow-wrap: anywhere;
+}
+
+.djo-par .dj-dir { font-family: var(--letra-texto); letter-spacing: 0.04em; }
+
+.djo-sub {
+  display: block;
+  min-width: 0;
+  margin-top: 3px;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.djo-r { font-size: 14.5px; font-weight: 900; white-space: nowrap; }
+
+/* ══ ÚLTIMAS OPERACIONES (Resumen) ═════════════════════════════════════════ */
+
+.djo-ultimas {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.djo-ultimas > .dj-cabeza { align-items: center; margin-bottom: 14px; }
+
+.djo-ultimas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+/* Cada línea, una tecla blanca como las respuestas del quiz. */
+.trading-journal .tecla.djo-ultima {
+  --h: 5px;
+  --r: 18px;
+  justify-content: flex-start;
+  gap: 14px;
+  padding: 10px 14px 10px 12px;
+  font-size: 15px;
+  text-align: left;
+  white-space: normal;
+}
+
+.djo-ultima-que {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.djo-ultima-cifras {
+  display: grid;
+  flex: none;
+  justify-items: end;
+  gap: 2px;
+}
+
+.djo-ultima-cifras .dj-cifra { font-size: 1.1rem; white-space: nowrap; }
+.djo-ultima-cifras .djo-r { font-size: 12.5px; }
+
+.djo-ultimas-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 2px dashed var(--gris);
+}
+
+.djo-ultimas-balance {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.djo-ultimas-balance .dj-cifra { font-size: 1.35rem; white-space: nowrap; }
+
+/* ══ LA FRANJA DE CIFRAS DE LA SELECCIÓN ═══════════════════════════════════ */
+
+.djo-franja.dj-hoja { padding: 14px; }
+
+.djo-cifras {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.djo-cifras > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--fondo);
+}
+
+.djo-cifras dd {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  overflow-wrap: anywhere;
+}
+
+.djo-cifras .djo-cifra-principal {
+  background: var(--azul-s);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--azul) 22%, transparent);
+}
+
+.djo-cifra-principal .dj-etq { color: var(--azul-o); }
+.djo-cifras .djo-cifra-principal dd { font-size: clamp(1.5rem, 3.2vw, 2.1rem); }
+
+/* ══ LA HOJA DE OPERACIONES ════════════════════════════════════════════════ */
+
+.djo > .dj-cabeza { align-items: center; }
+.djo > .dj-cabeza .dj-nota { margin-right: 6px; }
+
+.djo-herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px 18px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed var(--gris);
+}
+
+.djo-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  min-width: 0;
+}
+
+.trading-journal .tecla.djo-filtro { gap: 7px; padding: 9px 12px; font-size: 14px; }
+
+.djo-punto {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.djo-cuenta {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 7px;
+  background: rgba(29, 27, 51, 0.07);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.tecla--azul .djo-cuenta { background: rgba(255, 255, 255, 0.25); }
+
+.djo-utiles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 2px 10px;
+  min-width: 0;
+}
+
+.djo-buscar {
+  flex: 1 1 230px;
+  margin-bottom: 6px;
+}
+
+.djo-error { margin-bottom: 14px; }
+
+/* ── La lista: un día, una página ── */
+.djo-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.djo-dia-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 6px 8px;
+}
+
+.djo-dia-titulo {
+  display: flex;
+  flex: 1 1 180px;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.djo-dia-titulo small {
+  margin-top: 2px;
+  font-family: var(--letra-texto);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+/* El ánimo del día: su color de ánimo (no verde ni rojo de cifras). */
+.djo-animo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px 5px 8px;
+  border-radius: 999px;
+  background: var(--mood-s);
+  color: var(--mood-o);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.djo-animo > .djc-cara { font-size: 16px; }
+
+.djo-dia-pnl.dj-chip { font-size: 14px; padding: 6px 12px; }
+
+/* ── Cada operación: un renglón del cuaderno ── */
+.djo-op {
+  border-bottom: 2px dashed var(--gris);
+  transition: background-color 0.2s, box-shadow 0.25s var(--llegar);
+}
+
+.djo-op:last-child { border-bottom: 0; }
+
+.djo-op.is-abierta {
+  margin: 4px 0;
+  border-bottom-color: transparent;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 0 0 3px var(--azul-s), 0 5px 0 3px var(--azul-s);
+}
+
+.djo-linea {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) minmax(170px, 210px) minmax(120px, 150px) auto;
+  grid-template-areas: "cuando que datos pnl acc";
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 10px 4px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+@media (hover: hover) {
+  .djo-op:not(.is-abierta) .djo-linea:hover { background: var(--fondo); }
+}
+
+.djo-cuando { grid-area: cuando; display: flex; justify-content: center; padding-bottom: 6px; }
+.djo-que { grid-area: que; min-width: 0; padding-bottom: 6px; }
+.djo-datos { grid-area: datos; padding-bottom: 6px; }
+.djo-pnl { grid-area: pnl; padding-bottom: 6px; }
+.djo-acc { grid-area: acc; }
+
+/* La hora, escrita a mano en el margen. */
+.djo-hora {
+  font-family: var(--letra-mano);
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--azul-o);
+  transform: rotate(-3deg);
+}
+
+.djo-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  min-width: 0;
+}
+
+.djo-riesgo {
+  display: grid;
+  min-width: 0;
+  font-size: 14.5px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.djo-riesgo small {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* Por encima del límite de riesgo: un aviso, no una cifra con signo. */
+.djo-riesgo small.is-exceso { font-weight: 900; color: var(--coral-o); }
+
+.djo-datos .djo-r { display: grid; }
+
+/* El rótulo de cada dato solo hace falta cuando la línea se reorganiza (móvil). */
+.djo-rot { display: none; }
+
+.djo-pnl {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+  min-width: 0;
+}
+
+.djo-pnl .dj-cifra { font-size: 1.2rem; white-space: nowrap; }
+
+.djo-acc {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.trading-journal .djo-acc .tecla--icono {
+  --h: 5px;
+  --r: 12px;
+  width: 38px;
+  height: 38px;
+}
+
+.trading-journal .djo-acc .tecla.djo-borrar { --h: 5px; padding: 9px 13px; }
+.trading-journal .tecla--blanca.djo-papelera { --t: var(--coral-o); }
+
+.djo-abrir svg { transition: transform 0.3s var(--muelle); }
+.djo-abrir[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.djo-confirma { margin: 0 10px 12px; }
+
+/* ── El detalle desplegado ── */
+.djo-detalle { overflow: hidden; }
+
+.djo-detalle-dentro {
+  display: grid;
+  gap: 14px;
+  padding: 6px 14px 18px;
+}
+
+.djo-fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 10px;
+}
+
+.djo-fichas .dj-ficha { display: flex; flex-direction: column; gap: 3px; }
+
+.djo-ficha-valor {
+  margin-top: 4px;
+  font-family: var(--letra-titular);
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.djo-ficha-sub {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+
+.djo-ficha-barra.dj-barra { margin: 6px 0 2px; }
+
+/* Las notas: un trozo de papel de cuaderno, con sus renglones. */
+.djo-notas {
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px 14px;
+  border: 2px solid var(--gris);
+  border-radius: 18px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 25px, var(--azul-s) 25px 27px) 0 30px / 100% auto,
+    var(--papel);
+}
+
+.djo-notas p {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 27px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.djo-notas.is-vacia p {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  color: var(--tinta-2);
+  white-space: normal;
+}
+
+.djo-mas {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* ── En móvil, la línea se reorganiza: nada de tabla ancha ── */
+@media (max-width: 860px) {
+  .djo-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .djo-cifras .djo-cifra-principal { grid-column: 1 / -1; }
+
+  .djo-linea {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "cuando que  pnl"
+      "cuando datos acc";
+    gap: 4px 12px;
+  }
+
+  .djo-cuando { align-self: start; padding-top: 2px; }
+  .djo-datos { padding-bottom: 0; }
+  .djo-rot {
+    display: block;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta-3);
+  }
+}
+
+@media (max-width: 560px) {
+  .djo-utiles { width: 100%; }
+  .djo-buscar { flex-basis: 100%; }
+
+  .djo-linea {
+    grid-template-areas:
+      "cuando que   pnl"
+      "cuando datos datos"
+      "acc    acc   acc";
+  }
+
+  .djo-acc { padding-top: 4px; }
+  .djo-detalle-dentro { padding: 4px 8px 14px; }
+  .djo-dia-pnl.dj-chip { margin-left: auto; }
+}
+
+@media (max-width: 480px) {
+  .djo-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .djo-op.is-abierta { margin: 4px -6px; }
+}
+
+/* ══ HITOS ═════════════════════════════════════════════════════════════════ */
+
+.djh {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* La pegatina de un hito: icono y nivel. La base (.dj-pegatina) da el color y el giro. */
+.dj-pegatina.djh-pegatina {
+  width: 80px;
+  height: 80px;
+  align-content: center;
+  gap: 3px;
+  padding: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  transition: transform 0.35s var(--muelle);
+}
+
+.dj-pegatina.djh-pegatina.is-grande { width: 100px; height: 100px; font-size: 11.5px; }
+
+@media (hover: hover) {
+  .djh-hito:hover .djh-pegatina:not(.is-apagada),
+  .djh-teaser:hover .djh-pegatina:not(.is-apagada) { transform: rotate(0deg) scale(1.06); }
+}
+
+/* ── La tarjeta «Próximo hito» (Resumen) ── */
+.djh-teaser {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.djh-teaser > .dj-cabeza { align-items: center; margin-bottom: 4px; }
+
+.djh-teaser-cuerpo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+
+.djh-teaser-texto h4 {
+  margin: 4px 0;
+  font-size: 1.3rem;
+}
+
+.djh-teaser-texto p,
+.djh-hito-titulo p {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.djh-teaser-pie {
+  display: flex;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+/* El progreso: la cifra, y a la derecha lo que falta. */
+.djh-progreso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.djh-progreso .dj-cifra { font-size: 1.55rem; overflow-wrap: anywhere; }
+.djh-progreso .dj-cifra span { font-size: 0.62em; color: var(--tinta-3); }
+
+.djh-progreso > span:not(.dj-nota) {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.djh-nota {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+/* ── El resumen ── */
+.djh-resumen {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 18px 32px;
+}
+
+.dj-pegatina.djh-resumen-pegatina {
+  --g: -6deg;
+  width: 136px;
+  height: 136px;
+  align-content: center;
+  gap: 2px;
+  margin: 4px 6px;
+  font-size: 13px;
+}
+
+.djh-resumen-pegatina b {
+  font-family: var(--letra-titular);
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.djh-resumen-pegatina b small { font-size: 0.5em; }
+
+.djh-resumen-texto h3 {
+  margin: 6px 0 16px;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.djh-resumen-datos {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1.3fr);
+  gap: 10px;
+}
+
+.djh-resumen-datos .dj-ficha { display: flex; flex-direction: column; gap: 6px; }
+.djh-resumen-datos .dj-cifra { font-size: 1.3rem; }
+.djh-resumen-niveles dd { display: grid; gap: 8px; }
+
+.djh-resumen-cerca {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.djh-resumen-cerca strong { font-weight: 900; color: var(--tinta); }
+
+/* ── La leyenda: vivir del trading. Hoja de tinta, la pieza estrella ── */
+.djh-leyenda {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 36px);
+  border-radius: 32px;
+  background: var(--tinta);
+  color: #fff;
+  box-shadow: 0 8px 0 #08070f, 0 34px 60px -34px rgba(29, 27, 51, 0.7);
+}
+
+/* El círculo suave detrás, como en las tarjetas de producto del sistema. */
+.djh-leyenda::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  right: -70px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255, 210, 63, 0.1);
+  pointer-events: none;
+}
+
+.djh-leyenda > * { position: relative; }
+
+.djh-leyenda-cabeza {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px 24px;
+}
+
+.djh-corona {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100px;
+  height: 100px;
+  border: 3px dashed rgba(255, 255, 255, 0.32);
+  border-radius: 50%;
+  color: var(--amarillo);
+  transform: rotate(-8deg);
+}
+
+.djh-corona.is-hecha {
+  border: 4px solid #fff;
+  background: var(--amarillo);
+  color: var(--tinta);
+  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.55);
+  animation: djh-sello 0.6s var(--muelle) 0.2s backwards;
+}
+
+@keyframes djh-sello { from { opacity: 0; transform: rotate(-30deg) scale(0.5); } }
+
+.djh-corona-candado {
+  position: absolute;
+  right: -2px;
+  bottom: 2px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--tinta);
+  box-shadow: 0 3px 0 var(--gris-o);
+  transform: rotate(8deg);
+}
+
+.djh-leyenda .dj-etq { color: var(--amarillo); }
+
+.djh-leyenda-titulo h3 {
+  margin: 6px 0 8px;
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  color: #fff;
+}
+
+.djh-leyenda-titulo p {
+  max-width: 62ch;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.djh-leyenda-posit.dj-posit { align-self: start; font-size: 24px; transform: rotate(4deg); }
+
+.djh-leyenda-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  align-items: start;
+  gap: 24px 32px;
+  margin-top: 26px;
+}
+
+/* Las tres reglas: una casilla que se marca en menta al cumplirse. */
+.djh-reglas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.djh-reglas li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.djh-reglas li.is-ok { color: #fff; }
+
+.djh-regla-marca {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.djh-reglas li.is-ok .djh-regla-marca {
+  background: var(--menta);
+  color: var(--tinta);
+  box-shadow: 0 3px 0 var(--menta-o);
+}
+
+/* La cuenta de meses y la racha. */
+.djh-meses { min-width: 0; }
+
+.djh-cuenta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+
+.djh-cuenta .dj-cifra { font-size: clamp(2.6rem, 6vw, 3.4rem); color: var(--amarillo); }
+
+.djh-cuenta > span {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.djh-cuenta b { font-weight: 900; color: #fff; }
+
+.dj-barra.djh-leyenda-barra { margin: 10px 0 16px; background: rgba(255, 255, 255, 0.14); }
+
+/* Los doce meses, como las casillas de una racha (sistema.html, «Progreso y racha»). */
+.djh-racha {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.djh-racha li {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  min-width: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: capitalize;
+  animation: djh-casilla 0.45s var(--muelle) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms + 200ms);
+}
+
+@keyframes djh-casilla { from { opacity: 0; transform: translateY(8px) scale(0.6); } }
+
+.djh-racha li.is-ok { background: var(--menta); color: var(--tinta); box-shadow: 0 4px 0 var(--menta-o); }
+.djh-racha li.is-red { background: var(--coral); color: #fff; box-shadow: 0 4px 0 var(--coral-o); }
+.djh-racha li.is-few { background: transparent; color: rgba(255, 255, 255, 0.7); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3); }
+.djh-racha li.is-hecho { background: var(--amarillo); color: var(--tinta); box-shadow: 0 4px 0 var(--amarillo-o); }
+
+.djh-racha-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 14px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.djh-racha-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+
+.djh-racha-leyenda span::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.djh-racha-leyenda .is-ok::before { background: var(--menta); }
+.djh-racha-leyenda .is-red::before { background: var(--coral); }
+.djh-racha-leyenda .is-few::before { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4); }
+
+.djh-leyenda-siguiente {
+  margin-top: 24px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: #fff;
+}
+
+.djh-leyenda.is-hecha .djh-leyenda-siguiente { background: var(--amarillo); color: var(--tinta); }
+
+/* ── Los grupos de hitos ── */
+.djh-grupo-cabeza { margin-bottom: 18px; }
+.djh-grupo-cabeza h3 { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+
+.djh-grupo-cabeza p {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.djh-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+  align-items: stretch;
+  gap: 22px;
+}
+
+.djh-hito.dj-hoja {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border-radius: 26px;
+}
+
+.djh-hito-cabeza {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.djh-hito-titulo h4 { margin: 4px 0; font-size: 1.15rem; }
+
+.djh-hito.is-done { box-shadow: 0 0 0 3px var(--amarillo), 0 6px 0 3px var(--amarillo-o); }
+
+/* Los niveles: chips que se encienden en amarillo al conseguirlos. */
+.djh-niveles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.djh-niveles li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 9px;
+  background: var(--gris);
+  color: var(--tinta-2);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.djh-niveles li.is-on {
+  background: var(--amarillo-s);
+  color: #7a5d00;
+  box-shadow: inset 0 0 0 2px var(--amarillo);
+}
+
+.djh-hito .djh-nota { margin-top: auto; padding-top: 4px; }
+
+.djh-bloqueado {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-top: auto;
+}
+
+/* ── Hitos en pantallas estrechas ── */
+@media (max-width: 860px) {
+  .djh-resumen-datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .djh-resumen-datos .djh-resumen-niveles { grid-column: 1 / -1; }
+  .djh-leyenda-cuerpo { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .djh-resumen { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .djh-resumen-datos { grid-template-columns: minmax(0, 1fr); }
+  .dj-pegatina.djh-resumen-pegatina { width: 112px; height: 112px; }
+  .djh-resumen-pegatina b { font-size: 2.2rem; }
+
+  .djh-leyenda-cabeza { grid-template-columns: auto minmax(0, 1fr); }
+  .djh-leyenda-posit.dj-posit { grid-column: 1 / -1; justify-self: start; }
+  .djh-racha { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+@media (max-width: 420px) {
+  .djh-leyenda-cabeza { grid-template-columns: minmax(0, 1fr); }
+  .djh-corona { width: 84px; height: 84px; }
+  .djh-teaser-cuerpo { gap: 14px; }
+  .dj-pegatina.djh-pegatina { width: 72px; height: 72px; font-size: 10px; }
+}
+
+/* ── Movimiento reducido ── */
+@media (prefers-reduced-motion: reduce) {
+  .djh-racha li,
+  .djh-corona.is-hecha { animation: none; }
+  .djo-op,
+  .djo-linea,
+  .djo-abrir svg,
+  .dj-pegatina.djh-pegatina { transition: none; }
+}

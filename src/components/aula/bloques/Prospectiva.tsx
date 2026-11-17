@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RotateCcw } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { Marco, formatear } from "./comun";
 
 /**
@@ -67,10 +68,10 @@ export default function Prospectiva({ datos }: { datos: DatosProspectiva }) {
               Cruz: <b className="aula-pros-pierde">−{formatear(datos.perdida, "eur")}</b> · Cara: <b className="aula-pros-gana">+{formatear(g, "eur")}</b>
             </span>
             <span className="aula-pros-botones">
-              <button type="button" className={`aula-btn aula-btn--small${respuestas[i] === true ? "" : " aula-btn--ghost"}`} aria-pressed={respuestas[i] === true}
-                onClick={() => setRespuestas((r) => r.map((v, j) => (j === i ? true : v)))}>Acepto</button>
-              <button type="button" className={`aula-btn aula-btn--small${respuestas[i] === false ? "" : " aula-btn--ghost"}`} aria-pressed={respuestas[i] === false}
-                onClick={() => setRespuestas((r) => r.map((v, j) => (j === i ? false : v)))}>No</button>
+              <Tecla color={respuestas[i] === true ? "menta" : "blanca"} tamano="peq" aria-pressed={respuestas[i] === true}
+                onClick={() => setRespuestas((r) => r.map((v, j) => (j === i ? true : v)))}>Acepto</Tecla>
+              <Tecla color={respuestas[i] === false ? "coral" : "blanca"} tamano="peq" aria-pressed={respuestas[i] === false}
+                onClick={() => setRespuestas((r) => r.map((v, j) => (j === i ? false : v)))}>No</Tecla>
             </span>
           </li>
         ))}
@@ -85,9 +86,9 @@ export default function Prospectiva({ datos }: { datos: DatosProspectiva }) {
       )}
 
       <div className="aula-bloque-acciones">
-        <button type="button" className="aula-btn aula-btn--ghost" onClick={() => setRespuestas(datos.ganancias.map(() => undefined))}>
-          <RotateCcw size={14} aria-hidden="true" /> Empezar de nuevo
-        </button>
+        <Tecla color="blanca" tamano="peq" onClick={() => setRespuestas(datos.ganancias.map(() => undefined))}>
+          <RotateCcw size={14} strokeWidth={2.6} aria-hidden="true" /> Empezar de nuevo
+        </Tecla>
       </div>
       {datos.nota && <p className="aula-bloque-nota">{datos.nota}</p>}
     </Marco>

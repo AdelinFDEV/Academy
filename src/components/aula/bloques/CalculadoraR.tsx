@@ -62,7 +62,7 @@ export default function CalculadoraR({ datos }: { datos: DatosCalculadoraR }) {
       </div>
 
       <div className="aula-calc-total aula-calc-total--3">
-        <div className="is-perdida"><span>1R: lo que pierdes si salta el stop</span><strong>{formatear(Math.round(unR * 100) / 100, "eur")}</strong></div>
+        <div><span>1R: lo que pierdes si salta el stop</span><strong>{formatear(Math.round(unR * 100) / 100, "eur")}</strong></div>
         <div><span>Tamaño de la posición</span><strong>{formatear(Math.round(unidades * 1e6) / 1e6)} uds.</strong></div>
         <div><span>Valor de la posición</span><strong>{formatear(Math.round(posicion), "eur")}</strong></div>
       </div>

@@ -1,0 +1,755 @@
+/* El menú a pantalla completa (BlogMobileMenu.tsx). Estilo «Cuaderno de
+   estudio» desde el 17-11-2026 (ESTILO.md): fondo lavanda de cuaderno, cada
+   destino una fila-tecla de papel con el color de su sección, que se hunde al
+   pulsarla, y Premium en un bloque de tinta. Vivió en globals.css hasta ese día.
+
+   Una sola barra de desplazamiento, la del menú: el componente bloquea el
+   scroll del <html> al abrirlo. Y en el móvil los destinos van en teclas de
+   tres en fondo, sin su línea de explicación, para que quepa en la pantalla. */
+
+/* ── El color de cada sección ─────────────────────────────────────────────── */
+/* --t, el texto sobre la base: tinta sobre menta, cielo y amarillo. */
+
+.mm-tono--naranja { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); --t: #fff; }
+.mm-tono--azul { --c: var(--azul); --o: var(--azul-o); --s: var(--azul-s); --t: #fff; }
+.mm-tono--menta { --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s); --t: var(--tinta); }
+.mm-tono--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); --t: #fff; }
+.mm-tono--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); --s: var(--amarillo-s); --t: var(--tinta); }
+.mm-tono--coral { --c: var(--coral); --o: var(--coral-o); --s: var(--coral-s); --t: #fff; }
+.mm-tono--cielo { --c: var(--cielo); --o: var(--cielo-o); --s: var(--cielo-s); --t: var(--tinta); }
+
+/* ── La hoja ──────────────────────────────────────────────────────────────── */
+
+.mm {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: calc(var(--nav-h, 68px) + 1.1rem) clamp(0.85rem, 3vw, 1.5rem) calc(2rem + env(safe-area-inset-bottom, 0px));
+  /* Los puntos de una libreta, muy suaves. */
+  background:
+    radial-gradient(circle, var(--gris) 1.3px, transparent 1.6px) 0 0 / 24px 24px,
+    var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gris-o) transparent;
+  animation: mm-entrar 0.22s ease both;
+}
+
+/* La tira de papel de la barra sigue a la vista sobre el menú: la barra se
+   queda fija arriba mientras el menú está abierto (site-nav.css) y lo que sube
+   al desplazar el menú pasa por debajo de ella. */
+.mm::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: var(--nav-h, 68px);
+  border-radius: 0 0 26px 26px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o);
+}
+
+/* La barra es más baja por debajo de 1200 px (site-nav.css): la tira de
+   papel de detrás, y el hueco de arriba, la siguen. */
+@media (max-width: 1200px) {
+  .mm { --nav-h: 58px; }
+  .mm::before { border-radius: 0 0 22px 22px; }
+}
+
+@keyframes mm-entrar {
+  from { opacity: 0; }
+}
+
+.mm-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1000px) {
+  .mm-cuerpo {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: start;
+    gap: 2.5rem;
+  }
+}
+
+/* ── El buscador de guías (GuideSearch.tsx), en papel ─────────────────────
+   Su diseño base está en globals.css (compartido con /guias y la
+   portada); dentro del menú se viste como un campo del sistema de diseño. */
+
+.mm-buscar {
+  max-width: 1180px;
+  margin: 0 auto 1.4rem;
+}
+
+.mm .guide-search { z-index: 2; max-width: none; }
+
+.mm .guide-search-box {
+  min-height: 52px;
+  border: 3px solid var(--gris);
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
+}
+
+.mm .guide-search-box:focus-within {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px var(--azul-s);
+}
+
+.mm .guide-search-icon { color: var(--naranja-o); }
+
+.mm .guide-search-input {
+  font-family: var(--letra-texto);
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.mm .guide-search-input::placeholder { color: var(--tinta-3); }
+.mm .guide-search-clear { color: var(--tinta-3); }
+.mm .guide-search-clear:hover { color: var(--tinta); }
+
+.mm .guide-search-dropdown {
+  border: 2px solid var(--gris);
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 24px 40px -22px rgba(29, 27, 51, 0.5);
+}
+
+.mm .guide-search-result:hover { background: var(--fondo); }
+.mm .guide-search-result-title { color: var(--tinta); font-weight: 800; }
+.mm .guide-search-result-desc { color: var(--tinta-2); }
+.mm .guide-search-empty,
+.mm .guide-search-sugerencias-titulo { color: var(--tinta-3); font-weight: 900; }
+
+.mm .guide-search-chip {
+  border: 2px solid var(--gris);
+  border-radius: 10px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.mm .guide-search-chip:hover {
+  border-color: var(--naranja);
+  background: var(--naranja-s);
+}
+
+/* ── Los grupos ───────────────────────────────────────────────────────────── */
+
+.mm-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.4rem;
+}
+
+@media (min-width: 720px) {
+  .mm-nav { grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }
+}
+
+.mm-grupo-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.2rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.mm-grupo-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+}
+
+/* La nota a mano: «Incluido en Premium», «Gratis, a tu ritmo». */
+.mm-grupo-nota {
+  display: inline-block;
+  font-family: var(--letra-mano);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.mm-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mm-lista > li {
+  animation: mm-subir 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(0.03s + var(--i, 0) * 0.035s);
+}
+
+@keyframes mm-subir {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+}
+
+/* ── Cada destino: una fila-tecla de papel ────────────────────────────────── */
+
+.mm-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 5px;
+  padding: 0.65rem 0.95rem 0.65rem 0.65rem;
+  border-radius: 18px;
+  background: var(--papel);
+  color: var(--tinta);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow:
+    inset 0 2px 0 #fff,
+    0 5px 0 var(--gris-o),
+    0 12px 18px -12px rgba(29, 27, 51, 0.35);
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    background 0.2s ease;
+}
+
+@media (hover: hover) {
+  .mm-item:hover {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 2px 0 #fff,
+      0 3px 0 var(--c),
+      0 9px 14px -10px rgba(29, 27, 51, 0.32);
+  }
+}
+
+.mm-item:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+}
+
+/* El golpe: baja el recorrido entero. */
+.mm-item:active {
+  transform: translateY(5px);
+  box-shadow:
+    inset 0 4px 8px rgba(29, 27, 51, 0.12),
+    0 0 0 var(--gris-o);
+  transition-duration: 0.06s;
+  transition-timing-function: ease-out;
+}
+
+/* Donde estás: el papel de su tono suave y el canto de su color. */
+.mm-item.is-activo {
+  background: var(--s);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.6),
+    0 5px 0 var(--c),
+    0 12px 18px -12px rgba(29, 27, 51, 0.35);
+}
+
+.mm-item-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 4px;
+  border-radius: 14px;
+  background: var(--c);
+  color: var(--t);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--o);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .mm-item:hover .mm-item-icono { transform: rotate(-6deg) scale(1.05); }
+}
+
+.mm-item-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.mm-item-nombre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+.mm-item-linea {
+  overflow: hidden;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mm-item-flecha {
+  color: var(--tinta-3);
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), color 0.2s ease;
+}
+
+.mm-item:hover .mm-item-flecha,
+.mm-item:focus-visible .mm-item-flecha,
+.mm-item.is-activo .mm-item-flecha {
+  color: var(--o);
+}
+
+.mm-item:hover .mm-item-flecha { transform: translateX(3px); }
+
+.mm-pill {
+  padding: 0.14rem 0.5rem;
+  border-radius: 8px;
+  font-family: var(--letra-texto);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mm-pill--pronto {
+  background: var(--gris);
+  color: var(--tinta-2);
+}
+
+/* En el móvil: teclas de tres en fondo, el icono encima del nombre y sin la
+   línea de explicación. Así los ocho destinos caben en poco más de media
+   pantalla. */
+@media (max-width: 719px) {
+  .mm-lista {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 9px;
+  }
+
+  .mm-item {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 0.4rem;
+    height: calc(100% - 5px);
+    padding: 0.7rem 0.35rem 0.6rem;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .mm-item-icono { width: 40px; height: 40px; border-radius: 12px; }
+  .mm-item-icono svg { width: 18px; height: 18px; }
+
+  .mm-item-nombre {
+    justify-content: center;
+    gap: 0.25rem;
+    font-size: 0.86rem;
+    line-height: 1.15;
+    /* En 360 px cada tecla mide unos 100: una palabra larga
+       («interactivas», «Diccionario») se parte antes que salirse. */
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .mm-item-linea,
+  .mm-item-flecha { display: none; }
+
+  .mm-grupo-titulo { font-size: 1.2rem; }
+  .mm-grupo-nota { font-size: 1.2rem; }
+}
+
+/* ── El panel lateral: la cuenta, las redes y Premium ─────────────────────── */
+
+.mm-lado {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: mm-subir 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
+}
+
+.mm-cuenta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.15rem 1.2rem 1rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 16px 24px -18px rgba(29, 27, 51, 0.4);
+}
+
+.mm-cuenta-quien {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.mm-cuenta-quien > span:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.mm-avatar-caja {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.mm-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--naranja-s);
+  font-family: var(--letra-titular);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--naranja-o);
+  box-shadow: 0 4px 0 var(--gris-o);
+}
+
+.mm-cuenta-nombre {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--tinta);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mm-rol {
+  padding: 0.18rem 0.5rem;
+  border-radius: 8px;
+  background: var(--gris);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.mm-rol.is-premium {
+  background: var(--naranja-s);
+  color: var(--naranja-o);
+}
+
+.mm-cuenta-enlaces {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding-top: 0.55rem;
+  border-top: 2px dashed var(--gris);
+}
+
+@media (max-width: 999px) {
+  .mm-cuenta-enlaces { grid-template-columns: 1fr 1fr; gap: 0 0.4rem; }
+}
+
+.mm-cuenta-enlace {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  /* 44 px de alto como mínimo: se pulsan con el dedo. */
+  min-height: 44px;
+  padding: 0.6rem 0.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-align: left;
+  text-decoration: none;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.mm-cuenta-enlace svg { flex-shrink: 0; color: var(--tinta-3); }
+
+.mm-cuenta-enlace:hover,
+.mm-cuenta-enlace:focus-visible {
+  background: var(--fondo);
+  outline: none;
+}
+
+.mm-cuenta-enlace:hover svg { color: var(--azul); }
+
+.mm-cuenta-enlace-ext { margin-left: auto; }
+
+.mm-salir { color: var(--tinta-2); }
+
+.mm-salir:hover,
+.mm-salir:focus-visible {
+  background: var(--coral-s);
+  color: var(--coral-o);
+}
+
+.mm-salir:hover svg { color: var(--coral-o); }
+
+.mm-cuenta-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.mm-cuenta-texto {
+  margin: -0.35rem 0 0.15rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+/* «Crear cuenta gratis» y «Ya tengo cuenta» son teclas (Tecla.tsx). */
+.mm-btn.tecla { margin-bottom: 4px; }
+
+/* ── Las redes: dos filas-tecla con el icono en su color de marca ─────────── */
+
+.mm-redes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.mm-red {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 5px;
+  padding: 0.65rem 0.9rem 0.65rem 0.65rem;
+  border-radius: 18px;
+  background: var(--papel);
+  color: var(--tinta);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: inset 0 2px 0 #fff, 0 5px 0 var(--gris-o);
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .mm-red:hover { transform: translateY(2px); box-shadow: inset 0 2px 0 #fff, 0 3px 0 var(--gris-o); }
+}
+
+.mm-red:active {
+  transform: translateY(5px);
+  box-shadow: inset 0 4px 8px rgba(29, 27, 51, 0.12), 0 0 0 var(--gris-o);
+  transition-duration: 0.06s;
+}
+
+.mm-red:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.mm-red-icono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  color: #fff;
+}
+
+.mm-instagram .mm-red-icono {
+  background: linear-gradient(45deg, #f58529, #dd2a7b 50%, #8134af);
+  box-shadow: 0 4px 0 #8a1f55;
+}
+
+.mm-youtube .mm-red-icono {
+  background: #ff2d2d;
+  box-shadow: 0 4px 0 #b31414;
+}
+
+.mm-red-texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.mm-red-texto strong {
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.mm-red-texto small {
+  overflow: hidden;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mm-red-flecha { flex: none; color: var(--tinta-3); }
+
+/* En el móvil, las dos en una fila y sin la línea pequeña. */
+@media (max-width: 719px) {
+  .mm-redes { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mm-red { gap: 0.55rem; padding: 0.55rem 0.6rem 0.55rem 0.55rem; border-radius: 16px; }
+  .mm-red-icono { width: 36px; height: 36px; border-radius: 11px; }
+  .mm-red-texto strong { font-size: 0.82rem; }
+  .mm-red-texto small,
+  .mm-red-flecha { display: none; }
+}
+
+/* ── Premium: el bloque de tinta (ESTILO.md) ──────────────────────────────── */
+
+.mm-premium {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  overflow: hidden;
+  margin-bottom: 6px;
+  padding: 1.2rem 1.3rem 1.1rem;
+  border-radius: 24px;
+  background: var(--tinta);
+  color: #fff;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 6px 0 #08070f, 0 18px 28px -18px rgba(29, 27, 51, 0.6);
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+/* Un círculo naranja asomando por la esquina, como en las tarjetas de producto. */
+.mm-premium::before {
+  content: "";
+  position: absolute;
+  top: -48px;
+  right: -48px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 138, 31, 0.22);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .mm-premium:hover { transform: translateY(2px); box-shadow: 0 4px 0 #08070f, 0 14px 22px -16px rgba(29, 27, 51, 0.6); }
+}
+
+.mm-premium:active {
+  transform: translateY(6px);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 0 #08070f;
+  transition-duration: 0.06s;
+}
+
+.mm-premium:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.mm-premium-cabecera {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9px;
+  background: var(--naranja);
+  box-shadow: 0 3px 0 var(--naranja-o);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.mm-premium-titulo {
+  position: relative;
+  font-family: var(--letra-titular);
+  font-size: 1.18rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.mm-premium-pie {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+}
+
+.mm-premium-precio {
+  font-family: var(--letra-titular);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.mm-premium-precio small {
+  font-family: var(--letra-texto);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b9b7d3;
+}
+
+.mm-premium-ir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  background: var(--naranja);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--naranja-o);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.mm-premium-ir svg { transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1); }
+.mm-premium:hover .mm-premium-ir svg { transform: translateX(3px); }
+
+.mm-premium-nota {
+  position: relative;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #b9b7d3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm,
+  .mm-lista > li,
+  .mm-lado { animation: none; }
+
+  .mm-item,
+  .mm-item-icono,
+  .mm-item-flecha,
+  .mm-red,
+  .mm-premium,
+  .mm-premium-ir svg { transition-duration: 0.01s; }
+
+  .mm-item:hover .mm-item-icono,
+  .mm-item:hover .mm-item-flecha,
+  .mm-premium:hover .mm-premium-ir svg { transform: none; }
+}

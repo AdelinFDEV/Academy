@@ -3,6 +3,7 @@ import { Info, Lightbulb, ShieldAlert } from "lucide-react";
 import MarcoForo from "@/components/foro/MarcoForo";
 import FormPregunta from "@/components/foro/participar/FormPregunta";
 import Invitacion from "@/components/foro/participar/Invitacion";
+import { LIMITES } from "@/lib/foro/limites";
 import "@/app/foro/preguntar.css";
 
 /**
@@ -31,11 +32,8 @@ export default function VistaPreguntar({
       </nav>
 
       <header className="fq-cabecera">
-        <span className="fo-antetitulo">
-          <span className="fo-antetitulo-punto" aria-hidden="true" />
-          Nueva pregunta
-        </span>
-        <h1 className="fo-titulo">Pregunta lo que <em>necesitas</em> saber.</h1>
+        <p className="fo-nota">Nueva pregunta</p>
+        <h1 className="fo-titulo">Pregunta lo que <span className="fluor">necesitas</span> saber.</h1>
         <p className="fo-entradilla">
           Una duda concreta y bien explicada recibe mejores respuestas. Antes de preguntar, mira si alguien ya la ha
           planteado.
@@ -51,16 +49,22 @@ export default function VistaPreguntar({
 
       <div className="fq-rejilla">
         <div className="fq-principal">
-          {motivo === null ? <FormPregunta categorias={categorias} /> : <Invitacion motivo={motivo} />}
-          <p className="fq-normas">
-            Al publicar aceptas las <Link href="/foro/normas">normas del foro</Link>.
-          </p>
+          {motivo === null ? (
+            <>
+              <FormPregunta categorias={categorias} />
+              <p className="fq-normas">
+                Al publicar aceptas las <Link href="/foro/normas">normas del foro</Link>.
+              </p>
+            </>
+          ) : (
+            <Invitacion motivo={motivo} />
+          )}
         </div>
 
         <aside className="fq-lateral" aria-label="Consejos">
-          <section className="fq-caja fo-tarjeta">
+          <section className="fq-caja fq-caja--postit">
             <h2 className="fq-caja-titulo">
-              <Lightbulb size={17} strokeWidth={2.2} aria-hidden="true" />
+              <Lightbulb size={20} strokeWidth={2.4} aria-hidden="true" />
               Una buena pregunta
             </h2>
             <ol className="fq-pasos">
@@ -71,9 +75,9 @@ export default function VistaPreguntar({
             </ol>
           </section>
 
-          <section className="fq-caja fq-caja--cuidado fo-tarjeta">
+          <section className="fq-caja fq-caja--cuidado">
             <h2 className="fq-caja-titulo">
-              <ShieldAlert size={17} strokeWidth={2.2} aria-hidden="true" />
+              <span className="fq-caja-icono" aria-hidden="true"><ShieldAlert size={18} strokeWidth={2.5} /></span>
               Nunca publiques
             </h2>
             <ul className="fq-nunca">
@@ -81,7 +85,7 @@ export default function VistaPreguntar({
               <li>Teléfonos, correos ni datos personales</li>
               <li>Enlaces o códigos de referido</li>
             </ul>
-            <p>Lo que publicas es público y se puede editar solo durante 30 minutos.</p>
+            <p>Lo que publicas es público y se puede editar solo durante {LIMITES.minutosParaEditar} minutos.</p>
           </section>
         </aside>
       </div>

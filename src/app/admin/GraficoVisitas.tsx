@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { DiaTrafico } from "@/lib/analitica";
 
 /**
  * Visitantes únicos por día (barras) y su media de 7 días (línea), en un solo
- * eje. Al pasar el ratón o el dedo, el detalle del día: visitantes, páginas y
- * registros.
+ * eje. Al pasar el ratón o el dedo, el detalle del día en un globo de papel:
+ * visitantes, páginas y registros.
+ *
+ * Colores del cuaderno, desde analitica.css: cada barra es una tecla naranja
+ * con su canto, y la media va a boli azul.
+ *
+ * El dibujo se hace al ancho real de su caja (una unidad del SVG = un píxel):
+ * con un `viewBox` fijo de 760, en un móvil todo se encogía a un tercio y las
+ * fechas del eje quedaban en 4 px. Con el dedo, el globo sigue al dedo al
+ * arrastrar y se cierra tocando fuera.
  */
-const W = 760;
-const H = 250;
+const W_INICIAL = 760;
 const IZQ = 34;
 const ABAJO = 26;
 const ARRIBA = 12;
@@ -31,6 +38,33 @@ function tope(max: number) {
 
 export default function GraficoVisitas({ serie }: { serie: DiaTrafico[] }) {
   const [sobre, setSobre] = useState<number | null>(null);
+  const [W, setW] = useState(W_INICIAL);
+  const caja = useRef<HTMLDivElement>(null);
+
+  // El ancho real de la caja, y que se rehaga si cambia (girar el móvil).
+  useEffect(() => {
+    const el = caja.current;
+    if (!el) return;
+    const medir = () => setW(Math.max(260, Math.round(el.clientWidth)));
+    medir();
+    const obs = new ResizeObserver(medir);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Con el dedo no hay «salir con el ratón»: tocar fuera cierra el globo.
+  useEffect(() => {
+    if (sobre === null) return;
+    const fuera = (e: globalThis.PointerEvent) => {
+      if (caja.current && !caja.current.contains(e.target as Node)) setSobre(null);
+    };
+    document.addEventListener("pointerdown", fuera);
+    return () => document.removeEventListener("pointerdown", fuera);
+  }, [sobre]);
+
+  const estrecho = W < 520;
+  const H = estrecho ? 210 : 250;
+  const GLOBO = estrecho ? 172 : 190;
 
   const max = tope(Math.max(...serie.map((d) => d.visitantes)));
   const ancho = (W - IZQ) / serie.length;
@@ -44,23 +78,42 @@ export default function GraficoVisitas({ serie }: { serie: DiaTrafico[] }) {
   const linea = media.map((m, i) => `${x(i).toFixed(1)},${y(m).toFixed(1)}`).join(" ");
   const area = `${x(0).toFixed(1)},${y(0)} ${linea} ${x(serie.length - 1).toFixed(1)},${y(0)}`;
 
-  const marcas = serie.length <= 8 ? serie.map((_, i) => i) : [0, Math.round((serie.length - 1) / 3), Math.round(((serie.length - 1) * 2) / 3), serie.length - 1];
+  const cuantas = estrecho ? 3 : 4;
+  const marcas =
+    serie.length <= (estrecho ? 5 : 8)
+      ? serie.map((_, i) => i)
+      : Array.from({ length: cuantas }, (_, k) => Math.round(((serie.length - 1) * k) / (cuantas - 1)));
   const d = sobre === null ? null : serie[sobre];
 
-  return (
-    <div className="an-grafico-caja" onMouseLeave={() => setSobre(null)}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="an-grafico" role="img" aria-label="Visitantes únicos por día y media de 7 días">
-        <defs>
-          <linearGradient id="an-barra" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e8642b" />
-            <stop offset="100%" stopColor="#e8642b" stopOpacity="0.55" />
-          </linearGradient>
-          <linearGradient id="an-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2a9ed3" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#2a9ed3" stopOpacity="0" />
-          </linearGradient>
-        </defs>
+  /** El día bajo el puntero (ratón o dedo): toda la columna cuenta, no solo la barra. */
+  function apuntar(e: PointerEvent<SVGSVGElement>) {
+    const marco = e.currentTarget.getBoundingClientRect();
+    const px = ((e.clientX - marco.left) / marco.width) * W;
+    const i = Math.floor((px - IZQ) / ancho);
+    setSobre(i >= 0 && i < serie.length ? i : null);
+  }
 
+  // Dónde cabe el globo: a la derecha del día, a la izquierda o, si no cabe
+  // a ningún lado (móvil), centrado sobre él sin salirse de la caja.
+  let globo: { left: number; lado: "der" | "izq" | "centro" } | null = null;
+  if (sobre !== null) {
+    const p = x(sobre);
+    if (p + 14 + GLOBO <= W) globo = { left: p, lado: "der" };
+    else if (p - 14 - GLOBO >= 0) globo = { left: p, lado: "izq" };
+    else globo = { left: Math.min(Math.max(p - GLOBO / 2, 0), W - GLOBO), lado: "centro" };
+  }
+
+  return (
+    <div className="an-grafico-caja" ref={caja}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="an-grafico"
+        role="img"
+        aria-label="Visitantes únicos por día y media de 7 días"
+        onPointerDown={apuntar}
+        onPointerMove={apuntar}
+        onPointerLeave={(e) => { if (e.pointerType === "mouse") setSobre(null); }}
+      >
         {[0, 0.5, 1].map((f) => (
           <g key={f}>
             <line x1={IZQ} x2={W} y1={y(max * f)} y2={y(max * f)} className="an-grafico-rejilla" />
@@ -68,22 +121,19 @@ export default function GraficoVisitas({ serie }: { serie: DiaTrafico[] }) {
           </g>
         ))}
 
-        <polygon points={area} fill="url(#an-area)" />
+        <polygon points={area} className="an-grafico-area" />
 
         {serie.map((dia, i) => {
           const alto = y(0) - y(dia.visitantes);
           const a = Math.max(Math.min(ancho * 0.68, 26), 2);
+          const h = Math.max(alto, dia.visitantes ? 2 : 0);
+          const r = Math.min(5, a / 2, h / 2);
           return (
-            <rect
-              key={dia.dia}
-              x={x(i) - a / 2}
-              y={y(dia.visitantes)}
-              width={a}
-              height={Math.max(alto, dia.visitantes ? 2 : 0)}
-              rx={Math.min(4, a / 2)}
-              fill="url(#an-barra)"
-              opacity={sobre === null || sobre === i ? 1 : 0.45}
-            />
+            <g key={dia.dia} className={`an-grafico-dia${sobre === null || sobre === i ? "" : " is-apagado"}`}>
+              {/* El canto: la misma barra, un poco más abajo y en el tono lateral. */}
+              {h > 0 && <rect x={x(i) - a / 2} y={y(dia.visitantes) + 3} width={a} height={h} rx={r} className="an-grafico-canto" />}
+              <rect x={x(i) - a / 2} y={y(dia.visitantes)} width={a} height={h} rx={r} className="an-grafico-barra" />
+            </g>
           );
         })}
 
@@ -101,24 +151,10 @@ export default function GraficoVisitas({ serie }: { serie: DiaTrafico[] }) {
             {fechaCorta(serie[i].dia)}
           </text>
         ))}
-
-        {/* Zonas de contacto: toda la columna de cada día, no solo la barra. */}
-        {serie.map((dia, i) => (
-          <rect
-            key={dia.dia}
-            x={IZQ + ancho * i}
-            y={0}
-            width={ancho}
-            height={H - ABAJO}
-            fill="transparent"
-            onMouseEnter={() => setSobre(i)}
-            onTouchStart={() => setSobre(i)}
-          />
-        ))}
       </svg>
 
-      {d && sobre !== null && (
-        <div className="an-globo" style={{ left: `${(x(sobre) / W) * 100}%` }} data-lado={sobre > serie.length / 2 ? "izq" : "der"}>
+      {d && sobre !== null && globo && (
+        <div className="an-globo" style={estrecho ? { left: globo.left, width: GLOBO } : { left: globo.left, minWidth: GLOBO }} data-lado={globo.lado}>
           <b>{fechaLarga(d.dia)}</b>
           <span><i className="an-leyenda-barra" /> Visitantes <strong>{d.visitantes}</strong></span>
           <span><i className="an-leyenda-linea" /> Media 7 días <strong>{media[sobre].toFixed(1).replace(".", ",")}</strong></span>

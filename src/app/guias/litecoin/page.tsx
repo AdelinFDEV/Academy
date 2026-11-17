@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideLitecoinPago from "./GuideLitecoinPago";
 import GuideLitecoinQuiz from "./GuideLitecoinQuiz";
@@ -71,7 +73,6 @@ export default async function LitecoinPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -84,16 +85,15 @@ export default async function LitecoinPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel básico · 12 min</div>
         <h1 className="gbc-hero-title">
           Qué es Litecoin (LTC)<br />
           <span className="gbc-hero-gold">y cuánto tarda y cuesta un pago de verdad</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Litecoin es una criptomoneda creada en 2011 como una copia retocada de Bitcoin, pensada para
-          pagos más rápidos y baratos.</strong> Añade un bloque cada 2,5 minutos en vez de cada 10, tendrá como
-          máximo 84 millones de monedas y la comisión de red de un envío no llega a un céntimo. Su moneda se llama LTC
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Litecoin es una criptomoneda creada en 2011 como una copia retocada de Bitcoin, pensada para
+          pagos más rápidos y baratos.</Anotacion></strong> Añade <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>un bloque cada 2,5 minutos en vez de cada 10</Anotacion>, tendrá como <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>máximo 84 millones de monedas</Anotacion> y la comisión de red de un envío no llega a un céntimo. Su moneda se llama LTC
           y en España se compra, se guarda y se declara como cualquier otra.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de red: Blockchair, 14-11-2026</p>
@@ -117,8 +117,8 @@ export default async function LitecoinPage() {
             </p>
             <p>
               La creó Charlie Lee, entonces ingeniero de Google, en octubre de 2011. Tomó el código abierto de Bitcoin
-              y lo modificó. La idea la resumió con una imagen que aún se repite: si Bitcoin es el oro digital,
-              Litecoin quiere ser la plata. Más abundante, más rápida de mover y pensada para el gasto diario.
+              y lo modificó. La idea la resumió con una imagen que aún se repite: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>si Bitcoin es el oro digital,
+              Litecoin quiere ser la plata.</Anotacion> Más abundante, más rápida de mover y pensada para el gasto diario.
             </p>
             <p>
               Lee apenas conserva LTC. El 20 de diciembre de 2017, con el precio cerca de sus máximos de entonces,
@@ -128,7 +128,7 @@ export default async function LitecoinPage() {
             </p>
             <p>
               Fue una de las primeras <Termino slug="altcoin">altcoins</Termino> y, quince años después, sigue entre
-              las criptomonedas más conocidas. No tiene empresa detrás. La impulsa una fundación sin ánimo
+              las criptomonedas más conocidas. <Anotacion tipo="circle" junta animar={false}>No tiene empresa detrás.</Anotacion> La impulsa una fundación sin ánimo
               de lucro, la Litecoin Foundation, que financia parte del desarrollo con donaciones.
             </p>
           </div>
@@ -151,8 +151,8 @@ export default async function LitecoinPage() {
             <table className="gbc-tabla">
               <thead><tr><th></th><th>Bitcoin</th><th>Litecoin</th></tr></thead>
               <tbody>
-                <tr><td><strong>Un bloque cada…</strong></td><td>10 minutos</td><td>2,5 minutos</td></tr>
-                <tr><td><strong>Monedas como máximo</strong></td><td>21 millones</td><td>84 millones</td></tr>
+                <tr><td><strong>Un bloque cada…</strong></td><td>10 minutos</td><td><Anotacion tipo="circle" relleno={[4, 8]} junta animar={false}>2,5 minutos</Anotacion></td></tr>
+                <tr><td><strong>Monedas como máximo</strong></td><td>21 millones</td><td><Anotacion tipo="circle" relleno={[4, 8]} junta animar={false}>84 millones</Anotacion></td></tr>
                 <tr><td><strong><Termino slug="oferta-circulante">Monedas ya emitidas</Termino></strong></td><td>20,1 millones (95,8 %)</td><td>77,8 millones (92,6 %)</td></tr>
                 <tr><td><strong><Termino slug="algoritmo-de-minado">Algoritmo de minado</Termino></strong></td><td>SHA-256</td><td>Scrypt</td></tr>
                 <tr><td><strong>Premio por bloque hoy</strong></td><td>3,125 BTC</td><td>6,25 LTC</td></tr>
@@ -168,14 +168,15 @@ export default async function LitecoinPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Fíjate en que todo encaja con un cuatro. Bloques cuatro veces más frecuentes, cuatro veces más monedas.
-              Así el ritmo de emisión en el tiempo es el mismo que el de Bitcoin, solo que repartido en unidades más
+              <SimboloEstudio tipo="estrella" margen semilla={7} animar={false} />
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>Fíjate en que todo encaja con un cuatro.</Anotacion> Bloques cuatro veces más frecuentes, cuatro veces más monedas.
+              {" "}<Anotacion tipo="underline" color="var(--lila)" retraso={700}>Así el ritmo de emisión en el tiempo es el mismo que el de Bitcoin</Anotacion>, solo que repartido en unidades más
               pequeñas.
             </p>
             <p>
               Lo que la tabla no dice es el tamaño. A precios del 14 de noviembre de 2026 (unos 60.000 euros por BTC
               y unos 43 euros por LTC), la <Termino slug="market-cap">capitalización de mercado</Termino> de Bitcoin
-              es unas 360 veces la de Litecoin. Y su red mueve casi tres veces más operaciones al día. Litecoin es más ágil, pero también mucho más pequeña.
+              es unas 360 veces la de Litecoin. Y su red mueve casi tres veces más operaciones al día. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Litecoin es más ágil, pero también mucho más pequeña.</Anotacion>
             </p>
           </div>
         </div>
@@ -188,13 +189,13 @@ export default async function LitecoinPage() {
           <h2 className="gbc-title">Cuánto tarda una transacción de Litecoin, y cuánto cuesta</h2>
           <div className="gbc-body">
             <p>
-              Casi todas las explicaciones se quedan en «2,5 minutos por bloque». Eso no es lo que tarda un pago.
+              Casi todas las explicaciones se quedan en «2,5 minutos por bloque». <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Eso no es lo que tarda un pago.</Anotacion>{" "}
               Un pago se da por bueno cuando lleva varias <Termino slug="confirmacion">confirmaciones</Termino>, es
               decir, cuando se han añadido varios bloques encima del suyo. Cuántas, lo decide quien cobra: un
               <Termino slug="exchange"> exchange</Termino>, una tienda o tú.
             </p>
             <p>
-              Hay un segundo detalle. Los bloques no llegan como un reloj, sino al azar: 2,5 minutos es la media. A
+              Hay un segundo detalle. <Anotacion tipo="underline" color="var(--lila)" retraso={300}>Los bloques no llegan como un reloj, sino al azar: 2,5 minutos es la media.</Anotacion> A
               veces salen dos en un minuto y a veces pasan diez sin ninguno. Por eso la calculadora te da la espera
               media y también el margen dentro del que caen 9 de cada 10 pagos.
             </p>
@@ -211,7 +212,7 @@ export default async function LitecoinPage() {
               <tbody>
                 <tr><td><strong>1</strong></td><td>2,5 min · antes de 5,8 min</td><td>10 min · antes de 23 min</td></tr>
                 <tr><td><strong>3</strong></td><td>7,5 min · antes de 13 min</td><td>30 min · antes de 53 min</td></tr>
-                <tr><td><strong>6</strong></td><td>15 min · antes de 23 min</td><td>60 min · antes de 93 min</td></tr>
+                <tr><td><strong>6</strong></td><td><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} junta animar={false}>15 min · antes de 23 min</Anotacion></td><td>60 min · antes de 93 min</td></tr>
                 <tr><td><strong>12</strong></td><td>30 min · antes de 42 min</td><td>120 min · antes de 166 min</td></tr>
               </tbody>
             </table>
@@ -228,21 +229,23 @@ export default async function LitecoinPage() {
               hay que pujar por entrar en el bloque.
             </p>
             <p>
-              Una trampa a evitar: una confirmación de Litecoin no protege lo mismo que una de Bitcoin. Su red tiene
-              mucha menos potencia de cálculo detrás, y por eso los exchanges suelen pedir más bloques de LTC que de
-              BTC para darte el depósito por bueno. Compara siempre con las confirmaciones que te exijan a ti, no con
+              <SimboloEstudio tipo="exclamacion" color="coral" margen animar={false} />
+              Una trampa a evitar: <Anotacion tipo="underline" color="var(--coral)" retraso={300}>una confirmación de Litecoin no protege lo mismo que una de Bitcoin</Anotacion>. Su red tiene
+              mucha menos potencia de cálculo detrás, y <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>por eso los exchanges suelen pedir más bloques de LTC que de
+              BTC para darte el depósito por bueno</Anotacion>. Compara siempre con las confirmaciones que te exijan a ti, no con
               las del folleto.
             </p>
             {/* EXPERIENCIA DEL ADMIN: un depósito o pago real en LTC (exchange usado, confirmaciones que pidió, minutos que tardó y comisión de retirada cobrada), comparado con uno en BTC. */}
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Lo que más pagas no es la red</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="asterisco" color="cielo" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Lo que más pagas no es la red</div>
+            <div className="postit-cuerpo">
               <p>La comisión de red es casi cero, pero un exchange cobra su propia tarifa fija por retirar, que suele
-              ser muchas veces mayor. Antes de mover LTC, mira esa cifra en la pantalla de retirada: es la que de
-              verdad te cuesta el envío.</p>
+              ser muchas veces mayor. Antes de mover LTC, mira esa cifra en la pantalla de retirada: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>es la que de
+              verdad te cuesta el envío</Anotacion>.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -261,16 +264,15 @@ export default async function LitecoinPage() {
               minar con ordenadores corrientes y no solo con máquinas especializadas.
             </p>
             <p>
-              Esa idea no duró. Hacia 2014 llegaron las máquinas <Termino slug="asic">ASIC</Termino> para Scrypt,
-              mucho más eficientes que cualquier tarjeta gráfica. Hoy minar Litecoin en casa no sale a cuenta: el
+              <Anotacion tipo="circle" junta animar={false}>Esa idea no duró.</Anotacion> Hacia 2014 llegaron las máquinas <Termino slug="asic">ASIC</Termino> para Scrypt,
+              mucho más eficientes que cualquier tarjeta gráfica. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>Hoy minar Litecoin en casa no sale a cuenta</Anotacion>: el
               <Termino slug="hash-rate"> hash rate</Termino> de la red rondaba los 2,7 PH/s (unos 2,7 mil billones
               de cálculos por segundo) el 14 de noviembre de 2026, según Blockchair. Casi todo sale de granjas
               profesionales.
             </p>
             <p>
               Desde septiembre de 2014, Dogecoin admite la
-              <Termino slug="mineria-fusionada"> minería fusionada</Termino> con Litecoin. Como las dos usan Scrypt,
-              un minero puede asegurar las dos redes con el mismo trabajo y cobrar el premio de ambas.
+              <Termino slug="mineria-fusionada"> minería fusionada</Termino> con Litecoin. Como las dos usan Scrypt, <Anotacion tipo="underline" color="var(--azul)" retraso={300}>un minero puede asegurar las dos redes con el mismo trabajo y cobrar el premio de ambas</Anotacion>.
             </p>
           </div>
           <div className="ltc-fusion">
@@ -289,7 +291,7 @@ export default async function LitecoinPage() {
           </div>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              La cara menos amable es la dependencia. Parte del sueldo de quien protege Litecoin depende del precio
+              <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>La cara menos amable es la dependencia.</Anotacion> Parte del sueldo de quien protege Litecoin depende del precio
               de una moneda que nació como broma. Si Dogecoin cayera con fuerza, algunos mineros podrían dejar de
               salirles las cuentas.
             </p>
@@ -304,8 +306,8 @@ export default async function LitecoinPage() {
           <h2 className="gbc-title">¿Cuándo es el próximo halving de Litecoin?</h2>
           <div className="gbc-body">
             <p>
-              Hacia finales de julio de 2027, en el bloque 3.360.000. Cada 840.000 bloques, más o menos cada cuatro
-              años, el premio por bloque se reduce a la mitad. Es el <Termino slug="halving">halving</Termino>, el
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Hacia finales de julio de 2027, en el bloque 3.360.000.</Anotacion> Cada 840.000 bloques, más o menos cada cuatro
+              años, <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>el premio por bloque se reduce a la mitad</Anotacion>. Es el <Termino slug="halving">halving</Termino>, el
               mismo mecanismo que usa Bitcoin.
             </p>
           </div>
@@ -331,14 +333,14 @@ export default async function LitecoinPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Hoy se crean 6,25 LTC por bloque, unos 3.600 al día. Sobre los 77,8 millones que ya existen, es una
-              <Termino slug="inflacion"> inflación</Termino> del 1,7 % al año, el doble que la de Bitcoin. Tras el
+              <Termino slug="inflacion"> inflación</Termino> del <Anotacion tipo="circle" junta animar={false}>1,7 %</Anotacion> al año, el doble que la de Bitcoin. Tras el
               halving de 2027 bajará a algo menos del 0,9 %.
             </p>
             <p>
-              Lo que no hace un halving es garantizar que el precio suba. LTC marcó su
+              <Anotacion tipo="underline" color="var(--coral)" retraso={300}>Lo que no hace un halving es garantizar que el precio suba.</Anotacion> LTC marcó su
               <Termino slug="ath"> máximo histórico</Termino> en unos 410 dólares en mayo de 2021, según
               CoinGecko. Después llegó el halving de 2023, y en noviembre de 2026 cotiza por debajo de los 50.
-              Menos emisión solo empuja el precio si la demanda se mantiene.
+              {" "}<Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Menos emisión solo empuja el precio si la demanda se mantiene.</Anotacion>
             </p>
           </div>
         </div>
@@ -351,7 +353,7 @@ export default async function LitecoinPage() {
           <h2 className="gbc-title">SegWit, Lightning y MWEB: lo que Litecoin probó antes que Bitcoin</h2>
           <div className="gbc-body">
             <p>
-              El papel más útil de Litecoin no ha sido el de moneda, sino el de laboratorio. Como su código es casi
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>El papel más útil de Litecoin no ha sido el de moneda, sino el de laboratorio.</Anotacion> Como su código es casi
               el de Bitcoin, sirve para probar mejoras con dinero real antes de llevarlas a la red grande.
             </p>
           </div>
@@ -381,7 +383,7 @@ export default async function LitecoinPage() {
               <strong>Llega MWEB, la privacidad opcional</strong>
               <p>
                 MWEB (MimbleWimble Extension Blocks) añade a cada bloque una zona paralela donde las cantidades y
-                las direcciones van ocultas. Es voluntaria: solo la usa quien envía a una dirección que empieza por
+                las direcciones van ocultas. <Anotacion tipo="circle" junta animar={false}>Es voluntaria</Anotacion>: solo la usa quien envía a una dirección que empieza por
                 «ltcmweb1». Las entradas y salidas de esa zona sí se ven.
               </p>
             </li>
@@ -389,21 +391,21 @@ export default async function LitecoinPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               MWEB tuvo un precio inmediato. En junio de 2022, los cinco grandes exchanges de Corea del Sur (Upbit,
-              Bithumb, Coinone, Korbit y Gopax) anunciaron que retiraban Litecoin. Su ley contra el blanqueo prohíbe
-              las operaciones anónimas, y no podían garantizar que sus clientes no las usaran.
+              Bithumb, Coinone, Korbit y Gopax) anunciaron que retiraban Litecoin. <Anotacion tipo="underline" color="var(--lila)" retraso={300}>Su ley contra el blanqueo prohíbe
+              las operaciones anónimas, y no podían garantizar que sus clientes no las usaran.</Anotacion>
             </p>
             <p>
               Eso convierte a Litecoin en un caso raro. No es una <Termino slug="moneda-de-privacidad">moneda de
-              privacidad</Termino> como <Link href="/guias/monero">Monero</Link>, donde todo va oculto siempre. Es
-              una moneda pública con una puerta a la privacidad. Si tú no la usas, tus operaciones son tan visibles
+              privacidad</Termino> como <Link href="/guias/monero">Monero</Link>, donde todo va oculto siempre. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Es
+              una moneda pública con una puerta a la privacidad.</Anotacion> Si tú no la usas, tus operaciones son tan visibles
               en un <Termino slug="explorador-de-bloques">explorador de bloques</Termino> como en Bitcoin.
             </p>
             <p>
               En Europa queda una pregunta abierta. El reglamento (UE) 2024/1624 contra el blanqueo se aplica desde
               el 10 de julio de 2027 y prohíbe a los exchanges llevar cuentas que permitan anonimizar operaciones,
               también mediante «criptomonedas que refuerzan el anonimato». Las define como las que ocultan los
-              datos de las transferencias de forma sistemática u opcional, así que la privacidad opcional entra en
-              la definición.
+              datos de las transferencias de forma sistemática u opcional, así que <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>la privacidad opcional entra en
+              la definición</Anotacion>.
             </p>
             <p>
               Lo que no existe a noviembre de 2026 es una lista oficial, ni una aclaración sobre si basta con que la
@@ -433,8 +435,8 @@ export default async function LitecoinPage() {
               <p>
                 El Canary Litecoin ETF (LTCC) es un <Termino slug="etf-de-bitcoin">ETF al contado</Termino>: cotiza
                 en Nasdaq desde finales de octubre de 2025 y guarda LTC de verdad, con una comisión anual del 0,95 %.
-                Gestionaba unos 13 millones de dólares a 26 de octubre de 2026, según ETF Central. Un minorista
-                español no puede comprarlo: el reglamento europeo PRIIPs exige un{" "}
+                Gestionaba unos 13 millones de dólares a 26 de octubre de 2026, según ETF Central. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Un minorista
+                español no puede comprarlo</Anotacion>: el reglamento europeo PRIIPs exige un{" "}
                 <Termino slug="kid">documento de datos fundamentales (KID)</Termino> para vender este tipo de
                 producto a particulares. La gestora no lo publica, así que los brókeres no lo ofrecen. Lo que sí
                 cotiza en Europa son <Termino slug="etp">ETP</Termino> respaldados por LTC, como el CoinShares
@@ -445,22 +447,22 @@ export default async function LitecoinPage() {
               <strong>Tributa como cualquier otra criptomoneda</strong>
               <p>
                 Vender LTC por euros o cambiarlo por otra criptomoneda es una venta a efectos fiscales. La ganancia
-                va a la base del ahorro de la renta. Gastarlo en una tienda también cuenta como venta, aunque sea un
-                café.
+                va a la base del ahorro de la renta. <Anotacion tipo="underline" color="var(--lila)" retraso={300}>Gastarlo en una tienda también cuenta como venta, aunque sea un
+                café.</Anotacion>
               </p>
             </div>
           </div>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Ese último punto choca con la idea de Litecoin como dinero para el día a día. Cada pago con LTC es una
-              operación que, en teoría, tendrías que calcular y declarar. Si lo usas para pagar, guarda fecha, cantidad
+              Ese último punto choca con la idea de Litecoin como dinero para el día a día. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Cada pago con LTC es una
+              operación que, en teoría, tendrías que calcular y declarar.</Anotacion> Si lo usas para pagar, guarda fecha, cantidad
               y valor en euros de cada movimiento. El método completo está en la guía de
               <Link href="/guias/fiscalidad-cripto-espana"> fiscalidad de las criptomonedas en España</Link>.
             </p>
             <p>
               Para guardarlo, cualquier cartera compatible con Litecoin sirve. Si
-              vas a tenerlo a largo plazo, la <Termino slug="autocustodia">autocustodia</Termino> te quita el riesgo
-              de que el exchange quiebre o lo retire, como pasó en Corea.
+              vas a tenerlo a largo plazo, <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>la <Termino slug="autocustodia">autocustodia</Termino> te quita el riesgo
+              de que el exchange quiebre o lo retire</Anotacion>, como pasó en Corea.
             </p>
           </div>
         </div>
@@ -473,10 +475,10 @@ export default async function LitecoinPage() {
           <h2 className="gbc-title">Los riesgos de invertir en Litecoin</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Su razón de ser se ha estrechado.</strong> Pagar barato y rápido ya lo hacen las <Termino slug="stablecoin">stablecoins</Termino> en redes baratas, sin el vaivén del precio. Litecoin compite con eso, no solo con Bitcoin.</li>
-              <li><strong>Menos seguridad que Bitcoin.</strong> Con mucha menos potencia de minado, <Termino slug="ataque-del-51">atacar su red</Termino> es más barato. Por eso los exchanges piden más confirmaciones.</li>
+              <li><strong>Su razón de ser se ha estrechado.</strong> Pagar barato y rápido ya lo hacen las <Termino slug="stablecoin">stablecoins</Termino> en redes baratas, sin el vaivén del precio. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Litecoin compite con eso, no solo con Bitcoin.</Anotacion></li>
+              <li><strong>Menos seguridad que Bitcoin.</strong> Con mucha menos potencia de minado, <Termino slug="ataque-del-51">atacar su red</Termino> es más barato. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Por eso los exchanges piden más confirmaciones.</Anotacion></li>
               <li><strong>Dependencia de Dogecoin.</strong> Parte de los ingresos de sus mineros llega por la minería fusionada. Si ese ingreso cae, puede bajar la potencia que protege la red.</li>
-              <li><strong>MWEB y la regulación.</strong> Ya le costó salir de Corea. El reglamento europeo contra el blanqueo incluye la privacidad opcional en su definición: si los exchanges de la UE deciden que eso alcanza a LTC, podrían dejar de ofrecerlo desde julio de 2027.</li>
+              <li><strong>MWEB y la regulación.</strong> Ya le costó salir de Corea. El reglamento europeo contra el blanqueo incluye la privacidad opcional en su definición: si los exchanges de la UE deciden que eso alcanza a LTC, <Anotacion tipo="underline" color="var(--coral)" retraso={200}>podrían dejar de ofrecerlo desde julio de 2027</Anotacion>.</li>
               <li><strong>El precio.</strong> Su <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda, y lleva años muy lejos de sus máximos de 2021.</li>
               <li><strong>Liquidez en declive relativo.</strong> Su peso en el mercado ha caído frente a proyectos más nuevos, y con menos <Termino slug="liquidez">liquidez</Termino> las ventas grandes mueven más el precio.</li>
             </ul>
@@ -494,7 +496,7 @@ export default async function LitecoinPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Litecoin</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Plata Digital</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Plata Digital</strong>.</p>
           </div>
           {d.isRegistered ? <GuideLitecoinQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

@@ -1,0 +1,947 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   /glosario/[termino] — la ficha de cada término
+
+   Estilo «Cuaderno de estudio» (17-11-2026; ESTILO.md, disenos/sistema.html),
+   en el AMARILLO del diccionario. Una ficha de estudio cómoda de leer: la
+   cabecera es la ficha de cartulina con su pestaña de letra; el texto, una hoja
+   de papel a buena medida; las preguntas frecuentes, tarjetas que se abren; y
+   los «ver también», fichas sobre la mesa.
+
+   Aquí van también los estilos de las tres piezas que solo usa esta página:
+   `TerminoCta` (.tcta), `TerminoVideo` (.tvid) y `GuardarTermino` (.fe-guardar).
+
+   El texto de `extended` llega con las clases `.prose-*` (PLANTILLA-DICCIONARIO,
+   «El marcado de las piezas visuales»), cuyo estilo base oscuro vive en
+   globals.css porque lo comparte el aula de los cursos. Aquí se repinta en
+   claro, siempre bajo `.fe .termino-body`, para no tocar el aula.
+
+   Se ve bien por sí sola sin depender de la base de globals.css.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.fe {
+  position: relative;
+  /* `svh`: en el móvil, `vh` cuenta la barra del navegador escondida. */
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+}
+
+.fe,
+.fe * { color-scheme: light; }
+
+.fe-main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5rem);
+}
+
+/* ── Migas ────────────────────────────────────────────────────────────────── */
+
+.fe-migas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2.6rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.fe-migas a {
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--gris);
+  color: var(--tinta-2);
+  text-decoration: none;
+  transition: color 0.15s, transform 0.2s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.fe-migas a:hover { color: var(--tinta); transform: translateY(1px); }
+.fe-migas a:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+/* Con el dedo, las migas a 44 px de alto. */
+@media (pointer: coarse) {
+  .fe-migas a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 12px; }
+}
+.fe-migas-sep { color: var(--tinta-3); }
+.fe-migas-actual { color: var(--tinta); font-weight: 900; }
+
+/* ── La cabecera: la ficha de cartulina ───────────────────────────────────── */
+
+.fe-cab {
+  position: relative;
+  padding: clamp(1.3rem, 4vw, 2.2rem) clamp(1.2rem, 4vw, 2.4rem) clamp(1.5rem, 4vw, 2.3rem);
+  border-top: 16px solid var(--amarillo);
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow: 0 8px 0 var(--gris-o), 0 34px 50px -36px rgba(29, 27, 51, 0.5);
+  transform: rotate(-0.4deg);
+}
+
+.fe-pestana {
+  position: absolute;
+  top: -50px;
+  right: clamp(22px, 6vw, 46px);
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 36px;
+  border-radius: 14px 14px 0 0;
+  background: var(--amarillo);
+  font-family: var(--letra-titular);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+/* La categoría y «Guardar», sobre el renglón rojo de la cartulina. */
+.fe-cab-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--coral-s);
+}
+
+.fe-cat {
+  --cs: var(--amarillo-s);
+  --co: #7a5d00;
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--cs);
+  color: var(--co);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.fe-cat--básicos { --cs: var(--cielo-s); --co: var(--cielo-o); }
+.fe-cat--trading { --cs: var(--naranja-s); --co: var(--naranja-o); }
+.fe-cat--defi { --cs: var(--lila-s); --co: var(--lila-o); }
+.fe-cat--seguridad { --cs: var(--menta-s); --co: var(--menta-o); }
+
+.fe-guardar.tecla { margin-bottom: 6px; }
+
+.fe-guardar-caja {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 10px;
+}
+
+/* Si guardar falla: el error del sistema, en coral y con letra normal. */
+.fe-guardar-error {
+  margin-bottom: 6px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--coral-s);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--coral-o);
+}
+
+.fe-titulo {
+  margin: 1.1rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.4rem, 6.4vw, 4rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+  overflow-wrap: anywhere;
+}
+
+/* La definición corta hace de entradilla: es la respuesta en una línea. */
+.fe-lead {
+  max-width: 60ch;
+  margin: 1rem 0 0;
+  font-size: clamp(1.1rem, 2.2vw, 1.28rem);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+/* ── La cuenta, debajo de la definición (TerminoCta) ──────────────────────── */
+
+.tcta {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.2rem 2rem;
+  align-items: center;
+  overflow: hidden;
+  margin: 2.6rem 0 0;
+  padding: clamp(1.3rem, 3.5vw, 1.9rem);
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+/* El círculo suave de las tarjetas de producto (sistema.html, 13). */
+.tcta::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: var(--naranja-s);
+}
+
+.tcta > * { position: relative; }
+
+.tcta-title {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.3rem, 2.8vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--tinta);
+}
+
+.tcta-sub {
+  margin: 0.45rem 0 0;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.tcta-ventajas {
+  display: grid;
+  gap: 8px;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tcta-ventajas li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.tcta-tic {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: var(--menta);
+  box-shadow: 0 3px 0 var(--menta-o);
+  /* Sobre menta, tinta: el blanco no llega al contraste. */
+  color: var(--tinta);
+}
+
+.tcta-accion {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+/* ── El texto: una hoja de papel a buena medida ───────────────────────────── */
+
+.fe .termino-body {
+  margin: 2.6rem 0 0;
+  padding: clamp(1.4rem, 5vw, 3rem) clamp(1.1rem, 5vw, 3.2rem);
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+  color: var(--tinta-2);
+  font-size: clamp(1.04rem, 1.6vw, 1.12rem);
+  font-weight: 500;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.fe .termino-body > :first-child { margin-top: 0; }
+.fe .termino-body > :last-child { margin-bottom: 0; }
+
+.fe .termino-body h2,
+.fe .termino-body h3,
+.fe .termino-body h4 {
+  margin: 2.6rem 0 0.8rem;
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.fe .termino-body h2 { font-size: clamp(1.55rem, 3.4vw, 2rem); }
+.fe .termino-body h3 { font-size: clamp(1.25rem, 2.6vw, 1.45rem); }
+
+/* Una tira de rotulador amarillo encima de cada apartado: se ve dónde empieza. */
+.fe .termino-body h2::before {
+  content: "";
+  display: block;
+  width: 46px;
+  height: 9px;
+  margin-bottom: 14px;
+  border-radius: 999px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+}
+
+.fe .termino-body p { margin: 0 0 1.15rem; }
+
+.fe .termino-body strong { color: var(--tinta); font-weight: 800; }
+
+.fe .termino-body a {
+  color: var(--azul-o);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--azul);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: background-color 0.15s;
+}
+
+.fe .termino-body a:hover { background: var(--azul-s); text-decoration-color: var(--azul-o); }
+.fe .termino-body a:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; border-radius: 4px; }
+
+.fe .termino-body ul,
+.fe .termino-body ol {
+  margin: 0 0 1.2rem;
+  padding-left: 1.5rem;
+}
+
+.fe .termino-body li { margin-bottom: 0.5rem; }
+.fe .termino-body li::marker { color: var(--amarillo-o); font-weight: 900; }
+
+.fe .termino-body blockquote {
+  margin: 1.6rem 0;
+  padding: 1rem 1.3rem;
+  border: 0;
+  border-left: 6px solid var(--amarillo);
+  border-radius: 6px 18px 18px 6px;
+  background: var(--amarillo-s);
+  color: var(--tinta);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.fe .termino-body code {
+  padding: 2px 7px;
+  border-radius: 7px;
+  background: var(--fondo);
+  color: var(--lila-o);
+  font-size: 0.9em;
+}
+
+.fe .termino-body hr {
+  margin: 2.2rem 0;
+  border: 0;
+  border-top: 3px dashed var(--gris);
+}
+
+.fe .termino-body mark { background: var(--amarillo-s); color: inherit; }
+
+/* ── Las piezas visuales del texto (.prose-*) ── */
+
+/* «En veinte segundos» y los avisos son pósits (vestirTexto les añade las
+   clases de `Postit`; el papel, la cinta y el giro salen de postit.css).
+   Aquí solo la letra de dentro. Colores: el resumen y
+   la información, amarillo; el riesgo (`--warning`, `--danger`), coral; lo
+   que está bien (`--tip`), menta. */
+.fe .termino-body .prose-resumen { font-weight: 600; }
+
+.fe .termino-body .prose-resumen-title {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-family: var(--letra-mano);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.fe .termino-body .prose-resumen p { margin: 0; }
+.fe .termino-body .prose-resumen p + p { margin-top: 0.55rem; }
+
+.fe .termino-body .prose-callout-body {
+  font-size: 0.98em;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta);
+}
+
+.fe .termino-body .prose-callout-body > :last-child { margin-bottom: 0; }
+.fe .termino-body .prose-callout-body strong { font-weight: 900; }
+
+/* Tablas: papel con su cabecera amarilla y esquinas redondas. */
+.fe .termino-body .prose-table {
+  width: 100%;
+  margin: 1.6rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 3px solid var(--gris);
+  border-radius: 20px;
+  font-size: 0.93em;
+  line-height: 1.5;
+}
+
+.fe .termino-body .prose-table th {
+  padding: 0.75rem 1rem;
+  border: 0;
+  background: var(--amarillo-s);
+  color: var(--tinta);
+  font-weight: 900;
+  text-align: left;
+}
+
+.fe .termino-body .prose-table td {
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-top: 2px solid var(--gris);
+  color: var(--tinta-2);
+  font-weight: 600;
+}
+
+.fe .termino-body .prose-table tr:nth-child(even) td { background: var(--fondo); }
+
+/* Gráfico de barras: las barras gruesas con relieve del sistema (07). */
+.fe .termino-body .prose-chart {
+  margin: 1.6rem 0;
+  padding: 1.3rem 1.4rem;
+  border: 3px solid var(--gris);
+  border-radius: 22px;
+  background: var(--papel);
+}
+
+.fe .termino-body .prose-chart-title {
+  margin-bottom: 1rem;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.fe .termino-body .prose-chart-row { gap: 0.8rem; margin-bottom: 0.75rem; }
+
+.fe .termino-body .prose-chart-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.fe .termino-body .prose-chart-track {
+  height: 16px;
+  border-radius: 999px;
+  background: var(--gris);
+}
+
+.fe .termino-body .prose-chart-fill {
+  border-radius: 999px;
+  background: var(--amarillo);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.4);
+  animation: fe-llenar 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+@keyframes fe-llenar { from { width: 0; } }
+
+.fe .termino-body .prose-chart-value {
+  font-family: var(--letra-titular);
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+/* Comparación a dos columnas: dos tarjetas con su color. */
+.fe .termino-body .prose-vs {
+  gap: 1rem;
+  margin: 1.8rem 0;
+}
+
+.fe .termino-body .prose-vs-lado {
+  padding: 1.15rem 1.2rem;
+  border: 0;
+  border-top: 10px solid var(--azul);
+  border-radius: 22px;
+  background: var(--azul-s);
+}
+
+.fe .termino-body .prose-vs-lado--b {
+  border-top-color: var(--menta);
+  background: var(--menta-s);
+}
+
+.fe .termino-body .prose-vs-title {
+  margin: 0 0 0.2rem;
+  font-family: var(--letra-titular);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.fe .termino-body .prose-vs-sub {
+  margin: 0 0 0.8rem;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--tinta-2);
+}
+
+.fe .termino-body .prose-vs-lado li {
+  padding-left: 1.4rem;
+  font-size: 0.93em;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--tinta);
+}
+
+.fe .termino-body .prose-vs-lado li::before {
+  top: 0.15em;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  content: "·";
+  font-weight: 900;
+  opacity: 1;
+}
+
+/* A favor y en contra: menta y coral (acierto y fallo), no los colores de las cifras. */
+.fe .termino-body .prose-vs-lado li[data-tono="favor"] { color: var(--menta-o); }
+.fe .termino-body .prose-vs-lado li[data-tono="favor"]::before { content: "+"; }
+.fe .termino-body .prose-vs-lado li[data-tono="contra"] { color: var(--coral-o); }
+.fe .termino-body .prose-vs-lado li[data-tono="contra"]::before { content: "−"; }
+
+/* La cifra que para el ojo, en Fraunces y con rotulador. */
+.fe .termino-body .prose-dato {
+  align-items: center;
+  gap: 1.2rem;
+  margin: 1.8rem 0;
+  padding: 1.2rem 1.4rem;
+  border: 0;
+  border-radius: 22px;
+  background: var(--fondo);
+  box-shadow: inset 0 0 0 3px var(--gris);
+}
+
+.fe .termino-body .prose-dato-cifra {
+  padding: 0 0.15em;
+  background: linear-gradient(transparent 58%, var(--amarillo) 58%);
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 4.4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--tinta);
+}
+
+.fe .termino-body .prose-dato-texto {
+  font-size: 0.95em;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+/* Con el recuadro lila dibujado (MarcasEstudio), la cifra suelta el rotulador. */
+.fe .termino-body .prose-dato-cifra.me-recuadrada { background: none; }
+
+/* Hitos: la línea del tiempo, con los puntos como teclitas amarillas. */
+.fe .termino-body .prose-hitos { padding-left: 2rem; }
+
+.fe .termino-body .prose-hitos::before {
+  left: 8px;
+  width: 0;
+  border-left: 3px dashed var(--gris-o);
+  background: none;
+}
+
+.fe .termino-body .prose-hito { margin-bottom: 1.2rem; }
+
+.fe .termino-body .prose-hito::before {
+  left: calc(-2rem + 1px);
+  top: 0.15em;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+}
+
+.fe .termino-body .prose-hito-fecha {
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #7a5d00;
+}
+
+.fe .termino-body .prose-hito p {
+  font-size: 0.97em;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+/* Pasos numerados: cada número, una tecla. */
+.fe .termino-body .prose-pasos li {
+  margin-bottom: 0.85rem;
+  padding: 1rem 1.2rem 1rem 3.7rem;
+  border: 0;
+  border-radius: 18px;
+  background: var(--fondo);
+  font-size: 0.97em;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.fe .termino-body .prose-pasos li::before {
+  left: 1rem;
+  top: 0.9rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--amarillo);
+  box-shadow: 0 4px 0 var(--amarillo-o);
+  font-family: var(--letra-titular);
+  font-size: 0.95rem;
+  color: var(--tinta);
+}
+
+/* Con su aro dibujado a boli (MarcasEstudio), el número deja de ser tecla. */
+.fe .termino-body .prose-pasos li { --me-num-x: 1rem; --me-num-y: 0.9rem; --me-num-tam: 30px; }
+.fe .termino-body .prose-pasos li.me-con-aro::before {
+  background: none;
+  box-shadow: none;
+  font-size: 1.05rem;
+  color: var(--tinta);
+}
+
+/* El corchete del cierre (MarcasEstudio) entra detrás del último párrafo:
+   que siga sin margen debajo. */
+.fe .termino-body > p:has(+ svg.rough-annotation:last-child) { margin-bottom: 0; }
+
+/* ── Preguntas frecuentes: tarjetas que se abren ──────────────────────────────
+   Siguen siendo <details>: el texto está en el HTML desde el principio (lo lee
+   Google aunque esté plegado) y `AcordeonesSuaves` las abre con suavidad. */
+
+.fe-h2 {
+  margin: 0 0 1.2rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.fe-faq { margin: 3.2rem 0 0; }
+
+.fe-faq-item {
+  margin-bottom: 14px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  transition: box-shadow 0.25s, transform 0.3s cubic-bezier(0.34, 1.6, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .fe-faq-item:not([open]):hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--gris-o); }
+}
+
+.fe-faq-item[open]:not([data-acordeon="cerrando"]) {
+  box-shadow: 0 6px 0 var(--amarillo-o);
+}
+
+.fe-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 1.2rem 1.05rem 1.3rem;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fe-faq-item summary::-webkit-details-marker { display: none; }
+
+.fe-faq-item summary:focus-visible { outline: 3px solid var(--azul); outline-offset: -3px; border-radius: 22px; }
+
+.fe-faq-item[open]:not([data-acordeon="cerrando"]) summary { background: var(--amarillo); }
+
+.fe-faq-q {
+  font-family: var(--letra-titular);
+  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--tinta);
+}
+
+/* El signo: una teclita blanca con un «+» que gira y se queda en «×». */
+.fe-faq-signo {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--papel);
+  box-shadow: inset 0 0 0 2px var(--gris), 0 4px 0 var(--gris-o);
+  transition: transform 0.35s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.fe-faq-signo::before,
+.fe-faq-signo::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--tinta);
+}
+
+.fe-faq-signo::after { transform: rotate(90deg); }
+
+.fe-faq-item[open]:not([data-acordeon="cerrando"]) .fe-faq-signo { transform: rotate(135deg); }
+
+.fe-faq-item p {
+  margin: 0;
+  padding: 1rem 1.3rem 1.25rem;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.7;
+  color: var(--tinta-2);
+}
+
+/* ── El último vídeo del canal (TerminoVideo) ─────────────────────────────── */
+
+.tvid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+  margin: 3.2rem 0 0;
+  padding: clamp(1rem, 3vw, 1.4rem);
+  border-radius: 30px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+.tvid-thumb {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  background: var(--gris);
+  transform: rotate(-1.2deg);
+  box-shadow: 0 6px 0 var(--gris-o);
+  transition: transform 0.35s cubic-bezier(0.34, 1.6, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .tvid-thumb:hover { transform: rotate(0deg) translateY(-3px); }
+}
+.tvid-thumb:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.tvid-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tvid-velo { display: none; }
+
+.tvid-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.tvid-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--coral-s);
+  color: var(--coral-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tvid-title {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.tvid-title a { color: var(--tinta); text-decoration: none; }
+.tvid-title a:hover { text-decoration: underline; text-decoration-color: var(--amarillo); text-decoration-thickness: 4px; }
+
+.tvid-sub {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.tvid-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 0.4rem;
+}
+
+/* ── «Ver también» y «Más de…»: fichas sobre la mesa ──────────────────────── */
+
+.fe-rel { margin: 3.2rem 0 0; }
+.fe-rel--cat .fe-h2 { font-size: clamp(1.3rem, 3vw, 1.6rem); }
+
+.fe-fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 30px 20px;
+  margin: 0;
+  padding: 18px 0 0;
+  list-style: none;
+}
+
+.fe-mini {
+  --c: var(--amarillo);
+  --co: var(--amarillo-o);
+  /* La letra de la pestaña: tinta sobre amarillo, cielo y menta. */
+  --ct: var(--tinta);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 118px;
+  padding: 26px 18px 18px;
+  border-top: 10px solid var(--c);
+  border-radius: 20px;
+  background:
+    linear-gradient(transparent 22px, var(--coral-s) 22px 24px, transparent 24px) top / 100% 100% no-repeat,
+    var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  color: var(--tinta);
+  font-family: var(--letra-titular);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-decoration: none;
+  /* «Criptomoneda» en media columna a 320 px: se parte con guion. */
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  transform: rotate(-1.4deg);
+  transition: transform 0.35s cubic-bezier(0.34, 1.7, 0.5, 1), box-shadow 0.3s;
+}
+
+.fe-fichas li:nth-child(even) .fe-mini { transform: rotate(1.2deg); }
+.fe-fichas li:nth-child(3n) .fe-mini { transform: rotate(-0.4deg); }
+
+.fe-mini--básicos { --c: var(--cielo); --co: var(--cielo-o); }
+.fe-mini--trading { --c: var(--naranja); --co: var(--naranja-o); --ct: #fff; }
+.fe-mini--defi { --c: var(--lila); --co: var(--lila-o); --ct: #fff; }
+.fe-mini--seguridad { --c: var(--menta); --co: var(--menta-o); }
+
+/* La pestaña de letra, pintada desde `data-letra`: no entra en el texto del enlace. */
+.fe-mini::before {
+  content: attr(data-letra);
+  position: absolute;
+  top: -36px;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 26px;
+  border-radius: 10px 10px 0 0;
+  background: var(--c);
+  font-size: 14px;
+  color: var(--ct);
+}
+
+.fe-mini::after {
+  content: "→";
+  position: absolute;
+  top: 34px;
+  right: 16px;
+  font-family: var(--letra-texto);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--co);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.fe-fichas li .fe-mini:hover,
+.fe-fichas li .fe-mini:focus-visible {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 12px 0 var(--gris-o), 0 26px 30px -22px rgba(29, 27, 51, 0.45);
+}
+
+@media (hover: hover) {
+  .fe-mini:hover::after { transform: translateX(4px); }
+}
+.fe-mini:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* ── Volver ── */
+
+.fe-volver {
+  margin: 3rem 0 0;
+  text-align: center;
+}
+
+/* ── Tableta y móvil ──────────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .tcta { grid-template-columns: minmax(0, 1fr); }
+  .tcta-accion .tecla { width: 100%; }
+  .tvid { grid-template-columns: minmax(0, 1fr); }
+  .fe .termino-body .prose-vs { grid-template-columns: 1fr; }
+  .fe .termino-body .prose-dato { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+
+  /* Una tabla ancha se desliza en vez de romper la hoja. */
+  .fe .termino-body .prose-table { display: block; overflow-x: auto; }
+}
+
+@media (max-width: 480px) {
+  .fe-cab { transform: none; }
+  .fe-fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 14px; }
+  .fe-mini { min-height: 104px; padding: 24px 14px 14px; font-size: 1.08rem; }
+  .fe-volver .tecla { white-space: normal; text-align: center; }
+  .tvid-botones .tecla { flex: 1 1 100%; }
+  /* «Crear cuenta gratis» con sus dos iconos no cabe en una línea a 360 px:
+     la caja la recortaba. Que parta. */
+  .tcta-accion .tecla { padding-inline: 16px; white-space: normal; text-align: center; }
+  /* Las tablas del texto: más prietas, para que casi nunca haga falta
+     deslizarlas. */
+  .fe .termino-body .prose-table { font-size: 0.88em; hyphens: auto; }
+  .fe .termino-body .prose-table th,
+  .fe .termino-body .prose-table td { padding: 0.6rem 0.7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-faq-item,
+  .fe-faq-signo,
+  .fe-mini,
+  .fe-mini::after,
+  .tvid-thumb,
+  .fe-migas a { transition: none; }
+  .fe .termino-body .prose-chart-fill { animation: none; }
+}

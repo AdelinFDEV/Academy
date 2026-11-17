@@ -1,0 +1,160 @@
+/* El aviso de cookies (CookieBanner.tsx). Estilo «Cuaderno de estudio»
+   (ESTILO.md, 17-11-2026): una nota de papel con su canto que sube desde
+   abajo con un pequeño rebote, y una galleta dibujada. Sale en todas las
+   páginas: lleva su propio papel y no hereda colores de la que tenga debajo.
+   Es de lo poco que se queda fijo en pantalla, y solo hasta que se elige.
+
+   Las dos teclas, iguales de tamaño y de peso: rechazar tan fácil como
+   aceptar (RGPD; ver PLATAFORMA.md y src/lib/consent.ts). */
+
+.cb {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  z-index: 9999;
+  width: min(820px, calc(100% - 2rem));
+  transform: translateX(-50%);
+  color-scheme: light;
+  animation: cb-sube 0.55s cubic-bezier(0.34, 1.56, 0.5, 1) both;
+}
+
+@keyframes cb-sube {
+  from { opacity: 0; transform: translate(-50%, 40px) rotate(-1.5deg); }
+  to { opacity: 1; transform: translate(-50%, 0) rotate(0deg); }
+}
+
+.cb-nota {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px 12px;
+  border-radius: 28px;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  box-shadow:
+    0 6px 0 var(--gris-o),
+    0 26px 50px -20px rgba(29, 27, 51, 0.55);
+}
+
+.cb-galleta {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 6px;
+  transform: rotate(-12deg);
+  animation: cb-galleta 0.9s 0.25s cubic-bezier(0.34, 1.8, 0.5, 1) both;
+}
+
+@keyframes cb-galleta {
+  from { transform: rotate(-60deg) scale(0.4); }
+  to { transform: rotate(-12deg) scale(1); }
+}
+
+.cb-g-canto { fill: var(--amarillo-o); }
+.cb-g-masa { fill: var(--amarillo); }
+.cb-g-pepita { fill: var(--naranja-o); }
+
+.cb-texto { min-width: 0; margin-bottom: 6px; }
+
+.cb-titulo {
+  margin: 0 0 4px;
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--tinta);
+}
+
+.cb-desc {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.cb-desc strong {
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.cb-enlace {
+  color: var(--azul);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.cb-enlace:hover { color: var(--azul-o); }
+
+.cb-enlace:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.cb-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Las dos del mismo ancho: ninguna parece «la buena». */
+.cb .cb-tecla {
+  width: 100%;
+  padding: 13px 22px;
+  font-size: 14px;
+}
+
+/* ── Móvil: pegada abajo, a todo el ancho ─────────────────────────────────── */
+
+@media (max-width: 680px) {
+  .cb {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    transform: none;
+    animation-name: cb-sube-movil;
+  }
+
+  @keyframes cb-sube-movil {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cb-nota {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px 14px;
+    padding: 18px 16px calc(10px + env(safe-area-inset-bottom));
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -18px 40px -20px rgba(29, 27, 51, 0.45);
+  }
+
+  .cb-galleta {
+    width: 46px;
+    height: 46px;
+    align-self: start;
+  }
+
+  .cb-acciones {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .cb .cb-tecla {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 12px 10px;
+    font-size: 13px;
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb,
+  .cb-galleta { animation: none; }
+}

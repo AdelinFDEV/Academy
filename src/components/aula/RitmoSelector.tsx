@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * Elegir el ritmo: cuántas horas a la semana. De aquí sale el cronograma.
  * Cada opción enseña la fecha en que terminaría, para que el alumno elija
  * sabiendo qué compromete y no un número abstracto.
+ *
+ * Cada opción es una tecla blanca; la elegida, lila (el color de Cursos).
  */
 
 const OPCIONES = [
@@ -52,8 +56,10 @@ export default function RitmoSelector({
       });
       const d: { error?: string } = await r.json();
       if (!r.ok) throw new Error(d.error ?? "No se pudo guardar.");
+      sonar("guardado");
       router.refresh();
     } catch (e) {
+      sonar("error");
       setError(e instanceof Error ? e.message : "No se pudo guardar.");
       setEnviando(false);
     }
@@ -62,27 +68,32 @@ export default function RitmoSelector({
   return (
     <div className="aula-ritmo">
       <div className="aula-ritmo-opciones" role="radiogroup" aria-label="Horas a la semana">
-        {OPCIONES.map((o) => (
-          <button
-            key={o.minutos}
-            type="button"
-            role="radio"
-            aria-checked={elegido === o.minutos}
-            className={`aula-ritmo-opcion${elegido === o.minutos ? " is-elegida" : ""}`}
-            onClick={() => setElegido(o.minutos)}
-          >
-            {elegido === o.minutos && <span className="aula-ritmo-check"><Check size={12} strokeWidth={3} aria-hidden="true" /></span>}
-            <span className="aula-ritmo-nombre">{o.nombre}</span>
-            <span className="aula-ritmo-detalle">{o.detalle}</span>
-            <span className="aula-ritmo-fin">Terminarías el {fin(o.minutos)}</span>
-          </button>
-        ))}
+        {OPCIONES.map((o) => {
+          const es = elegido === o.minutos;
+          return (
+            <Tecla
+              key={o.minutos}
+              color={es ? "lila" : "blanca"}
+              role="radio"
+              aria-checked={es}
+              className={`aula-ritmo-opcion${es ? " is-elegida" : ""}`}
+              onClick={() => setElegido(o.minutos)}
+            >
+              {es && <span className="aula-ritmo-check"><Check size={13} strokeWidth={3.4} aria-hidden="true" /></span>}
+              <span className="aula-ritmo-nombre">{o.nombre}</span>
+              <span className="aula-ritmo-detalle">{o.detalle}</span>
+              <span className="aula-ritmo-fin">Terminarías el {fin(o.minutos)}</span>
+            </Tecla>
+          );
+        })}
       </div>
       {error && <p className="aula-error" role="alert">{error}</p>}
-      <button type="button" className="aula-btn aula-btn--grande" onClick={guardar} disabled={enviando || elegido === actual}>
-        {enviando ? "Guardando…" : textoBoton}
-        {!enviando && <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />}
-      </button>
+      <div className="aula-ritmo-accion">
+        <Tecla tamano="grande" onClick={guardar} disabled={enviando || elegido === actual}>
+          {enviando ? "Guardando…" : textoBoton}
+          {!enviando && <ArrowRight size={20} strokeWidth={2.6} aria-hidden="true" />}
+        </Tecla>
+      </div>
       <p className="aula-ritmo-pie">Puedes cambiarlo cuando quieras. Lo que lleves hecho no se pierde.</p>
     </div>
   );

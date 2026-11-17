@@ -8,7 +8,6 @@ import { estadoCurso, minutosTotales } from "@/lib/cursos-progreso";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import { CURSO_SEO } from "@/lib/cursos-seo";
 import FichaCurso from "./FichaCurso";
-import "../../herramientas/detalle.css";
 import "../cursos.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -55,9 +54,13 @@ export default async function FichaCursoPage({ params }: Props) {
   const c = await cursoPorSlug(slug, sesion?.esAdmin ?? false);
   if (!c) notFound();
 
-  // Para el alumno Premium, su progreso. Al resto, la invitación.
-  const alumno = sesion?.esPremium ? await datosAlumno(sesion.userId, c) : null;
-  const progreso = alumno ? estadoCurso(c.modulos, alumno.completadas, alumno.intentos, { esAdmin: sesion?.esAdmin }) : null;
+  // Con sesión, lo que el alumno lleva hecho: el camino del temario lo enseña.
+  // Es solo suyo (lo lee la clave de servicio, filtrado por su id). Quien dejó
+  // Premium sigue viendo su progreso y su certificado, pero no entra al aula.
+  // Sin nada empezado, `progreso` es null y el camino sale sin progreso.
+  const alumno = sesion ? await datosAlumno(sesion.userId, c) : null;
+  const empezado = !!alumno && (!!alumno.inscripcion || alumno.completadas.size > 0 || alumno.intentos.length > 0 || !!alumno.certificado);
+  const progreso = alumno && empezado ? estadoCurso(c.modulos, alumno.completadas, alumno.intentos, { esAdmin: sesion?.esAdmin }) : null;
   const { curso, modulos } = c;
 
   return (

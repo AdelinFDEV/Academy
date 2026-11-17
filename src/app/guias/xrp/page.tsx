@@ -3,7 +3,6 @@ import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideAnimatedStat from "@/components/GuideAnimatedStat";
 import GuideSpotlightCards from "@/components/GuideSpotlightCards";
@@ -12,6 +11,9 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import GuideXrpConsensus from "./GuideXrpConsensus";
 import GuideXrpQuiz from "./GuideXrpQuiz";
 import "./xrp.css";
@@ -159,7 +161,6 @@ export default async function XrpPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
@@ -174,7 +175,6 @@ export default async function XrpPage() {
 
       {/* Hero */}
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           ¿Qué es XRP y Ripple?<br />
@@ -182,7 +182,7 @@ export default async function XrpPage() {
         </h1>
         <p className="gbc-hero-desc">
           Enviar dinero de un país a otro sigue tardando días y costando una fortuna en comisiones. XRP nació
-          para arreglar exactamente eso: ser el activo intermedio que mueve valor entre divisas en segundos.
+          para arreglar exactamente eso: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>ser el activo intermedio que mueve valor entre divisas en segundos.</Anotacion>{" "}
           Pero pocos proyectos generan tanta confusión: qué es Ripple, qué es XRP, qué es el XRP Ledger y por
           qué se pasó años enfrentado a la SEC. Esta guía avanzada lo aclara todo, hasta el mecanismo de
           consenso que lo hace funcionar sin minería.
@@ -207,15 +207,16 @@ export default async function XrpPage() {
               tradicional se apoya en una cadena de <strong>bancos corresponsales</strong> conectados por la red
               de mensajería <strong>SWIFT</strong>. Para que funcione, los bancos mantienen dinero inmovilizado
               en cuentas por todo el mundo —las llamadas <strong>nostro/vostro</strong>— por si hace falta pagar
-              en cada divisa. El resultado: transferencias que tardan de uno a varios días, comisiones altas y
-              billones de dólares parados sin hacer nada.
+              en cada divisa. El resultado: <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>transferencias que tardan de uno a varios días, comisiones altas y
+              billones de dólares parados sin hacer nada</Anotacion>.
             </p>
             <p>
-              Aquí es donde conviene separar tres conceptos que casi todo el mundo mezcla. <strong>Ripple</strong>
+              <SimboloEstudio tipo="estrella" margen semilla={7} retraso={200} />
+              Aquí es donde conviene separar tres conceptos que casi todo el mundo mezcla. <Anotacion tipo="bracket" lados="left" color="var(--lila)" relleno={[2, 6, 2, 6]} iteraciones={1}><strong>Ripple</strong>
               es una <em>empresa</em> (antes Ripple Labs) que vende soluciones de pago a instituciones
               financieras. <strong>XRP</strong> es un <em>activo digital</em>. Y el <strong>XRP Ledger (XRPL)</strong>
               es la <em>blockchain</em> pública y descentralizada donde vive XRP. Ripple usa XRP y el XRPL en sus
-              productos, pero la red seguiría existiendo aunque Ripple desapareciera.
+              productos, pero <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>la red seguiría existiendo aunque Ripple desapareciera</Anotacion>.</Anotacion>
             </p>
           </div>
 
@@ -229,10 +230,10 @@ export default async function XrpPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              La propuesta de XRP es actuar como <strong>moneda puente</strong>: en vez de tener euros parados en
+              La propuesta de XRP es actuar como <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={200}><strong>moneda puente</strong></Anotacion>: en vez de tener euros parados en
               una cuenta en Europa y dólares en otra en EE. UU., un pago se convierte a XRP, viaja por el XRPL en
-              segundos y se cambia a la divisa destino al llegar. No hace falta prefinanciar cuentas por medio
-              mundo. Esa es, en una frase, la idea que da sentido a todo lo demás.
+              segundos y se cambia a la divisa destino al llegar. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={600}>No hace falta prefinanciar cuentas por medio
+              mundo.</Anotacion> Esa es, en una frase, la idea que da sentido a todo lo demás.
             </p>
           </div>
         </div>
@@ -240,46 +241,49 @@ export default async function XrpPage() {
 
       {/* ── SECCIÓN 2: CÓMO FUNCIONA ── FREE */}
       <section id="como-funciona" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Sección 2 <span className="gbc-free-pill">Gratis</span></div>
           <h2 className="gbc-title">Cómo funciona: consenso sin minería</h2>
           <div className="gbc-body">
             <p>
-              El XRP Ledger no funciona como Bitcoin. No hay <strong>minería</strong> ni prueba de trabajo, no
+              El XRP Ledger no funciona como Bitcoin. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>No hay <strong>minería</strong> ni prueba de trabajo</Anotacion>, no
               hay competencia por resolver acertijos ni recompensa de bloque. En su lugar usa un mecanismo de
               consenso propio, el <strong>RPCA</strong> (Ripple Protocol Consensus Algorithm), ejecutado por un
               conjunto de <strong>validadores</strong> independientes.
             </p>
             <p>
-              La clave está en la <strong>UNL</strong> (Unique Node List): la lista de validadores en los que
-              cada nodo decide confiar. En cada ronda, los validadores proponen su versión del ledger y la van
-              ajustando hasta que una <strong>supermayoría —en torno al 80%—</strong> coincide. En ese momento el
+              La clave está en la <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={500}><strong>UNL</strong></Anotacion> (Unique Node List): <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>la lista de validadores en los que
+              cada nodo decide confiar</Anotacion>. En cada ronda, los validadores proponen su versión del ledger y la van
+              ajustando hasta que una <strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>supermayoría —en torno al 80%—</Anotacion></strong> coincide. En ese momento el
               ledger se cierra, de forma irreversible, y se abre el siguiente. Todo el proceso dura unos pocos
               segundos. Pruébalo:
             </p>
           </div>
 
-          <GuideXrpConsensus />
+          <div className="gbc-ancho">
+            <GuideXrpConsensus />
+          </div>
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
               Este diseño explica las tres grandes cualidades del XRPL. Es <strong>rápido</strong>: cierra un
               ledger cada 3–5 segundos. Es <strong>barato</strong>: la comisión por transacción es una fracción
               minúscula de un céntimo, y además se <em>destruye</em>, no va a nadie. Y es de <strong>bajísimo
-              consumo energético</strong>, porque no gasta electricidad en minar. El precio a pagar es distinto: la seguridad no descansa en el
-              poder de cómputo, sino en la <strong>diversidad e independencia de los validadores</strong> — justo
+              consumo energético</strong>, porque no gasta electricidad en minar. El precio a pagar es distinto: <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>la seguridad no descansa en el
+              poder de cómputo, sino en la <strong>diversidad e independencia de los validadores</strong></Anotacion> — justo
               el punto donde más se le critica, como veremos.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Un detalle importante: la comisión se quema</div>
-            <div className="gbc-box-body">
-              <p>Cada transacción en el XRPL destruye una cantidad diminuta de XRP como comisión (no se la queda
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={9} retraso={400} />
+            <div className="postit-titulo">Un detalle importante: la comisión se quema</div>
+            <div className="postit-cuerpo">
+              <p>Cada transacción en el XRPL <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>destruye una cantidad diminuta de XRP como comisión</Anotacion> (no se la queda
               ningún validador). Es una defensa anti-spam y, a la vez, hace que el suministro total de XRP sea
               muy levemente <em>deflacionario</em> con el tiempo.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -295,14 +299,15 @@ export default async function XrpPage() {
             <p>
               No se puede entender XRP sin su batalla legal. A finales de <strong>2020</strong>, la
               <strong> SEC</strong> (el regulador de valores de EE. UU.) demandó a Ripple alegando que había
-              vendido XRP como un <strong>valor no registrado</strong> (una <em>security</em>). La noticia
+              vendido XRP como un <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>valor no registrado</Anotacion></strong> (una <em>security</em>). La noticia
               hundió el precio y provocó que varios exchanges estadounidenses suspendieran XRP.
             </p>
             <p>
+              <SimboloEstudio tipo="nb" margen semilla={5} retraso={200} />
               En <strong>julio de 2023</strong>, la jueza <strong>Analisa Torres</strong> emitió un fallo
-              matizado y muy comentado: las <strong>ventas programáticas</strong> de XRP en exchanges (a
-              compradores anónimos) <strong>no</strong> constituyeron una oferta de valores, mientras que
-              ciertas <strong>ventas institucionales</strong> directas <strong>sí</strong>. Fue interpretado
+              matizado y muy comentado: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={500}>las <strong>ventas programáticas</strong> de XRP en exchanges (a
+              compradores anónimos) <strong>no</strong> constituyeron una oferta de valores</Anotacion>, mientras que{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>ciertas <strong>ventas institucionales</strong> directas <strong>sí</strong></Anotacion>. Fue interpretado
               como una victoria parcial clave para Ripple, y XRP recuperó protagonismo. En los años
               siguientes el caso fue resolviéndose (sanciones y fin de los recursos), despejando parte de la
               incertidumbre.
@@ -316,14 +321,15 @@ export default async function XrpPage() {
             <GuideAnimatedStat end={100} suffix="B" decimals={0} label="XRP creados al inicio (preminados)" source="XRP Ledger" />
           </div>
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Por qué fue tan relevante ese fallo</div>
-            <div className="gbc-box-body">
+          <Postit color="menta" giro={1.5} className="xrp-nota">
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={4} animar={false} />
+            <div className="postit-titulo">Por qué fue tan relevante ese fallo</div>
+            <div className="postit-cuerpo">
               <p>Más allá de XRP, la distinción entre venta programática e institucional se siguió muy de
-              cerca en toda la industria, porque tocaba la gran pregunta: ¿cuándo un criptoactivo es un
-              valor? Esta guía es educativa y no es asesoramiento legal ni financiero.</p>
+              cerca en toda la industria, porque tocaba la gran pregunta: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>¿cuándo un criptoactivo es un
+              valor?</Anotacion> Esta guía es educativa y no es asesoramiento legal ni financiero.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -334,7 +340,7 @@ export default async function XrpPage() {
           <h2 className="gbc-title">Para qué se usa XRP y el XRP Ledger</h2>
           <div className="gbc-body">
             <p>
-              El foco de XRP siempre han sido los pagos y las instituciones financieras, pero el XRP Ledger
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>El foco de XRP siempre han sido los pagos y las instituciones financieras</Anotacion>, pero el XRP Ledger
               ha ido sumando capacidades. Estos son sus usos principales.
             </p>
           </div>
@@ -358,30 +364,31 @@ export default async function XrpPage() {
           <h2 className="gbc-title">Tokenomics: 100.000 millones preminados y el escrow</h2>
           <div className="gbc-body">
             <p>
-              A diferencia de Bitcoin, XRP <strong>no se mina</strong>: los <strong>100.000 millones</strong>
+              A diferencia de Bitcoin, XRP <strong><Anotacion tipo="circle" junta retraso={200}>no se mina</Anotacion></strong>: los <strong>100.000 millones</strong>
               de XRP se crearon de golpe al inicio, en 2012. Una gran parte se entregó a la empresa Ripple
-              para financiar el desarrollo y la adopción del ecosistema. Esto es, a la vez, su mayor
-              eficiencia y su mayor polémica.
+              para financiar el desarrollo y la adopción del ecosistema. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>Esto es, a la vez, su mayor
+              eficiencia y su mayor polémica.</Anotacion>
             </p>
             <p>
               Para dar previsibilidad y calmar el miedo a que Ripple vendiera todo de golpe, en 2017 la
-              empresa bloqueó la mayor parte de su XRP en un <strong>escrow</strong> dentro del propio XRPL.
-              El mecanismo libera un tramo cada mes; lo que no se usa se vuelve a bloquear. Así el mercado
+              empresa bloqueó la mayor parte de su XRP en un <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>escrow</Anotacion></strong> dentro del propio XRPL.{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>El mecanismo libera un tramo cada mes</Anotacion>; lo que no se usa se vuelve a bloquear. Así el mercado
               sabe, más o menos, cuánto XRP puede entrar en circulación. Además, como cada transacción
               <strong> quema</strong> una fracción de XRP, la oferta total desciende muy lentamente con el
               tiempo.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La otra cara del preminado</div>
-            <div className="gbc-box-body">
-              <p>El preminado hizo a XRP eficiente y sin coste energético, pero también concentró una parte
-              enorme del suministro en una sola empresa. El escrow aporta transparencia sobre el calendario
+          <Postit color="amarillo" giro={-1} className="xrp-nota">
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" semilla={8} animar={false} />
+            <div className="postit-titulo">La otra cara del preminado</div>
+            <div className="postit-cuerpo">
+              <p>El preminado hizo a XRP eficiente y sin coste energético, pero también <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>concentró una parte
+              enorme del suministro en una sola empresa</Anotacion>. El escrow aporta transparencia sobre el calendario
               de liberación, aunque no elimina la crítica de fondo: buena parte del XRP depende de las
               decisiones de Ripple.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -392,8 +399,8 @@ export default async function XrpPage() {
           <h2 className="gbc-title">Lo que puede salir mal: centralización, escrow y regulación</h2>
           <div className="gbc-body">
             <p>
-              XRP resuelve un problema real y tiene una tecnología sólida, pero arrastra tensiones que llevan
-              años en el centro del debate. Estas son las cuatro que más se le señalan.
+              XRP resuelve un problema real y tiene una tecnología sólida, pero <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>arrastra tensiones que llevan
+              años en el centro del debate</Anotacion>. Estas son las cuatro que más se le señalan.
             </p>
           </div>
 
@@ -402,16 +409,17 @@ export default async function XrpPage() {
             <GuideFlipCards cards={RISK_CARDS} />
           </div>
 
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La pregunta de fondo</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5} className="xrp-nota">
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">La pregunta de fondo</div>
+            <div className="postit-cuerpo">
               <p>Todo se reduce a una tensión: XRP ofrece una solución rapidísima y barata para los pagos
-              globales, pero lo hace apoyándose en un modelo mucho más ligado a una empresa y a un conjunto de
-              validadores de lo que muchos consideran «descentralizado». Su futuro depende de ganar adopción
+              globales, pero <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>lo hace apoyándose en un modelo mucho más ligado a una empresa y a un conjunto de
+              validadores de lo que muchos consideran «descentralizado»</Anotacion>. Su futuro depende de ganar adopción
               real y de que la red siga abriéndose. Esta guía es educativa y no es consejo de inversión:
               infórmate y decide por ti mismo.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -424,7 +432,7 @@ export default async function XrpPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Validador de Confianza</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong className="gbc-logro">Validador de Confianza</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideXrpQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

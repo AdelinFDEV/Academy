@@ -8,16 +8,19 @@ export const MONTHS = [
 
 /**
  * Los gráficos de Recharts pintan en SVG y necesitan el color literal. Son los
- * mismos valores que `--tj-win`, `--tj-loss`… de trading.css: si cambias uno,
- * cambia el otro.
+ * del estilo «Cuaderno de estudio» (globals.css): `--sube`, `--baja`,
+ * `--tinta-3`, `--gris`, `--tinta-2`, el papel y el azul del Diario. Si cambia
+ * uno allí, se cambia aquí.
  */
 export const TJ_COLORS = {
-  win: "#5fd39a",
-  loss: "#ff5c5c",
-  be: "#93a3c4",
-  grid: "rgba(240,244,255,0.07)",
-  axis: "rgba(240,244,255,0.55)",
-  bg: "#0a1628",
+  win: "#12a36b",
+  loss: "#e5484d",
+  be: "#a3a7c0",
+  grid: "#e2e5f4",
+  axis: "#5f5c7d",
+  bg: "#ffffff",
+  azul: "#4f5dff",
+  azulSuave: "#e4e7ff",
 } as const;
 
 export type Tone = "win" | "loss" | "be";

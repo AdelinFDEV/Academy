@@ -45,15 +45,15 @@ export default function GuideUniswapLiquidez() {
       <div className="uni-calc-campos">
         <label htmlFor="uni-aportacion">
           <span>Lo que aportas, en euros</span>
-          <input id="uni-aportacion" inputMode="decimal" value={aportacion} onChange={(e) => setAportacion(e.target.value)} />
+          <input id="uni-aportacion" inputMode="decimal" autoComplete="off" value={aportacion} onChange={(e) => setAportacion(e.target.value)} />
         </label>
         <label htmlFor="uni-comisiones">
           <span>Comisiones cobradas, en % de lo aportado</span>
-          <input id="uni-comisiones" inputMode="decimal" value={comisiones} onChange={(e) => setComisiones(e.target.value)} />
+          <input id="uni-comisiones" inputMode="decimal" autoComplete="off" value={comisiones} onChange={(e) => setComisiones(e.target.value)} />
         </label>
         <label htmlFor="uni-cambio" className="uni-calc-rango">
           <span>
-            Cambio de precio del token volátil <strong>{conSigno(cambio, 0)} %</strong>
+            Cambio de precio del token volátil <strong className={cambio > 0 ? "es-sube" : cambio < 0 ? "es-baja" : undefined}>{conSigno(cambio, 0)} %</strong>
           </span>
           <input id="uni-cambio" type="range" min={-90} max={400} step={5} value={cambio} onChange={(e) => setCambio(Number(e.target.value))} />
         </label>

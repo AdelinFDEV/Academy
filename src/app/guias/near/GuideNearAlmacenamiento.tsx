@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Database, Lock, Undo2 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Cuánto NEAR queda bloqueado por guardar datos en la red (storage staking).
@@ -51,27 +52,27 @@ export default function GuideNearAlmacenamiento() {
           <span id="near-alm-tokens" className="near-alm-etiqueta">Tokens en los que te das de alta</span>
           <span className="near-alm-ayuda">Cada token que quieras recibir te pide registrarte una vez: unos 125 bytes</span>
           <div className="near-alm-contador" role="group" aria-labelledby="near-alm-tokens">
-            <button type="button" onClick={() => setTokens(Math.max(tokens - 1, 0))} disabled={tokens === 0} aria-label="Un token menos">−</button>
+            <Tecla color="blanca" tamano="peq" icono onClick={() => setTokens(Math.max(tokens - 1, 0))} disabled={tokens === 0} aria-label="Un token menos">−</Tecla>
             <output aria-live="polite">{tokens}</output>
-            <button type="button" onClick={() => setTokens(Math.min(tokens + 1, 50))} disabled={tokens === 50} aria-label="Un token más">+</button>
+            <Tecla color="blanca" tamano="peq" icono onClick={() => setTokens(Math.min(tokens + 1, 50))} disabled={tokens === 50} aria-label="Un token más">+</Tecla>
           </div>
         </div>
 
         <div className="near-alm-campo">
           <label htmlFor="near-alm-kb" className="near-alm-etiqueta">Datos propios que guardas, en kB</label>
           <span className="near-alm-ayuda">Un contrato que despliegas, un texto, un archivo</span>
-          <input id="near-alm-kb" inputMode="decimal" value={kb} onChange={(e) => setKb(e.target.value)} />
+          <input id="near-alm-kb" inputMode="decimal" autoComplete="off" value={kb} onChange={(e) => setKb(e.target.value)} />
           <div className="near-alm-presets" role="group" aria-label="Ejemplos de tamaño">
             {PRESETS.map((p) => (
-              <button
+              <Tecla
                 key={p.kb}
-                type="button"
+                tamano="peq"
+                color={kbNum === p.kb ? "cielo" : "blanca"}
                 aria-pressed={kbNum === p.kb}
-                className={kbNum === p.kb ? "is-activo" : ""}
                 onClick={() => setKb(String(p.kb))}
               >
                 {p.texto}
-              </button>
+              </Tecla>
             ))}
           </div>
         </div>
@@ -79,7 +80,7 @@ export default function GuideNearAlmacenamiento() {
         <label htmlFor="near-alm-precio" className="near-alm-campo">
           <span className="near-alm-etiqueta">Precio de NEAR, en euros</span>
           <span className="near-alm-ayuda">Pon el del día: la cuenta en NEAR no cambia, la de euros sí</span>
-          <input id="near-alm-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="near-alm-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
       </div>
 

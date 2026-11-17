@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Eye, EyeOff, Check } from "lucide-react";
 import { passwordChecks } from "@/lib/passwordRules";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
+import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import { Aviso, CampoClave, RequisitosClave } from "@/components/acceso/Campos";
 
 export default function ResetPasswordPage() {
   const supabase = createClient();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
@@ -54,10 +54,12 @@ export default function ResetPasswordPage() {
 
     if (!passwordChecks(password).every((c) => c.ok)) {
       setError("La contraseña no cumple todos los requisitos indicados abajo.");
+      sonar("error");
       return;
     }
     if (password !== confirm) {
       setError("Las contraseñas no coinciden.");
+      sonar("error");
       return;
     }
 
@@ -72,6 +74,7 @@ export default function ResetPasswordPage() {
           ? "La contraseña no cumple todos los requisitos indicados abajo."
           : "No se pudo actualizar la contraseña. El enlace puede haber expirado."
       );
+      sonar("error");
       return;
     }
 
@@ -79,98 +82,90 @@ export default function ResetPasswordPage() {
     await supabase.auth.signOut({ scope: "others" });
     setLoading(false);
     setDone(true);
+    sonar("guardado");
     setTimeout(() => {
       router.push("/dashboard");
       router.refresh();
     }, 2000);
   }
 
+  const titulo = done ? (
+    <>Contraseña <span className="fluor">actualizada</span></>
+  ) : error && !ready ? (
+    "Enlace inválido"
+  ) : !ready ? (
+    "Verificando enlace…"
+  ) : (
+    <>Elige una <span className="fluor">nueva contraseña</span></>
+  );
+
   return (
-    <div className="auth-page">
-      <div className="bg-ambient" />
-      <div className="auth-card">
-        <Link href="/" className="auth-brand" style={{ textDecoration: "none" }}>
-          adelin<span>btc</span>
-        </Link>
+    <AccesoShell nota="Contraseña nueva" titulo={titulo} apunte={APUNTE}>
+      {done ? (
+        <Aviso tipo="ok" titulo="Guardada">
+          Tu contraseña se ha guardado correctamente. Redirigiendo...
+        </Aviso>
+      ) : error && !ready ? (
+        <>
+          <Aviso tipo="error" titulo="No podemos usar este enlace">
+            {error}
+          </Aviso>
+          <Tecla href="/forgot-password" tamano="grande" ancho>
+            Solicitar nuevo enlace
+          </Tecla>
+        </>
+      ) : !ready ? (
+        <p className="acc-cargando" role="status">
+          Un segundo, estamos comprobando tu enlace…
+        </p>
+      ) : (
+        <form onSubmit={handleSubmit} className="acc-form">
+          <CampoClave
+            id="password"
+            name="new-password"
+            etiqueta="Nueva contraseña"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Mínimo 8 caracteres"
+            describe="requisitos-clave"
+            required
+          />
+          <CampoClave
+            id="confirm"
+            name="confirm-password"
+            etiqueta="Confirmar contraseña"
+            autoComplete="new-password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            placeholder="Repite la contraseña"
+            required
+          />
 
-        {done ? (
-          <>
-            <p className="auth-subtitle">Contraseña actualizada</p>
-            <div className="auth-success">
-              <p>Tu contraseña se ha guardado correctamente. Redirigiendo...</p>
-            </div>
-          </>
-        ) : error && !ready ? (
-          <>
-            <p className="auth-subtitle">Enlace inválido</p>
-            <div className="auth-success">
-              <p>{error}</p>
-              <Link
-                href="/forgot-password"
-                className="btn-primary"
-                style={{ marginTop: "16px", display: "block", textAlign: "center" }}
-              >
-                Solicitar nuevo enlace
-              </Link>
-            </div>
-          </>
-        ) : !ready ? (
-          <p className="auth-subtitle">Verificando enlace...</p>
-        ) : (
-          <>
-            <p className="auth-subtitle">Elige una nueva contraseña</p>
-            <form onSubmit={handleSubmit} className="auth-form">
-              <div className="field">
-                <label htmlFor="password">Nueva contraseña</label>
-                <div className="field-pw-wrap">
-                  <input
-                    id="password"
-                    type={showPw ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mínimo 8 caracteres"
-                    required
-                  />
-                  <button type="button" className="field-pw-toggle" onClick={() => setShowPw(v => !v)} tabIndex={-1} aria-label={showPw ? "Ocultar" : "Mostrar"}>
-                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-              <div className="field">
-                <label htmlFor="confirm">Confirmar contraseña</label>
-                <div className="field-pw-wrap">
-                  <input
-                    id="confirm"
-                    type={showConfirm ? "text" : "password"}
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    placeholder="Repite la contraseña"
-                    required
-                  />
-                  <button type="button" className="field-pw-toggle" onClick={() => setShowConfirm(v => !v)} tabIndex={-1} aria-label={showConfirm ? "Ocultar" : "Mostrar"}>
-                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
+          <RequisitosClave id="requisitos-clave" password={password} />
 
-              <ul className="pw-requirements" aria-live="polite">
-                {passwordChecks(password).map((req) => (
-                  <li key={req.label} className={req.ok ? "ok" : ""}>
-                    <Check size={13} aria-hidden="true" />
-                    {req.label}
-                  </li>
-                ))}
-              </ul>
+          {error && (
+            <Aviso tipo="error" titulo="No se ha guardado">
+              {error}
+            </Aviso>
+          )}
 
-              {error && <p className="auth-error">{error}</p>}
-
-              <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? "Guardando..." : "Guardar nueva contraseña"}
-              </button>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
+          <Tecla type="submit" tamano="grande" ancho disabled={loading}>
+            {loading ? "Guardando…" : "Guardar nueva contraseña"}
+          </Tecla>
+        </form>
+      )}
+    </AccesoShell>
   );
 }
+
+/** El apunte de la derecha: no reutilizar la contraseña. */
+const APUNTE: Apunte = {
+  tema: "Seguridad",
+  pregunta: "¿Puedo volver a usar la de antes?",
+  respuesta: "Mejor no",
+  detalle: "Elige una nueva y única: si otra web filtra una contraseña repetida, esta sigue a salvo.",
+  color: "naranja",
+  postit: "Último paso",
+  nota: "Al guardarla, cerramos tus sesiones abiertas en otros dispositivos",
+};

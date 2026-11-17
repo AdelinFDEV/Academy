@@ -2,20 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Flame, Star, Trophy, Check, Lock, Target, ArrowRight, Zap, BookOpen, NotebookPen, GraduationCap } from "lucide-react";
+import { Flame, Star, Trophy, Check, Lock, Target, ArrowRight, ArrowLeft, Zap, BookOpen, NotebookPen, GraduationCap } from "lucide-react";
 import {
   BADGE_DEFS, DIARIO_BADGE_DEFS, GUIDE_BADGE_DEFS, diarioLevel, iconoCurso, isEarned,
   type BadgeDef, type BadgeStats,
 } from "@/lib/logros";
 import type { UnlockEventDetail } from "@/components/BadgeNotifier";
-
-export function FeaturedStar() {
-  return (
-    <span className="featured-star" title="Usuario destacado — 30 días de racha">
-      <Star size={14} fill="currentColor" aria-hidden="true" />
-    </span>
-  );
-}
+import Tecla from "@/components/cuaderno/Tecla";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import PegatinaLogro, { colorDeLogro, type ColorPegatina } from "@/components/panel/PegatinaLogro";
+import RachaSemana from "@/components/panel/RachaSemana";
+import { semanaDeRacha } from "@/lib/rachaSemana";
+import { todayStr } from "@/lib/streak";
+import { sonar } from "@/lib/sonidos";
 
 /** Logros guardados: id → fecha. null = concedido en esta visita, aún sin fecha leída. */
 type Earned = Map<string, string | null>;
@@ -51,28 +50,10 @@ function diarioDate(earned: Earned, b: BadgeDef): string | null {
   return last;
 }
 
-function ProgressRing({ pct }: { pct: number }) {
-  const r = 58;
-  const circ = 2 * Math.PI * r;
-  return (
-    <svg viewBox="0 0 132 132" aria-hidden="true">
-      <defs>
-        <linearGradient id="lg-ring-grad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f5d48a" />
-          <stop offset="100%" stopColor="#d99a1e" />
-        </linearGradient>
-      </defs>
-      <circle className="lg-ring-track" cx="66" cy="66" r={r} />
-      <circle
-        className="lg-ring-fill" cx="66" cy="66" r={r}
-        strokeDasharray={circ} strokeDashoffset={circ * (1 - Math.max(0, Math.min(pct, 100)) / 100)}
-      />
-    </svg>
-  );
-}
-
-function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
+function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso, indice }: {
   badge: BadgeDef;
+  /** Su posición en la rejilla: decide cuánto se tuerce la pegatina. */
+  indice: number;
   earned: Earned;
   ids: Set<string>;
   stats: BadgeStats | null;
@@ -89,8 +70,8 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
   if (badge.diario) {
     foot = (
       <>
-        <span className="lg-levels" aria-hidden="true">
-          {Array.from({ length: badge.diario.levels }, (_, i) => <i key={i} className={i < level ? "on" : undefined} />)}
+        <span className="lg-niveles" aria-hidden="true">
+          {Array.from({ length: badge.diario.levels }, (_, i) => <i key={i} className={i < level ? "is-on" : undefined} />)}
         </span>
         <span className="lg-foot-text">
           {level ? `Nivel ${level} de ${badge.diario.levels}${date ? ` · ${dateStr(date)}` : ""}` : "Aún sin niveles"}
@@ -99,15 +80,15 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
     );
   } else if (got) {
     foot = (
-      <span className="lg-got">
-        <Check size={11} strokeWidth={3.2} aria-hidden="true" /> Conseguido{date ? ` · ${dateStr(date)}` : " ahora"}
+      <span className="pn-chip tono-menta">
+        <Check size={12} strokeWidth={3.2} aria-hidden="true" /> Conseguido{date ? ` · ${dateStr(date)}` : " ahora"}
         {notaCurso !== undefined && ` · nota ${notaTexto(notaCurso)}`}
       </span>
     );
   } else if (prog) {
     foot = (
       <>
-        <span className="lg-bar"><i style={{ width: `${prog.pct}%` }} /></span>
+        <span className="pn-barra pn-barra--fina tono-amarillo"><i style={{ width: `${prog.pct}%` }} /></span>
         <span className="lg-foot-text">{prog.value} de {prog.target} {prog.unit}</span>
       </>
     );
@@ -116,19 +97,19 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
   } else if (badge.cursoSlug) {
     foot = <span className="lg-foot-text">{isPremium ? "Hacer el curso" : "Ver el curso"} <ArrowRight size={12} aria-hidden="true" /></span>;
   } else if (badge.id === "first-premium" && !isPremium) {
-    foot = <Link href="/premium" className="lg-cta">Ver Premium <ArrowRight size={12} aria-hidden="true" /></Link>;
+    foot = <Tecla href="/premium" tamano="peq">Ver Premium <ArrowRight size={13} aria-hidden="true" /></Tecla>;
   } else {
     foot = <span className="lg-foot-text"><Lock size={11} aria-hidden="true" /> Bloqueado</span>;
   }
 
   const card = (
-    <article className={`lg-card${got ? " is-earned" : " is-locked"}${badge.special ? " is-special" : ""}`}>
-      {badge.special && <span className="lg-special"><Star size={9} fill="currentColor" aria-hidden="true" /> Especial</span>}
-      <div className="lg-medal" aria-hidden="true">
-        {badge.icon}
-        {!got && <span className="lg-medal-lock"><Lock size={9} strokeWidth={3} /></span>}
-      </div>
-      <h3 className="lg-name">{badge.label}</h3>
+    <article className={`lg-card pgl-anfitrion${got ? " is-earned" : " is-locked"}${badge.special ? " is-special" : ""}`}>
+      {badge.special && <span className="lg-especial">Especial</span>}
+      <PegatinaLogro icono={badge.icon} color={colorDeLogro(badge)} conseguida={got} indice={indice} especial={badge.special} />
+      <h3 className="lg-name">
+        {badge.label}
+        <span className="sr-only">{got ? " (conseguido)" : " (sin conseguir)"}</span>
+      </h3>
       <p className="lg-cond">{badge.condition}</p>
       {badge.reward && (
         <p className="lg-reward"><Star size={11} fill="currentColor" aria-hidden="true" /> {badge.reward}</p>
@@ -182,6 +163,10 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
     [cursos],
   );
   const [stats, setStats] = useState<BadgeStats | null>(null);
+  // El día de hoy (zona de la academia) para pintar la semana de la racha. Se
+  // fija al responder /api/streak, que acaba de apuntar la visita de hoy: así
+  // la racha termina hoy y el HTML del servidor no depende de la hora.
+  const [hoy, setHoy] = useState<string | null>(null);
 
   useEffect(() => {
     // Primero la racha de hoy; después los logros, que dependen de ella.
@@ -189,9 +174,12 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
       .then(r => r.json())
       .then(s => {
         if (s.current_streak !== undefined) {
+          // La racha se acaba de encender (o de sumar el día de hoy): su chispa.
+          if (s.current_streak > initialStreak) sonar("racha");
           setStreak(s.current_streak);
           setMaxStreak(s.max_streak);
           setFeatured(s.is_featured);
+          setHoy(todayStr());
         }
         return fetch("/api/badges", { method: "POST" });
       })
@@ -210,30 +198,32 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
         }
       })
       .catch(() => {});
+    // Solo al entrar: la racha con la que se pintó la página es la de partida.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const ids = useMemo(() => new Set(earned.keys()), [earned]);
   // Sin Premium solo se enseñan los del diario que ya se consiguieron: el resto no se puede ganar.
   const diarioDefs = DIARIO_BADGE_DEFS.filter(b => showDiario || isEarned(ids, b));
 
-  const categories: { id: CategoryId; num: string; title: string; sub: string; icon: React.ReactNode; defs: BadgeDef[] }[] = [
+  const categories: { id: CategoryId; num: string; title: string; sub: string; icon: React.ReactNode; color: ColorPegatina; defs: BadgeDef[] }[] = [
     {
-      id: "actividad", num: "01", title: "Actividad", icon: <Zap size={15} />,
+      id: "actividad", num: "01", title: "Actividad", icon: <Zap size={15} />, color: "naranja",
       sub: "Constancia: entra en la academia varios días seguidos y mantén tu racha.",
       defs: BADGE_DEFS,
     },
     {
-      id: "guias", num: "02", title: "Guías", icon: <BookOpen size={15} />,
+      id: "guias", num: "02", title: "Guías", icon: <BookOpen size={15} />, color: "cielo",
       sub: "Completa el quiz de cada guía sin un solo fallo y gana su insignia exclusiva.",
       defs: GUIDE_BADGE_DEFS,
     },
     {
-      id: "cursos", num: "03", title: "Cursos", icon: <GraduationCap size={15} />,
+      id: "cursos", num: "03", title: "Cursos", icon: <GraduationCap size={15} />, color: "lila",
       sub: "Los logros de todos los cursos. Aprueba el examen final de un curso y gana el suyo, con la nota que sacaste.",
       defs: cursoDefs,
     },
     {
-      id: "diario", num: "04", title: "Diario de Trading", icon: <NotebookPen size={15} />,
+      id: "diario", num: "04", title: "Diario de Trading", icon: <NotebookPen size={15} />, color: "azul",
       sub: "Hitos que premian la disciplina al operar. Cada uno tiene varios niveles.",
       defs: diarioDefs,
     },
@@ -255,50 +245,54 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
     .sort((a, b) => a.progress!.target - b.progress!.target)[0];
   const daysLeft = streakGoal ? Math.max(0, streakGoal.progress!.target - streak) : 0;
 
-  return (
-    <div className="imm lg-page">
-      <div className="imm-backdrop" aria-hidden="true">
-        <span className="imm-grid" />
-        <span className="imm-orb imm-orb--1" />
-        <span className="imm-orb imm-orb--2" />
-        <span className="imm-orb imm-orb--3" />
-      </div>
+  const semana = hoy ? semanaDeRacha(streak, hoy, hoy) : null;
+  const pctTotal = total ? Math.round((done / total) * 100) : 0;
 
-      <header className="imm-head">
-        <span className="imm-watermark" aria-hidden="true">{done}/{total}</span>
-        <span className="imm-eyebrow">
-          <span className="imm-eyebrow-dot" aria-hidden="true" />
-          Tu progreso
-        </span>
-        <h1 className="imm-title">
-          Logros
-          <span className="imm-title-grad">Cada paso deja huella.</span>
+  return (
+    <div className="lg-page">
+      <header className="pn-cab tono-amarillo">
+        <Tecla href="/dashboard" color="blanca" tamano="peq" className="pn-volver">
+          <ArrowLeft size={14} strokeWidth={2.6} aria-hidden="true" /> Mi panel
+        </Tecla>
+        <p className="pn-mano">tu colección de pegatinas</p>
+        <h1 className="pn-titulo">
+          Logros: cada paso deja <Anotacion tipo="highlight" color="var(--amarillo)" retraso={250}>huella</Anotacion>
         </h1>
-        <p className="imm-sub">
+        <p className="pn-lead">
           Constancia, guías y disciplina al operar: todo lo que vas desbloqueando en la academia, y lo que te falta.
         </p>
       </header>
 
-      <section className="lg-panel lg-hero" aria-label="Progreso total">
-        <div className="lg-ring">
-          <ProgressRing pct={total ? (done / total) * 100 : 0} />
-          <div className="lg-ring-center">
-            <strong>{done}</strong>
-            <span>de {total}</span>
-          </div>
-        </div>
-
+      <section className="pn-hoja lg-hero" aria-label="Progreso total">
         <div className="lg-hero-main">
-          <span className="lg-kicker">Progreso total</span>
-          <h2>{done === total ? "Los tienes todos" : `${done} de ${total} logros`}</h2>
-          <p>{done === total ? "No queda ninguno por desbloquear." : `Te faltan ${total - done}. Toca una categoría para ir a ella.`}</p>
+          <span className="pn-etiqueta">Progreso total</span>
+          <p className="lg-total">
+            <strong>{done}</strong>
+            <span>de {total} logros</span>
+          </p>
+          <div className="pn-progreso">
+            <span
+              className="pn-barra tono-amarillo"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={pctTotal}
+              aria-label="Progreso total de logros"
+            >
+              <i style={{ width: `${pctTotal}%` }} />
+            </span>
+            <b>{pctTotal} %</b>
+          </div>
+          <p className="lg-hero-nota">
+            {done === total ? "Los tienes todos: no queda ninguno por desbloquear." : `Te faltan ${total - done}. Toca una categoría para ir a ella.`}
+          </p>
           <ul className="lg-cats">
             {visible.map(c => (
-              <li key={c.id} className={`lg-cat--${c.id}`}>
-                <a href={`#logros-${c.id}`}>
-                  <span className="lg-cat-icon">{c.icon}</span>
+              <li key={c.id}>
+                <a href={`#logros-${c.id}`} className={`lg-cat tono-${c.color}`}>
+                  <span className="lg-cat-icon" aria-hidden="true">{c.icon}</span>
                   <span className="lg-cat-name">{c.title}</span>
-                  <span className="lg-bar"><i style={{ width: `${(c.done / c.defs.length) * 100}%` }} /></span>
+                  <span className="pn-barra pn-barra--fina"><i style={{ width: `${(c.done / c.defs.length) * 100}%` }} /></span>
                   <span className="lg-cat-count">{c.done}/{c.defs.length}</span>
                 </a>
               </li>
@@ -307,41 +301,51 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
         </div>
 
         {next && (
-          <aside className="lg-next lg-cat--actividad">
-            <span className="lg-kicker"><Target size={13} aria-hidden="true" /> Tu siguiente logro</span>
-            <div className="lg-next-row">
-              <div className="lg-medal is-small" aria-hidden="true">{next.b.icon}</div>
-              <div>
-                <strong>{next.b.label}</strong>
-                <span>{next.b.condition}</span>
-              </div>
-            </div>
-            <span className="lg-bar"><i style={{ width: `${next.p.pct}%` }} /></span>
+          <aside className="lg-next pgl-anfitrion">
+            <span className="lg-next-postit">tu siguiente logro</span>
+            <PegatinaLogro icono={next.b.icon} color="naranja" conseguida={false} tamano="grande" />
+            <strong className="lg-next-nombre">{next.b.label}</strong>
+            <span className="lg-next-cond">{next.b.condition}</span>
+            <span className="pn-barra tono-naranja"><i style={{ width: `${next.p.pct}%` }} /></span>
             <span className="lg-foot-text">
-              {next.p.value} de {next.p.target} {next.p.unit} · te {next.p.target - next.p.value === 1 ? "falta" : "faltan"} {next.p.target - next.p.value}
+              <Target size={13} aria-hidden="true" /> {next.p.value} de {next.p.target} {next.p.unit} · te {next.p.target - next.p.value === 1 ? "falta" : "faltan"} {next.p.target - next.p.value}
             </span>
           </aside>
         )}
       </section>
 
-      <section className="lg-panel lg-streak" aria-label="Racha">
-        <span className="lg-flame"><Flame size={26} aria-hidden="true" /></span>
-        <div>
-          <strong className="lg-streak-num">{streak}</strong>
-          <span className="lg-streak-label">{streak === 1 ? "día" : "días"} de racha actual</span>
+      <section className="pn-hoja lg-streak" aria-label="Racha">
+        <div className="lg-streak-cifra">
+          <span className="lg-flame" aria-hidden="true"><Flame size={28} /></span>
+          <div>
+            <strong className="lg-streak-num">{streak}</strong>
+            <span className="lg-streak-label">{streak === 1 ? "día" : "días"} de racha actual</span>
+          </div>
         </div>
-        <div className="lg-chips">
-          <span className="lg-chip"><Trophy size={13} aria-hidden="true" /> Récord: <strong>{maxStreak}</strong> {maxStreak === 1 ? "día" : "días"}</span>
-          {featured && <span className="lg-chip is-gold"><Star size={12} fill="currentColor" aria-hidden="true" /> Destacado</span>}
+
+        <div className="lg-streak-semana">
+          <span className="pn-etiqueta">Esta semana</span>
+          {semana ? (
+            <RachaSemana dias={semana} etiqueta="Tu racha en los últimos siete días" />
+          ) : (
+            <ol className="rs is-cargando" aria-hidden="true">
+              {Array.from({ length: 7 }, (_, i) => <li key={i} className="rs-dia" />)}
+            </ol>
+          )}
+          <div className="lg-chips">
+            <span className="pn-chip tono-gris"><Trophy size={13} aria-hidden="true" /> Récord: <strong>{maxStreak}</strong> {maxStreak === 1 ? "día" : "días"}</span>
+            {featured && <span className="pn-chip tono-amarillo"><Star size={12} fill="currentColor" aria-hidden="true" /> Destacado</span>}
+          </div>
         </div>
-        <div className="lg-streak-goal lg-cat--actividad">
+
+        <div className="lg-streak-goal">
           {streakGoal ? (
             <>
               <p>
                 Te {daysLeft === 1 ? "falta" : "faltan"} <strong>{daysLeft} {daysLeft === 1 ? "día" : "días"} seguidos</strong> para
                 «{streakGoal.label}». Entra cada día a la academia para no romper la racha.
               </p>
-              <span className="lg-bar"><i style={{ width: `${Math.min(100, (streak / streakGoal.progress!.target) * 100)}%` }} /></span>
+              <span className="pn-barra tono-naranja"><i style={{ width: `${Math.min(100, (streak / streakGoal.progress!.target) * 100)}%` }} /></span>
             </>
           ) : (
             <p>Tienes todos los logros de racha. Mantenerla sigue sumando días a tu récord.</p>
@@ -350,19 +354,19 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
       </section>
 
       {visible.map(c => (
-        <section key={c.id} id={`logros-${c.id}`} className={`lg-section lg-cat--${c.id}`}>
-          <header className="imm-sechead">
-            <span className="imm-sechead-num">{c.num}</span>
+        <section key={c.id} id={`logros-${c.id}`} className={`lg-section tono-${c.color}`} aria-labelledby={`logros-${c.id}-titulo`}>
+          <header className="lg-sechead">
+            <span className="lg-sechead-num" aria-hidden="true">{c.num}</span>
             <div>
-              <h2>{c.title}</h2>
-              <p>{c.sub}</p>
+              <h2 id={`logros-${c.id}-titulo`} className="pn-h2">{c.title}</h2>
+              <p className="pn-sub">{c.sub}</p>
             </div>
-            <span className="lg-count">{c.done} de {c.defs.length}</span>
+            <span className={`pn-chip tono-${c.color}`}>{c.done} de {c.defs.length}</span>
           </header>
           <div className="lg-grid">
-            {c.defs.map(b => (
+            {c.defs.map((b, i) => (
               <LogroCard
-                key={b.id} badge={b} earned={earned} ids={ids} stats={stats} isPremium={showDiario}
+                key={b.id} badge={b} earned={earned} ids={ids} stats={stats} isPremium={showDiario} indice={i}
                 notaCurso={b.cursoSlug ? notaPorCurso.get(b.cursoSlug) : undefined}
               />
             ))}

@@ -1,32 +1,43 @@
 import { createClient } from "@/lib/supabase/server";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
-import Link from "next/link";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
+import Link from "next/link";
 import {
-  NotebookPen, Wallet, GraduationCap, Crown, ArrowRight, Check, Lock, Flame, Trophy,
-  BookOpenCheck, ShieldCheck, Clock,
+  NotebookPen, Wallet, GraduationCap, Crown, ArrowRight, Check, Flame, Trophy, BookOpenCheck, Clock,
 } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardAtajos from "@/components/DashboardAtajos";
 import { LOGROS, diarioLevel, isEarned } from "@/lib/logros";
-import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
-import type { ToolSection } from "@/components/DashboardToolsSidebar";
+import IndicePanel, { type ToolSection } from "@/components/panel/IndicePanel";
+import PegatinaLogro, { colorDeLogro } from "@/components/panel/PegatinaLogro";
+import RachaSemana from "@/components/panel/RachaSemana";
+import Tecla from "@/components/cuaderno/Tecla";
+import { semanaDeRacha } from "@/lib/rachaSemana";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
-import { getEffectiveStreak } from "@/lib/streak";
+import { getEffectiveStreak, todayStr } from "@/lib/streak";
 import GuiaPortada from "@/components/GuiaPortada";
 import AvatarUsuario from "@/components/AvatarUsuario";
 import VitrinaCertificados, { type EjemploVitrina } from "@/components/VitrinaCertificados";
 import { certificadosDelAlumno, cursoPorSlug, cursosPublicados } from "@/lib/cursos";
+import { destinoPorRuta } from "@/lib/herramientas";
+
+/** La semana de la racha. Fuera del componente: la fecha de hoy no puede leerse en el render. */
+function semanaActual(racha: number, ultimoDia: string | null | undefined) {
+  return semanaDeRacha(racha, racha > 0 ? ultimoDia ?? null : null, todayStr());
+}
 
 /**
  * El panel de cada usuario.
  *
- * Rehecho el 04-11-2026: arriba, una cabecera con el saludo y tres datos
- * suyos —racha, logros y guías completadas—; debajo, la cartera, los logros
- * con su barra de progreso, las últimas guías (marcadas si ya las completó),
- * y lo que tiene guardado. Todo lo que se cuenta aquí sale de sus datos: no
- * hay ni una cifra de adorno.
+ * Rehecho el 04-11-2026 y pasado al estilo «Cuaderno de estudio» el
+ * 17-11-2026: arriba, el saludo con tres datos suyos —racha, logros y guías
+ * completadas— y la racha de la semana; el aviso del 2FA si le falta; el
+ * índice de todo lo suyo (que sustituye al rail fijo), la vitrina (arriba si
+ * ya tiene certificados, después de los logros si está vacía), la cartera, los
+ * logros como pegatinas, las últimas guías (marcadas si ya las completó) y lo
+ * que tiene guardado.
+ * Todo lo que se cuenta aquí sale de sus datos: no hay ni una cifra de adorno.
  */
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -61,7 +72,7 @@ export default async function DashboardPage() {
       .from("user_badges")
       .select("badge_id")
       .eq("user_id", user.id),
-    // La foto de perfil, para «Mi perfil» del rail. Aparte: si la columna aún
+    // La foto de perfil, para el saludo y «Mi perfil» del índice. Aparte: si la columna aún
     // no existe, falla sola y sale la inicial.
     supabase.from("profiles").select("avatar").eq("id", user.id).maybeSingle(),
   ]);
@@ -77,7 +88,7 @@ export default async function DashboardPage() {
     }
   }
 
-  // La foto que eligió en «Mi perfil»: junto a su nombre en el saludo y en «Mi perfil» del rail.
+  // La foto que eligió en «Mi perfil»: junto a su nombre en el saludo y en «Mi perfil» del índice.
   const avatar = (foto as { avatar?: string | null } | null)?.avatar ?? null;
 
   const savedTermsList = savedTermsData ?? [];
@@ -95,7 +106,9 @@ export default async function DashboardPage() {
 
   // Una guía está completada cuando tiene su logro: el quiz con nota perfecta.
   const guiasCompletadas = GUIDES.filter((g) => earnedBadgeIds.has(g.badgeId)).length;
+  const semana = semanaActual(effectiveStreak, profile?.last_seen);
 
+  const acceso = { logueado: true, premium: isPremium };
   const TOOL_SECTIONS: ToolSection[] = [
     {
       label: "Educación",
@@ -112,8 +125,9 @@ export default async function DashboardPage() {
       tools: [
         // Desde el 31-10-2026 son estas cuatro: se retiraron Watchlist,
         // Liberaciones, Radar, Mi Portfolio y la Calculadora de Riesgo.
-        { href: isPremium ? "/dashboard/trading" : "#", icon: "notebookpen", name: "Diario de Trading",    desc: "Registra y analiza tus operaciones",     locked: !isPremium, soon: false },
-        { href: isPremium ? "/portfolio"         : "#", icon: "piechart",    name: "Portfolio Adelin",     desc: "Sigue las compras de AdelinBTC en SPOT", locked: !isPremium, soon: false },
+        // Sin Premium llevan a su ficha (destinoPorRuta): bloqueadas, pero no muertas.
+        { href: destinoPorRuta("/dashboard/trading", acceso), icon: "notebookpen", name: "Diario de Trading", desc: "Registra y analiza tus operaciones",     locked: !isPremium, soon: false },
+        { href: destinoPorRuta("/portfolio", acceso),         icon: "piechart",    name: "Portfolio Adelin",  desc: "Sigue las compras de AdelinBTC en SPOT", locked: !isPremium, soon: false },
         { href: "/calculadora",                         icon: "target",      name: "Predicción de Precio", desc: "¿Qué Market Cap necesita tu token?",     locked: false,      soon: false },
         { href: "/logros",                              icon: "trophy",      name: "Logros",               desc: "Tu progreso y rachas",                   locked: false,      soon: false },
       ],
@@ -130,167 +144,174 @@ export default async function DashboardPage() {
     },
   ];
 
-  return (
-    <>
-    {/* El rail va PRIMERO en el DOM aunque esté posicionado aparte: así el
-        tabulador y los lectores de pantalla recorren la navegación antes que
-        el contenido, que es el orden que se ve. */}
-    <DashboardToolsSidebar sections={TOOL_SECTIONS} />
+  const vitrina = <VitrinaCertificados certificados={certificados} forma="estante" nombre={name} ejemplo={ejemploVitrina} />;
 
-    <div className="dash-page-wrap">
+  return (
     <main className="dashboard-main">
 
-      {/* ── Cabecera: el saludo y tres datos suyos ── */}
-      <section className={`dh-hero${isPremium ? " is-premium" : ""}`}>
-        <div className="dh-hero-texto">
-          <span className="dh-plan">
-            {isPremium && <Crown size={13} aria-hidden="true" />}
-            {planLabel}
-          </span>
+      {/* ── Cabecera: el saludo, tres datos suyos y la racha de la semana ── */}
+      <section className="dh pn-hoja" aria-labelledby="dh-titulo">
+        <div className="dh-texto">
+          <p className="pn-mano dh-nota">tu cuaderno de estudio</p>
           <div className="dh-saludo-fila">
             {avatar && <AvatarUsuario avatar={avatar} inicial={(name.trim().charAt(0) || "U").toUpperCase()} className="dh-saludo-foto" />}
-            <h1 className="dh-saludo">
-              Hola, <span>{name}</span>
+            <h1 id="dh-titulo" className="dh-saludo">
+              Hola, <span className="fluor">{name}</span>
               {profile?.is_featured && (
                 <span className="dh-estrella" title="Usuario destacado: 30 días de racha">★</span>
               )}
             </h1>
           </div>
           <p className="dh-sub">Tu academia: guías, diccionario y herramientas, todo en un sitio.</p>
-          {!isPremium && (
-            <Link href="/premium" className="dh-hero-cta">
-              <Crown size={15} aria-hidden="true" /> Hazte Premium
-              <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
-            </Link>
-          )}
+          <div className="dh-acciones">
+            <span className={`pn-chip ${isPremium ? "tono-naranja" : "tono-gris"}`}>
+              {isPremium && <Crown size={13} aria-hidden="true" />}
+              {planLabel}
+            </span>
+            {!isPremium && (
+              <Tecla href="/premium" tamano="peq">
+                <Crown size={15} aria-hidden="true" /> Hazte Premium
+              </Tecla>
+            )}
+          </div>
         </div>
 
-        <div className="dh-datos">
-          <Link href="/dashboard/logros" className="dh-dato dh-dato--racha">
-            <span className="dh-dato-icono" aria-hidden="true"><Flame size={18} /></span>
-            <span className="dh-dato-valor">{effectiveStreak}</span>
-            <span className="dh-dato-texto">{effectiveStreak === 1 ? "día de racha" : "días de racha"}</span>
-          </Link>
-          <Link href="/dashboard/logros" className="dh-dato dh-dato--logros">
-            <span className="dh-dato-icono" aria-hidden="true"><Trophy size={18} /></span>
-            <span className="dh-dato-valor">{badgesUnlockedCount}<small>/{DASH_BADGES.length}</small></span>
-            <span className="dh-dato-texto">logros</span>
-          </Link>
-          <Link href="/guias" className="dh-dato dh-dato--guias">
-            <span className="dh-dato-icono" aria-hidden="true"><BookOpenCheck size={18} /></span>
-            <span className="dh-dato-valor">{guiasCompletadas}<small>/{GUIDES.length}</small></span>
-            <span className="dh-dato-texto">guías completadas</span>
-          </Link>
+        <div className="dh-lado">
+          <div className="dh-datos">
+            <Link href="/dashboard/logros" className="dh-dato tono-naranja">
+              <span className="dh-dato-icono" aria-hidden="true"><Flame size={18} /></span>
+              <span className="dh-dato-valor">{effectiveStreak}</span>
+              <span className="dh-dato-texto">{effectiveStreak === 1 ? "día de racha" : "días de racha"}</span>
+            </Link>
+            <Link href="/dashboard/logros" className="dh-dato tono-amarillo">
+              <span className="dh-dato-icono" aria-hidden="true"><Trophy size={18} /></span>
+              <span className="dh-dato-valor">{badgesUnlockedCount}<small>/{DASH_BADGES.length}</small></span>
+              <span className="dh-dato-texto">logros</span>
+            </Link>
+            <Link href="/guias" className="dh-dato tono-cielo">
+              <span className="dh-dato-icono" aria-hidden="true"><BookOpenCheck size={18} /></span>
+              <span className="dh-dato-valor">{guiasCompletadas}<small>/{GUIDES.length}</small></span>
+              <span className="dh-dato-texto">guías completadas</span>
+            </Link>
+          </div>
+          <div className="dh-racha">
+            <span className="pn-etiqueta">Racha de esta semana</span>
+            <RachaSemana dias={semana} etiqueta="Tu racha en los últimos siete días" />
+          </div>
         </div>
       </section>
 
-      {/* ── La vitrina de certificados, justo debajo del perfil ── */}
-      <VitrinaCertificados certificados={certificados} forma="estante" nombre={name} ejemplo={ejemploVitrina} />
-
+      {/* El aviso del segundo paso, si le falta: lo primero tras el saludo. */}
       <TwoFactorNudge />
+
+      {/* ── El índice: todo lo suyo, en fichas de color (sustituye al rail fijo) ── */}
+      <IndicePanel sections={TOOL_SECTIONS} />
+
+      {/* ── La vitrina: arriba si ya tiene certificados; vacía, baja tras los logros ── */}
+      {certificados.length > 0 && vitrina}
 
       {/* ── La cartera, con su dato vivo ── */}
       <DashboardAtajos isPremium={isPremium} />
 
-      {/* ── Logros ── */}
-      <section className="dh-card dh-logros">
-        <header className="dh-card-cab">
+      {/* ── Logros: la colección de pegatinas ── */}
+      <section className="pn-hoja dh-logros" aria-labelledby="dh-logros-titulo">
+        <header className="pn-hoja-cab">
           <div>
-            <h2 className="dh-h2">Tus logros</h2>
-            <p className="dh-card-sub">
+            <h2 id="dh-logros-titulo" className="pn-h2">Tus logros</h2>
+            <p className="pn-sub">
               {badgesUnlockedCount === 0
                 ? "Completa el quiz de una guía o entra unos días seguidos para conseguir el primero."
                 : `${badgesUnlockedCount} de ${DASH_BADGES.length} desbloqueados`}
             </p>
           </div>
-          <Link href="/dashboard/logros" className="dh-enlace">
+          <Tecla href="/dashboard/logros" color="amarillo" tamano="peq">
             Ver todos <ArrowRight size={14} aria-hidden="true" />
-          </Link>
+          </Tecla>
         </header>
 
-        <div className="dh-barra" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={badgesPct} aria-label="Progreso de logros">
-          <span style={{ width: `${badgesPct}%` }} />
+        <div className="pn-progreso">
+          <span
+            className="pn-barra tono-amarillo"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={badgesPct}
+            aria-label="Progreso de logros"
+          >
+            <i style={{ width: `${badgesPct}%` }} />
+          </span>
+          <b>{badgesPct} %</b>
         </div>
 
-        <div className="dh-logros-rejilla">
-          {DASH_BADGES.map((badge) => {
+        <ul className="dh-logros-rejilla">
+          {DASH_BADGES.map((badge, i) => {
             const unlocked = isEarned(earnedBadgeIds, badge);
             return (
-              <div key={badge.id} className={`dh-logro${unlocked ? " is-conseguido" : ""}${badge.special ? " is-especial" : ""}`}>
-                {unlocked ? (
-                  <span className={`badge-unlocked-check${badge.special ? " badge-unlocked-check--gold" : ""}`} title="Logro obtenido">
-                    <Check size={10} strokeWidth={3.2} aria-hidden="true" />
-                  </span>
-                ) : (
-                  <span className="badge-lock" title="Aún no conseguido">
-                    <Lock size={9} strokeWidth={3} aria-hidden="true" />
-                  </span>
-                )}
-                <div className="dh-logro-icono">{badge.icon}</div>
-                <span className="dh-logro-nombre">{badge.label}</span>
-                <div className="badge-tooltip">
-                  <p className="badge-tooltip-condition">{badge.condition}</p>
+              <li key={badge.id} className={`dh-logro pgl-anfitrion${unlocked ? " is-conseguido" : ""}`}>
+                <PegatinaLogro
+                  icono={badge.icon}
+                  color={colorDeLogro(badge)}
+                  conseguida={unlocked}
+                  indice={i}
+                  tamano="peq"
+                  especial={badge.special}
+                />
+                <span className="dh-logro-nombre">
+                  {badge.label}
+                  <span className="sr-only">{unlocked ? " (conseguido)" : " (sin conseguir)"}</span>
+                </span>
+                <span className="dh-logro-pista">
+                  <span>{badge.condition}</span>
                   {badge.diario && (
-                    <p className="badge-tooltip-reward">
-                      <span className="badge-tooltip-reward-star">★</span> Nivel {diarioLevel(earnedBadgeIds, badge)} de {badge.diario.levels}
-                    </p>
+                    <span className="dh-logro-premio">★ Nivel {diarioLevel(earnedBadgeIds, badge)} de {badge.diario.levels}</span>
                   )}
-                  {badge.reward && (
-                    <p className="badge-tooltip-reward">
-                      <span className="badge-tooltip-reward-star">★</span> {badge.reward}
-                    </p>
-                  )}
-                </div>
-              </div>
+                  {badge.reward && <span className="dh-logro-premio">★ {badge.reward}</span>}
+                </span>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </section>
 
-      {/* ── Premium (solo a quien no lo tiene) ── */}
+      {certificados.length === 0 && vitrina}
+
+      {/* ── Premium (solo a quien no lo tiene): el bloque de tinta ── */}
       {!isPremium && (
-        <section className="dh-premium">
+        <section className="dh-premium" aria-labelledby="dh-premium-titulo">
           <div className="dh-premium-texto">
-            <span className="dh-plan dh-plan--oro"><Crown size={13} aria-hidden="true" /> Premium</span>
-            <h2 className="dh-premium-titulo">Opera con método, no de memoria</h2>
+            <span className="pn-chip tono-naranja"><Crown size={13} aria-hidden="true" /> Premium</span>
+            <h2 id="dh-premium-titulo" className="dh-premium-titulo">Opera con <span className="fluor">método</span>, no de memoria</h2>
             <ul className="dh-premium-lista">
-              <li><span><NotebookPen size={15} aria-hidden="true" /></span>Diario de Trading con diez estadísticas</li>
-              <li><span><Wallet size={15} aria-hidden="true" /></span>Portfolio Adelin: mi cartera real, en vivo</li>
-              <li><span><GraduationCap size={15} aria-hidden="true" /></span>Cursos con examen y certificado</li>
+              <li><span className="tono-azul"><NotebookPen size={16} aria-hidden="true" /></span>Diario de Trading con diez estadísticas</li>
+              <li><span className="tono-menta"><Wallet size={16} aria-hidden="true" /></span>Portfolio Adelin: mi cartera real, en vivo</li>
+              <li><span className="tono-lila"><GraduationCap size={16} aria-hidden="true" /></span>Cursos con examen y certificado</li>
             </ul>
           </div>
           <div className="dh-premium-compra">
             <p className="dh-premium-precio">{PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")} €<small>/mes</small></p>
-            <Link href="/premium" className="dh-premium-cta">
-              Hazte Premium <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
-            </Link>
-            <p className="dh-premium-nota">
-              <ShieldCheck size={12} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
-            </p>
+            <Tecla href="/premium" tamano="grande">
+              Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+            </Tecla>
+            <p className="dh-premium-nota">Sin permanencia · Cancela cuando quieras</p>
           </div>
         </section>
       )}
 
       {/* ── Últimas guías ── */}
-      <section className="dh-bloque">
-        <header className="dh-bloque-cab">
-          <h2 className="dh-h2">Últimas guías</h2>
-          <Link href="/guias" className="dh-enlace">Ver todas <ArrowRight size={14} aria-hidden="true" /></Link>
+      <section className="dh-bloque" aria-labelledby="dh-guias-titulo">
+        <header className="pn-hoja-cab">
+          <h2 id="dh-guias-titulo" className="pn-h2">Últimas guías</h2>
+          <Tecla href="/guias" color="cielo" tamano="peq">Ver todas <ArrowRight size={14} aria-hidden="true" /></Tecla>
         </header>
         <div className="dh-guias">
           {GUIDES_NEWEST_FIRST.slice(0, 3).map((guide) => {
             const hecha = earnedBadgeIds.has(guide.badgeId);
             return (
-              <Link
-                key={guide.slug}
-                href={`/guias/${guide.slug}`}
-                className="dh-guia"
-                style={{ "--g": guide.color } as React.CSSProperties}
-              >
+              <Link key={guide.slug} href={`/guias/${guide.slug}`} className="dh-guia">
                 <span className="dh-guia-portada">
-                  <GuiaPortada guia={guide} sizes="(max-width: 760px) 100vw, 320px" />
+                  <GuiaPortada guia={guide} sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 360px" />
                   {hecha && (
-                    <span className="dh-guia-hecha"><Check size={12} strokeWidth={3} aria-hidden="true" /> Completada</span>
+                    <span className="pn-chip tono-menta dh-guia-hecha"><Check size={12} strokeWidth={3} aria-hidden="true" /> Completada</span>
                   )}
                 </span>
                 <span className="dh-guia-cuerpo">
@@ -308,30 +329,28 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Guardado ── */}
-      <section className="dh-bloque">
-        <header className="dh-bloque-cab">
-          <h2 className="dh-h2">
+      <section className="dh-bloque" aria-labelledby="dh-guardadas-titulo">
+        <header className="pn-hoja-cab">
+          <h2 id="dh-guardadas-titulo" className="pn-h2">
             Guías guardadas
-            {savedGuidesList.length > 0 && <span className="dh-cuenta">{savedGuidesList.length}</span>}
+            {savedGuidesList.length > 0 && <span className="pn-cuenta tono-cielo">{savedGuidesList.length}</span>}
           </h2>
-          <Link href="/guias" className="dh-enlace">Ver guías <ArrowRight size={14} aria-hidden="true" /></Link>
+          <Tecla href="/guias" color="blanca" tamano="peq">Ver guías <ArrowRight size={14} aria-hidden="true" /></Tecla>
         </header>
         <DashboardSavedGuides initialGuides={savedGuidesList} />
       </section>
 
-      <section className="dh-bloque">
-        <header className="dh-bloque-cab">
-          <h2 className="dh-h2">
+      <section className="dh-bloque" aria-labelledby="dh-terminos-titulo">
+        <header className="pn-hoja-cab">
+          <h2 id="dh-terminos-titulo" className="pn-h2">
             Diccionario guardado
-            {savedTermsList.length > 0 && <span className="dh-cuenta">{savedTermsList.length}</span>}
+            {savedTermsList.length > 0 && <span className="pn-cuenta tono-amarillo">{savedTermsList.length}</span>}
           </h2>
-          <Link href="/glosario" className="dh-enlace">Ver diccionario <ArrowRight size={14} aria-hidden="true" /></Link>
+          <Tecla href="/glosario" color="blanca" tamano="peq">Ver diccionario <ArrowRight size={14} aria-hidden="true" /></Tecla>
         </header>
         <DashboardSavedTerms initialTerms={savedTermsList} />
       </section>
 
     </main>
-    </div>
-    </>
   );
 }

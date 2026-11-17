@@ -7,7 +7,11 @@ import NavSaludo, { type PlanUsuario } from "@/components/NavSaludo";
 import { foroALaVista } from "@/lib/foro/permisos";
 import { createClient } from "@/lib/supabase/server";
 import { INSTAGRAM_DM_URL, YOUTUBE_URL } from "@/lib/contacto";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import { InstagramIcon } from "@/components/SocialLinks";
+import Tecla from "@/components/cuaderno/Tecla";
+import InterruptorSonido from "@/components/cuaderno/InterruptorSonido";
+import "./site-nav.css";
 
 interface Props {
   user: boolean;
@@ -18,6 +22,10 @@ interface Props {
 
 // Nav compartido por todas las páginas del sitio (marca, las tres piezas de
 // pago y menú). Antes estaba duplicado línea por línea en 20 archivos.
+//
+// Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md): una tira de
+// papel sobre el fondo lavanda, la marca en Fraunces y cada enlace con el
+// color de su sección. Su CSS vive en `site-nav.css`, no en globals.css.
 /**
  * El nombre y el plan del usuario, resueltos una sola vez por petición.
  *
@@ -55,6 +63,11 @@ const perfilDelUsuario = cache(async (): Promise<{ nombre: string; plan: PlanUsu
 export default async function SiteNav({ user, isPremium, userName, isAdmin }: Props) {
   const perfil = user ? await perfilDelUsuario() : { nombre: "", plan: "free" as const, avatar: null };
   const nombre = userName ?? perfil.nombre;
+  // Lo mismo con el plan: si la página no lo pasa, manda el perfil. Sin esto,
+  // en esas páginas el menú le ofrecía Premium a quien ya paga y las piezas de
+  // la barra le llevaban a la ficha pública en vez de a su herramienta.
+  const premium = isPremium ?? perfil.plan !== "free";
+  const admin = isAdmin ?? perfil.plan === "admin";
   // El foro solo sale en los menús para quien puede entrar: todos cuando esté
   // abierto, y solo el admin mientras está cerrado (FORO.md §16).
   const foro = await foroALaVista(user);
@@ -62,55 +75,88 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
   return (
     <nav className="blog-nav">
       <Link href="/" className="blog-brand">
-        adelin<span>btc</span>
+        Adelin<em>BTC</em>
       </Link>
       <div className="blog-nav-center">
         {/* Nova se decide por el plan leído aquí y no por `isPremium`: hay páginas que no lo pasan. */}
-        <NavPrincipal logueado={user} premium={!!isPremium} conNova={perfil.plan !== "free"} />
+        <NavPrincipal logueado={user} premium={premium} conNova={perfil.plan !== "free"} />
         {/* El foro va fuera de la cápsula: dentro están las tres piezas de
             pago, que salen del catálogo de herramientas, y el foro no es una. */}
         {foro && <NavForo />}
       </div>
       <div className="blog-nav-end">
-        {/* Contacto directo: un mensaje por Instagram (13-11-2026). Solo el
-            icono, con su degradado: se reconoce sin texto y no le quita sitio
-            a lo demás. En móvil vive dentro del menú. */}
-        <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" className="nav-red nav-red--instagram" aria-label="Escríbeme por Instagram" title="Escríbeme por Instagram">
-          <InstagramIcon size={18} />
-        </a>
-        {/* Y el canal de YouTube, su pareja (13-11-2026). */}
-        <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="nav-red nav-red--youtube" aria-label="Mi canal de YouTube" title="Mi canal de YouTube">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true">
-            <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z" />
-          </svg>
-        </a>
+        {/* Contacto directo: un mensaje por Instagram (13-11-2026), y el canal
+            de YouTube, su pareja. Solo el icono, en su color de marca: se
+            reconocen sin texto. Cuando la barra no tiene sitio, viven en el
+            menú. */}
+        <span className="nav-redes">
+          <Tecla
+            href={INSTAGRAM_DM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="blanca"
+            tamano="peq"
+            icono
+            className="nav-red nav-red--instagram"
+            aria-label="Escríbeme por Instagram"
+            title="Escríbeme por Instagram"
+          >
+            <InstagramIcon size={18} />
+          </Tecla>
+          <Tecla
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="blanca"
+            tamano="peq"
+            icono
+            className="nav-red nav-red--youtube"
+            aria-label="Mi canal de YouTube"
+            title="Mi canal de YouTube"
+          >
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true">
+              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z" />
+            </svg>
+          </Tecla>
+        </span>
 
-        {/* Identidad y accesos personales, en un solo sitio. Pulsando el
-            nombre se abre el menú con «Mi dashboard» y «Mi cuenta».
-            «Mi dashboard» fue un botón suelto aquí al lado durante unas horas:
-            dos accesos personales pegados competían por el mismo hueco. */}
+        {/* El altavoz: los sonidos vienen encendidos, así que silenciarlos
+            tiene que estar siempre a mano, en todas las pantallas (ESTILO.md,
+            «Los sonidos»). */}
+        <span className="nav-sonido">
+          <InterruptorSonido />
+        </span>
+
         {/* El foro en móvil: solo se ve por debajo de 1200 px, donde se esconde
-            el de escritorio (globals.css, «El foro en la barra del móvil»).
-            Solo con sesión: sin ella, ahí van únicamente «Entrar» y
-            «Registrarse» (pedido por el admin el 13-11-2026); el foro sigue
-            en el menú. */}
+            el de escritorio (site-nav.css). Solo con sesión: sin ella, ahí van
+            únicamente «Entrar» y «Registrarse» (pedido por el admin el
+            13-11-2026); el foro sigue en el menú. */}
         {foro && user && <NavForoMovil />}
 
+        {/* Identidad y accesos personales, en un solo sitio. Pulsando el
+            nombre se abre el menú con «Mi dashboard» y «Mi perfil». */}
         {user && nombre && <NavSaludo nombre={nombre} plan={perfil.plan} avatar={perfil.avatar} />}
 
         {/* Y para quien todavía no tiene cuenta, lo que sí le sirve: entrar o
-            registrarse. Antes ambas cosas vivían solo dentro del desplegable,
-            que es donde nadie busca el botón de registrarse. «Entrar» va en
-            texto y «Registrarse» en naranja: son dos acciones distintas y una
-            de ellas es la que interesa. */}
+            registrarse, a la vista y no dentro de un desplegable. «Entrar» en
+            blanco y «Registrarse» en naranja: son dos acciones distintas y la
+            que interesa es una. */}
         {!user && (
           <span className="nav-acceso">
-            <Link href="/login" className="nav-acceso-entrar">Entrar</Link>
-            <Link href="/register" className="nav-acceso-registro">Registrarse</Link>
+            <Tecla href="/login" color="blanca" tamano="peq" className="nav-acceso-entrar">Entrar</Tecla>
+            <Tecla href="/register" tamano="peq" className="nav-acceso-registro">Registrarse</Tecla>
           </span>
         )}
 
-        <BlogMobileMenu user={user} isPremium={isPremium} userName={nombre} isAdmin={isAdmin} avatar={perfil.avatar} foro={foro} />
+        <BlogMobileMenu
+          user={user}
+          isPremium={premium}
+          userName={nombre}
+          isAdmin={admin}
+          avatar={perfil.avatar}
+          foro={foro}
+          precio={precioEur(PREMIUM_PRICE_EUR)}
+        />
       </div>
     </nav>
   );

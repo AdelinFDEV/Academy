@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideMoneroObservador from "./GuideMoneroObservador";
 import GuideMoneroQuiz from "./GuideMoneroQuiz";
@@ -79,7 +81,6 @@ export default async function MoneroPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -92,16 +93,16 @@ export default async function MoneroPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Monero (XMR)<br />
           <span className="gbc-hero-gold">y qué hay de cierto en lo que se dice</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Monero es una criptomoneda diseñada para que nadie pueda ver quién paga, quién cobra ni
-          cuánto.</strong> En Bitcoin todo eso es público. En Monero queda oculto por defecto, en todas las
-          operaciones. Tenerla es legal en España, pero comprarla y venderla en Europa es cada vez más difícil,
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Monero es una criptomoneda diseñada para que nadie pueda ver quién paga, quién cobra ni
+          cuánto.</Anotacion></strong> En Bitcoin todo eso es público. En Monero queda oculto por defecto, en todas las
+          operaciones. <Anotacion tipo="underline" color="var(--menta)" grosor={2} retraso={1300}>Tenerla es legal en España</Anotacion>, pero comprarla y venderla en Europa es cada vez más difícil,
           y en julio de 2027 lo será más.
         </p>
         <p className="gbc-revisado">Revisada el <strong>13 de noviembre de 2026</strong> · Marco legal: Reglamento (UE) 2024/1624</p>
@@ -119,8 +120,8 @@ export default async function MoneroPage() {
           <h2 className="gbc-title">Qué es Monero y qué problema resuelve</h2>
           <div className="gbc-body">
             <p>
-              Mucha gente cree que Bitcoin es anónimo. No lo es. Su
-              <Termino slug="blockchain"> blockchain</Termino> es un libro abierto: cualquiera puede consultar
+              <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>Mucha gente cree que Bitcoin es anónimo.</Anotacion> No lo es. Su
+              <Termino slug="blockchain"> blockchain</Termino> es <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={900}>un libro abierto</Anotacion>: cualquiera puede consultar
               todas las operaciones de la historia, con su origen, su destino y su importe. Lo único que no
               aparece es tu nombre, y eso dura hasta que alguien une una dirección contigo.
             </p>
@@ -157,12 +158,12 @@ export default async function MoneroPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              La palabra clave es <strong>por defecto</strong>. Otras monedas ofrecen privacidad como una
-              opción que se activa. Si es opcional, casi nadie la usa, y quien la usa destaca. En Monero no se
-              puede desactivar, así que todas las operaciones se parecen entre sí.
+              La palabra clave es <strong><Anotacion tipo="circle" junta>por defecto</Anotacion></strong>. Otras monedas ofrecen privacidad como una
+              opción que se activa. Si es opcional, casi nadie la usa, y quien la usa destaca. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={700}>En Monero no se
+              puede desactivar, así que todas las operaciones se parecen entre sí.</Anotacion>
             </p>
             <p>
-              De ahí sale una propiedad que tiene nombre: <Termino slug="fungibilidad">fungibilidad</Termino>. Significa que una moneda vale
+              De ahí sale una propiedad que tiene nombre: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}><Termino slug="fungibilidad">fungibilidad</Termino></Anotacion>. Significa que una moneda vale
               exactamente lo mismo que otra, porque ninguna arrastra historial. Un billete de 20 euros es
               fungible. Un bitcoin que pasó por una dirección marcada puede ser rechazado por un exchange. Un
               monero, no: nadie sabe por dónde pasó.
@@ -183,24 +184,24 @@ export default async function MoneroPage() {
             {TECNICAS.map((t) => (
               <div key={t.nombre}>
                 <span className="xmr-tecnica-oculta">Oculta: {t.oculta}</span>
-                <strong>{t.nombre}</strong>
+                <strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>{t.nombre}</Anotacion></strong>
                 <p>{t.texto}</p>
               </div>
             ))}
           </div>
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              La primera es la más débil de las tres. Dieciséis candidatos son pocos, y con suficiente
+              <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>La primera es la más débil de las tres.</Anotacion> Dieciséis candidatos son pocos, y con suficiente
               información de fuera se pueden ir descartando. Por eso el proyecto lleva años preparando un
               cambio de fondo, conocido como FCMP++, que sustituiría el grupo de dieciséis por todas las
               salidas que han existido en la cadena. En octubre de 2026 seguía en fase de pruebas, sin fecha
               para la red principal.
             </p>
             <p>
-              Hay además una puerta que se abre desde dentro. Cada cartera tiene una <Termino slug="clave-de-visualizacion">clave de visualización</Termino>:
-              si se la das a alguien, puede ver lo que has recibido, pero no gastarlo. Sirve para que un
-              asesor, un auditor o una administración comprueben tus cuentas. La privacidad de Monero es
-              tuya, y tú decides a quién se la levantas.
+              Hay además una puerta que se abre desde dentro. Cada cartera tiene una <Termino slug="clave-de-visualizacion">clave de visualización</Termino>:{" "}
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={600}>si se la das a alguien, puede ver lo que has recibido, pero no gastarlo.</Anotacion> Sirve para que un
+              asesor, un auditor o una administración comprueben tus cuentas. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>La privacidad de Monero es
+              tuya, y tú decides a quién se la levantas.</Anotacion>
             </p>
           </div>
         </div>
@@ -215,7 +216,7 @@ export default async function MoneroPage() {
           <div className="gbc-ey">Lo que se dice</div>
           <h2 className="gbc-title">Siete cosas que se dicen de Monero, y cuáles son verdad</h2>
           <div className="gbc-body">
-            <p>Pocas criptomonedas arrastran tantas frases hechas, a favor y en contra. Aquí van las siete más repetidas.</p>
+            <p><SimboloEstudio tipo="flecha" color="azul" margen giro={40} semilla={5} animar={false} />Pocas criptomonedas arrastran tantas frases hechas, a favor y en contra. Aquí van las siete más repetidas.</p>
           </div>
           <div className="xmr-afirmaciones">
             {AFIRMACIONES.map((a) => (
@@ -238,8 +239,9 @@ export default async function MoneroPage() {
           <h2 className="gbc-title">¿Es legal Monero en España y en la Unión Europea?</h2>
           <div className="gbc-body">
             <p>
-              Sí. Ninguna ley española ni europea prohíbe a un particular tener Monero. Lo que la regulación
-              está cerrando no es la moneda: son las puertas de entrada y de salida, es decir, las empresas.
+              <SimboloEstudio tipo="check" color="menta" margen semilla={6} retraso={200} />
+              Sí. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Ninguna ley española ni europea prohíbe a un particular tener Monero.</Anotacion> Lo que la regulación
+              está cerrando no es la moneda: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={900}>son las puertas de entrada y de salida, es decir, las empresas.</Anotacion>
             </p>
             <p>Ha ocurrido en tres pasos, y el tercero aún no ha llegado.</p>
           </div>
@@ -249,7 +251,7 @@ export default async function MoneroPage() {
               <tbody>
                 <tr><td><strong>Febrero de 2024</strong></td><td>Binance retira Monero en todo el mundo</td><td>Se va el mercado con más <Termino slug="volumen">volumen</Termino></td></tr>
                 <tr><td><strong>Octubre de 2024</strong></td><td>Kraken deja de ofrecerla en el Espacio Económico Europeo</td><td>Se va el principal exchange regulado que la vendía en euros</td></tr>
-                <tr><td><strong>10 de julio de 2027</strong></td><td>Empieza a aplicarse el reglamento europeo contra el blanqueo</td><td>Ningún exchange ni custodio de la UE podrá operar con <Termino slug="moneda-de-privacidad">monedas de anonimato reforzado</Termino></td></tr>
+                <tr><td><strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} animar={false}>10 de julio de 2027</Anotacion></strong></td><td>Empieza a aplicarse el reglamento europeo contra el blanqueo</td><td>Ningún exchange ni custodio de la UE podrá operar con <Termino slug="moneda-de-privacidad">monedas de anonimato reforzado</Termino></td></tr>
               </tbody>
             </table>
           </div>
@@ -259,15 +261,16 @@ export default async function MoneroPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Conviene leer bien a quién obliga esa norma. Obliga a las empresas: exchanges, custodios, bancos.
+              Conviene leer bien a quién obliga esa norma. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Obliga a las empresas: exchanges, custodios, bancos.</Anotacion>{" "}
               No convierte en delito que tú tengas XMR en una <Termino slug="wallet">cartera</Termino> propia, ni
               que se lo envíes a otra persona.
             </p>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={8} animar={false} />
               El efecto práctico es otro, y ya se nota. Cambiar euros por Monero, o al revés, por una vía
               regulada es cada vez más difícil. Quedan los intercambios entre particulares y los servicios de
-              fuera de la UE, con menos garantías y precios peores. Si la compras, piensa primero por dónde vas
-              a salir.
+              fuera de la UE, con menos garantías y precios peores. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Si la compras, piensa primero por dónde vas
+              a salir.</Anotacion>
             </p>
           </div>
         </div>
@@ -290,7 +293,7 @@ export default async function MoneroPage() {
               <thead><tr><th></th><th>Bitcoin</th><th>Monero</th></tr></thead>
               <tbody>
                 <tr><td><strong>Con qué se mina</strong></td><td><Termino slug="asic">Máquinas especializadas</Termino>, en naves industriales</td><td>Procesadores corrientes: el <Termino slug="algoritmo-de-minado">algoritmo</Termino> RandomX, desde 2019</td></tr>
-                <tr><td><strong>Cuántas monedas habrá</strong></td><td>21 millones como máximo</td><td>Sin tope: 0,6 XMR por bloque para siempre, desde junio de 2022</td></tr>
+                <tr><td><strong>Cuántas monedas habrá</strong></td><td>21 millones como máximo</td><td><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Sin tope</Anotacion>: 0,6 XMR por bloque para siempre, desde junio de 2022</td></tr>
                 <tr><td><strong>Cuántas hay</strong></td><td>Cerca de 20 millones</td><td>Unos 18,5 millones</td></tr>
                 <tr><td><strong>Inflación anual</strong></td><td>Por debajo del 1 %, y bajando hasta cero</td><td>Por debajo del 1 %, y bajando poco a poco sin llegar a cero</td></tr>
               </tbody>
@@ -299,14 +302,14 @@ export default async function MoneroPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               La emisión perpetua tiene una razón. Cuando Bitcoin deje de crear monedas, sus mineros vivirán
-              solo de las comisiones, y nadie sabe si bastará. Monero optó por garantizar un pago mínimo para
-              siempre, a cambio de una <Termino slug="inflacion">inflación</Termino> pequeña.
+              solo de las comisiones, y nadie sabe si bastará. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Monero optó por garantizar un pago mínimo para
+              siempre</Anotacion>, a cambio de una <Termino slug="inflacion">inflación</Termino> pequeña.
             </p>
             <p>
               Lo de minar con cualquier ordenador también tiene su cruz. Como no hacen falta máquinas caras,
               la potencia de la red es modesta, y alquilarla o reunirla no es imposible. Es lo que explica el
-              episodio de 2025: la seguridad de una red así depende de que nadie junte más de la mitad del
-              <Termino slug="hash-rate"> hash rate</Termino>.
+              episodio de 2025: <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>la seguridad de una red así depende de que nadie junte más de la mitad del
+              <Termino slug="hash-rate"> hash rate</Termino></Anotacion>.
             </p>
           </div>
         </div>
@@ -314,14 +317,14 @@ export default async function MoneroPage() {
 
       {/* ── 7 ── */}
       <section id="hacienda" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">El error típico</div>
           <h2 className="gbc-title">Monero y Hacienda: el error de pensar que no cuenta</h2>
           <div className="gbc-body">
             <p>
-              El error más caro con Monero no es técnico. Es creer que, como no se ve, no se declara. La ley no
-              distingue entre monedas públicas y privadas: una ganancia al vender tributa igual con XMR que con
-              cualquier otra.
+              El error más caro con Monero no es técnico. <Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={300}>Es creer que, como no se ve, no se declara.</Anotacion> La ley no
+              distingue entre monedas públicas y privadas: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={900}>una ganancia al vender tributa igual con XMR que con
+              cualquier otra.</Anotacion>
             </p>
             <p>
               Y en la práctica casi nunca es invisible. Los euros salieron de tu banco hacia algún sitio. Si
@@ -329,21 +332,22 @@ export default async function MoneroPage() {
               el exchange la tiene registrada. Cuando vuelvas a euros, alguien te preguntará de dónde vienen.
             </p>
             <p>
-              Aquí la privacidad juega en tu contra. Con Bitcoin puedes demostrar tu historial con la propia
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Aquí la privacidad juega en tu contra.</Anotacion> Con Bitcoin puedes demostrar tu historial con la propia
               cadena. Con Monero tienes que haberlo guardado tú: fecha, cantidad y valor en euros de cada
               compra y cada venta. Sin ese registro no puedes calcular tu ganancia ni justificar el origen del
               dinero ante un banco.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Lo que conviene guardar desde el primer día</div>
-            <div className="gbc-box-body">
-              <p>Justificante de cada compra y cada venta, con fecha y valor en euros. Y las claves de
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Lo que conviene guardar desde el primer día</div>
+            <div className="postit-cuerpo">
+              <p><Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Justificante de cada compra y cada venta, con fecha y valor en euros.</Anotacion> Y las claves de
               visualización de tus carteras, que permiten probar lo recibido si te lo piden. El método de
               cálculo está en la guía de
               <Link href="/guias/fiscalidad-cripto-espana"> fiscalidad de las criptomonedas en España</Link>.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -354,11 +358,11 @@ export default async function MoneroPage() {
           <h2 className="gbc-title">Los riesgos de Monero</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>La salida se estrecha.</strong> Cada exchange que la retira reduce la <Termino slug="liquidez">liquidez</Termino>. Desde julio de 2027 no quedará ninguno regulado en la UE.</li>
+              <li><strong>La salida se estrecha.</strong> Cada exchange que la retira reduce la <Termino slug="liquidez">liquidez</Termino>. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>Desde julio de 2027 no quedará ninguno regulado en la UE.</Anotacion></li>
               <li><strong>La regulación puede ir a más.</strong> Hoy obliga a las empresas. Nada garantiza que se quede ahí.</li>
               <li><strong>Su red ya ha sido reorganizada.</strong> Lo de 2025 demostró que su potencia de minado no es inalcanzable.</li>
               <li><strong>Un fallo oculto sería difícil de ver.</strong> Como las cantidades van cifradas, un error que permitiera crear monedas podría pasar más tiempo sin detectarse que en una cadena pública.</li>
-              <li><strong>La privacidad no es total.</strong> Tu conexión, el servidor al que te conectas y lo que haces antes y después dejan rastro.</li>
+              <li><strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>La privacidad no es total.</Anotacion></strong> Tu conexión, el servidor al que te conectas y lo que haces antes y después dejan rastro.</li>
               <li><strong>El precio.</strong> Su <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda, agravada por un mercado cada vez más pequeño.</li>
             </ul>
           </div>
@@ -375,7 +379,7 @@ export default async function MoneroPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Monero</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Sobre Cerrado</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Sobre Cerrado</strong>.</p>
           </div>
           {d.isRegistered ? <GuideMoneroQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
-  ArrowRight, Check, Crown, Eye, Lock, MessageCircleQuestion, MessagesSquare, BellRing,
+  ArrowLeft, ArrowRight, Check, Crown, Eye, Lock, MessageCircleQuestion, MessagesSquare, BellRing,
   ShieldCheck, ShieldAlert, CalendarDays, AtSign, CreditCard, Flame, Trophy,
   NotebookPen, PieChart, UserRound, LifeBuoy,
 } from "lucide-react";
@@ -14,8 +14,9 @@ import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import PerfilEditor from "@/components/PerfilEditor";
 import AvatarUsuario from "@/components/AvatarUsuario";
-import { Fila2FA, FilaEliminar, FilaPassword } from "@/components/PerfilAcciones";
+import { Fila2FA, FilaEliminar, FilaPassword, FilaSesion } from "@/components/PerfilAcciones";
 import { InstagramIcon } from "@/components/SocialLinks";
+import Tecla from "@/components/cuaderno/Tecla";
 import "./perfil.css";
 
 export const metadata: Metadata = {
@@ -68,7 +69,7 @@ function Permiso({ si, icono, titulo, texto }: { si: boolean; icono: React.React
         <strong>{titulo}</strong>
         <span>{texto}</span>
       </span>
-      <span className="mp-permiso-estado">
+      <span className={`pn-chip ${si ? "tono-menta" : "tono-gris"}`}>
         {si
           ? <><Check size={13} strokeWidth={3} aria-hidden="true" /> Incluido</>
           : <><Lock size={12} strokeWidth={2.6} aria-hidden="true" /> Premium</>}
@@ -86,7 +87,8 @@ function Permiso({ si, icono, titulo, texto }: { si: boolean; icono: React.React
  * ni el email. El mismo día absorbió /cuenta, que ahora redirige aquí: dos
  * páginas personales («Mi cuenta» y «Mi perfil») eran dos sitios donde buscar
  * lo mismo. Tiene forma de página de ajustes: cada bloque con su título a la
- * izquierda y su contenido a la derecha.
+ * izquierda y su contenido a la derecha. Desde el 17-11-2026, con el estilo
+ * «Cuaderno de estudio»: hojas de papel, chips, barra de progreso y teclas.
  *
  * La verificación en dos pasos se destaca, con suavidad, SOLO si no está
  * activada; activada, sale como confirmada y nada más. El estado se lee en el
@@ -157,79 +159,80 @@ export default async function PerfilPage({
 
   return (
     <main className="dashboard-main mp">
+      <header className="pn-cab tono-naranja">
+        <Tecla href="/dashboard" color="blanca" tamano="peq" className="pn-volver">
+          <ArrowLeft size={14} strokeWidth={2.6} aria-hidden="true" /> Mi panel
+        </Tecla>
+      </header>
+
       {/* ── Cabecera: quién eres aquí ── */}
-      <section className={`mp-hero${esPremium ? " is-premium" : ""}`} aria-label="Tu perfil">
-        <div className="mp-hero-fondo" aria-hidden="true">
-          <span className="mp-orbe mp-orbe--1" />
-          <span className="mp-orbe mp-orbe--2" />
-          <span className="mp-orbe mp-orbe--3" />
-          <span className="mp-hero-trama" />
+      <section className={`pn-hoja mp-hero${esPremium ? " is-premium" : ""}`} aria-label="Tu perfil">
+        <div className="mp-hero-identidad">
+          <span className="mp-hero-anillo">
+            <AvatarUsuario avatar={publico?.avatar} inicial={inicial} className="mp-hero-foto" />
+            {esPremium && <span className="mp-hero-corona" aria-hidden="true"><Crown size={14} strokeWidth={2.6} /></span>}
+          </span>
+          <div className="mp-hero-texto">
+            <p className="pn-mano">mi perfil</p>
+            <h1 className="mp-hero-nombre">{alias ? <>@{alias}</> : nombre}</h1>
+            <p className="mp-hero-sub">
+              {alias
+                ? <>{nombre} · {user.email}</>
+                : <Link href="#perfil-publico" className="mp-hero-enlace"><AtSign size={14} aria-hidden="true" /> Elige tu alias para el foro</Link>}
+            </p>
+            <div className="mp-hero-chips">
+              <span className={`pn-chip ${esPremium ? "tono-naranja" : "tono-gris"}`}>
+                {esPremium && <Crown size={12} aria-hidden="true" />}
+                {planTexto}
+              </span>
+              {con2fa && <span className="pn-chip tono-menta"><ShieldCheck size={12} aria-hidden="true" /> Cuenta protegida</span>}
+            </div>
+          </div>
         </div>
 
-        <div className="mp-hero-cuerpo">
-          <div className="mp-hero-identidad">
-            <span className="mp-hero-anillo">
-              <AvatarUsuario avatar={publico?.avatar} inicial={inicial} className="mp-hero-foto" />
-              {esPremium && <span className="mp-hero-corona" aria-hidden="true"><Crown size={13} strokeWidth={2.6} /></span>}
-            </span>
-            <div className="mp-hero-texto">
-              <span className="mp-hero-eyebrow">Mi perfil</span>
-              <h1 className="mp-hero-nombre">{alias ? <>@{alias}</> : nombre}</h1>
-              <p className="mp-hero-sub">
-                {alias
-                  ? <>{nombre} · {user.email}</>
-                  : <Link href="#perfil-publico" className="mp-hero-enlace"><AtSign size={14} aria-hidden="true" /> Elige tu alias para el foro</Link>}
-              </p>
-              <div className="mp-hero-chips">
-                <span className={`mp-chip${esPremium ? " is-oro" : ""}`}>
-                  {esPremium && <Crown size={12} aria-hidden="true" />}
-                  {planTexto}
-                </span>
-                {con2fa && <span className="mp-chip is-verde"><ShieldCheck size={12} aria-hidden="true" /> Cuenta protegida</span>}
-              </div>
-            </div>
+        {/* Lo que le falta al perfil, con su barra. Completo, se queda como
+            un sello; incompleto, cada paso lleva a su sitio. */}
+        <div className={`mp-progreso${completado === pasos.length ? " is-completo" : ""}`}>
+          <div className="mp-progreso-cab">
+            <strong>{completado === pasos.length ? "Perfil completo" : "Completa tu perfil"}</strong>
+            <b>{pctPerfil} %</b>
           </div>
-
-          {/* Lo que le falta al perfil, con un anillo de progreso. Completo,
-              se queda como un sello; incompleto, cada paso lleva a su sitio. */}
-          <div className={`mp-progreso${completado === pasos.length ? " is-completo" : ""}`}>
-            <div className="mp-progreso-anillo" style={{ "--mp-pct": pctPerfil } as React.CSSProperties}>
-              <svg viewBox="0 0 80 80" aria-hidden="true">
-                <circle cx="40" cy="40" r="34" className="mp-progreso-pista" />
-                <circle cx="40" cy="40" r="34" className="mp-progreso-arco" pathLength={100} />
-              </svg>
-              <span className="mp-progreso-cifra">{pctPerfil}<small>%</small></span>
-            </div>
-            <div className="mp-progreso-texto">
-              <strong>{completado === pasos.length ? "Perfil completo" : "Completa tu perfil"}</strong>
-              <ul>
-                {pasos.map((p) => (
-                  <li key={p.texto} className={p.hecho ? "is-hecho" : ""}>
-                    {p.hecho ? (
-                      <><span className="mp-paso-marca" aria-hidden="true"><Check size={11} strokeWidth={3.4} /></span> {p.texto}</>
-                    ) : (
-                      <Link href={p.href}><span className="mp-paso-marca" aria-hidden="true" /> {p.texto}</Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <span
+            className="pn-barra tono-menta"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={pctPerfil}
+            aria-label="Perfil completado"
+          >
+            <i style={{ width: `${pctPerfil}%` }} />
+          </span>
+          <ul className="mp-pasos">
+            {pasos.map((p) => (
+              <li key={p.texto} className={p.hecho ? "is-hecho" : ""}>
+                {p.hecho ? (
+                  <><span className="mp-paso-marca" aria-hidden="true"><Check size={12} strokeWidth={3.4} /></span> {p.texto}</>
+                ) : (
+                  <Link href={p.href}><span className="mp-paso-marca" aria-hidden="true" /> {p.texto}</Link>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="mp-hero-datos">
-          <div className="mp-dato is-racha">
-            <span className="mp-dato-icono" aria-hidden="true"><Flame size={17} /></span>
+          <div className="mp-dato tono-naranja">
+            <span className="mp-dato-icono" aria-hidden="true"><Flame size={18} /></span>
             <span className="mp-dato-valor">{racha}<small>{racha === 1 ? " día" : " días"}</small></span>
             <span className="mp-dato-texto">de racha</span>
           </div>
-          <div className="mp-dato is-logros">
-            <span className="mp-dato-icono" aria-hidden="true"><Trophy size={17} /></span>
+          <div className="mp-dato tono-amarillo">
+            <span className="mp-dato-icono" aria-hidden="true"><Trophy size={18} /></span>
             <span className="mp-dato-valor">{logros}</span>
             <span className="mp-dato-texto">{logros === 1 ? "logro conseguido" : "logros conseguidos"}</span>
           </div>
-          <div className="mp-dato is-fecha">
-            <span className="mp-dato-icono" aria-hidden="true"><CalendarDays size={17} /></span>
+          <div className="mp-dato tono-cielo">
+            <span className="mp-dato-icono" aria-hidden="true"><CalendarDays size={18} /></span>
             <span className="mp-dato-valor mp-dato-valor--texto">{miembroDesde ? miembroDesde.charAt(0).toUpperCase() + miembroDesde.slice(1) : "—"}</span>
             <span className="mp-dato-texto">en la academia</span>
           </div>
@@ -237,21 +240,23 @@ export default async function PerfilPage({
       </section>
 
       {portal_error && (
-        <p className="mp-aviso" role="alert">
-          No se pudo abrir el portal de pagos. Inténtalo de nuevo en unos minutos.
+        <p className="pn-aviso tono-coral" role="alert">
+          <span className="pn-aviso-ic" aria-hidden="true">×</span>
+          <span className="pn-aviso-texto">No se pudo abrir el portal de pagos. Inténtalo de nuevo en unos minutos.</span>
         </p>
       )}
       {!listo && (
-        <p className="mp-aviso" role="status">
-          El perfil público aún no está activado. Vuelve en un rato.
+        <p className="pn-aviso tono-cielo" role="status">
+          <span className="pn-aviso-ic" aria-hidden="true">i</span>
+          <span className="pn-aviso-texto">El perfil público aún no está activado. Vuelve en un rato.</span>
         </p>
       )}
 
       {/* ── Perfil público ── */}
       <section className="mp-seccion" id="perfil-publico" aria-labelledby="mp-s1">
         <header className="mp-seccion-cab">
-          <span className="mp-seccion-icono is-naranja" aria-hidden="true"><UserRound size={18} /></span>
-          <h2 id="mp-s1">Perfil público</h2>
+          <span className="mp-seccion-icono tono-naranja" aria-hidden="true"><UserRound size={20} /></span>
+          <h2 id="mp-s1" className="pn-h2">Perfil público</h2>
           <p>Lo único que verán los demás en el foro. Tu nombre y tu email no salen nunca.</p>
         </header>
         <PerfilEditor
@@ -270,8 +275,8 @@ export default async function PerfilPage({
       {/* ── Plan y suscripción ── */}
       <section className="mp-seccion" id="suscripcion" aria-labelledby="mp-s2">
         <header className="mp-seccion-cab">
-          <span className="mp-seccion-icono is-oro" aria-hidden="true"><Crown size={18} /></span>
-          <h2 id="mp-s2">Plan</h2>
+          <span className="mp-seccion-icono tono-naranja" aria-hidden="true"><Crown size={20} /></span>
+          <h2 id="mp-s2" className="pn-h2">Plan</h2>
           <p>
             {conStripe
               ? "Tu suscripción. Los pagos los gestiona Stripe: aquí no se guarda ninguna tarjeta."
@@ -280,11 +285,11 @@ export default async function PerfilPage({
         </header>
 
         {conStripe ? (
-          <div className="mp-panel mp-plan is-premium">
-            <div className="mp-plan-cab">
-              <span className="mp-fila-icono is-oro" aria-hidden="true"><Crown size={18} /></span>
+          <div className="pn-hoja mp-plan">
+            <div className="mp-fila is-estatica">
+              <span className="mp-fila-icono tono-naranja" aria-hidden="true"><Crown size={18} /></span>
               <span className="mp-fila-texto">
-                <strong>Premium <span className={`mp-estado-chip is-${estado.tono}`}>{estado.texto}</span></strong>
+                <strong>Premium <span className={`pn-chip ${estado.tono === "verde" ? "tono-menta" : estado.tono === "aviso" ? "tono-amarillo" : "tono-gris"}`}>{estado.texto}</span></strong>
                 <span>{precioEur(PREMIUM_PRICE_EUR)} al mes{premiumDesde ? ` · Premium desde ${premiumDesde}` : ""}</span>
               </span>
             </div>
@@ -304,9 +309,9 @@ export default async function PerfilPage({
               </dl>
             )}
             {pctCiclo !== null && (
-              <div className="mp-plan-barra" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pctCiclo} aria-label="Periodo actual consumido">
-                <span style={{ width: `${pctCiclo}%` }} />
-              </div>
+              <span className="pn-barra tono-naranja" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pctCiclo} aria-label="Periodo actual consumido">
+                <i style={{ width: `${pctCiclo}%` }} />
+              </span>
             )}
 
             {seCancela && finPeriodo && (
@@ -317,15 +322,15 @@ export default async function PerfilPage({
 
             <div className="mp-plan-pie">
               <span><ShieldCheck size={14} aria-hidden="true" /> Facturas, método de pago y cancelación, en el portal seguro de Stripe.</span>
-              <a href="/api/stripe/portal" className="mp-boton">
+              <Tecla href="/api/stripe/portal" prefetch={false} color="blanca" tamano="peq">
                 <CreditCard size={15} aria-hidden="true" /> Gestionar suscripción
-              </a>
+              </Tecla>
             </div>
           </div>
         ) : esAdmin ? (
-          <div className="mp-panel mp-lista">
+          <div className="pn-hoja mp-lista">
             <div className="mp-fila is-estatica">
-              <span className="mp-fila-icono is-oro" aria-hidden="true"><Crown size={18} /></span>
+              <span className="mp-fila-icono tono-naranja" aria-hidden="true"><Crown size={18} /></span>
               <span className="mp-fila-texto">
                 <strong>Administrador</strong>
                 <span>Acceso completo a toda la academia, sin suscripción.</span>
@@ -334,34 +339,30 @@ export default async function PerfilPage({
           </div>
         ) : (
           <div className="mp-premium">
-            <span className="mp-premium-brillo" aria-hidden="true" />
             <div className="mp-premium-cab">
-              <span className="mp-premium-corona" aria-hidden="true"><Crown size={22} /></span>
-              <div>
-                <span className="mp-premium-eyebrow">Ahora: plan gratuito</span>
-                <h3 className="mp-premium-titulo">Pásate a Premium</h3>
-                <p>Guías, diccionario, Predicción de Precio y Logros ya son tuyos. Premium suma las herramientas para operar con método.</p>
-              </div>
+              <span className="pn-chip tono-naranja"><Crown size={12} aria-hidden="true" /> Ahora: plan gratuito</span>
+              <h3 className="mp-premium-titulo">Pásate a <span className="fluor">Premium</span></h3>
+              <p>Guías, diccionario, Predicción de Precio y Logros ya son tuyos. Premium suma las herramientas para operar con método.</p>
             </div>
             <ul className="mp-premium-lista">
               <li>
-                <span className="mp-premium-icono" aria-hidden="true"><NotebookPen size={17} /></span>
+                <span className="mp-premium-icono tono-azul" aria-hidden="true"><NotebookPen size={18} /></span>
                 <span><strong>Diario de Trading</strong>Registra y analiza cada operación</span>
               </li>
               <li>
-                <span className="mp-premium-icono" aria-hidden="true"><PieChart size={17} /></span>
+                <span className="mp-premium-icono tono-menta" aria-hidden="true"><PieChart size={18} /></span>
                 <span><strong>Portfolio Adelin</strong>Sigue las compras de AdelinBTC</span>
               </li>
               <li>
-                <span className="mp-premium-icono" aria-hidden="true"><MessagesSquare size={17} /></span>
-                <span><strong>Publicar en el foro</strong>Preguntar y responder, cuando abra</span>
+                <span className="mp-premium-icono tono-coral" aria-hidden="true"><MessagesSquare size={18} /></span>
+                <span><strong>Publicar en el foro</strong>Preguntar y responder</span>
               </li>
             </ul>
             <div className="mp-premium-pie">
               <span className="mp-premium-precio">{precioEur(PREMIUM_PRICE_EUR)}<small>/mes</small></span>
-              <Link href="/premium" className="mp-boton is-oro is-grande">
-                Hazte Premium <ArrowRight size={16} aria-hidden="true" />
-              </Link>
+              <Tecla href="/premium" tamano="grande">
+                Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+              </Tecla>
             </div>
           </div>
         )}
@@ -370,11 +371,11 @@ export default async function PerfilPage({
       {/* ── Seguridad ── */}
       <section className="mp-seccion" id="seguridad" aria-labelledby="mp-s3">
         <header className="mp-seccion-cab">
-          <span className={`mp-seccion-icono ${con2fa ? "is-verde" : "is-ambar"}`} aria-hidden="true">{con2fa ? <ShieldCheck size={18} /> : <ShieldAlert size={18} />}</span>
-          <h2 id="mp-s3">Seguridad</h2>
+          <span className={`mp-seccion-icono ${con2fa ? "tono-menta" : "tono-amarillo"}`} aria-hidden="true">{con2fa ? <ShieldCheck size={20} /> : <ShieldAlert size={20} />}</span>
+          <h2 id="mp-s3" className="pn-h2">Seguridad</h2>
           <p>Cómo entras en tu cuenta. Una contraseña sola se puede filtrar; con el segundo paso, no basta con ella.</p>
         </header>
-        <div className="mp-panel mp-lista">
+        <div className="pn-hoja mp-lista">
           <Fila2FA activada={con2fa} />
           <FilaPassword email={user.email ?? ""} />
         </div>
@@ -383,18 +384,17 @@ export default async function PerfilPage({
       {/* ── El foro ── */}
       <section className="mp-seccion" aria-labelledby="mp-s4">
         <header className="mp-seccion-cab">
-          <span className="mp-seccion-icono is-azul" aria-hidden="true"><MessagesSquare size={18} /></span>
-          <h2 id="mp-s4">Foro</h2>
+          <span className="mp-seccion-icono tono-coral" aria-hidden="true"><MessagesSquare size={20} /></span>
+          <h2 id="mp-s4" className="pn-h2">Foro</h2>
           <p>Preguntas y respuestas de la comunidad. Leer es para todos; publicar, para Premium.</p>
         </header>
-        <div className={`mp-panel mp-foro${esPremium ? " is-premium" : ""}`}>
-          <div className="mp-foro-cab">
-            <span className="mp-foro-icono" aria-hidden="true"><MessagesSquare size={20} /></span>
-            <span className="mp-foro-titulo">
+        <div className={`pn-hoja mp-foro${esPremium ? " is-premium" : ""}`}>
+          <div className="mp-fila is-estatica">
+            <span className="mp-fila-icono tono-coral" aria-hidden="true"><MessagesSquare size={18} /></span>
+            <span className="mp-fila-texto">
               <strong>{esPremium ? "Tienes acceso completo" : "Puedes leerlo todo"}</strong>
               <span>{esPremium ? "Preguntar, responder y recibir avisos, con tu Premium." : "Para preguntar y responder, hace falta Premium."}</span>
             </span>
-            <span className="mp-estado-chip is-tenue">En preparación</span>
           </div>
           <ul className="mp-permisos">
             <Permiso si icono={<Eye size={17} />} titulo="Leer" texto="Todas las preguntas y respuestas" />
@@ -408,19 +408,22 @@ export default async function PerfilPage({
       {/* ── Soporte y cuenta ── */}
       <section className="mp-seccion" aria-labelledby="mp-s5">
         <header className="mp-seccion-cab">
-          <span className="mp-seccion-icono is-violeta" aria-hidden="true"><LifeBuoy size={18} /></span>
-          <h2 id="mp-s5">Ayuda y cuenta</h2>
-          <p>Si algo no va bien, escríbenos. Y si quieres irte, aquí se borra todo.</p>
+          <span className="mp-seccion-icono tono-cielo" aria-hidden="true"><LifeBuoy size={20} /></span>
+          <h2 id="mp-s5" className="pn-h2">Ayuda y cuenta</h2>
+          <p>Si algo no va bien, escríbenos. Aquí también cierras sesión o, si quieres irte, lo borras todo.</p>
         </header>
-        <div className="mp-panel mp-lista">
-          <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" className="mp-fila">
-            <span className="mp-fila-icono" aria-hidden="true"><InstagramIcon size={18} /></span>
+        <div className="pn-hoja mp-lista">
+          <div className="mp-fila">
+            <span className="mp-fila-icono tono-cielo" aria-hidden="true"><InstagramIcon size={18} /></span>
             <span className="mp-fila-texto">
               <strong>Soporte</strong>
               <span>Escríbenos por Instagram con tu duda.</span>
             </span>
-            <span className="mp-fila-accion">Escribir <ArrowRight size={14} aria-hidden="true" /></span>
-          </a>
+            <Tecla href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" color="blanca" tamano="peq" className="mp-fila-accion">
+              Escribir <ArrowRight size={14} aria-hidden="true" />
+            </Tecla>
+          </div>
+          <FilaSesion />
           {!esAdmin && <FilaEliminar esPremium={esPremium} />}
         </div>
       </section>

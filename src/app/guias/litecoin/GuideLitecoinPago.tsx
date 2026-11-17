@@ -84,7 +84,7 @@ export default function GuideLitecoinPago() {
         </label>
         <label htmlFor="ltc-importe">
           <span>Importe del pago, en euros</span>
-          <input id="ltc-importe" inputMode="decimal" value={importe} onChange={(e) => setImporte(e.target.value)} />
+          <input id="ltc-importe" inputMode="decimal" autoComplete="off" value={importe} onChange={(e) => setImporte(e.target.value)} />
         </label>
       </div>
 

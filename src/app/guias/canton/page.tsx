@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideCantonEmision from "./GuideCantonEmision";
 import GuideCantonQuiz from "./GuideCantonQuiz";
@@ -87,7 +89,6 @@ export default async function CantonPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -100,17 +101,17 @@ export default async function CantonPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Canton Network (CC)<br />
           <span className="gbc-hero-gold">la blockchain que usan los bancos</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Canton Network es una blockchain pensada para bancos y gestoras, en la que cada participante
-          solo ve los contratos en los que interviene.</strong> Sus instituciones la usan para mover bonos
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Canton Network es una blockchain pensada para bancos y gestoras, en la que cada participante
+          solo ve los contratos en los que interviene.</Anotacion></strong> Sus instituciones la usan para mover bonos
           tokenizados, préstamos con garantía y dinero bancario. Su moneda, Canton Coin (CC), paga el uso de la
-          red y se crea como recompensa a quien la mantiene, sin preventa. Puedes comprarla en algunos
+          red y <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>se crea como recompensa a quien la mantiene</Anotacion>, sin preventa. Puedes comprarla en algunos
           exchanges, pero no te da acceso a lo que hacen los bancos dentro.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de mercado: CoinGecko, misma fecha</p>
@@ -130,14 +131,14 @@ export default async function CantonPage() {
             <p>
               Canton Network es una <Termino slug="capa-1">red de capa 1</Termino>: una
               <Termino slug="blockchain"> blockchain</Termino> con sus propias reglas y su propia moneda. La
-              diferencia está en para quién se hizo. No nació para que cualquiera mueva criptomonedas, sino para
-              que un banco, una gestora y un custodio compartan operaciones sin enseñárselas al resto.
+              diferencia está en para quién se hizo. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>No nació para que cualquiera mueva criptomonedas, sino para
+              que un banco, una gestora y un custodio compartan operaciones sin enseñárselas al resto.</Anotacion>
             </p>
             <p>
               En <Termino slug="bitcoin">Bitcoin</Termino> o en Ethereum todos los
               <Termino slug="nodo"> nodos</Termino> guardan una copia de todo. Para un banco eso es
               inaceptable: sus clientes, sus precios y sus posiciones serían públicos. Canton Network resuelve
-              ese problema al revés. Cada participante guarda solo sus contratos, y la red se limita a garantizar
+              ese problema al revés. <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={300}>Cada participante guarda solo sus contratos</Anotacion>, y la red se limita a garantizar
               que todos los implicados ven la misma versión.
             </p>
             <p>
@@ -152,7 +153,7 @@ export default async function CantonPage() {
 
       {/* ── 2 ── */}
       <section id="privacidad" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Cómo funciona</div>
           <h2 className="gbc-title">Cómo funciona Canton: cada participante solo ve sus contratos</h2>
           <div className="gbc-body">
@@ -160,7 +161,7 @@ export default async function CantonPage() {
               Los contratos de Canton se escriben en <Termino slug="daml">Daml</Termino>, un lenguaje de
               <Termino slug="smart-contract"> contratos inteligentes</Termino> creado por Digital Asset. Su rasgo
               principal es que cada contrato declara quién lo firma, quién puede ejecutarlo y quién puede verlo.
-              La privacidad no se añade después: va escrita en el propio contrato.
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>La privacidad no se añade después: va escrita en el propio contrato.</Anotacion>
             </p>
             <p>
               Cuando se ejecuta una operación, la red la parte en «vistas». Cada parte recibe solo la suya. Lo
@@ -168,7 +169,7 @@ export default async function CantonPage() {
               la gestora entrega bonos como garantía a través de un custodio.
             </p>
           </div>
-          <div className="gbc-tabla-caja">
+          <div className="gbc-tabla-caja gbc-ancho">
             <table className="gbc-tabla">
               <thead><tr><th>Quién</th><th>Qué ve</th><th>Qué no ve</th></tr></thead>
               <tbody>
@@ -185,21 +186,22 @@ export default async function CantonPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Lo importante es la última fila. En una blockchain pública, hasta quien no participa ve que algo
-              ha ocurrido. En Canton, quien no está en el contrato no recibe nada, y el nodo de cada institución
+              ha ocurrido. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>En Canton, quien no está en el contrato no recibe nada</Anotacion>, y el nodo de cada institución
               guarda solo lo suyo.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">La paradoja: Canton Coin es pública</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">La paradoja: Canton Coin es pública</div>
+            <div className="postit-cuerpo">
               <p>
                 En una red construida para ocultar, su moneda no se oculta. El libro blanco de Canton Coin dice
-                expresamente que las posiciones y transferencias de CC son visibles. Lo hicieron a propósito:
+                expresamente que <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>las posiciones y transferencias de CC son visibles</Anotacion>. Lo hicieron a propósito:
                 así cualquiera puede medir cuánto se usa cada aplicación. Las operaciones privadas pueden ir en
                 la misma transacción que un pago en CC, y siguen siendo privadas.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -212,12 +214,12 @@ export default async function CantonPage() {
             <p>
               Si cada uno guarda solo lo suyo, alguien tiene que poner orden. Esa pieza es el sincronizador. No
               guarda contratos: recibe mensajes cifrados, los ordena y confirma que todas las partes han dado su
-              visto bueno. Así una operación entre tres entidades se cierra de golpe para las tres, o no se
-              cierra.
+              visto bueno. Así una operación entre tres entidades <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>se cierra de golpe para las tres, o no se
+              cierra</Anotacion>.
             </p>
             <p>
               El Global Synchronizer es el sincronizador público y compartido de la red. Lo operan los
-              <strong> super validadores</strong>: organizaciones que funcionan como
+              <strong> <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>super validadores</Anotacion></strong>: organizaciones que funcionan como
               <Termino slug="validador"> validadores</Termino> y, además, mantienen esta capa común. Deciden por
               mayorías de unos dos tercios. Con ese voto fijan casi todo: quién entra como super validador, las
               comisiones y hasta la curva de emisión de la moneda.
@@ -230,7 +232,7 @@ export default async function CantonPage() {
               otros colaboradores, según el documento oficial de Canton Coin.
             </p>
             <p>
-              Un detalle que la separa de Ethereum: no cualquiera conecta un validador a la red principal.
+              Un detalle que la separa de Ethereum: <Anotacion tipo="underline" color="var(--coral)" retraso={200}>no cualquiera conecta un validador a la red principal</Anotacion>.
               Necesitas que un super validador te patrocine, que tu dirección IP entre en una lista autorizada y
               una aprobación previa. La documentación oficial habla de unas dos a cuatro semanas de trámite.
             </p>
@@ -253,14 +255,14 @@ export default async function CantonPage() {
               en minutos y a cualquier hora. El sector los llama activos del mundo real. El caso con más volumen es el <Termino slug="repo">repo</Termino>.
             </p>
             <p>
-              Un repo es un préstamo a muy corto plazo con garantía. Una gestora necesita 10 millones de euros
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Un repo es un préstamo a muy corto plazo con garantía.</Anotacion> Una gestora necesita 10 millones de euros
               para una noche. Entrega bonos del Estado por valor de algo más y recibe el dinero. Al día
               siguiente devuelve los 10 millones más un interés pequeño, por ejemplo 1.000 euros, y recupera sus
               bonos. Es la fontanería de los mercados: cada día se mueven así billones.
             </p>
             <p>
-              Hacerlo en Canton tiene una ventaja concreta. El dinero y la garantía cambian de manos en el mismo
-              instante, sin esperar a que dos sistemas distintos cuadren sus registros. Y ninguno de los
+              Hacerlo en Canton tiene una ventaja concreta. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>El dinero y la garantía cambian de manos en el mismo
+              instante</Anotacion>, sin esperar a que dos sistemas distintos cuadren sus registros. Y ninguno de los
               competidores del banco ve a quién presta ni a qué tipo.
             </p>
           </div>
@@ -281,7 +283,7 @@ export default async function CantonPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Lee esa tabla con cuidado. Casi todo lo que hacen estas entidades ocurre en contratos privados
-              entre ellas, y casi nunca exige que tengan Canton Coin. Que JPMorgan lleve su
+              entre ellas, y <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>casi nunca exige que tengan Canton Coin</Anotacion>. Que JPMorgan lleve su
               <Termino slug="token-de-deposito"> token de depósito</Termino> a Canton dice mucho de la red. De
               la demanda de CC dice bastante menos, y lo verás en la sección de la moneda.
             </p>
@@ -289,7 +291,7 @@ export default async function CantonPage() {
               Con DTCC pasa lo mismo. Es el depositario central de valores de Estados Unidos, y el 28 de octubre
               de 2026 abrió su servicio de tokenización con una veintena de entidades firmadas, entre ellas
               JPMorgan, Citi y Morgan Stanley. Canton es una de sus dos redes al arrancar. Para Canton Network es
-              un respaldo enorme; para quien tenga CC, un dato que no cambia cuántas monedas se crean.
+              un respaldo enorme; para quien tenga CC, <Anotacion tipo="underline" color="var(--menta)" animar={false}>un dato que no cambia cuántas monedas se crean</Anotacion>.
             </p>
           </div>
         </div>
@@ -303,8 +305,8 @@ export default async function CantonPage() {
           <div className="gbc-body">
             <p>
               Las dos son redes de capa 1 con contratos inteligentes, y ahí acaban casi todas las similitudes.
-              <Link href="/guias/ethereum"> Ethereum</Link> busca que cualquiera pueda comprobarlo todo. Canton
-              busca que nadie vea lo que no le toca.
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}><Link href="/guias/ethereum"> Ethereum</Link> busca que cualquiera pueda comprobarlo todo. Canton
+              busca que nadie vea lo que no le toca.</Anotacion>
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -315,7 +317,7 @@ export default async function CantonPage() {
                 <tr><td><strong>Qué guarda cada nodo</strong></td><td>La cadena entera</td><td>Solo los contratos de sus partes</td></tr>
                 <tr><td><strong>Quién valida</strong></td><td>Cualquiera que deposite 32 ETH</td><td>Validadores aprobados; capa común en manos de super validadores</td></tr>
                 <tr><td><strong>Lenguaje</strong></td><td>Solidity, sobre todo</td><td>Daml</td></tr>
-                <tr><td><strong>Pagar el uso</strong></td><td>En ETH, obligatorio en cada operación</td><td>En CC o mediante un tercero que lo prepaga: la moneda es opcional</td></tr>
+                <tr><td><strong>Pagar el uso</strong></td><td>En ETH, obligatorio en cada operación</td><td>En CC o mediante un tercero que lo prepaga: <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>la moneda es opcional</Anotacion></td></tr>
                 <tr><td><strong>Usuarios típicos</strong></td><td>Particulares, <Termino slug="defi">DeFi</Termino>, <Termino slug="nft">NFT</Termino>, empresas</td><td>Bancos, gestoras, custodios, infraestructuras de mercado</td></tr>
               </tbody>
             </table>
@@ -324,8 +326,8 @@ export default async function CantonPage() {
             <p>
               Por eso hay un debate abierto sobre si Canton es «una blockchain de verdad». Sus defensores dicen
               que es pública porque cualquier institución aprobada puede conectarse. Sus críticos responden que
-              una red donde no puedes comprobar lo que hacen los demás pide confianza en quien la gobierna. Las
-              dos cosas son ciertas a la vez.
+              una red donde no puedes comprobar lo que hacen los demás pide confianza en quien la gobierna. <Anotacion tipo="underline" color="var(--menta)" retraso={200}>Las
+              dos cosas son ciertas a la vez.</Anotacion>
             </p>
           </div>
         </div>
@@ -340,8 +342,8 @@ export default async function CantonPage() {
             <p>
               Canton Coin no se vendió a inversores antes de existir. El libro blanco que la Canton Foundation
               presentó bajo el reglamento europeo <Termino slug="mica">MiCA</Termino>, notificado el 9 de
-              septiembre de 2025, lo dice sin rodeos: no hubo preventas ni reservas para fundadores. Toda CC en
-              circulación se ha acuñado a cambio de prestar un servicio a la red.
+              septiembre de 2025, lo dice sin rodeos: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>no hubo preventas ni reservas para fundadores</Anotacion>. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={800}>Toda CC en
+              circulación se ha acuñado a cambio de prestar un servicio a la red.</Anotacion>
             </p>
             <p>
               El mecanismo se llama equilibrio de quema y acuñación. Quien usa la red paga el tráfico con CC, y
@@ -352,7 +354,7 @@ export default async function CantonPage() {
             </p>
             <p>
               Lo que se puede crear tiene un techo, y está escrito. En los diez primeros años, como máximo
-              100.000 millones de CC. Después, 2.500 millones al año para siempre. No hay tope total.
+              100.000 millones de CC. Después, 2.500 millones al año para siempre. <Anotacion tipo="circle" junta retraso={200}>No hay tope total.</Anotacion>
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -379,7 +381,7 @@ export default async function CantonPage() {
             </p>
             <p>
               Haz la cuenta tú. Si hasta julio de 2029 se acuñara el máximo y no se quemara nada, saldrían unos
-              26.300 millones de CC nuevos. Sería un 66 % más de oferta. Quien tenga hoy 1.000 CC tendría una
+              26.300 millones de CC nuevos. <Anotacion tipo="underline" color="var(--coral)" animar={false}>Sería un 66 % más de oferta.</Anotacion> Quien tenga hoy 1.000 CC tendría una
               porción de la red un 40 % menor. Prueba otros plazos y otros niveles de quema:
             </p>
           </div>
@@ -390,7 +392,7 @@ export default async function CantonPage() {
             <p>
               Fíjate también en la primera fila de la tabla. Durante el primer medio año, el 80 % de lo acuñable
               fue para los super validadores, que al arrancar eran un grupo reducido de empresas e instituciones.
-              Ahora es el 20 %, y bajando. No hubo preventa, pero el reparto inicial tampoco fue para el público.
+              Ahora es el 20 %, y bajando. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>No hubo preventa, pero el reparto inicial tampoco fue para el público.</Anotacion>
             </p>
           </div>
         </div>
@@ -403,13 +405,13 @@ export default async function CantonPage() {
           <h2 className="gbc-title">¿Se puede comprar Canton Coin en España? Lo que puedes hacer y lo que no</h2>
           <div className="gbc-body">
             <p>
-              Sí, puedes comprar CC. Según su libro blanco MiCA, la Canton Foundation pidió su admisión a
+              <Anotacion tipo="underline" color="var(--menta)" retraso={200}>Sí, puedes comprar CC.</Anotacion> Según su libro blanco MiCA, la Canton Foundation pidió su admisión a
               negociación en la UE empezando por Kraken, a través de su sociedad irlandesa, y España figura entre
               los países de destino. A noviembre de 2026 también cotiza en Bybit, OKX, KuCoin y Gate, entre
               otros, según CoinGecko.
             </p>
             <p>
-              Ese documento lleva una advertencia que debes leer: ninguna autoridad europea lo ha aprobado. MiCA
+              Ese documento lleva una advertencia que debes leer: <Anotacion tipo="underline" color="var(--coral)" retraso={500}>ninguna autoridad europea lo ha aprobado</Anotacion>. MiCA
               exige publicarlo, no que un supervisor dé por buena la moneda. Comprueba además que el
               <Termino slug="exchange"> exchange</Termino> que uses está autorizado en la UE: ESMA mantiene el
               registro público de proveedores autorizados bajo MiCA.
@@ -417,6 +419,7 @@ export default async function CantonPage() {
           </div>
           <div className="cc-puedes">
             <div className="cc-puedes-col cc-puedes-col--si">
+              <SimboloEstudio tipo="check" color="menta" className="cc-puedes-simbolo" semilla={4} retraso={200} />
               <p className="cc-puedes-titulo">Lo que sí puedes hacer</p>
               <ul>
                 <li>Comprar y vender CC en un exchange, como cualquier otra criptomoneda.</li>
@@ -426,6 +429,7 @@ export default async function CantonPage() {
               </ul>
             </div>
             <div className="cc-puedes-col cc-puedes-col--no">
+              <SimboloEstudio tipo="exclamacion" color="coral" className="cc-puedes-simbolo" semilla={6} animar={false} />
               <p className="cc-puedes-titulo">Lo que no</p>
               <ul>
                 <li>Comprar los bonos tokenizados ni entrar en los repos de los bancos: son contratos privados entre instituciones.</li>
@@ -439,7 +443,7 @@ export default async function CantonPage() {
             <p>
               Con Hacienda, CC funciona como cualquier criptomoneda. Si la vendes por euros, o la cambias por
               otra criptomoneda o por una <Termino slug="stablecoin">stablecoin</Termino>, la diferencia entre
-              lo que te costó y lo que vale en ese momento es una ganancia o pérdida patrimonial. Va a la base
+              lo que te costó y lo que vale en ese momento <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>es una ganancia o pérdida patrimonial</Anotacion>. Va a la base
               del ahorro de tu renta, aunque nunca hayas tocado euros.
             </p>
             <p>
@@ -459,7 +463,7 @@ export default async function CantonPage() {
           <h2 className="gbc-title">Los riesgos de Canton Coin para un inversor particular</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>La red puede crecer sin que CC lo haga.</strong> Las instituciones pueden pagar el tráfico mediante un tercero, y sus activos no son CC. El propio diseño llama a la moneda «opcional».</li>
+              <li><strong><Anotacion tipo="underline" color="var(--coral)" retraso={200}>La red puede crecer sin que CC lo haga.</Anotacion></strong> Las instituciones pueden pagar el tráfico mediante un tercero, y sus activos no son CC. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>El propio diseño llama a la moneda «opcional».</Anotacion></li>
               <li><strong>La oferta crece mucho.</strong> Hasta 10.000 millones de CC al año ahora, sin tope total. Si la quema no acompaña, cada moneda vale una parte menor de la red.</li>
               <li><strong>Concentración del poder.</strong> Unas decenas de super validadores, casi todos grandes instituciones, pueden cambiar por votación las comisiones y la curva de emisión. No tienes voto.</li>
               <li><strong>Dependencia de Digital Asset.</strong> Es la empresa que creó la red y sigue desarrollando el protocolo. Sus problemas o sus decisiones serían los de Canton.</li>
@@ -481,7 +485,7 @@ export default async function CantonPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Canton Network</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Vista Reservada</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Vista Reservada</strong>.</p>
           </div>
           {d.isRegistered ? <GuideCantonQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

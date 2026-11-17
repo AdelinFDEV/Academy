@@ -1,17 +1,19 @@
 /* ==========================================================================
    hyperliquid.css — estilos EXCLUSIVOS de la guía /guias/hyperliquid
-   Solo clases propias de esta guía (simulador de libro de órdenes on-chain).
-   Las clases estructurales compartidas (gbc-*, wq-*) viven en guias.css y se
-   reutilizan tal cual. Ver AGENTS.md → "cada guía, su propio archivo CSS".
+   Solo clases propias de esta guía (simulador de libro de órdenes on-chain),
+   en el estilo «Cuaderno de estudio» (ESTILO.md, disenos/sistema.html): la
+   pieza es una hoja de papel con su canto; Guías = color cielo.
+   Las clases compartidas (gbc-*, wq-*) viven en guias.css.
    ========================================================================== */
 
 .hl-ob {
   margin-top: 28px;
-  border: 1px solid var(--gold-border);
-  border-radius: 18px;
-  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
-  padding: 20px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  padding: 26px;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  color: var(--tinta);
+  color-scheme: light;
 }
 
 .hl-ob-head {
@@ -19,39 +21,42 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .hl-ob-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gold);
 }
 
+/* Chip de estado: menta, como «✓ Completada» en sistema.html. */
 .hl-ob-live {
   display: inline-flex;
   align-items: center;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  padding: 5px 11px;
+  border-radius: 99px;
+  background: var(--menta-s);
+  color: var(--menta-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.28);
-  padding: 3px 9px;
-  border-radius: 6px;
 }
 
 .hl-ob-side {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .hl-ob-row {
@@ -60,10 +65,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 7px 10px;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--fondo);
   overflow: hidden;
   font-variant-numeric: tabular-nums;
+  transition: box-shadow 0.2s ease;
 }
 
 /* Barra de profundidad (tamaño disponible en cada nivel), anclada a la derecha */
@@ -73,40 +80,41 @@
   bottom: 0;
   right: 0;
   z-index: 0;
-  border-radius: 6px;
+  border-radius: 12px;
 }
-.hl-ob-depth.ask { background: rgba(248, 113, 113, 0.13); }
-.hl-ob-depth.bid { background: rgba(74, 222, 128, 0.13); }
+.hl-ob-depth.ask { background: var(--coral-s); }
+.hl-ob-depth.bid { background: var(--menta-s); }
 
-/* Porción "comida" por la orden a mercado — se ilumina en naranja */
+/* Porción "comida" por la orden a mercado — en naranja, lo que se mueve */
 .hl-ob-eat {
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
   z-index: 1;
-  border-radius: 6px;
-  background: rgba(255, 107, 43, 0.32);
-  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 12px;
+  background: var(--naranja);
+  opacity: 0.38;
+  transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.hl-ob-row.is-eaten { box-shadow: inset 0 0 0 1px rgba(255, 107, 43, 0.4); }
+.hl-ob-row.is-eaten { box-shadow: inset 0 0 0 3px var(--naranja); }
 
 .hl-ob-price {
   position: relative;
   z-index: 2;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 900;
 }
-.hl-ob-price.ask { color: #f87171; }
-.hl-ob-price.bid { color: #4ade80; }
+.hl-ob-price.ask { color: var(--coral-o); }
+.hl-ob-price.bid { color: var(--menta-o); }
 
 .hl-ob-size {
   position: relative;
   z-index: 2;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--tinta-2);
 }
 
 .hl-ob-mid {
@@ -114,119 +122,128 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 8px 0;
-  padding: 8px 10px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.12);
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
-  font-size: 0.76rem;
-  color: var(--text-muted);
+  margin: 10px 0;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
 .hl-ob-mid strong {
-  color: var(--text-primary);
-  font-size: 0.86rem;
+  font-family: var(--letra-titular);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--tinta);
 }
 
 .hl-ob-control {
-  margin: 22px 0 18px;
+  margin: 24px 0 20px;
 }
 
 .hl-ob-control-lbl {
   display: block;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta-2);
   margin-bottom: 12px;
 }
-.hl-ob-control-lbl strong { color: var(--gold); }
-
-.hl-ob-slider {
-  width: 100%;
-  height: 6px;
-  border-radius: 6px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: linear-gradient(90deg, var(--gold), var(--accent-orange));
-  outline: none;
-  cursor: pointer;
-}
-.hl-ob-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--gold);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-}
-.hl-ob-slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--gold);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
+.hl-ob-control-lbl strong {
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja-o);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
 }
 
 .hl-ob-control-scale {
   display: flex;
   justify-content: space-between;
   margin-top: 8px;
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
 }
 
 .hl-ob-result {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
 .hl-ob-res-item {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
-  padding: 14px 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: 0 4px 0 var(--gris-o);
   text-align: center;
 }
 
 .hl-ob-res-lbl {
   display: block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--tinta-2);
   margin-bottom: 6px;
 }
 
 .hl-ob-res-val {
-  font-size: 1.25rem;
+  font-family: var(--letra-titular);
+  font-size: 28px;
   font-weight: 800;
-  color: var(--text-primary);
+  line-height: 1.1;
+  color: var(--tinta);
   font-variant-numeric: tabular-nums;
 }
-.hl-ob-res-val.good { color: #4ade80; }
-.hl-ob-res-val.bad { color: var(--accent-orange); }
+/* Bien o mal es un estado, no el signo de la cifra: menta o coral. */
+.hl-ob-res-val.good { color: var(--menta-o); }
+.hl-ob-res-val.bad { color: var(--coral-o); }
 
 .hl-ob-note {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  margin-top: 16px;
-  font-size: 0.82rem;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border: 3px solid var(--cielo);
+  border-radius: 18px;
+  background: var(--cielo-s);
+  font-size: 14px;
+  font-weight: 600;
   line-height: 1.55;
-  color: var(--text-muted);
+  color: var(--cielo-o);
 }
 .hl-ob-note svg {
   flex-shrink: 0;
-  margin-top: 2px;
-  color: var(--gold);
+  margin-top: 3px;
+  color: var(--cielo-o);
 }
 
 @media (max-width: 720px) {
   .hl-ob-result { grid-template-columns: 1fr; }
 }
+@media (max-width: 480px) {
+  .hl-ob { padding: 18px 16px; border-radius: 24px; }
+  .hl-ob-row { padding: 7px 10px; }
+  .hl-ob-mid { padding: 8px 10px; gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hl-ob-row, .hl-ob-eat { transition: none; }
+}
+
+/* ══ Marcas de estudio (17-11-2026) ══
+   Lo común (margen de los pósits, estrella de la respuesta, símbolos al
+   margen) está en guias.css, «Marcas de estudio». Aquí solo el ancho de los
+   pósits que se quedan en su sitio: el del texto, no el de la página. */
+.hl-nota { max-width: 760px; }

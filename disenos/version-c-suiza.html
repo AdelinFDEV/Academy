@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión C · Suiza en blanco y negro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --blanco: #f4f4f1; --negro: #0d0d0d; --gris: #7a7a75; --acento: #ff4d00; --verde: #00a35c; --rojo: #e0261b; --sans: "Archivo", system-ui, sans-serif; --mono: "JetBrains Mono", monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--blanco); color: var(--negro); font-family: var(--sans); }
+  a { color: inherit; text-decoration: none; }
+  .rejilla { display: grid; grid-template-columns: repeat(12, 1fr); border-left: 2px solid var(--negro); }
+  .c { border-right: 2px solid var(--negro); border-bottom: 2px solid var(--negro); padding: 20px; }
+  .mono { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+
+  .nav { display: grid; grid-template-columns: 3fr 6fr 3fr; border: 2px solid var(--negro); border-top: 0; }
+  .nav > * { padding: 16px 20px; border-right: 2px solid var(--negro); display: flex; align-items: center; }
+  .nav > *:last-child { border-right: 0; justify-content: flex-end; }
+  .marca { font-weight: 900; font-size: 22px; letter-spacing: -0.04em; }
+  .marca span { background: var(--acento); color: var(--blanco); padding: 0 6px; margin-left: 4px; }
+  .enlaces { gap: 28px; }
+  .enlaces a { font-weight: 600; font-size: 15px; position: relative; }
+  .enlaces a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: var(--acento); transform: scaleX(0); transform-origin: left; transition: transform .25s; }
+  .enlaces a:hover::after { transform: scaleX(1); }
+  .boton { display: inline-block; background: var(--negro); color: var(--blanco); padding: 14px 22px; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: .02em; transition: background .15s, color .15s; }
+  .boton:hover { background: var(--acento); }
+
+  .titular { grid-column: span 9; padding: 40px 20px 30px; }
+  .titular h1 { font-size: 150px; line-height: .84; letter-spacing: -0.065em; font-weight: 900; margin: 18px 0 0; text-transform: uppercase; }
+  .titular h1 span { color: var(--acento); }
+  .lado { grid-column: span 3; display: flex; flex-direction: column; justify-content: space-between; }
+  .lado p { font-size: 18px; line-height: 1.45; margin: 0; }
+  .lado .boton { margin-top: 24px; text-align: center; }
+
+  .dato { grid-column: span 3; min-height: 210px; display: flex; flex-direction: column; justify-content: space-between; transition: background .2s, color .2s; }
+  .dato:hover { background: var(--negro); color: var(--blanco); }
+  .dato strong { font-size: 64px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
+  .dato h3 { font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -0.02em; }
+  .dato--acento { background: var(--acento); color: var(--blanco); }
+
+  .grafica { grid-column: span 6; }
+  .grafica svg { width: 100%; height: 190px; display: block; margin-top: 12px; }
+  .tabla { grid-column: span 6; padding: 0; }
+  .tabla table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 14px; }
+  .tabla th, .tabla td { text-align: left; padding: 14px 20px; border-bottom: 2px solid var(--negro); }
+  .tabla th { font-size: 11px; color: var(--gris); font-weight: 400; }
+  .tabla tr:last-child td { border-bottom: 0; }
+  .tabla tbody tr:hover { background: #e6e6e1; }
+  .pos { color: var(--verde); font-weight: 600; } .neg { color: var(--rojo); font-weight: 600; }
+
+  .seccion { grid-column: span 12; display: flex; justify-content: space-between; align-items: end; padding: 60px 20px 20px; }
+  .seccion h2 { font-size: 84px; font-weight: 900; letter-spacing: -0.06em; line-height: .9; margin: 0; text-transform: uppercase; }
+  .guia { grid-column: span 3; min-height: 300px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+  .guia .letra { font-size: 160px; font-weight: 900; line-height: .8; letter-spacing: -0.08em; transition: transform .4s, color .3s; }
+  .guia:hover .letra { transform: translateY(-10px); color: var(--acento); }
+  .guia h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; margin: 0; }
+
+  .precio { grid-column: span 12; display: grid; grid-template-columns: 2fr 1fr; padding: 0; background: var(--negro); color: var(--blanco); }
+  .precio > div { padding: 40px 20px; }
+  .precio > div + div { border-left: 2px solid var(--blanco); display: flex; flex-direction: column; justify-content: space-between; }
+  .precio h2 { font-size: 96px; line-height: .86; letter-spacing: -0.06em; font-weight: 900; margin: 0; text-transform: uppercase; }
+  .precio h2 span { color: var(--acento); }
+  .precio .cifra { font-size: 110px; font-weight: 900; letter-spacing: -0.06em; line-height: 1; }
+  .precio .boton { background: var(--acento); text-align: center; }
+  .precio .boton:hover { background: var(--blanco); color: var(--negro); }
+  .pie { grid-column: span 12; display: flex; justify-content: space-between; }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--acento); color: var(--blanco); font: 600 12px var(--mono); padding: 8px 12px; }
+</style>
+</head>
+<body>
+<header class="nav">
+  <span class="marca">ADELIN<span>BTC</span></span>
+  <span class="enlaces"><a href="#">Guías</a><a href="#">Diario</a><a href="#">Portfolio</a><a href="#">Cursos</a><a href="#">Foro</a></span>
+  <span><a class="boton" href="#">Premium →</a></span>
+</header>
+
+<main class="rejilla">
+  <div class="c titular"><span class="mono">AdelinBTC Academy / Educación cripto / ES</span><h1>Aprende.<br>Opera.<br><span>Mide.</span></h1></div>
+  <div class="c lado"><span class="mono">01 — Manifiesto</span><div><p>Sin humo, sin señales, sin promesas. Guías que explican, un diario que mide y una cartera real a la vista.</p><a class="boton" href="#">Empieza gratis</a></div></div>
+
+  <a class="c dato" href="#"><span class="mono">02 — Diario de Trading</span><strong>58%</strong><h3>Win rate medido, no recordado</h3></a>
+  <a class="c dato dato--acento" href="#"><span class="mono">03 — Portfolio Adelin</span><strong>+24,6%</strong><h3>Cartera real, en directo</h3></a>
+  <a class="c dato" href="#"><span class="mono">04 — Cursos</span><strong>Cert.</strong><h3>Con examen por módulo</h3></a>
+  <a class="c dato" href="#"><span class="mono">05 — Gratis</span><strong>A–Z</strong><h3>Guías y diccionario</h3></a>
+
+  <div class="c grafica"><span class="mono">Curva de capital · ejemplo</span>
+    <svg viewBox="0 0 600 190" preserveAspectRatio="none">
+      <g stroke="#0d0d0d" stroke-width="1" opacity=".15"><line x1="0" y1="47" x2="600" y2="47"/><line x1="0" y1="95" x2="600" y2="95"/><line x1="0" y1="142" x2="600" y2="142"/></g>
+      <path d="M0 170 L50 160 L100 165 L150 130 L200 140 L250 105 L300 112 L350 80 L400 88 L450 50 L500 58 L550 30 L600 20" fill="none" stroke="#ff4d00" stroke-width="4" stroke-linejoin="miter"/>
+    </svg>
+  </div>
+  <div class="c tabla">
+    <table><thead><tr><th>Activo</th><th>Entrada</th><th>Actual</th><th>Resultado</th></tr></thead>
+    <tbody><tr><td>BTC</td><td>69.500</td><td>91.240</td><td class="pos">+31,2%</td></tr><tr><td>SOL</td><td>154</td><td>182</td><td class="pos">+18,4%</td></tr><tr><td>ETH</td><td>3.560</td><td>3.412</td><td class="neg">−4,1%</td></tr></tbody></table>
+  </div>
+
+  <div class="c seccion"><h2>Guías<br>gratuitas</h2><a class="boton" href="#">Ver todas →</a></div>
+  <a class="c guia" href="#"><span class="mono">Nueva · 14 min</span><span class="letra">H</span><h3>Hyperliquid</h3></a>
+  <a class="c guia" href="#"><span class="mono">Básico · 11 min</span><span class="letra">X</span><h3>XRP y Ripple</h3></a>
+  <a class="c guia" href="#"><span class="mono">Intermedio · 12 min</span><span class="letra">R</span><h3>Render</h3></a>
+  <a class="c guia" href="#"><span class="mono">Básico · 10 min</span><span class="letra">W</span><h3>Worldcoin</h3></a>
+
+  <div class="c precio">
+    <div><span class="mono">06 — Premium</span><h2>Tres piezas.<br><span>Un precio.</span></h2></div>
+    <div><div class="cifra">19,99€</div><span class="mono">al mes · sin permanencia</span><a class="boton" href="#" style="margin-top:20px">Hazte Premium →</a></div>
+  </div>
+  <div class="c pie mono"><span>© AdelinBTC Academy</span><span>Aviso legal · Privacidad · Cookies</span><span>No es asesoramiento financiero</span></div>
+</main>
+<span class="etiqueta-maqueta">VERSIÓN C · SUIZA (MAQUETA)</span>
+</body>
+</html>

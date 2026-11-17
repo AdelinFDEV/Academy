@@ -44,7 +44,7 @@ export default function GuideGramStaking() {
       <div className="gram-calc-campos">
         <label htmlFor="gram-cantidad">
           <span>Tus Gram</span>
-          <input id="gram-cantidad" inputMode="decimal" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
+          <input id="gram-cantidad" inputMode="decimal" autoComplete="off" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
         </label>
         <label htmlFor="gram-anios">
           <span>Años <strong>{anios}</strong></span>
@@ -78,7 +78,7 @@ export default function GuideGramStaking() {
         <div>
           <span>Tu parte de la red</span>
           <strong className={parteCon >= 0 ? "es-sube" : "es-baja"}>{signo(parteCon, 1)} %</strong>
-          <small>Sin staking: {signo(parteSin, 1)} %</small>
+          <small>Sin staking: <b className={parteSin >= 0 ? "es-sube" : "es-baja"}>{signo(parteSin, 1)} %</b></small>
         </div>
       </div>
 

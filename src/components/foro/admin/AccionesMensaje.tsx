@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { pedirForo } from "@/components/foro/pedir";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 type Panel = null | "ocultar" | "borrar" | "sancionar" | "editar";
 
@@ -12,6 +14,13 @@ type Panel = null | "ocultar" | "borrar" | "sancionar" | "editar";
  * Ocultar, borrar y sancionar piden un motivo, porque el afectado lo ve
  * (FORO.md §7.3). El navegador solo manda qué mensaje y qué acción: quién es
  * su autor lo busca el servidor.
+ *
+ * Teclas del cuaderno: restaurar en menta, borrar en coral, sancionar en
+ * amarillo (riesgo) y lo demás en blanca. En el panel de confirmación, la
+ * acción en naranja, o en coral si es borrar o sancionar.
+ *
+ * Sonidos: el panel suena `abrir` y `cerrar`; lo aplicado, `guardado`; un
+ * fallo, `error`.
  */
 export default function AccionesMensaje({
   preguntaId,
@@ -48,11 +57,25 @@ export default function AccionesMensaje({
     setEnviando(false);
     if (!r.ok) {
       setError(r.mensaje);
+      sonar("error");
       return;
     }
+    sonar("guardado");
     setPanel(null);
     setMotivo("");
     router.refresh();
+  }
+
+  /** Abre un panel, o lo cierra si ya estaba abierto. */
+  function alternar(p: Exclude<Panel, null>) {
+    const abrir = panel !== p;
+    sonar(abrir ? "abrir" : "cerrar");
+    setPanel(abrir ? p : null);
+  }
+
+  function cerrarPanel() {
+    sonar("cerrar");
+    setPanel(null);
   }
 
   const moderar = (accion: string, conMotivo = false) =>
@@ -74,38 +97,39 @@ export default function AccionesMensaje({
     <div className="fa-acciones">
       <div className="fa-botones">
         {estado === "publicada" && (
-          <button type="button" className="fa-btn" disabled={enviando} onClick={() => setPanel(panel === "ocultar" ? null : "ocultar")}>
+          <Tecla color="blanca" tamano="peq" aria-expanded={panel === "ocultar"} disabled={enviando} onClick={() => alternar("ocultar")}>
             Ocultar
-          </button>
+          </Tecla>
         )}
         {estado === "oculta" && (
-          <button type="button" className="fa-btn" disabled={enviando} onClick={() => moderar("restaurar")}>
+          <Tecla color="menta" tamano="peq" disabled={enviando} onClick={() => moderar("restaurar")}>
             Restaurar
-          </button>
+          </Tecla>
         )}
         {estado !== "borrada" && (
-          <button type="button" className="fa-btn fa-btn--peligro" disabled={enviando} onClick={() => setPanel(panel === "borrar" ? null : "borrar")}>
+          <Tecla color="coral" tamano="peq" aria-expanded={panel === "borrar"} disabled={enviando} onClick={() => alternar("borrar")}>
             Borrar
-          </button>
+          </Tecla>
         )}
         {conReportes && estado === "publicada" && (
-          <button type="button" className="fa-btn" disabled={enviando} onClick={() => moderar("desestimar")}>
+          <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={() => moderar("desestimar")}>
             Desestimar reportes
-          </button>
+          </Tecla>
         )}
         {estado !== "borrada" && (
-          <button
-            type="button"
-            className="fa-btn"
+          <Tecla
+            color="blanca"
+            tamano="peq"
+            aria-expanded={panel === "editar"}
             disabled={enviando}
-            onClick={() => { setCorregido(texto); setPanel(panel === "editar" ? null : "editar"); }}
+            onClick={() => { setCorregido(texto); alternar("editar"); }}
           >
             Corregir el texto
-          </button>
+          </Tecla>
         )}
-        <button type="button" className="fa-btn" disabled={enviando} onClick={() => setPanel(panel === "sancionar" ? null : "sancionar")}>
+        <Tecla color="amarillo" tamano="peq" aria-expanded={panel === "sancionar"} disabled={enviando} onClick={() => alternar("sancionar")}>
           Sancionar al autor
-        </button>
+        </Tecla>
       </div>
 
       {panel && (
@@ -142,17 +166,17 @@ export default function AccionesMensaje({
             <textarea value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} maxLength={1000} />
           </label>
           <div className="fa-botones">
-            <button
-              type="button"
-              className={`fa-btn fa-btn--firme${panel === "ocultar" || panel === "editar" ? "" : " fa-btn--peligro"}`}
+            <Tecla
+              color={panel === "ocultar" || panel === "editar" ? "naranja" : "coral"}
+              tamano="peq"
               disabled={enviando || motivo.trim().length < 3 || (panel === "editar" && corregido.trim() === texto.trim())}
               onClick={confirmarPanel}
             >
               {enviando ? "Enviando…" : panel === "ocultar" ? "Ocultar mensaje" : panel === "borrar" ? "Borrar para siempre" : panel === "editar" ? "Guardar corrección" : "Aplicar sanción"}
-            </button>
-            <button type="button" className="fa-btn" disabled={enviando} onClick={() => setPanel(null)}>
+            </Tecla>
+            <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={cerrarPanel}>
               Cancelar
-            </button>
+            </Tecla>
           </div>
           {panel === "borrar" && <p className="fa-nota">Borrar no se puede deshacer y le quita 10 puntos al autor.</p>}
         </div>

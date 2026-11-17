@@ -1,256 +1,413 @@
 /* El certificado de un curso. Lo importa su componente (`Certificado.tsx`),
    así que llega a todas las páginas que lo pintan: el aula, la verificación
-   pública, la vitrina del dashboard y las muestras de la ficha, el catálogo,
-   `/premium` y la portada.
+   pública, la vitrina del dashboard y las muestras de la ficha, el catálogo y
+   `/premium`.
 
-   Diseño «Noche» (12-11-2026): el lenguaje de la web. Fondo azul noche con un
-   resplandor del color del curso, el texto a la izquierda en marfil y a la
-   derecha una placa con la nota final en un anillo y sus dos parciales.
+   Diseño «Cuaderno» (17-11-2026), el estilo de la web (ESTILO.md): una hoja de
+   cuaderno con renglones tenues y la línea de margen del color del curso; el
+   nombre y el curso en Fraunces 800; el logro en un pósit amarillo escrito a
+   mano; la nota final en una pegatina redonda del color del curso con su texto
+   en círculo, como un tampón; y el pie como un formulario.
 
-   El color del curso entra por `--dp-acento` y es el ÚNICO color.
+   El color del curso entra por `--cq-acento`. De él salen:
+    · `--cq-o`: el mismo color oscurecido con tinta, para leerlo sobre papel
+      (los colores de los cursos se eligieron para el fondo oscuro de antes y
+      algunos, como el lima o el ámbar, no se leen sobre blanco tal cual).
+    · `--cq-s`: el tono suave, para fondos.
+    · `--cq-linea`: la línea de margen.
+   Sobre el color del curso, el texto es siempre tinta, nunca blanco.
 
    Dos piezas, y no es casualidad:
-    · `.dp` fija la proporción (A4 apaisado) y es el CONTENEDOR. No lleva ni
-      una medida en cqw: en el propio contenedor, cqw mira al contenedor de
-      fuera, no a sí mismo.
-    · `.dp-hoja` es el certificado, y todo dentro se mide en cqw —por ciento
-      del ancho—, así se ve igual en miniatura que impreso.
+    · `.cq` fija la proporción (A4 apaisado) y es el CONTENEDOR. No lleva ni
+      una medida en cqw: en el propio contenedor, cqw mira al de fuera.
+    · `.cq-hoja` es el certificado. Todo dentro se mide en `--u` (1cqw, el uno
+      por ciento del ancho), así se ve igual en miniatura que impreso. La vista
+      vertical del móvil (`.cq--completo`) solo cambia `--u` y la rejilla.
 
-   Cada rejilla declara filas Y columnas, y cada hijo su `min-width: 0`: nada
-   se da por supuesto. */
+   Cada rejilla declara filas Y columnas, y cada hijo su `min-width: 0`. */
 
-.dp {
-  --dp-acento: #e6b455;
+.cq {
+  --cq-acento: var(--lila, #8f7cff);
   display: block;
   position: relative;
   width: 100%;
   max-width: 900px;
   aspect-ratio: 1.414;
   container-type: inline-size;
-  border-radius: 14px;
+  border-radius: 2.2% / 3.1%;
   overflow: hidden;
-  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  background: var(--papel, #fff);
+  color-scheme: light;
+  box-shadow: 0 6px 0 var(--gris-o, #c1c6dc), 0 26px 44px -26px rgba(29, 27, 51, 0.45);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-.dp-hoja {
-  --dp-marfil: #f7f2e6;
-  --dp-suave: rgba(247, 242, 230, 0.66);
-  --dp-tenue: rgba(247, 242, 230, 0.42);
-  /* El color del curso aclarado: el que se lee como texto sobre el noche. */
-  --dp-claro: color-mix(in srgb, var(--dp-acento) 72%, #fff);
-  --dp-linea: color-mix(in srgb, var(--dp-acento) 34%, transparent);
-  --dp-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+.cq-hoja {
+  --u: 1cqw;
+  --cq-tinta: var(--tinta, #1d1b33);
+  --cq-tinta-2: var(--tinta-2, #5f5c7d);
+  --cq-tinta-3: var(--tinta-3, #a3a7c0);
+  --cq-gris: var(--gris, #e2e5f4);
+  --cq-gris-o: var(--gris-o, #c1c6dc);
+  --cq-o: color-mix(in srgb, var(--cq-acento) 50%, var(--cq-tinta));
+  --cq-s: color-mix(in srgb, var(--cq-acento) 18%, #fff);
+  --cq-linea: color-mix(in srgb, var(--cq-acento) 55%, #fff);
+  --cq-titular: var(--letra-titular, var(--font-fraunces), Georgia, serif);
+  --cq-texto: var(--letra-texto, var(--font-nunito), system-ui, sans-serif);
+  --cq-mano: var(--letra-mano, var(--font-caveat), cursive);
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 27cqw;
-  grid-template-rows: minmax(0, 1fr);
-  gap: 4.4cqw;
-  padding: 5cqw 5cqw 4.6cqw 5.6cqw;
-  color: var(--dp-marfil);
+  grid-template-columns: minmax(0, 1fr) calc(25 * var(--u));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: calc(4 * var(--u));
+  row-gap: calc(2.2 * var(--u));
+  padding: calc(4.4 * var(--u)) calc(5 * var(--u)) calc(3.8 * var(--u)) calc(9.4 * var(--u));
+  color: var(--cq-tinta);
+  font-family: var(--cq-texto);
   text-align: left;
+  /* Los renglones del cuaderno, muy tenues. */
   background:
-    radial-gradient(62% 78% at 88% 30%, color-mix(in srgb, var(--dp-acento) 26%, transparent), transparent 70%),
-    radial-gradient(48% 60% at 0% 100%, color-mix(in srgb, var(--dp-acento) 13%, transparent), transparent 72%),
-    linear-gradient(150deg, #0f1f3a 0%, #0a1628 46%, #070f1e 100%);
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(3.9 * var(--u)),
+      color-mix(in srgb, var(--cq-gris) 75%, #fff) calc(3.9 * var(--u)) calc(4 * var(--u))
+    )
+    0 calc(2.6 * var(--u)) / 100% 100% no-repeat,
+    var(--papel, #fff);
   overflow: hidden;
 }
 
-/* El marco: un filete fino del color del curso, con las esquinas redondeadas. */
-.dp-hoja::before {
-  content: "";
-  position: absolute;
-  inset: 1.7cqw;
-  border: 0.1cqw solid var(--dp-linea);
-  border-radius: 1cqw;
-  pointer-events: none;
-}
-/* Un canto de luz arriba, como el borde de una tarjeta de metal. */
-.dp-hoja::after {
+/* La línea de margen, del color del curso, de arriba abajo. */
+.cq-hoja::before {
   content: "";
   position: absolute;
   top: 0;
-  right: 12%;
-  left: 12%;
-  height: 0.22cqw;
-  background: linear-gradient(90deg, transparent, var(--dp-acento), transparent);
+  bottom: 0;
+  left: calc(6.6 * var(--u));
+  width: calc(0.22 * var(--u));
+  background: var(--cq-linea);
   pointer-events: none;
 }
 
-/* Los arcos: anillos finos detrás de la placa. */
-.dp-arcos {
-  position: absolute;
-  top: 50%;
-  right: -18cqw;
-  width: 74cqw;
-  height: 74cqw;
-  transform: translateY(-50%);
-  fill: none;
-  stroke: var(--dp-acento);
-  stroke-width: 0.5;
-  opacity: 0.14;
-  pointer-events: none;
+/* ── La cabecera ───────────────────────────────────────────────────────── */
+
+.cq-cab {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(1 * var(--u)) calc(2 * var(--u));
+  min-width: 0;
+}
+
+.cq-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(0.9 * var(--u));
+  font: 800 calc(1.85 * var(--u)) / 1 var(--cq-titular);
+  letter-spacing: -0.01em;
+  color: var(--cq-tinta);
+  white-space: nowrap;
+}
+/* El punto de la marca, en su naranja. */
+.cq-marca::before {
+  content: "";
+  flex-shrink: 0;
+  width: calc(1.3 * var(--u));
+  height: calc(1.3 * var(--u));
+  border-radius: calc(0.4 * var(--u));
+  background: var(--naranja, #ff8a1f);
+  box-shadow: 0 calc(0.25 * var(--u)) 0 var(--naranja-o, #a65000);
+}
+
+.cq-tipo {
+  padding: calc(0.75 * var(--u)) calc(1.3 * var(--u));
+  border-radius: calc(1 * var(--u));
+  background: var(--cq-s);
+  font: 900 calc(1 * var(--u)) / 1 var(--cq-texto);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cq-o);
+  white-space: nowrap;
 }
 
 /* ── El texto ──────────────────────────────────────────────────────────── */
 
-.dp-texto {
+.cq-texto {
   position: relative;
-  z-index: 1;
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 2;
+  align-self: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: flex-start;
   min-width: 0;
-  min-height: 0;
 }
 
-.dp-cab { display: flex; align-items: center; gap: 1.5cqw; min-width: 0; }
-.dp-marca { flex-shrink: 0; font: 800 1.55cqw/1 var(--font-display); letter-spacing: -0.01em; color: var(--dp-marfil); white-space: nowrap; }
-.dp-tipo {
-  display: flex;
-  align-items: center;
-  gap: 1.5cqw;
-  min-width: 0;
-  font: 700 0.98cqw/1 var(--font-display);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--dp-claro);
-  white-space: nowrap;
-}
-.dp-tipo::before { content: ""; flex-shrink: 0; width: 0.12cqw; height: 1.8cqw; background: var(--dp-linea); }
-
-.dp-centro { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
-.dp-rotulo {
+.cq-rotulo {
   margin: 0;
-  font: 600 0.98cqw/1.3 var(--font-display);
-  letter-spacing: 0.3em;
+  font: 900 calc(1.05 * var(--u)) / 1.3 var(--cq-texto);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--dp-suave);
+  color: var(--cq-tinta-2);
 }
-.dp-nombre {
-  margin: 1cqw 0 0;
+
+.cq-nombre {
+  margin: calc(0.8 * var(--u)) 0 calc(2.4 * var(--u));
   max-width: 100%;
-  font: 600 var(--dp-cuerpo-nombre, 6.8cqw) / 1.05 var(--dp-serif);
-  letter-spacing: -0.02em;
-  color: #fffaf0;
+  font: 800 calc(var(--cq-cn, 6.2) * var(--u) * var(--cq-k-nombre, 1)) / 1.12 var(--cq-titular);
+  letter-spacing: -0.025em;
+  color: var(--cq-tinta);
   overflow-wrap: break-word;
 }
-.dp-raya {
-  display: block;
-  width: 9cqw;
-  height: 0.28cqw;
-  margin: 2cqw 0 2cqw;
-  border-radius: 99cqw;
-  background: linear-gradient(90deg, var(--dp-acento), color-mix(in srgb, var(--dp-acento) 20%, transparent));
+/* El rotulador del color del curso bajo el nombre. */
+.cq-nombre span {
+  padding: 0 0.1em;
+  background: linear-gradient(transparent 60%, color-mix(in srgb, var(--cq-acento) 48%, transparent) 60%, color-mix(in srgb, var(--cq-acento) 48%, transparent) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
-.dp-curso {
-  margin: 0.9cqw 0 0;
+
+.cq-curso {
+  margin: calc(0.7 * var(--u)) 0 0;
   max-width: 100%;
-  font: italic 600 var(--dp-cuerpo-curso, 3cqw) / 1.16 var(--dp-serif);
-  letter-spacing: -0.01em;
-  color: var(--dp-claro);
+  font: 800 calc(var(--cq-cc, 3.2) * var(--u)) / 1.15 var(--cq-titular);
+  letter-spacing: -0.015em;
+  color: var(--cq-o);
   overflow-wrap: break-word;
 }
-.dp-logro {
+
+/* El logro, en un pósit amarillo (el color de los logros), escrito a mano. */
+.cq-posit {
   display: inline-flex;
-  align-items: center;
-  gap: 1cqw;
-  margin: 2cqw 0 0;
-  padding: 0.75cqw 1.5cqw;
-  border: 0.1cqw solid var(--dp-linea);
-  border-radius: 99cqw;
-  background: color-mix(in srgb, var(--dp-acento) 10%, transparent);
-  white-space: nowrap;
+  flex-direction: column;
+  gap: calc(0.2 * var(--u));
+  max-width: 100%;
+  margin: calc(2.6 * var(--u)) 0 0;
+  padding: calc(1 * var(--u)) calc(1.8 * var(--u)) calc(0.8 * var(--u));
+  border-radius: calc(0.5 * var(--u));
+  background: var(--amarillo, #ffd23f);
+  box-shadow: 0 calc(1 * var(--u)) calc(1.4 * var(--u)) calc(-1 * var(--u)) rgba(29, 27, 51, 0.45);
+  transform: rotate(-2.5deg);
+  transform-origin: left center;
 }
-.dp-logro span { font: 700 0.86cqw/1 var(--font-display); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dp-suave); }
-.dp-logro strong { font: 700 1.3cqw/1 var(--font-display); color: var(--dp-marfil); }
-
-/* El pie: cuándo, quién y cómo se comprueba. */
-.dp-pie {
-  display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  column-gap: 3.4cqw;
-  row-gap: 1.2cqw;
-  padding-top: 1.9cqw;
-  border-top: 0.1cqw solid rgba(247, 242, 230, 0.14);
-  min-width: 0;
+.cq-posit span {
+  font: 900 calc(0.85 * var(--u)) / 1 var(--cq-texto);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--amarillo-o, #866500) 45%, var(--cq-tinta));
 }
-.dp-dato { display: flex; flex-direction: column; gap: 0.6cqw; min-width: 0; }
-.dp-dato span { font: 700 0.84cqw/1 var(--font-display); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dp-tenue); white-space: nowrap; }
-.dp-dato strong { font: 600 1.3cqw/1.1 var(--font-display); color: var(--dp-marfil); white-space: nowrap; }
-.dp-dato--codigo strong { font: 700 1.5cqw/1 ui-monospace, "SFMono-Regular", Consolas, monospace; letter-spacing: 0.16em; color: var(--dp-claro); }
-.dp-url { grid-column: 1 / -1; margin: 0; font: 500 0.9cqw/1.2 var(--font-display); color: var(--dp-tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cq-posit strong {
+  font: 700 calc(2.7 * var(--u)) / 1.05 var(--cq-mano);
+  color: var(--cq-tinta);
+  overflow-wrap: break-word;
+}
 
-/* ── La placa ──────────────────────────────────────────────────────────── */
+/* ── La pegatina y las dos notas ───────────────────────────────────────── */
 
-.dp-placa {
+.cq-placa {
   position: relative;
-  z-index: 1;
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 2;
   align-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2.6cqw;
+  gap: calc(2.6 * var(--u));
   min-width: 0;
-  padding: 3cqw 2.2cqw 2.2cqw;
-  border: 0.1cqw solid var(--dp-linea);
-  border-radius: 2cqw;
-  background:
-    linear-gradient(170deg, color-mix(in srgb, var(--dp-acento) 13%, rgba(10, 22, 40, 0.86)), rgba(7, 15, 30, 0.9));
-  box-shadow: 0 2.4cqw 5cqw -2.4cqw rgba(0, 0, 0, 0.8), inset 0 0.1cqw 0 rgba(255, 255, 255, 0.06);
 }
 
-.dp-anillo { position: relative; width: 18.5cqw; height: 18.5cqw; flex-shrink: 0; }
-.dp-anillo svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
-.dp-anillo-pista { fill: none; stroke: rgba(247, 242, 230, 0.09); stroke-width: 6; }
-.dp-anillo-relleno { fill: none; stroke: var(--dp-acento); stroke-width: 6; stroke-linecap: round; }
-.dp-anillo-centro {
-  position: absolute;
-  inset: 0;
+/* La pegatina: redonda, del color del curso, con su borde blanco de pegatina
+   y un poco torcida, como recién puesta. */
+.cq-sello {
+  flex-shrink: 0;
+  width: calc(20 * var(--u));
+  height: calc(20 * var(--u));
+  border: calc(0.7 * var(--u)) solid #fff;
+  border-radius: 50%;
+  background: var(--cq-acento);
+  box-shadow:
+    0 calc(0.5 * var(--u)) 0 color-mix(in srgb, var(--cq-acento) 60%, var(--cq-tinta)),
+    0 calc(1.6 * var(--u)) calc(2.4 * var(--u)) calc(-1.2 * var(--u)) rgba(29, 27, 51, 0.55);
+  transform: rotate(9deg);
+}
+.cq-sello svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.cq-sello-fondo { fill: var(--cq-acento); }
+.cq-sello-aro {
+  fill: none;
+  stroke: var(--cq-tinta);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  opacity: 0.35;
+}
+.cq-sello-giro {
+  text-anchor: middle;
+  font: 900 14px var(--cq-texto);
+  text-transform: uppercase;
+  fill: var(--cq-tinta);
+}
+.cq-sello-rotulo {
+  font: 900 12px var(--cq-texto);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--cq-tinta);
+}
+.cq-sello-nota {
+  font: 800 50px var(--cq-titular);
+  letter-spacing: -0.03em;
+  text-anchor: middle;
+  fill: var(--cq-tinta);
+}
+
+.cq-parciales {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5cqw;
-  text-align: center;
+  gap: calc(1 * var(--u));
+  width: 100%;
+  min-width: 0;
 }
-.dp-anillo-centro span { font: 700 0.82cqw/1 var(--font-display); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dp-suave); }
-.dp-anillo-centro strong { font: 600 5.6cqw/0.95 var(--dp-serif); letter-spacing: -0.03em; color: #fffaf0; }
-
-.dp-parciales { display: flex; flex-direction: column; width: 100%; min-width: 0; }
-.dp-parcial {
+.cq-parcial {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1cqw;
-  padding: 1.15cqw 0.2cqw;
-  border-top: 0.1cqw solid rgba(247, 242, 230, 0.12);
+  gap: calc(1 * var(--u));
+  min-width: 0;
+  padding: calc(0.9 * var(--u)) calc(1.3 * var(--u));
+  border: calc(0.2 * var(--u)) solid var(--cq-gris);
+  border-radius: calc(1.2 * var(--u));
+  background: var(--papel, #fff);
+  box-shadow: 0 calc(0.45 * var(--u)) 0 var(--cq-gris-o);
+}
+.cq-parcial span {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.35 * var(--u));
+  min-width: 0;
+  font: 800 calc(1.1 * var(--u)) / 1.15 var(--cq-texto);
+  color: var(--cq-tinta);
+}
+.cq-parcial i {
+  font: 700 calc(0.9 * var(--u)) / 1 var(--cq-texto);
+  font-style: normal;
+  color: var(--cq-tinta-2);
+}
+.cq-parcial strong {
+  flex-shrink: 0;
+  font: 800 calc(2.3 * var(--u)) / 1 var(--cq-titular);
+  color: var(--cq-o);
+}
+
+/* ── El pie: cuándo, quién y cómo se comprueba ─────────────────────────── */
+
+.cq-pie {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: calc(3.6 * var(--u));
+  row-gap: calc(1 * var(--u));
+  padding-top: calc(1.6 * var(--u));
+  border-top: calc(0.2 * var(--u)) dashed var(--cq-gris-o);
   min-width: 0;
 }
-.dp-parcial span { display: flex; flex-direction: column; gap: 0.4cqw; min-width: 0; font: 600 1.02cqw/1.15 var(--font-display); color: var(--dp-marfil); }
-.dp-parcial i { font: 500 0.82cqw/1 var(--font-display); font-style: normal; color: var(--dp-tenue); }
-.dp-parcial strong { flex-shrink: 0; font: 600 2.2cqw/1 var(--dp-serif); color: var(--dp-claro); }
-
-/* Muestra: lleva una marca de agua que deja claro que no es de nadie. */
-.dp--muestra .dp-texto::after {
-  content: "Muestra";
-  position: absolute;
-  top: 46%;
-  left: 46%;
-  transform: translate(-50%, -50%) rotate(-14deg);
-  font: 800 10cqw/1 var(--font-display);
+.cq-dato { display: flex; flex-direction: column; gap: calc(0.55 * var(--u)); min-width: 0; }
+.cq-dato span {
+  font: 900 calc(0.85 * var(--u)) / 1 var(--cq-texto);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(247, 242, 230, 0.07);
+  color: var(--cq-tinta-2);
+  white-space: nowrap;
+}
+.cq-dato strong {
+  font: 800 calc(1.4 * var(--u)) / 1.1 var(--cq-texto);
+  color: var(--cq-tinta);
+  white-space: nowrap;
+}
+/* El código, como un resguardo: recuadro discontinuo del color del curso. */
+.cq-dato--codigo { align-items: flex-start; }
+.cq-dato--codigo strong {
+  padding: calc(0.45 * var(--u)) calc(1 * var(--u));
+  border: calc(0.18 * var(--u)) dashed var(--cq-o);
+  border-radius: calc(0.8 * var(--u));
+  background: var(--cq-s);
+  font: 700 calc(1.45 * var(--u)) / 1 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.16em;
+}
+.cq-url {
+  grid-column: 1 / -1;
+  margin: 0;
+  font: 700 calc(0.95 * var(--u)) / 1.25 var(--cq-texto);
+  color: var(--cq-tinta-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Muestra: una marca de agua que deja claro que no es de nadie. */
+.cq--muestra .cq-hoja::after {
+  content: "Muestra";
+  position: absolute;
+  top: 50%;
+  left: 46%;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  font: 800 calc(12 * var(--u)) / 1 var(--cq-titular);
+  letter-spacing: 0.04em;
+  color: rgba(29, 27, 51, 0.07);
   pointer-events: none;
   white-space: nowrap;
+}
+
+/* ── Móvil y tableta, a tamaño completo: la hoja se pone en vertical ───────
+   Un A4 apaisado en 360px deja la letra pequeña en 3px, y en una tableta de
+   768px, en 6px. Con `completo`, en una pantalla de hasta 820px la hoja
+   pierde la proporción fija, crece hacia abajo y todo se agranda (`--u`, con
+   un techo para que en la tableta no salga gigante). Solo en pantalla:
+   impreso sigue apaisado. */
+
+@media screen and (max-width: 820px) {
+  .cq--completo { aspect-ratio: auto; border-radius: 20px; }
+  .cq--completo .cq-hoja {
+    --u: min(2.4cqw, 9px);
+    --cq-k-nombre: 0.85;
+    position: relative;
+    inset: auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    row-gap: calc(2.4 * var(--u));
+    padding: calc(2.8 * var(--u)) calc(2.4 * var(--u)) calc(2.6 * var(--u)) calc(4.6 * var(--u));
+  }
+  .cq--completo .cq-hoja::before { left: calc(2.9 * var(--u)); }
+  .cq--completo .cq-texto { grid-column: 1; grid-row: 2; }
+  .cq--completo .cq-placa {
+    grid-column: 1;
+    grid-row: 3;
+    flex-direction: row;
+    align-items: center;
+    gap: calc(2 * var(--u));
+  }
+  .cq--completo .cq-sello { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+  .cq--completo .cq-parciales { flex: 1; }
+  .cq--completo .cq-pie {
+    grid-row: 4;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+  .cq--completo .cq-dato strong { white-space: normal; }
+  .cq--completo .cq-dato--codigo { grid-column: 1 / -1; }
+  .cq--completo .cq-url { white-space: normal; overflow-wrap: anywhere; }
+  /* La letra pequeña, con un suelo para que se lea en cualquier teléfono. */
+  .cq--completo :is(.cq-tipo, .cq-rotulo, .cq-posit span, .cq-parcial i, .cq-dato span, .cq-url) {
+    font-size: max(calc(1.1 * var(--u)), 10px);
+  }
+  .cq--completo .cq-parcial span { font-size: max(calc(1.25 * var(--u)), 12px); }
 }
 
 /* ── Impresión: solo el certificado, en A4 apaisado ────────────────────── */
@@ -258,8 +415,8 @@
 @media print {
   @page { size: A4 landscape; margin: 0; }
   body * { visibility: hidden !important; }
-  .dp, .dp * { visibility: visible !important; }
-  .dp {
+  .cq, .cq * { visibility: visible !important; }
+  .cq {
     position: fixed;
     inset: 0;
     max-width: none;

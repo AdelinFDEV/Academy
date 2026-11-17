@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * Apertura y cierre suaves para TODOS los acordeones de la web (10-11-2026,
@@ -18,6 +19,8 @@ import { useEffect } from "react";
  * - Con «reducir movimiento» activado en el sistema, se abre de golpe.
  * - Un `<details data-sin-animacion>` queda fuera.
  * - Un enlace o un botón DENTRO del título siguen funcionando como siempre.
+ * - Suena `abrir` o `cerrar` (src/lib/sonidos.ts) en cada desplegable que
+ *   abre o cierra la persona. No se lo añadas a un `<details>` suelto.
  */
 
 const DURACION = 340;
@@ -85,17 +88,25 @@ export default function AcordeonesSuaves() {
     const reducir = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const alPulsar = (e: MouseEvent) => {
-      if (e.defaultPrevented || reducir.matches) return;
+      if (e.defaultPrevented) return;
       if (!(e.target instanceof Element)) return;
       const summary = e.target.closest("summary");
       if (!summary) return;
       const d = summary.parentElement;
       if (!(d instanceof HTMLDetailsElement) || d.querySelector(":scope > summary") !== summary) return;
-      if (d.hasAttribute("data-sin-animacion")) return;
       // Un enlace o un botón dentro del título hacen lo suyo, no abren.
       const interactivo = e.target.closest("a, button, input, select, textarea, label");
       if (interactivo && summary.contains(interactivo)) return;
 
+      // El sonido, para TODOS los desplegables de la web y solo por un clic (o
+      // Intro/Espacio) de la persona: aquí y en ningún otro sitio, para que no
+      // suene dos veces. También con «reducir movimiento» y en los
+      // `data-sin-animacion`: lo que se quita ahí es la animación, no el sonido.
+      // A mitad de animación, el destino es el contrario del que llevaba.
+      const abriendo = d.dataset.acordeon ? d.dataset.acordeon === "cerrando" : !d.open;
+      sonar(abriendo ? "abrir" : "cerrar");
+
+      if (reducir.matches || d.hasAttribute("data-sin-animacion")) return;
       e.preventDefault();
       animar(d, summary);
     };

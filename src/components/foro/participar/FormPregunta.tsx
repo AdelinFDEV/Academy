@@ -3,9 +3,11 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus, Send, X } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { aspectoDe, colorDe } from "@/components/foro/categorias";
 import { pedirForo } from "@/components/foro/pedir";
 import { LIMITES } from "@/lib/foro/limites";
+import { sonar } from "@/lib/sonidos";
 
 type Subida = { id: string; vista: string | null; nombre: string };
 
@@ -26,6 +28,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
 export default function FormPregunta({ categorias }: { categorias: { slug: string; nombre: string }[] }) {
   const router = useRouter();
   const archivo = useRef<HTMLInputElement>(null);
+  const duda = useRef<HTMLTextAreaElement>(null);
   const [categoria, setCategoria] = useState(categorias[0]?.slug ?? "");
   const [titulo, setTitulo] = useState("");
   const [cuerpo, setCuerpo] = useState("");
@@ -47,23 +50,26 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
     setError("");
     const hueco = LIMITES.imagenesPorPregunta - imagenes.length;
     if (elegidos.length > hueco) {
+      sonar("error");
       setError(`Como mucho ${LIMITES.imagenesPorPregunta} imágenes por pregunta.`);
       return;
     }
     setSubiendo(true);
+    let subidas = 0;
+    let fallo = "";
     for (const f of elegidos) {
       if (!TIPOS.includes(f.type)) {
-        setError("Solo se pueden subir imágenes JPG, PNG o WebP.");
+        fallo = "Solo se pueden subir imágenes JPG, PNG o WebP.";
         break;
       }
       if (f.size > MAX_BYTES) {
-        setError("Cada imagen puede pesar como mucho 5 MB.");
+        fallo = "Cada imagen puede pesar como mucho 5 MB.";
         break;
       }
       // 1 · Pedir permiso y una dirección de un solo uso.
       const permiso = await pedirForo<{ id: string; url: string }>("/api/foro/imagen/pedir", {});
       if (!permiso.ok) {
-        setError(permiso.mensaje);
+        fallo = permiso.mensaje;
         break;
       }
       // 2 · Subir el archivo ahí, directo al almacén privado.
@@ -71,20 +77,28 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
       try {
         subida = await fetch(permiso.url, { method: "PUT", headers: { "Content-Type": f.type }, body: f });
       } catch {
-        setError("No se ha podido subir la imagen. Comprueba tu conexión.");
+        fallo = "No se ha podido subir la imagen. Comprueba tu conexión.";
         break;
       }
       if (!subida.ok) {
-        setError("No se ha podido subir la imagen.");
+        fallo = "No se ha podido subir la imagen.";
         break;
       }
       // 3 · El servidor la comprueba y la vuelve a generar.
       const lista = await pedirForo<{ id: string; vista: string | null }>("/api/foro/imagen/confirmar", { id: permiso.id });
       if (!lista.ok) {
-        setError(lista.mensaje);
+        fallo = lista.mensaje;
         break;
       }
       setImagenes((antes) => [...antes, { id: lista.id, vista: lista.vista, nombre: f.name }]);
+      subidas++;
+    }
+    // Un solo sonido por tanda: el error si algo falló, si no el de guardado.
+    if (fallo) {
+      sonar("error");
+      setError(fallo);
+    } else if (subidas > 0) {
+      sonar("guardado");
     }
     setSubiendo(false);
   }
@@ -101,14 +115,16 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
     });
     if (!r.ok) {
       setEnviando(false);
+      sonar("error");
       setError(r.mensaje);
       return;
     }
+    sonar("guardado");
     router.push(`/foro/${r.id}-${r.slug}`);
   }
 
   return (
-    <form className="fp-form fq-form fo-tarjeta" onSubmit={publicar}>
+    <form className="fp-form fq-form" onSubmit={publicar}>
       <fieldset className="fq-paso">
         <legend>
           <span className="fq-paso-num" aria-hidden="true">1</span>
@@ -124,9 +140,13 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
                   name="categoria"
                   value={c.slug}
                   checked={categoria === c.slug}
-                  onChange={() => setCategoria(c.slug)}
+                  onChange={() => {
+                    // Las fichas se hunden como teclas: suenan como ellas.
+                    sonar("tecla");
+                    setCategoria(c.slug);
+                  }}
                 />
-                <Icono size={15} strokeWidth={2.2} aria-hidden="true" />
+                <span className="fq-ficha-icono" aria-hidden="true"><Icono size={15} strokeWidth={2.5} /></span>
                 {c.nombre}
               </label>
             );
@@ -149,6 +169,16 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
             onChange={(e) => setTitulo(e.target.value)}
             maxLength={LIMITES.titulo.max * 2}
             placeholder="¿Cómo declaro las recompensas de staking?"
+            autoComplete="off"
+            enterKeyHint="next"
+            // En el móvil, la tecla «Siguiente» del teclado pasa a la duda en
+            // vez de enviar el formulario a medias.
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                e.preventDefault();
+                duda.current?.focus();
+              }
+            }}
             required
           />
           <span className={`fp-contador${nTitulo > LIMITES.titulo.max ? " es-malo" : ""}`}>
@@ -159,6 +189,7 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
         <label className="fp-campo">
           <span>Tu duda <small>— con el contexto que haga falta para entenderla</small></span>
           <textarea
+            ref={duda}
             value={cuerpo}
             onChange={(e) => setCuerpo(e.target.value)}
             rows={10}
@@ -183,15 +214,15 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
             <span className="fq-nota">
               Hasta {LIMITES.imagenesPorPregunta}. JPG, PNG o WebP de 5 MB como mucho.
             </span>
-            <button
-              type="button"
-              className="fp-btn"
+            <Tecla
+              color="blanca"
+              tamano="peq"
               disabled={subiendo || enviando || imagenes.length >= LIMITES.imagenesPorPregunta}
               onClick={() => archivo.current?.click()}
             >
-              <ImagePlus size={16} strokeWidth={2.2} aria-hidden="true" />
+              <ImagePlus size={16} strokeWidth={2.6} aria-hidden="true" />
               {subiendo ? "Subiendo…" : "Añadir imagen"}
-            </button>
+            </Tecla>
           </div>
           <input ref={archivo} type="file" accept={TIPOS.join(",")} multiple hidden onChange={subir} />
           {imagenes.length > 0 && (
@@ -204,15 +235,20 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
                   ) : (
                     <span className="fq-sin-vista">{img.nombre}</span>
                   )}
-                  <button
-                    type="button"
+                  <Tecla
+                    color="coral"
+                    tamano="peq"
+                    icono
                     className="fq-quitar"
                     disabled={enviando}
                     aria-label={`Quitar ${img.nombre}`}
-                    onClick={() => setImagenes((antes) => antes.filter((x) => x.id !== img.id))}
+                    onClick={() => {
+                      sonar("cerrar");
+                      setImagenes((antes) => antes.filter((x) => x.id !== img.id));
+                    }}
                   >
-                    <X size={14} strokeWidth={2.6} aria-hidden="true" />
-                  </button>
+                    <X size={18} strokeWidth={3} aria-hidden="true" />
+                  </Tecla>
                 </li>
               ))}
             </ul>
@@ -227,10 +263,10 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
 
       <div className="fq-pie fp-fila fp-fila--entre">
         <span className="fq-nota">Se publicará al momento y será visible para cualquiera.</span>
-        <button type="submit" className="fp-btn fp-btn--firme fp-btn--grande" disabled={!listo}>
-          <Send size={16} strokeWidth={2.3} aria-hidden="true" />
+        <Tecla type="submit" color="coral" tamano="grande" disabled={!listo}>
+          <Send size={18} strokeWidth={2.6} aria-hidden="true" />
           {enviando ? "Publicando…" : "Publicar pregunta"}
-        </button>
+        </Tecla>
       </div>
     </form>
   );

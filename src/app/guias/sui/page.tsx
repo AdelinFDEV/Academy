@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideSuiComisiones from "./GuideSuiComisiones";
 import GuideSuiQuiz from "./GuideSuiQuiz";
@@ -87,7 +89,6 @@ export default async function SuiPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -100,16 +101,16 @@ export default async function SuiPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Sui (SUI)<br />
           <span className="gbc-hero-gold">la criptomoneda que salió del proyecto de Meta</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Sui es una blockchain para ejecutar aplicaciones, y SUI es su criptomoneda</strong>: con ella se
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Sui es una blockchain para ejecutar aplicaciones, y SUI es su criptomoneda</Anotacion></strong>: con ella se
           pagan las comisiones, se hace staking y se vota. La crearon antiguos ingenieros de Meta que trabajaban en
-          Diem. Su idea central es guardarlo todo como objetos con dueño, de modo que lo que solo es tuyo se mueve
+          Diem. Su idea central es guardarlo todo como <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>objetos con dueño</Anotacion>, de modo que lo que solo es tuyo se mueve
           sin esperar turno, en menos de un segundo.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos leídos en la propia red ese día</p>
@@ -143,14 +144,14 @@ export default async function SuiPage() {
             <p>
               Varios ingenieros de aquel equipo se fueron en 2021 y fundaron Mysten Labs. Al frente estaban Evan
               Cheng, como consejero delegado, y Sam Blackshear, que había creado en Meta el lenguaje de
-              programación de Diem. Se llevaron esa idea y construyeron Sui encima. La red principal arrancó el 3
+              programación de Diem. <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Se llevaron esa idea y construyeron Sui encima.</Anotacion> La red principal arrancó el 3
               de mayo de 2023, y la impulsa la Sui Foundation.
             </p>
             <p>
               A 14 de noviembre de 2026 había en circulación 4.139 millones de SUI, de un máximo de 10.000 millones,
               y cada uno cotizaba a 0,69 euros según CoinGecko. Su
               <Termino slug="market-cap"> capitalización</Termino> rondaba los 2.860 millones de euros, en el puesto
-              28 del mercado. El precio estaba un 86 % por debajo de su
+              28 del mercado. El precio estaba <Anotacion tipo="circle" junta retraso={300}>un 86 %</Anotacion> por debajo de su
               <Termino slug="ath"> máximo histórico</Termino> de 5,35 dólares, del 4 de enero de 2025.
             </p>
           </div>
@@ -169,7 +170,7 @@ export default async function SuiPage() {
               dinero es una línea en la hoja de cálculo de otro.
             </p>
             <p>
-              Sui guarda <strong>objetos</strong>. Cada moneda, cada <Termino slug="nft">NFT</Termino>, cada entrada a un concierto es una pieza
+              Sui guarda <strong><Anotacion tipo="circle" junta>objetos</Anotacion></strong>. Cada moneda, cada <Termino slug="nft">NFT</Termino>, cada entrada a un concierto es una pieza
               con su propio identificador, su dueño y su versión. Si tienes 50 SUI, tienes uno o varios objetos
               moneda que suman 50, y son tuyos en el sentido más literal: la red sabe que te pertenecen sin
               consultar ninguna lista ajena. Es lo que se conoce como
@@ -181,6 +182,7 @@ export default async function SuiPage() {
           <div className="sui-objetos">
             {TIPOS_OBJETO.map((o) => (
               <div key={o.tipo} className="sui-objeto">
+                {o.tipo === "Propio" && <SimboloEstudio tipo="estrella" className="sui-objeto-estrella" semilla={8} retraso={400} />}
                 <span className="sui-objeto-tipo">Objeto {o.tipo.toLowerCase()}</span>
                 <strong>{o.ejemplo}</strong>
                 <p>{o.texto}</p>
@@ -193,13 +195,13 @@ export default async function SuiPage() {
             <h3 className="gbc-sub">Move, el lenguaje que heredó de Diem</h3>
             <p>
               Sus contratos se escriben en <Termino slug="lenguaje-move">Move</Termino>, el lenguaje que
-              Blackshear diseñó para Diem. Su rasgo central es que trata los activos como cosas físicas: una moneda
+              Blackshear diseñó para Diem. Su rasgo central es que <Anotacion tipo="underline" color="var(--azul)" grosor={2}>trata los activos como cosas físicas</Anotacion>: una moneda
               no se puede copiar ni hacer desaparecer por descuido. Solo se puede mover de un dueño a otro.
             </p>
             <p>
               Parece un detalle de programadores, pero ataca un tipo de error que ha costado mucho dinero en otras
-              redes: el contrato que, por un fallo de cuentas, crea saldo de la nada o lo pierde. En Move, el
-              compilador rechaza ese código antes de publicarlo. Aptos, otra red fundada por exempleados de Meta,
+              redes: el contrato que, por un fallo de cuentas, crea saldo de la nada o lo pierde. <Anotacion tipo="underline" color="var(--menta)" animar={false}>En Move, el
+              compilador rechaza ese código antes de publicarlo.</Anotacion> Aptos, otra red fundada por exempleados de Meta,
               usa una variante del mismo lenguaje.
             </p>
           </div>
@@ -235,8 +237,8 @@ export default async function SuiPage() {
               hay nada que disputar: solo Ana puede gastarlas.
             </p>
             <p>
-              Esta red aprovecha esa diferencia. Las operaciones que solo tocan objetos propios o inmutables van por una
-              vía rápida: no necesitan que el consenso les asigne turno ni compiten con nadie. Las que tocan un
+              Esta red aprovecha esa diferencia. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>Las operaciones que solo tocan objetos propios o inmutables van por una
+              vía rápida</Anotacion>: no necesitan que el consenso les asigne turno ni compiten con nadie. Las que tocan un
               objeto compartido, como el fondo de un <Termino slug="dex">DEX</Termino>, sí pasan por la cola y se
               ordenan con Mysticeti, su sistema de consenso.
             </p>
@@ -244,6 +246,7 @@ export default async function SuiPage() {
 
           <div className="sui-vias">
             <div className="sui-via es-rapida">
+              <SimboloEstudio tipo="check" color="menta" className="sui-via-check" semilla={4} animar={false} />
               <span className="sui-via-nombre">Vía rápida</span>
               <strong>Ana le envía 20 SUI a Luis</strong>
               <p>Solo toca la moneda de Ana. Nadie más puede gastarla, así que no hay orden que discutir.</p>
@@ -259,12 +262,12 @@ export default async function SuiPage() {
             <p>
               Un matiz que muchas guías no recogen. En el diseño original, la vía rápida se saltaba el consenso por
               completo. Con Mysticeti v2, presentada en noviembre de 2025, esa validación previa se integró dentro
-              del consenso para ahorrar trabajo a los validadores. Las operaciones con objetos propios siguen sin
-              esperar turno, pero ya no son un circuito aparte.
+              del consenso para ahorrar trabajo a los validadores. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Las operaciones con objetos propios siguen sin
+              esperar turno</Anotacion>, pero ya no son un circuito aparte.
             </p>
             <p>
               El resultado, según la documentación oficial, es una
-              <Termino slug="finalidad"> finalidad</Termino> de entre 400 y 700 milisegundos: lo que tarda una
+              <Termino slug="finalidad"> finalidad</Termino> de entre <Anotacion tipo="circle" junta retraso={200}>400 y 700 milisegundos</Anotacion>: lo que tarda una
               operación en ser definitiva. <Link href="/guias/solana">Solana</Link> persigue la misma velocidad por
               otro camino, con una sola fila muy rápida y máquinas muy potentes. Aquí se consigue sacando de la fila
               todo lo que no necesita estar en ella.
@@ -289,15 +292,15 @@ export default async function SuiPage() {
           <div className="gbc-body">
             <p>
               Cada operación paga dos cosas distintas en <Termino slug="gas">gas</Termino>. La primera es
-              el <strong>cálculo</strong>: el trabajo de ejecutarla. La segunda es el <strong>almacenamiento</strong>:
+              el <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} junta>cálculo</Anotacion></strong>: el trabajo de ejecutarla. La segunda es el <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} junta retraso={400}>almacenamiento</Anotacion></strong>:
               lo que ocupan los objetos que creas o modificas, que los validadores tendrán que guardar mientras
               existan.
             </p>
             <p>
-              Lo pagado por almacenamiento no se gasta. Va a una hucha común, el
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Lo pagado por almacenamiento no se gasta.</Anotacion> Va a una hucha común, el
                fondo de almacenamiento, y te lo devuelven si
-              borras el objeto. A 14 de noviembre de 2026 la devolución era del 99,99 %; si lees un 99 % en
-              otra web, es un dato antiguo, de los primeros artículos del propio proyecto. Por eso una operación
+              borras el objeto. A 14 de noviembre de 2026 la devolución era <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} junta animar={false}>del 99,99 %</Anotacion>; <Anotacion tipo="underline" color="var(--coral)" animar={false}>si lees un 99 % en
+              otra web, es un dato antiguo</Anotacion>, de los primeros artículos del propio proyecto. Por eso una operación
               puede salirte gratis, o incluso darte dinero: si liberas más de lo que ocupas, la devolución supera lo
               que pagas.
             </p>
@@ -342,20 +345,21 @@ export default async function SuiPage() {
             sobre el gas. Euros al precio de CoinGecko de ese día.
           </p>
 
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">No es lo mismo que en NEAR</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">No es lo mismo que en NEAR</div>
+            <div className="postit-cuerpo">
               <p>En <Link href="/guias/near">NEAR</Link> guardar datos bloquea parte de tu saldo, que sigue siendo
               tuyo. En Sui lo pagas de verdad: sale de tu <Termino slug="wallet">cartera</Termino> y entra en el fondo. Lo que recibes al borrar es
               una devolución, no un desbloqueo. Si nunca borras nada, ese dinero ya no vuelve.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
       {/* ── 5 ── */}
       <section id="zklogin" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Sin frase semilla</div>
           <h2 className="gbc-title">¿Se puede entrar en Sui con una cuenta de Google? Así funciona zkLogin</h2>
           <div className="gbc-body">
@@ -372,24 +376,26 @@ export default async function SuiPage() {
               de Google de tu dirección, para que nadie pueda unir una con otra.
             </p>
             <p>
-              Lo más importante para tu seguridad: Google no tiene tus fondos. No puede mover nada por su cuenta,
-              porque la firma necesita también la sal. La documentación lo describe como un sistema de dos
+              <SimboloEstudio tipo="estrella" margen semilla={6} retraso={200} />
+              Lo más importante para tu seguridad: <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} retraso={300}>Google no tiene tus fondos.</Anotacion> No puede mover nada por su cuenta,
+              porque <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>la firma necesita también la sal</Anotacion>. La documentación lo describe como un sistema de dos
               factores. Pero el segundo factor solo protege si la sal está fuera del alcance de tu cuenta de
-              Google. Si la aplicación te la entrega al iniciar sesión con Google, quien entre en tu Google
-              puede pedirla igual que tú.
+              Google. <Anotacion tipo="underline" color="var(--coral)" animar={false}>Si la aplicación te la entrega al iniciar sesión con Google, quien entre en tu Google
+              puede pedirla igual que tú.</Anotacion>
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El error típico: no saber dónde está la sal</div>
-            <div className="gbc-box-body">
-              <p>Si pierdes la sal, pierdes el acceso a esa dirección para siempre; lo dice así la documentación
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error típico: no saber dónde está la sal</div>
+            <div className="postit-cuerpo">
+              <p><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Si pierdes la sal, pierdes el acceso a esa dirección para siempre</Anotacion>; lo dice así la documentación
               oficial. Muchas aplicaciones la guardan por ti, y entonces dependes de que esa empresa siga existiendo.
               Lo mismo si Google te cierra la cuenta. Antes de guardar una cantidad seria con zkLogin, pregunta quién
               guarda tu sal y añade una vía de recuperación. La documentación propone una cartera <Termino slug="multifirma">multifirma</Termino> de
               «1 de 2» con dos proveedores: si pierdes uno, entras con el otro.</p>
             </div>
-          </div>
+          </Postit>
           <p className="gbc-fuente">Proveedores, sal y recuperación: documentación oficial de zkLogin, consultada el 14 de noviembre de 2026.</p>
         </div>
       </section>
@@ -402,13 +408,13 @@ export default async function SuiPage() {
           <div className="gbc-body">
             <p>
               Cetus era el mayor DEX de la red. El 22 de mayo de 2025, un atacante aprovechó un fallo en una biblioteca
-              de código abierto que usaban sus contratos y vació sus fondos de liquidez. Se llevó unos 223 millones de
+              de código abierto que usaban sus contratos y vació sus fondos de liquidez. Se llevó <Anotacion tipo="circle" junta retraso={200}>unos 223 millones</Anotacion> de
               dólares. Fue un <Termino slug="exploit">exploit</Termino> de una aplicación, no de la red, que siguió
               funcionando.
             </p>
             <p>
-              Lo que vino después es lo que hace famoso el caso. En pocas horas, los validadores se pusieron de
-              acuerdo para ignorar las operaciones de las dos direcciones del atacante. Unos 162 millones quedaron
+              Lo que vino después es lo que hace famoso el caso. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={500}>En pocas horas, los validadores se pusieron de
+              acuerdo para ignorar las operaciones de las dos direcciones del atacante.</Anotacion> Unos 162 millones quedaron
               congelados dentro de la red. Otros 56 millones ya habían salido hacia Ethereum por un
               <Termino slug="bridge"> puente</Termino>.
             </p>
@@ -433,8 +439,8 @@ export default async function SuiPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>Hay dos formas de leerlo, y las dos son ciertas.</p>
             <ul>
-              <li><strong>La buena noticia.</strong> Los usuarios recuperaron la mayor parte de lo robado. En la mayoría de los hackeos de <Termino slug="defi">DeFi</Termino>, el dinero no vuelve nunca.</li>
-              <li><strong>La incómoda.</strong> Se demostró que un grupo de validadores puede, en horas, bloquear una dirección y mover sus fondos sin su firma. Esta vez fue contra un ladrón. La herramienta no distingue.</li>
+              <li><strong>La buena noticia.</strong> <Anotacion tipo="underline" color="var(--menta)" animar={false}>Los usuarios recuperaron la mayor parte de lo robado.</Anotacion> En la mayoría de los hackeos de <Termino slug="defi">DeFi</Termino>, el dinero no vuelve nunca.</li>
+              <li><strong>La incómoda.</strong> Se demostró que un grupo de validadores puede, en horas, bloquear una dirección y mover sus fondos sin su firma. Esta vez fue contra un ladrón. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>La herramienta no distingue.</Anotacion></li>
             </ul>
             <p>
               La pregunta que deja es la que se hace a cualquier red: ¿quién puede cambiar las reglas, y cuánto le
@@ -456,7 +462,7 @@ export default async function SuiPage() {
               SUI tiene tres usos: pagar las comisiones, hacer <Termino slug="staking">staking</Termino> para
               asegurar la red y votar en las decisiones del protocolo. Su oferta tiene tope: nunca habrá más de 10.000
               millones. Pero en noviembre de 2026 la <Termino slug="oferta-circulante">oferta circulante</Termino> era solo
-              el 41,4 %, y el resto se va soltando en <Termino slug="liberacion-de-tokens">desbloqueos</Termino> mensuales.
+              {" "}<Anotacion tipo="circle" junta retraso={200}>el 41,4 %</Anotacion>, y el resto se va soltando en <Termino slug="liberacion-de-tokens">desbloqueos</Termino> mensuales.
             </p>
             <h3 className="gbc-sub">Cómo se repartió</h3>
             <p>
@@ -494,8 +500,8 @@ export default async function SuiPage() {
               <Termino slug="vesting"> vesting</Termino> de la reserva va mucho más allá.
             </p>
             <p>
-              Por eso importa distinguir la capitalización del <Termino slug="fdv">FDV</Termino>, el valor si todos
-              los SUI circularan ya. Con el precio del 14 de noviembre de 2026, la primera eran unos 2.860 millones
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>Por eso importa distinguir la capitalización del <Termino slug="fdv">FDV</Termino>, el valor si todos
+              los SUI circularan ya.</Anotacion> Con el precio del 14 de noviembre de 2026, la primera eran unos 2.860 millones
               de euros y el segundo, unos 6.920 millones.
             </p>
           </div>
@@ -506,12 +512,12 @@ export default async function SuiPage() {
               Aquí no hace falta montar nada para hacer staking: haces una
               <Termino slug="delegacion"> delegación</Termino> a un validador desde tu cartera. Empiezas a cobrar en
               la siguiente <Termino slug="epoca">época</Termino>, que dura 24 horas, y puedes retirarte cuando
-              quieras. Sui no recorta el capital de quien delega si el validador falla: como mucho, pierdes las
+              quieras. <Anotacion tipo="underline" color="var(--menta)" animar={false}>Sui no recorta el capital de quien delega si el validador falla</Anotacion>: como mucho, pierdes las
               recompensas de esa época.
             </p>
             <p>
               Ahora la cuenta que casi nadie hace. En la época del 13 de noviembre de 2026 se repartieron 261.685 SUI
-              entre 7.072 millones en staking. Al año, eso da un 1,35 % bruto. Con un validador que cobre un 10 %, te
+              entre 7.072 millones en staking. <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} retraso={300}>Al año, eso da un 1,35 % bruto.</Anotacion> Con un validador que cobre un 10 %, te
               queda en torno al 1,2 %. Casi todo sale de una subvención que baja un 10 % cada 90 épocas.
             </p>
           </div>
@@ -547,14 +553,15 @@ export default async function SuiPage() {
               con qué cartera y validador, cuánto cobró en un periodo concreto frente al 1,35 % calculado, y si
               ha probado zkLogin o una aplicación de Sui, qué le pareció. Con fechas y cifras propias. */}
 
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El staking no compensa los desbloqueos</div>
-            <div className="gbc-box-body">
-              <p>Un 1,35 % al año protege tu peso frente a la subvención, pero no frente a los cerca de 20 millones de
-              SUI que se liberan cada mes. Y nada de eso decide el precio: en noviembre de 2026 la moneda seguía un 86 % por
+          <Postit color="coral" giro={-1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" semilla={9} retraso={300} />
+            <div className="postit-titulo">El staking no compensa los desbloqueos</div>
+            <div className="postit-cuerpo">
+              <p>Un 1,35 % al año protege tu peso frente a la subvención, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>pero no frente a los cerca de 20 millones de
+              SUI que se liberan cada mes</Anotacion>. Y nada de eso decide el precio: en noviembre de 2026 la moneda seguía un 86 % por
               debajo de su máximo de enero de 2025.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -564,10 +571,10 @@ export default async function SuiPage() {
           <div className="gbc-ey">Desde España</div>
           <h2 className="gbc-title">SUI y Hacienda: qué declarar si vives en España</h2>
           <div className="gbc-body">
-            <p>Tener SUI guardado no tributa. Lo que cuenta es lo que haces con él:</p>
+            <p><SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} /><Anotacion tipo="underline" color="var(--menta)" retraso={200}>Tener SUI guardado no tributa.</Anotacion> Lo que cuenta es lo que haces con él:</p>
             <ul>
-              <li><strong>Lo que cobras por el staking</strong> se declara al recibirlo, valorado en euros ese día. La Dirección General de Tributos lo trata como rendimiento del capital mobiliario (consulta V1766-22). Llega cada época, una vez al día: guarda el historial de tu cartera.</li>
-              <li><strong>Cambiar SUI por otra moneda es una venta</strong>, aunque no pases por euros. Hacienda lo trata como una permuta, también dentro de un DEX de la propia red.</li>
+              <li><strong>Lo que cobras por el staking</strong> <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>se declara al recibirlo, valorado en euros ese día.</Anotacion> La Dirección General de Tributos lo trata como rendimiento del capital mobiliario (consulta V1766-22). Llega cada época, una vez al día: guarda el historial de tu cartera.</li>
+              <li><strong><Anotacion tipo="underline" color="var(--coral)" retraso={500}>Cambiar SUI por otra moneda es una venta</Anotacion></strong>, aunque no pases por euros. Hacienda lo trata como una permuta, también dentro de un DEX de la propia red.</li>
               <li><strong>Entrar con zkLogin no cambia nada.</strong> La dirección sigue siendo tuya, y lo que hagas con ella se declara igual.</li>
             </ul>
             <p>
@@ -587,8 +594,8 @@ export default async function SuiPage() {
           <h2 className="gbc-title">Los riesgos de Sui</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Los desbloqueos.</strong> Cada mes entran unos 20 millones de SUI más en circulación, y más de la mitad del total seguirá bloqueada en 2030. Son monedas nuevas que alguien puede vender.</li>
-              <li><strong>Poder concentrado.</strong> La Sui Foundation y Mysten Labs controlan una parte grande de los SUI, y el caso Cetus demostró que los validadores pueden congelar fondos si se coordinan.</li>
+              <li><strong>Los desbloqueos.</strong> <Anotacion tipo="underline" color="var(--coral)" retraso={200}>Cada mes entran unos 20 millones de SUI más en circulación</Anotacion>, y más de la mitad del total seguirá bloqueada en 2030. Son monedas nuevas que alguien puede vender.</li>
+              <li><strong>Poder concentrado.</strong> La Sui Foundation y Mysten Labs controlan una parte grande de los SUI, y <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>el caso Cetus demostró que los validadores pueden congelar fondos si se coordinan</Anotacion>.</li>
               <li><strong>Las aplicaciones fallan.</strong> Que Move evite ciertos errores no evita todos: Cetus perdió 223 millones por un fallo en su código.</li>
               <li><strong>zkLogin te ata a terceros.</strong> Si pierdes la sal o la cuenta del proveedor sin una vía de respaldo, pierdes la dirección.</li>
               <li><strong>La competencia.</strong> Solana, Ethereum, Aptos y otras redes buscan a los mismos usuarios y desarrolladores, y varias prometen lo mismo: rápida y barata.</li>
@@ -608,7 +615,7 @@ export default async function SuiPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Sui</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Objeto Propio</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Objeto Propio</strong>.</p>
           </div>
           {d.isRegistered ? <GuideSuiQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, Clock, CalendarCheck, TrendingUp, TrendingDown, Gauge, Award, Check, Lock, ClipboardCheck, Hourglass } from "lucide-react";
+import { ArrowRight, Clock, CalendarCheck, TrendingUp, TrendingDown, Gauge, Award } from "lucide-react";
 import AulaShell from "@/components/aula/AulaShell";
 import BotonRehacer from "@/components/aula/BotonRehacer";
+import CaminoCurso from "@/components/aula/CaminoCurso";
 import RitmoSelector from "@/components/aula/RitmoSelector";
+import Tecla from "@/components/cuaderno/Tecla";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { exigirAula } from "../contexto";
 import { cursoPorSlug } from "@/lib/cursos";
@@ -18,11 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * La portada del curso para el alumno.
+ * La portada del curso para el alumno: el mapa del curso.
  *
- * Primera vez: elegir el ritmo. Desde ahí: cuánto lleva, cuánto le queda, si
- * va por delante o por detrás de su plan, la fecha en que terminará a este
- * paso y el cronograma módulo a módulo.
+ * Primera vez: elegir el ritmo. Desde ahí, arriba lo que toca ahora y cuánto
+ * lleva (la barra gruesa, cuánto le queda, si va por delante o por detrás de
+ * su plan y cuándo terminará a este paso), y debajo EL CAMINO (CaminoCurso):
+ * cada lección y cada examen como una parada, con su estado real.
  */
 export default async function AulaCursoPage({ params }: Props) {
   const { curso: slug } = await params;
@@ -33,9 +35,11 @@ export default async function AulaCursoPage({ params }: Props) {
   if (!datos.inscripcion) {
     return (
       <AulaShell ctx={ctx} activo={{ inicio: true }}>
-        <section className="aula-bienvenida">
-          <span className="aula-kicker">Antes de empezar</span>
-          <h1 className="aula-h1">¿A qué ritmo quieres hacer el curso?</h1>
+        <section className="aula-hoja aula-bienvenida">
+          <p className="aula-nota-mano">Antes de empezar</p>
+          <h1 className="aula-h1">
+            ¿A qué <span className="fluor">ritmo</span> quieres hacer el curso?
+          </h1>
           <p className="aula-lead">
             {curso.modulos.length} módulos, {estado.leccionesTotales} lecciones y {duracion(total)} en total, exámenes
             incluidos. Elige cuántas horas a la semana le dedicas y te armamos un cronograma. Si te adelantas o te
@@ -65,20 +69,25 @@ export default async function AulaCursoPage({ params }: Props) {
         : s?.tipo === "final" ? { href: `/aula/${slug}/examen/final`, titulo: "Examen final", tipo: "Último paso" }
           : null;
 
+  const examenesTotales = estado.modulos.length + 1;
+  const examenesAprobados =
+    estado.modulos.filter((m) => m.examen.tipo === "aprobado").length + (estado.final.tipo === "aprobado" ? 1 : 0);
+
   return (
     <AulaShell ctx={ctx} activo={{ inicio: true }}>
-      <section className="aula-portada">
-        <div className="aula-anillo-grande" style={{ "--pct": estado.porcentaje } as React.CSSProperties}>
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle cx="60" cy="60" r="52" className="pista" />
-            <circle cx="60" cy="60" r="52" className="relleno" pathLength={100} strokeDasharray="100" strokeDashoffset={100 - estado.porcentaje} />
-          </svg>
-          <div><strong>{estado.porcentaje}%</strong><span>completado</span></div>
-        </div>
+      <section className="aula-hoja aula-portada">
         <div className="aula-portada-texto">
-          <span className="aula-kicker">{curso.curso.titulo}</span>
+          <p className="aula-nota-mano">{curso.curso.titulo}</p>
           <h1 className="aula-h1">
-            {terminado ? "Curso terminado" : rehaciendo ? "Rehaciendo el curso" : estado.leccionesHechas === 0 ? "Todo listo para empezar" : "Sigue donde lo dejaste"}
+            {terminado ? (
+              <>Curso <span className="fluor">terminado</span></>
+            ) : rehaciendo ? (
+              <>Rehaciendo <span className="fluor">el curso</span></>
+            ) : estado.leccionesHechas === 0 ? (
+              <>Todo listo para <span className="fluor">empezar</span></>
+            ) : (
+              <>Sigue donde <span className="fluor">lo dejaste</span></>
+            )}
           </h1>
           {rehaciendo && datos.certificado && (
             <p className="aula-lead">
@@ -87,115 +96,84 @@ export default async function AulaCursoPage({ params }: Props) {
               mismo código.
             </p>
           )}
+
           {continuar && (
-            <Link href={continuar.href} className="aula-continuar">
-              <span>
-                <span className="aula-continuar-tipo">{continuar.tipo}</span>
-                <span className="aula-continuar-titulo">{continuar.titulo}</span>
-              </span>
-              <ArrowRight size={20} aria-hidden="true" />
-            </Link>
+            <div className="aula-siguiente">
+              <span className="aula-siguiente-tipo">{continuar.tipo}</span>
+              <span className="aula-siguiente-titulo">{continuar.titulo}</span>
+              <Tecla href={continuar.href} tamano="grande">
+                {estado.leccionesHechas === 0 ? "Empezar" : "Continuar"} <ArrowRight size={20} strokeWidth={2.6} aria-hidden="true" />
+              </Tecla>
+            </div>
           )}
           {terminado && datos.certificado && (
-            <Link href={`/aula/${slug}/certificado`} className="aula-continuar is-cert">
-              <span>
-                <span className="aula-continuar-tipo">Nota final {formatoNota(datos.certificado.nota_final)}</span>
-                <span className="aula-continuar-titulo">Ver tu certificado</span>
-              </span>
-              <Award size={20} aria-hidden="true" />
-            </Link>
+            <div className="aula-siguiente aula-siguiente--cert">
+              <span className="aula-siguiente-tipo">Nota final {formatoNota(datos.certificado.nota_final)}</span>
+              <span className="aula-siguiente-titulo">Tu certificado y el logro «{curso.curso.logro}»</span>
+              <Tecla href={`/aula/${slug}/certificado`} color="amarillo" tamano="grande">
+                <Award size={20} aria-hidden="true" /> Ver tu certificado
+              </Tecla>
+            </div>
           )}
           {terminado && datos.certificado && (
             <BotonRehacer curso={slug} notaActual={formatoNota(datos.certificado.nota_final)} />
           )}
         </div>
+
+        <div className="aula-avance">
+          <p className="aula-avance-cifra">
+            <strong>{estado.porcentaje} %</strong>
+            <span>completado</span>
+          </p>
+          <span className="aula-barra aula-barra--gruesa" role="img" aria-label={`${estado.porcentaje} % del curso completado`}>
+            <i style={{ width: `${estado.porcentaje}%` }} />
+          </span>
+          <ul className="aula-avance-cuentas">
+            <li><b>{estado.leccionesHechas}</b> de {estado.leccionesTotales} lecciones</li>
+            <li><b>{examenesAprobados}</b> de {examenesTotales} exámenes aprobados</li>
+          </ul>
+        </div>
       </section>
 
       {!terminado && (
-        <section className="aula-stats">
+        <section className="aula-stats" aria-label="Tu ritmo">
           <div className="aula-stat">
-            <Clock size={17} aria-hidden="true" />
+            <span className="aula-stat-ic aula-stat-ic--cielo"><Clock size={18} aria-hidden="true" /></span>
             <span className="aula-stat-valor">{duracion(plan.minutosRestantes)}</span>
             <span className="aula-stat-label">te quedan</span>
           </div>
           <div className={`aula-stat${desfase < 0 ? " is-retraso" : desfase > 0 ? " is-adelanto" : ""}`}>
-            {desfase < 0 ? <TrendingDown size={17} aria-hidden="true" /> : <TrendingUp size={17} aria-hidden="true" />}
+            <span className={`aula-stat-ic ${desfase < 0 ? "aula-stat-ic--coral" : "aula-stat-ic--menta"}`}>
+              {desfase < 0 ? <TrendingDown size={18} aria-hidden="true" /> : <TrendingUp size={18} aria-hidden="true" />}
+            </span>
             <span className="aula-stat-valor">
-              {desfase === 0 ? "Al día" : `${Math.abs(desfase)} ${Math.abs(desfase) === 1 ? "día" : "días"}`}
+              {desfase === 0 ? "Al día" : `${desfase > 0 ? "+" : "−"}${Math.abs(desfase)} ${Math.abs(desfase) === 1 ? "día" : "días"}`}
             </span>
             <span className="aula-stat-label">{desfase < 0 ? "por detrás de tu plan" : desfase > 0 ? "por delante de tu plan" : "con tu plan"}</span>
           </div>
           <div className="aula-stat">
-            <CalendarCheck size={17} aria-hidden="true" />
+            <span className="aula-stat-ic aula-stat-ic--lila"><CalendarCheck size={18} aria-hidden="true" /></span>
             <span className="aula-stat-valor">{fechaLarga(plan.finEstimado)}</span>
             <span className="aula-stat-label">terminarás a este paso</span>
           </div>
           <div className="aula-stat">
-            <Gauge size={17} aria-hidden="true" />
+            <span className="aula-stat-ic aula-stat-ic--naranja"><Gauge size={18} aria-hidden="true" /></span>
             <span className="aula-stat-valor">{duracion(datos.inscripcion.minutos_semana)}</span>
             <span className="aula-stat-label">por semana</span>
           </div>
         </section>
       )}
 
-      <section className="aula-seccion">
-        <h2 className="aula-h2">Tu cronograma</h2>
+      <section className="aula-seccion" aria-labelledby="aula-camino-titulo">
+        <h2 id="aula-camino-titulo" className="aula-h2">Tu camino</h2>
         <p className="aula-seccion-sub">
           Empezaste el {fechaLarga(new Date(datos.inscripcion.created_at))}. A tu ritmo, el plan termina el {fechaLarga(plan.finPlaneado)}.
         </p>
-        <ol className="aula-crono">
-          {estado.modulos.map(({ modulo, desbloqueado, hechas, examen }) => {
-            const fecha = plan.hitos.find((h) => h.moduloOrden === modulo.orden)?.fecha;
-            const aprobado = examen.tipo === "aprobado";
-            const pct = modulo.lecciones.length ? (hechas / modulo.lecciones.length) * 100 : 0;
-            return (
-              <li key={modulo.id} className={`aula-crono-mod${aprobado ? " is-hecho" : desbloqueado ? " is-actual" : " is-bloqueado"}`}>
-                <span className="aula-crono-punto" aria-hidden="true">
-                  {aprobado ? <Check size={13} strokeWidth={3} /> : desbloqueado ? modulo.orden : <Lock size={11} />}
-                </span>
-                <div className="aula-crono-cuerpo">
-                  <div className="aula-crono-cab">
-                    <span className="aula-crono-titulo">{modulo.titulo}</span>
-                    <span className="aula-crono-fecha">
-                      {aprobado ? `Aprobado · ${formatoNota(examen.nota)}` : fecha ? `Previsto: ${fechaLarga(fecha)}` : ""}
-                    </span>
-                  </div>
-                  {modulo.descripcion && <p className="aula-crono-desc">{modulo.descripcion}</p>}
-                  <div className="aula-crono-pie">
-                    <span className="aula-barra"><i style={{ width: `${aprobado ? 100 : pct}%` }} /></span>
-                    <span>
-                      {hechas}/{modulo.lecciones.length} lecciones
-                      {examen.tipo === "disponible" && " · examen disponible"}
-                      {examen.tipo === "abierto" && " · examen en curso"}
-                      {examen.tipo === "espera" && " · examen en espera"}
-                    </span>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-          <li className={`aula-crono-mod aula-crono-final${datos.certificado ? " is-hecho" : estado.final.tipo !== "bloqueado" ? " is-actual" : " is-bloqueado"}`}>
-            <span className="aula-crono-punto" aria-hidden="true">
-              {datos.certificado ? <Award size={13} /> : estado.final.tipo === "espera" ? <Hourglass size={12} /> : <ClipboardCheck size={13} />}
-            </span>
-            <div className="aula-crono-cuerpo">
-              <div className="aula-crono-cab">
-                <span className="aula-crono-titulo">Examen final y certificado</span>
-                <span className="aula-crono-fecha">
-                  {datos.certificado ? `Nota final · ${formatoNota(datos.certificado.nota_final)}` : `Previsto: ${fechaLarga(plan.finPlaneado)}`}
-                </span>
-              </div>
-              <p className="aula-crono-desc">
-                Al aprobarlo ganas el logro «{curso.curso.logro}». La nota del certificado es un 40 % la media de los
-                módulos y un 60 % el examen final.
-              </p>
-            </div>
-          </li>
-        </ol>
+        <CaminoCurso ctx={ctx} plan={plan} />
       </section>
 
-      <details className="aula-seccion aula-cambiar-ritmo">
-        <summary>Cambiar mi ritmo</summary>
+      <details className="aula-hoja aula-cambiar-ritmo">
+        <summary className="tecla tecla--blanca tecla--peq">Cambiar mi ritmo</summary>
         <RitmoSelector curso={slug} minutosTotales={plan.minutosRestantes} actual={datos.inscripcion.minutos_semana} textoBoton="Guardar el nuevo ritmo" />
       </details>
 

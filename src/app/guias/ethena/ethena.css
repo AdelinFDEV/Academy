@@ -1,66 +1,67 @@
-/* Guía «Qué es Ethena». Prefijo: ena-. Lo común está en ../guias.css. */
+/* Guía «Qué es Ethena». Prefijo: ena-. Lo común está en ../guias.css.
+   Estilo «Cuaderno de estudio» (ESTILO.md, disenos/sistema.html): papel con
+   canto, Guías = color cielo. */
 
 /* ── Los tres tokens ── */
-.ena-tokens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
-.ena-tokens > div { display: grid; gap: 8px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--gold); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
-.ena-token-tipo { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
-.ena-tokens strong { font-size: 20px; color: #fff; }
-.ena-tokens p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+.ena-tokens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.ena-tokens > div { display: grid; gap: 10px; align-content: start; padding: 22px; border-radius: 20px; background: var(--papel); box-shadow: 0 5px 0 var(--gris-o); color: var(--tinta); }
+.ena-token-tipo { justify-self: start; padding: 5px 11px; border-radius: 10px; background: var(--cielo-s); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cielo-o); }
+.ena-tokens strong { font-family: var(--letra-titular); font-size: 22px; font-weight: 800; line-height: 1.2; color: var(--tinta); }
+.ena-tokens p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.65; color: var(--tinta-2); }
 
 /* ── El ejemplo con números ── */
-.ena-ejemplo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
-.ena-ejemplo > div { padding: 18px 20px; border: 1px solid var(--gold-border); border-radius: 14px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.ena-ejemplo-cab { margin: 0 0 10px; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
-.ena-ejemplo dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; font-size: 15px; }
-.ena-ejemplo dt { color: #b0c4d8; }
-.ena-ejemplo dd { margin: 0; text-align: right; color: #fff; font-variant-numeric: tabular-nums; }
-.ena-ejemplo dd.es-total { font-weight: 800; color: var(--gold); }
+.ena-ejemplo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+.ena-ejemplo > div { padding: 18px 20px; border-radius: 20px; background: var(--papel); box-shadow: 0 5px 0 var(--gris-o); color: var(--tinta); }
+.ena-ejemplo-cab { display: inline-block; margin: 0 0 12px; padding: 5px 11px; border-radius: 10px; background: var(--cielo-s); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cielo-o); }
+.ena-ejemplo dl { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; margin: 0; font-size: 15px; }
+.ena-ejemplo dt { font-weight: 600; color: var(--tinta-2); }
+.ena-ejemplo dd { margin: 0; text-align: right; font-weight: 800; color: var(--tinta); font-variant-numeric: tabular-nums; }
+.ena-ejemplo dd.es-total { padding: 1px 8px; border-radius: 10px; background: var(--cielo-s); font-weight: 900; color: var(--cielo-o); }
 
 /* ── Simulador ── */
-.ena-sim { margin-top: 26px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.ena-sim-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
-.ena-sim-tabs { display: inline-grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; background: #060f1f; }
-.ena-sim-tabs button { min-width: 170px; padding: 11px 18px; border: 0; border-radius: 9px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease; }
-.ena-sim-tabs button.is-activa { background: var(--accent-orange); color: #fff; }
-.ena-sim button:focus-visible, .ena-sim input:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.ena-sim { margin-top: 26px; padding: 26px; border-radius: 26px; background: var(--papel); box-shadow: 0 6px 0 var(--gris-o); color: var(--tinta); }
+.ena-sim-titulo { display: inline-block; margin: 0 0 18px; padding: 6px 12px; border-radius: 10px; background: var(--cielo-s); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cielo-o); }
+/* Segmentado de dos teclas pequeñas: la elegida en cielo, la otra blanca (aria-pressed). */
+.ena-sim-tabs { display: flex; flex-wrap: wrap; gap: 10px; }
+.ena-sim-tabs .tecla { min-height: 44px; white-space: normal; text-align: center; }
 
-.ena-sim-dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-.ena-sim-control { display: grid; gap: 10px; margin-top: 22px; font-size: 15px; color: #dce8f8; }
-.ena-sim-control strong { color: var(--gold); font-variant-numeric: tabular-nums; }
-.ena-sim-control input[type="range"] { width: 100%; accent-color: var(--accent-orange); cursor: pointer; }
-.ena-sim-escala { display: flex; justify-content: space-between; font-size: 12px; color: #9db2d3; }
+.ena-sim-dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.ena-sim-control { display: grid; gap: 10px; margin-top: 22px; font-size: 15px; font-weight: 700; color: var(--tinta-2); }
+.ena-sim-control strong { padding: 1px 8px; border-radius: 10px; background: var(--naranja-s); font-weight: 900; color: var(--naranja-o); font-variant-numeric: tabular-nums; }
 
-.ena-sim-patas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+/* El deslizador es el común de las guías (guias.css): aquí no se redibuja. */
+.ena-sim-escala { display: flex; justify-content: space-between; font-size: 12px; font-weight: 900; letter-spacing: 0.06em; color: var(--tinta-2); }
+
+.ena-sim-patas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
 .ena-sim-patas--dos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.ena-sim-patas > div { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(6,15,31,0.55); }
-.ena-sim-patas > div > span { font-size: 13px; color: #b0c4d8; }
-.ena-sim-patas strong { font-size: 24px; color: #fff; font-variant-numeric: tabular-nums; }
-.ena-sim-patas small { font-size: 13px; line-height: 1.45; color: #9db2d3; }
-.ena-sim-patas strong.es-pos { color: #4ade80; }
-.ena-sim-patas strong.es-neg { color: #fca5a5; }
-.ena-sim-patas > div.es-total { border-color: var(--gold-border); background: var(--gold-soft); }
-.ena-sim-patas > div.es-total strong { color: var(--gold); }
-.ena-sim-patas > div.es-alerta { border-color: rgba(248,113,113,0.4); }
-.ena-sim-pata-icono { color: var(--gold); }
-.ena-sim-nota { min-height: 3em; margin: 16px 0 0; font-size: 14.5px; line-height: 1.6; color: #dce8f8; }
+.ena-sim-patas > div { display: grid; gap: 5px; align-content: start; padding: 16px 18px; border: 3px solid transparent; border-radius: 18px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); transition: background-color 0.2s ease, border-color 0.2s ease; }
+.ena-sim-patas > div > span { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.ena-sim-patas strong { font-family: var(--letra-titular); font-size: 26px; font-weight: 800; line-height: 1.15; color: var(--tinta); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.ena-sim-patas small { font-size: 13px; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
+.ena-sim-patas strong.es-pos { color: var(--sube); }
+.ena-sim-patas strong.es-neg { color: var(--baja); }
+.ena-sim-patas > div.es-total { background: var(--cielo-s); box-shadow: 0 4px 0 var(--cielo-o); }
+.ena-sim-patas > div.es-total strong { color: var(--cielo-o); }
+.ena-sim-patas > div.es-alerta { border-color: var(--amarillo); background: var(--amarillo-s); box-shadow: 0 4px 0 var(--amarillo-o); }
+.ena-sim-patas .ena-sim-pata-icono { display: grid; justify-self: start; place-items: center; width: 32px; height: 32px; margin-bottom: 4px; border-radius: 10px; background: var(--cielo); box-shadow: 0 3px 0 var(--cielo-o); color: var(--tinta); }
+.ena-sim-nota { min-height: 3em; margin: 18px 0 0; font-size: 14.5px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 /* ── Respaldo de hoy: barra de composición ── */
-.ena-barra { display: flex; height: 22px; margin-top: 22px; overflow: hidden; border-radius: 99px; background: #060f1f; border: 1px solid rgba(255,255,255,0.1); }
-.ena-barra span { height: 100%; }
-.ena-barra-efectivo { background: var(--gold); }
-.ena-barra-btc { background: var(--accent-orange); }
-.ena-barra-resto { background: #6b8bbd; }
-.ena-barra-leyenda { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 10px 0 0; padding: 0; list-style: none; font-size: 14px; color: #dce8f8; }
+.ena-barra { display: flex; height: 18px; margin-top: 22px; overflow: hidden; border-radius: 99px; background: var(--gris); }
+.ena-barra span { height: 100%; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.35); }
+.ena-barra-efectivo { background: var(--cielo); }
+.ena-barra-btc { background: var(--naranja); }
+.ena-barra-resto { background: var(--lila); }
+.ena-barra-leyenda { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 14px; font-weight: 700; color: var(--tinta-2); }
 .ena-barra-leyenda li { display: flex; align-items: center; gap: 8px; }
-.ena-barra-leyenda i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+.ena-barra-leyenda i { display: inline-block; flex-shrink: 0; width: 14px; height: 14px; border-radius: 5px; }
 
 @media (max-width: 760px) {
   .ena-tokens, .ena-ejemplo, .ena-sim-patas, .ena-sim-patas--dos, .ena-sim-dos { grid-template-columns: 1fr; }
-  .ena-sim { padding: 18px 16px; }
-  .ena-sim-tabs { display: grid; width: 100%; }
-  .ena-sim-tabs button { min-width: 0; padding: 11px 10px; font-size: 14px; }
-  .ena-sim-patas strong { font-size: 21px; }
+  .ena-sim { padding: 18px 16px; border-radius: 24px; }
+  .ena-sim-tabs .tecla { flex: 1 1 140px; }
+  .ena-sim-patas strong { font-size: 22px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ena-sim-tabs button { transition: none; }
+  .ena-sim-patas > div { transition: none; }
 }

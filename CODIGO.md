@@ -9,7 +9,7 @@ Son cuatro cosas: dónde va cada estilo, qué no se tipa nunca, qué te bloquea 
 
 El CSS está dividido por módulo para no volver a acumular un `globals.css` gigante:
 
-- `src/app/globals.css` — solo estilos **compartidos** (variables, reset, nav, footer, tarjetas/badges/formularios reutilizados en 2+ secciones). Se carga en todas las rutas.
+- `src/app/globals.css` — solo estilos **compartidos** (variables, reset, tarjetas/badges/formularios reutilizados en 2+ secciones) y las fichas del estilo «Cuaderno de estudio» (`ESTILO.md`). Se carga en todas las rutas. La barra, el menú móvil y el pie tienen su propio archivo desde el 17-11-2026: `src/components/site-nav.css`, `menu-movil.css` y `footer.css`; las piezas del estilo, en `src/components/cuaderno/`.
 - `src/app/guias/guias.css` — lo que comparten **todas** las guías. Importado en `src/app/guias/layout.tsx`.
 - `src/app/guias/listado.css` — solo el listado `/guias`. Importado en `src/app/guias/page.tsx`.
 - `src/app/guias/[slug]/[slug].css` — lo de cada guía. Importado en su `page.tsx`.

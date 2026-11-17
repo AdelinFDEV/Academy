@@ -4,7 +4,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideAnimatedStat from "@/components/GuideAnimatedStat";
 import GuideSpotlightCards from "@/components/GuideSpotlightCards";
@@ -13,6 +12,9 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import GuideFiscalFifo from "./GuideFiscalFifo";
 import GuideFiscalCalc from "./GuideFiscalCalc";
 import GuideFiscalQuiz from "./GuideFiscalQuiz";
@@ -166,7 +168,6 @@ export default async function FiscalidadCriptoEspanaPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
@@ -181,17 +182,16 @@ export default async function FiscalidadCriptoEspanaPage() {
 
       {/* Hero */}
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía completa · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           Fiscalidad cripto en España<br />
           <span className="gbc-hero-gold">Todo lo que Hacienda espera de ti.</span>
         </h1>
         <p className="gbc-hero-desc">
-          En la fiscalidad cripto española tributas cuando <strong>vendes, permutas una moneda por otra
-          o pagas con ella</strong>: es una ganancia patrimonial que va a la base del ahorro, del{" "}
-          <strong>19% al 30%</strong>. Comprar y mantener no tributa. El <Link href="/glosario/staking">staking</Link> y los airdrops son
-          rentas aparte. El cálculo es por <strong>FIFO obligatorio</strong>, y si a 31 de diciembre
+          En la fiscalidad cripto española tributas cuando <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>vendes, permutas una moneda por otra
+          o pagas con ella</Anotacion></strong>: es una ganancia patrimonial que va a la base del ahorro, del{" "}
+          <strong>19% al 30%</strong>. <Anotacion tipo="underline" color="var(--menta)" grosor={2} retraso={1300}>Comprar y mantener no tributa.</Anotacion> El <Link href="/glosario/staking">staking</Link> y los airdrops son
+          rentas aparte. El cálculo es por <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} animar={false} junta>FIFO obligatorio</Anotacion></strong>, y si a 31 de diciembre
           tienes más de 50.000 € en plataformas de fuera de España, te toca además el{" "}
           <strong>modelo 721</strong>.
         </p>
@@ -230,7 +230,7 @@ export default async function FiscalidadCriptoEspanaPage() {
 
       {/* ── SECCIÓN 1 ── FREE */}
       <section id="hacienda-lo-sabe" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Sección 1 <span className="gbc-free-pill">Gratis</span></div>
           <h2 className="gbc-title">Se acabó la opacidad: Hacienda ya tiene tus datos</h2>
           <div className="gbc-body">
@@ -243,8 +243,8 @@ export default async function FiscalidadCriptoEspanaPage() {
               El primero fueron los <strong>modelos 172 y 173</strong>, aprobados por la Orden HFP/887/2023.
               Desde entonces, los proveedores de servicios de criptoactivos con presencia en España están
               obligados a comunicar dos cosas a la Agencia Tributaria. Una, los <strong>saldos</strong> de sus usuarios a 31 de diciembre (modelo 172). Dos, <strong>todas las operaciones</strong> del año —compras, ventas, permutas, cobros y pagos— en el modelo 173. Se presentaron por
-              primera vez en enero de 2024. Tú no presentas ninguno de los dos: los presenta la plataforma,
-              hablando de ti.
+              primera vez en enero de 2024. <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={300}>Tú no presentas ninguno de los dos: los presenta la plataforma,
+              hablando de ti.</Anotacion>
             </p>
             <p>
               El segundo fue <strong>MiCA</strong>, el reglamento europeo de criptoactivos plenamente
@@ -255,8 +255,8 @@ export default async function FiscalidadCriptoEspanaPage() {
             <p>
               Y el tercero, el definitivo, es <strong>DAC8</strong>: la directiva europea de cooperación
               administrativa que extiende el intercambio automático de información a los criptoactivos.
-              Su efecto práctico es que ya no importa en qué país de la UE tengas la cuenta — la
-              información viaja sola hasta la administración de tu país de residencia fiscal.
+              Su efecto práctico es que <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>ya no importa en qué país de la UE tengas la cuenta — la
+              información viaja sola hasta la administración de tu país de residencia fiscal.</Anotacion>
             </p>
           </div>
 
@@ -268,18 +268,19 @@ export default async function FiscalidadCriptoEspanaPage() {
             <div className="gbc-quote-a">— El cambio de paradigma que trae 2026</div>
           </div>
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Qué significa esto en la práctica</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Qué significa esto en la práctica</div>
+            <div className="postit-cuerpo">
               <p>
                 Que la fiscalidad cripto pasa a comprobarse igual que se comprueba la declaración de un
                 asalariado: por cruce automático de datos. Si tu exchange informa de 40.000 € en ventas
-                y tu declaración no recoge ninguna ganancia patrimonial, esa discrepancia no depende de
-                que un inspector se fije en ti — salta sola. Declarar bien deja de ser una cuestión de
+                y tu declaración no recoge ninguna ganancia patrimonial, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>esa discrepancia no depende de
+                que un inspector se fije en ti — salta sola.</Anotacion> Declarar bien deja de ser una cuestión de
                 prudencia y pasa a ser la única opción operativa.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -293,8 +294,8 @@ export default async function FiscalidadCriptoEspanaPage() {
               Aquí está el 80% de los errores de la fiscalidad cripto, y casi todos vienen de la misma
               confusión: creer que el
               impuesto se activa al recibir euros en el banco. No es así. Lo que grava el IRPF es la
-              <strong> alteración en la composición de tu patrimonio</strong> que pone de manifiesto una
-              ganancia o una pérdida. El euro es solo la unidad de medida, no el desencadenante.
+              <strong> <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>alteración en la composición de tu patrimonio</Anotacion></strong> que pone de manifiesto una
+              ganancia o una pérdida. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>El euro es solo la unidad de medida, no el desencadenante.</Anotacion>
             </p>
           </div>
 
@@ -325,7 +326,7 @@ export default async function FiscalidadCriptoEspanaPage() {
               <span className="fisc-table-why">Ganancia o pérdida patrimonial en la base del ahorro: diferencia entre valor de transmisión y de adquisición.</span>
             </div>
             <div className="fisc-table-row is-yes">
-              <span className="fisc-table-op">Permutar una cripto por otra</span>
+              <span className="fisc-table-op"><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Permutar una cripto por otra</Anotacion></span>
               <span className="fisc-table-tag fisc-table-tag--yes">Sí</span>
               <span className="fisc-table-why">Es una permuta (art. 37.1.h LIRPF). Se valora a precio de mercado del día, aunque no pases por euros en ningún momento.</span>
             </div>
@@ -346,15 +347,16 @@ export default async function FiscalidadCriptoEspanaPage() {
             </div>
           </div>
 
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La trampa de las stablecoins</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">La trampa de las stablecoins</div>
+            <div className="postit-cuerpo">
               <p>
-                Merece la pena insistir porque es donde más gente se lleva un susto. Compraste BTC a 20.000 €. El mercado se gira y lo pasas a USDT con BTC a 90.000 €. Acabas de realizar una ganancia de 70.000 € por cada bitcoin, aunque en tu cabeza «no has vendido» y el saldo siga dentro del <Link href="/glosario/exchange">exchange</Link>. Un trader activo que rota posiciones puede acumular
+                Merece la pena insistir porque es donde más gente se lleva un susto. Compraste BTC a 20.000 €. El mercado se gira y lo pasas a USDT con BTC a 90.000 €. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Acabas de realizar una ganancia de 70.000 € por cada bitcoin</Anotacion>, aunque en tu cabeza «no has vendido» y el saldo siga dentro del <Link href="/glosario/exchange">exchange</Link>. Un trader activo que rota posiciones puede acumular
                 decenas de hechos imponibles al año sin haber retirado un solo euro.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -375,14 +377,15 @@ export default async function FiscalidadCriptoEspanaPage() {
                 a 32.000 €, a 55.000 €. Vendes una parte. ¿Cuál de esos precios usas para calcular la
                 ganancia? La respuesta no es «el que quieras»: en la fiscalidad cripto española el
                 método es{" "}
-                <strong>FIFO</strong> —<em>First In, First Out</em>— y es <strong>obligatorio</strong>.
-                Se entiende que vendes primero las monedas que compraste primero.
+                <strong>FIFO</strong> —<em>First In, First Out</em>— y es <strong><Anotacion tipo="circle" junta>obligatorio</Anotacion></strong>.{" "}
+                <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={600}>Se entiende que vendes primero las monedas que compraste primero.</Anotacion>
               </p>
               <p>
+                <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={7} animar={false} />
                 Esto no es un detalle contable menor. En una cartera construida durante años, los lotes
                 más antiguos suelen ser los más baratos, así que el FIFO tiende a <strong>maximizar la
-                ganancia declarada</strong> en las primeras ventas. No puedes elegir el lote más caro
-                para reducir la factura, ni usar el precio medio ponderado, ni aplicar LIFO. Mueve los
+                ganancia declarada</strong> en las primeras ventas. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>No puedes elegir el lote más caro
+                para reducir la factura, ni usar el precio medio ponderado, ni aplicar LIFO.</Anotacion> Mueve los
                 controles y observa cómo se van consumiendo los lotes:
               </p>
             </div>
@@ -443,7 +446,7 @@ export default async function FiscalidadCriptoEspanaPage() {
                   <text x="300" y="254" className="fisc-fifo-tx fisc-fifo-tx--fuerte">63.000 €</text>
 
                   <text x="660" y="228" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="end">Ganancia que declaras</text>
-                  <text x="660" y="254" className="fisc-fifo-tx fisc-fifo-tx--oro" textAnchor="end">47.600 €</text>
+                  <text x="660" y="254" className="fisc-fifo-tx fisc-fifo-tx--ganancia" textAnchor="end">47.600 €</text>
                   <text x="660" y="276" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="end">9.100 € más que a precio medio</text>
                 </svg>
                 <figcaption className="fisc-fifo-cap">
@@ -454,23 +457,24 @@ export default async function FiscalidadCriptoEspanaPage() {
 
               <GuideFiscalFifo />
 
-            <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-              <div className="gbc-box-title">El FIFO se aplica por criptomoneda, no por plataforma</div>
-              <div className="gbc-box-body">
+            <Postit color="amarillo" giro={-1}>
+              <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={12} animar={false} />
+              <div className="postit-titulo">El FIFO se aplica por criptomoneda, no por plataforma</div>
+              <div className="postit-cuerpo">
                 <p>
                   Un malentendido habitual: llevar el FIFO por separado en cada exchange. La Dirección
                   General de Tributos considera que las unidades de una misma criptomoneda son bienes
                   homogéneos, así que tu bitcoin es <strong>uno solo</strong> aunque esté repartido entre
-                  Binance, Kraken y una Ledger. El orden de compra que cuenta es el global. Si operas en
+                  Binance, Kraken y una Ledger. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>El orden de compra que cuenta es el global.</Anotacion> Si operas en
                   varias plataformas y no consolidas, tu cálculo estará mal aunque cada exchange
                   individualmente cuadre.
                 </p>
               </div>
-            </div>
+            </Postit>
 
             <div className="gbc-body" style={{ marginTop: 28 }}>
               <p>
-                Una nota práctica: los <strong>gastos y comisiones</strong> inherentes a la operación
+                Una nota práctica: los <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>gastos y comisiones</Anotacion></strong> inherentes a la operación
                 suman al valor de adquisición cuando compras y restan del valor de transmisión cuando
                 vendes. No son un detalle despreciable — en operativa frecuente pueden suponer una
                 parte relevante del resultado, y olvidarlos significa pagar de más.
@@ -489,7 +493,7 @@ export default async function FiscalidadCriptoEspanaPage() {
                 Aquí se responde la pregunta con la que llega casi todo el mundo a la fiscalidad
                 cripto: cuánto se paga. Las ganancias por vender o permutar criptomonedas se integran
                 en la{" "}
-                <strong>base imponible del ahorro</strong>, que tiene su propia escala, separada de la
+                <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>base imponible del ahorro</Anotacion></strong>, que tiene su propia escala, separada de la
                 de tu nómina. Desde el 1 de enero de 2025, con la entrada en vigor de la Ley 7/2024,
                 esa escala tiene cinco tramos y el último subió del 28% al <strong>30%</strong>.
               </p>
@@ -506,25 +510,26 @@ export default async function FiscalidadCriptoEspanaPage() {
               <p>
                 El tramo intermedio que falta en las cifras de arriba es el de <strong>200.000 € a
                 300.000 €, al 27%</strong>. Y aquí conviene deshacer el malentendido más extendido de
-                todos: los tramos son <strong>marginales</strong>. Entrar en el tramo del 30% no
+                todos: los tramos son <strong><Anotacion tipo="circle" junta>marginales</Anotacion></strong>. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={700}>Entrar en el tramo del 30% no
                 significa que pagues el 30% de toda tu ganancia, sino solo de la parte que excede los
-                300.000 €. Compruébalo tú mismo:
+                300.000 €.</Anotacion> Compruébalo tú mismo:
               </p>
             </div>
 
               <GuideFiscalCalc />
 
-            <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-              <div className="gbc-box-title">La base del ahorro es un saco compartido</div>
-              <div className="gbc-box-body">
+            <Postit color="menta" giro={1}>
+              <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={5} animar={false} />
+              <div className="postit-titulo">La base del ahorro es un saco compartido</div>
+              <div className="postit-cuerpo">
                 <p>
                   En esa misma base entran los dividendos de tus acciones, los intereses de tus depósitos
-                  y las recompensas de staking. El tipo que acabas pagando por tu ganancia cripto depende,
-                  por tanto, de todo lo demás que tengas ahí dentro. Dos personas con la misma ganancia de
+                  y las recompensas de staking. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>El tipo que acabas pagando por tu ganancia cripto depende,
+                  por tanto, de todo lo demás que tengas ahí dentro.</Anotacion> Dos personas con la misma ganancia de
                   10.000 € en bitcoin pueden pagar tipos distintos según el resto de sus rentas del ahorro.
                 </p>
               </div>
-            </div>
+            </Postit>
           </div>
         </section>
 
@@ -541,40 +546,42 @@ export default async function FiscalidadCriptoEspanaPage() {
                 La parte de la fiscalidad cripto que más se falla después del FIFO es esta. No todo lo
                 que entra en tu wallet es una ganancia patrimonial. Hay rentas que no vienen
                 de transmitir nada — vienen de <em>tener</em> o de <em>hacer</em> — y cada una tiene su
-                propia calificación fiscal. Esto importa muchísimo, porque de ello depende si tributas
-                al 19% o si te vas por encima del 40%.
+                propia calificación fiscal. Esto importa muchísimo, porque <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>de ello depende si tributas
+                al 19% o si te vas por encima del 40%.</Anotacion>
               </p>
               <p>
+                <SimboloEstudio tipo="estrella" color="naranja" margen semilla={14} retraso={200} />
                 El caso más relevante es el <strong>staking</strong>. La Dirección General de Tributos,
                 en su consulta vinculante <strong>V1766-22</strong>, estableció que las recompensas de
-                staking son <strong>rendimientos del capital mobiliario</strong> obtenidos por la cesión
+                staking son <strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={400}>rendimientos del capital mobiliario</Anotacion></strong> obtenidos por la cesión
                 de capitales propios a terceros. Van a la base del ahorro y —esto es lo que más
-                sorprende— se devengan <strong>al recibirlas</strong>, valoradas en euros al precio de
+                sorprende— se devengan <strong><Anotacion tipo="circle" junta retraso={900}>al recibirlas</Anotacion></strong>, valoradas en euros al precio de
                 mercado de ese día, aunque no vendas absolutamente nada.
               </p>
             </div>
 
             <GuideSpotlightCards uses={RENTAS} />
 
-            <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-              <div className="gbc-box-title">El riesgo real del staking: tributar por lo que luego se desploma</div>
-              <div className="gbc-box-body">
+            <Postit color="coral" giro={-1.5}>
+              <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" semilla={9} animar={false} />
+              <div className="postit-titulo">El riesgo real del staking: tributar por lo que luego se desploma</div>
+              <div className="postit-cuerpo">
                 <p>
                   Como la recompensa tributa el día que la recibes, puedes acabar pagando impuestos por
                   un valor que después se evapora. Si recibes tokens valorados en 5.000 € a lo largo del
                   año y en diciembre valen 1.200 €, tu rendimiento del capital mobiliario sigue siendo de
-                  5.000 €. La caída posterior no corrige ese rendimiento: generará, en su caso, una
+                  5.000 €. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>La caída posterior no corrige ese rendimiento</Anotacion>: generará, en su caso, una
                   pérdida patrimonial cuando vendas — y las pérdidas patrimoniales solo se compensan
                   contra rendimientos del capital mobiliario hasta un límite del 25%. Son compartimentos
                   distintos, y por eso conviene tenerlo previsto antes de que llegue la campaña.
                 </p>
               </div>
-            </div>
+            </Postit>
 
             <div className="gbc-body" style={{ marginTop: 28 }}>
               <p>
                 Un apunte sobre gastos: al no tener las criptomonedas la consideración de valores
-                negociables, <strong>no son deducibles</strong> los gastos de administración y custodia
+                negociables, <strong><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>no son deducibles</Anotacion></strong> los gastos de administración y custodia
                 que sí lo serían en una cartera de acciones. Es una asimetría poco conocida y que juega
                 en contra del inversor.
               </p>
@@ -593,8 +600,8 @@ export default async function FiscalidadCriptoEspanaPage() {
                 un euro. El modelo 721 es la <strong>declaración informativa sobre monedas virtuales situadas en
                 el extranjero</strong>, aprobada por la Orden HFP/886/2023. Es el hermano cripto del
                 conocido modelo 720 de bienes en el extranjero, y tiene una característica que lo hace
-                peligroso: <strong>no se paga nada con él</strong>. Es puramente informativo. Precisamente
-                por eso se olvida — y precisamente por eso genera sanciones.
+                peligroso: <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>no se paga nada con él</Anotacion></strong>. Es puramente informativo. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={900}>Precisamente
+                por eso se olvida — y precisamente por eso genera sanciones.</Anotacion>
               </p>
             </div>
 
@@ -605,7 +612,7 @@ export default async function FiscalidadCriptoEspanaPage() {
               </div>
               <div className="fisc-721-item">
                 <div className="fisc-721-k">Umbral</div>
-                <div className="fisc-721-v">Cuando el valor conjunto a <strong>31 de diciembre</strong> supera los <strong>50.000 €</strong>. Es un umbral global, no por plataforma: se suman todos los saldos custodiados fuera de España.</div>
+                <div className="fisc-721-v">Cuando el valor conjunto a <strong>31 de diciembre</strong> supera los <strong><Anotacion tipo="circle" junta animar={false}>50.000 €</Anotacion></strong>. Es un umbral global, no por plataforma: se suman todos los saldos custodiados fuera de España.</div>
               </div>
               <div className="fisc-721-item">
                 <div className="fisc-721-k">Plazo</div>
@@ -617,7 +624,7 @@ export default async function FiscalidadCriptoEspanaPage() {
               </div>
               <div className="fisc-721-item fisc-721-item--star">
                 <div className="fisc-721-k">La autocustodia NO entra</div>
-                <div className="fisc-721-v">La Agencia Tributaria ha aclarado que las criptomonedas en monederos donde <strong>tú controlas las claves privadas</strong>, sin un tercero que las custodie, quedan fuera del modelo 721. Las <Link href="/glosario/cold-wallet"><em>cold wallets</em></Link> no custodiadas no se declaran aquí. Solo entra lo que está bajo custodia de terceros.</div>
+                <div className="fisc-721-v">La Agencia Tributaria ha aclarado que las criptomonedas en monederos donde <strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>tú controlas las claves privadas</Anotacion></strong>, sin un tercero que las custodie, quedan fuera del modelo 721. Las <Link href="/glosario/cold-wallet"><em>cold wallets</em></Link> no custodiadas no se declaran aquí. Solo entra lo que está bajo custodia de terceros.</div>
               </div>
               <div className="fisc-721-item">
                 <div className="fisc-721-k">Sanciones</div>
@@ -625,23 +632,24 @@ export default async function FiscalidadCriptoEspanaPage() {
               </div>
             </div>
 
-            <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-              <div className="gbc-box-title">Presentar el 721 no es declarar</div>
-              <div className="gbc-box-body">
+            <Postit color="amarillo" giro={1.5}>
+              <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" semilla={6} animar={false} />
+              <div className="postit-titulo">Presentar el 721 no es declarar</div>
+              <div className="postit-cuerpo">
                 <p>
-                  Son obligaciones independientes y hay que cumplir las dos. Puedes tener que presentar
+                  <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Son obligaciones independientes y hay que cumplir las dos.</Anotacion> Puedes tener que presentar
                   el 721 sin haber vendido nada en todo el año (informas de un saldo, no de una ganancia),
                   y puedes tener que declarar ganancias en el IRPF sin llegar nunca al umbral del 721.
                   Confundirlas —o creer que una sustituye a la otra— es un error frecuente y caro.
                 </p>
               </div>
-            </div>
+            </Postit>
           </div>
         </section>
 
         {/* ── SECCIÓN 7: PATRIMONIO ── */}
         <section id="patrimonio" className="gbc-section">
-          <div className="gbc-gc">
+          <div className="gbc-gc gbc-margen">
             <div className="gbc-ey">Sección 7</div>
             <h2 className="gbc-title">El olvidado: Impuesto sobre el Patrimonio</h2>
             <div className="gbc-body">
@@ -649,34 +657,35 @@ export default async function FiscalidadCriptoEspanaPage() {
                 Es el punto ciego de la fiscalidad cripto en España. Casi nadie lo tiene en el radar, y
                 sin embargo puede afectarte sin que hayas hecho una
                 sola operación en todo el año. El <strong>Impuesto sobre el Patrimonio</strong> (modelo
-                714) grava lo que <em>tienes</em>, no lo que ganas, y las criptomonedas forman parte de
+                714) <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>grava lo que <em>tienes</em>, no lo que ganas</Anotacion>, y las criptomonedas forman parte de
                 la base como cualquier otro bien, valoradas a precio de mercado a 31 de diciembre.
               </p>
               <p>
-                La obligación de declarar aparece, con carácter general, en dos supuestos. Cuando el patrimonio neto supera los <strong>700.000 €</strong>, con una exención adicional de hasta 300.000 € para la vivienda habitual. O cuando el valor de los bienes supera los 2.000.000 €, aunque salga a cuota cero. Aquí entra todo: inmuebles, cuentas, fondos, acciones y, por supuesto, tu
+                La obligación de declarar aparece, con carácter general, en dos supuestos. Cuando el patrimonio neto supera los <strong><Anotacion tipo="circle" junta retraso={600}>700.000 €</Anotacion></strong>, con una exención adicional de hasta 300.000 € para la vivienda habitual. O cuando el valor de los bienes supera los 2.000.000 €, aunque salga a cuota cero. Aquí entra todo: inmuebles, cuentas, fondos, acciones y, por supuesto, tu
                 cartera cripto.
               </p>
             </div>
 
-            <div className="gbc-box gbc-box--gold" style={{ marginTop: 8 }}>
-              <div className="gbc-box-title">Es un impuesto cedido: tu comunidad autónoma manda</div>
-              <div className="gbc-box-body">
+            <Postit color="amarillo" giro={-2}>
+              <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={15} animar={false} />
+              <div className="postit-titulo">Es un impuesto cedido: tu comunidad autónoma manda</div>
+              <div className="postit-cuerpo">
                 <p>
                   Aquí está la clave que hace imposible dar una respuesta única: el Patrimonio está
                   cedido a las comunidades autónomas, que fijan mínimo exento, tipos y bonificaciones.
                   El resultado va desde comunidades donde la cuota queda prácticamente bonificada al
                   100% hasta otras donde se paga íntegro. Dos personas con la misma cartera y el mismo
                   saldo a 31 de diciembre pueden tener facturas radicalmente distintas según dónde
-                  residan. Y ojo: <strong>la obligación de declarar puede existir aunque la cuota final
-                  sea cero</strong>.
+                  residan. Y ojo: <strong><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>la obligación de declarar puede existir aunque la cuota final
+                  sea cero</Anotacion></strong>.
                 </p>
               </div>
-            </div>
+            </Postit>
 
             <div className="gbc-body" style={{ marginTop: 28 }}>
               <p>
-                Un detalle que descoloca a mucha gente: la fecha de valoración es el <strong>31 de
-                diciembre</strong>, un único día. Si tu cartera valía mucho ese día y se desplomó en
+                Un detalle que descoloca a mucha gente: la fecha de valoración es el <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>31 de
+                diciembre</Anotacion></strong>, un único día. Si tu cartera valía mucho ese día y se desplomó en
                 enero, el impuesto se calcula sobre la foto de diciembre. Es exactamente el mismo
                 fenómeno que vimos con el staking — la fiscalidad congela un instante, y el mercado
                 sigue moviéndose.
@@ -710,36 +719,37 @@ export default async function FiscalidadCriptoEspanaPage() {
                 <div className="fisc-step-n">2</div>
                 <div>
                   <strong>Contra rendimientos del capital mobiliario, con tope del 25%</strong>
-                  <p>Si aún te queda saldo negativo, puedes compensarlo contra el saldo positivo de rendimientos del capital mobiliario —dividendos, intereses, staking— pero solo hasta el <strong>25%</strong> de ese saldo.</p>
+                  <p>Si aún te queda saldo negativo, puedes compensarlo contra el saldo positivo de rendimientos del capital mobiliario —dividendos, intereses, staking— pero solo hasta el <strong><Anotacion tipo="circle" junta retraso={300}>25%</Anotacion></strong> de ese saldo.</p>
                 </div>
               </div>
               <div className="fisc-step">
                 <div className="fisc-step-n">3</div>
                 <div>
                   <strong>Los cuatro años siguientes</strong>
-                  <p>Lo que siga sin compensar no se pierde: se arrastra a los <strong>cuatro ejercicios siguientes</strong>, aplicando el mismo orden. Pasado ese plazo, caduca — por eso conviene llevar un control anual de saldos pendientes.</p>
+                  <p>Lo que siga sin compensar no se pierde: se arrastra a los <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>cuatro ejercicios siguientes</Anotacion></strong>, aplicando el mismo orden. Pasado ese plazo, caduca — por eso conviene llevar un control anual de saldos pendientes.</p>
                 </div>
               </div>
             </div>
 
-            <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-              <div className="gbc-box-title">La regla de recompra: para cripto es un año, no dos meses</div>
-              <div className="gbc-box-body">
+            <Postit color="coral" giro={1.5}>
+              <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" semilla={10} retraso={300} />
+              <div className="postit-titulo">La regla de recompra: para cripto es un año, no dos meses</div>
+              <div className="postit-cuerpo">
                 <p>
-                  Circula mucha desinformación con esto. La famosa <strong>«regla de los dos meses»</strong>
+                  Circula mucha desinformación con esto. La famosa <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} animar={false}>«regla de los dos meses»</Anotacion></strong>
                   está pensada para <em>valores admitidos a negociación</em> —acciones cotizadas— y las
                   criptomonedas no lo son. A ellas se les aplica la regla general del{" "}
                   <strong>artículo 33.5.e) de la Ley del IRPF</strong>: si vendes con pérdidas y{" "}
-                  <strong>recompras el mismo activo dentro del año siguiente</strong>, esa pérdida no se
+                  <strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={600}>recompras el mismo activo dentro del año siguiente</Anotacion></strong>, esa pérdida no se
                   computa en ese ejercicio.
                 </p>
                 <p style={{ marginTop: 12 }}>
-                  Matiz importante y tranquilizador: la pérdida <strong>no se pierde, se difiere</strong>.
+                  Matiz importante y tranquilizador: la pérdida <strong><Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>no se pierde, se difiere</Anotacion></strong>.
                   Podrás computarla cuando transmitas definitivamente esas monedas recompradas. Lo que la
                   norma impide es aflorar una pérdida fiscal manteniendo en la práctica la misma posición.
                 </p>
               </div>
-            </div>
+            </Postit>
 
             <div className="gbc-body" style={{ marginTop: 28 }}>
               <p>
@@ -802,8 +812,8 @@ export default async function FiscalidadCriptoEspanaPage() {
               patrimoniales de la base del ahorro, alrededor de las casillas{" "}
               <strong>1800 y siguientes</strong>—, donde se detalla cada operación con su valor de
               transmisión y de adquisición. La numeración exacta puede variar de una campaña a otra,
-              así que conviene guiarse por el nombre del apartado y no por el número memorizado del
-              año pasado.
+              así que <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>conviene guiarse por el nombre del apartado y no por el número memorizado del
+              año pasado.</Anotacion>
             </p>
           </div>
 
@@ -814,18 +824,19 @@ export default async function FiscalidadCriptoEspanaPage() {
             <GuideFlipCards cards={ERROR_CARDS} />
           </div>
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 32 }}>
-            <div className="gbc-box-title">Si arrastras años sin declarar</div>
-            <div className="gbc-box-body">
+          <Postit color="menta" giro={-1}>
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={8} retraso={300} />
+            <div className="postit-titulo">Si arrastras años sin declarar</div>
+            <div className="postit-cuerpo">
               <p>
                 Regularizar voluntariamente, antes de recibir cualquier requerimiento, activa el
                 régimen de recargos por declaración extemporánea en lugar del régimen sancionador —
-                que es sustancialmente más duro. Dicho de otro modo: adelantarse siempre sale más
-                barato que esperar a que llamen. Con el cruce automático de datos plenamente operativo
+                que es sustancialmente más duro. Dicho de otro modo: <Anotacion tipo="underline" color="var(--menta)" grosor={2} retraso={600}>adelantarse siempre sale más
+                barato que esperar a que llamen.</Anotacion> Con el cruce automático de datos plenamente operativo
                 desde 2026, el margen para esperar se ha reducido a prácticamente nada.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -840,7 +851,7 @@ export default async function FiscalidadCriptoEspanaPage() {
           <div className="gbc-body" style={{ marginBottom: 32 }}>
             <p>
               Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge{" "}
-              <strong style={{ color: "var(--gold)" }}>Cuentas Claras</strong>. No son preguntas de
+              <strong className="gbc-logro">Cuentas Claras</strong>. No son preguntas de
               memoria: son los cinco matices donde más gente se deja dinero. Puedes releer cualquier
               sección antes de responder.
             </p>

@@ -1,15 +1,16 @@
 "use client";
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Calculator } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /** Escala estatal de la base liquidable del ahorro vigente desde el 1 de enero de 2025 (Ley 7/2024). */
 const BRACKETS = [
-  { from: 0, to: 6000, rate: 0.19, color: "#5fd39a" },
-  { from: 6000, to: 50000, rate: 0.21, color: "#e6b455" },
-  { from: 50000, to: 200000, rate: 0.23, color: "#ff9f43" },
-  { from: 200000, to: 300000, rate: 0.27, color: "#ff6b2b" },
-  { from: 300000, to: Infinity, rate: 0.30, color: "#f87171" },
+  { from: 0, to: 6000, rate: 0.19, color: "#2fbff5" },
+  { from: 6000, to: 50000, rate: 0.21, color: "#4f5dff" },
+  { from: 50000, to: 200000, rate: 0.23, color: "#8f7cff" },
+  { from: 200000, to: 300000, rate: 0.27, color: "#ff8a1f" },
+  { from: 300000, to: Infinity, rate: 0.30, color: "#ff6b81" },
 ];
 
 const eur = (n: number) =>
@@ -21,6 +22,7 @@ const PRESETS = [3000, 12000, 45000, 120000, 350000];
 
 export default function GuideFiscalCalc() {
   const [gain, setGain] = useState(12000);
+  const quieto = useReducedMotion();
 
   const calc = useMemo(() => {
     const rows = BRACKETS.map((b) => {
@@ -64,14 +66,16 @@ export default function GuideFiscalCalc() {
         </label>
         <div className="fisc-presets">
           {PRESETS.map((p) => (
-            <button
+            <Tecla
               key={p}
-              className={`fisc-preset ${gain === p ? "is-active" : ""}`}
+              tamano="peq"
+              color={gain === p ? "cielo" : "blanca"}
+              aria-pressed={gain === p}
+              className="fisc-preset"
               onClick={() => setGain(p)}
-              type="button"
             >
               {eur(p)}
-            </button>
+            </Tecla>
           ))}
         </div>
       </div>
@@ -85,7 +89,7 @@ export default function GuideFiscalCalc() {
             style={{ background: r.color }}
             initial={false}
             animate={{ flexGrow: r.amount }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            transition={quieto ? { duration: 0 } : { duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
             title={`${(r.rate * 100).toFixed(0)}%`}
           />
         ))}
@@ -106,7 +110,7 @@ export default function GuideFiscalCalc() {
         ))}
       </div>
 
-      <div className="fisc-calc-totals">
+      <div className="fisc-calc-totals" aria-live="polite">
         <div className="fisc-calc-total">
           <span className="fisc-calc-total-lbl">Impuesto total</span>
           <span className="fisc-calc-total-val fisc-calc-total-val--tax">{eur2(calc.total)}</span>

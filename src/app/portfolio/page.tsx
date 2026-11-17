@@ -12,6 +12,8 @@ import { precioBitcoin, type CompraDCA } from "@/lib/dca";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { IconoPortfolio } from "@/components/IconosAnimados";
 import "./portfolio.css";
+import "./portfolio-spot.css";
+import "./portfolio-dca.css";
 
 export const metadata: Metadata = {
   title: "Portfolio Adelin",
@@ -22,9 +24,16 @@ export const metadata: Metadata = {
 /**
  * La herramienta Portfolio Adelin, para Premium y Admin.
  *
- * Rehecha el 04-11-2026: una cabecera propia con el icono animado de la pieza,
- * el conmutador de carteras y cada cartera con sus cifras, su gráfico y su
- * tabla. Los estilos viven en `./portfolio.css`, que solo carga esta página.
+ * Rehecha el 17-11-2026 con el estilo «Cuaderno de estudio» (ESTILO.md): la
+ * cartera real presentada como un cuaderno de inversión, en menta (el color
+ * del Portfolio). Cabecera con su titular y su nota a mano, las dos carteras
+ * como dos teclas, y en cada una la rentabilidad en grande, las cifras en
+ * fichas de papel, las posiciones o compras como filas de cuaderno y el panel
+ * de admin con teclas y campos del sistema.
+ *
+ * Los estilos viven en `./portfolio.css` (la página y lo común),
+ * `./portfolio-spot.css` (la cartera spot y sus movimientos) y
+ * `./portfolio-dca.css` (el DCA y su gráfico). Solo los carga esta página.
  */
 export default async function PortfolioPage() {
   const supabase = await createClient();
@@ -62,30 +71,45 @@ export default async function PortfolioPage() {
   ]);
 
   return (
-    <div className="blog-page">
-      <div className="bg-ambient" />
-
+    <div className="blog-page pv-pagina">
       <SiteNav user={!!user} isPremium={isPremium} isAdmin={isAdmin} />
 
-      <main className="blog-main pv">
-        <header className="pv-cabecera">
-          <span className="pv-cabecera-icono" aria-hidden="true"><IconoPortfolio size={26} /></span>
-          <div>
-            <span className="pv-cabecera-sello">Premium · Cartera real</span>
-            <h1 className="pv-titulo">Portfolio Adelin</h1>
-            <p className="pv-subtitulo">
-              Mis posiciones reales, con su precio de entrada y su rentabilidad al momento.
-              También las que van en pérdidas.
+      <main className="pv">
+        <header className="pv-cab">
+          <div className="pv-cab-texto">
+            <p className="pv-cab-chips">
+              <span className="pv-sello">Premium · Cartera real</span>
+              <span className="pv-directo">
+                <span className="pv-latido" aria-hidden="true" />
+                En directo
+              </span>
             </p>
+            <h1 className="pv-titulo">
+              Portfolio <span className="fluor">Adelin</span>
+            </h1>
+            <p className="pv-lead">
+              Mis posiciones reales, con su precio de entrada y su rentabilidad al momento.
+            </p>
+            <p className="pv-mano">también enseño las que van en pérdidas</p>
+          </div>
+
+          {/* El objeto de la cabecera: el icono de la pieza en su tecla menta,
+              sobre un par de hojas, y la pegatina de «cartera real». */}
+          <div className="pv-cab-dibujo" aria-hidden="true">
+            <span className="pv-cab-hoja pv-cab-hoja--1" />
+            <span className="pv-cab-hoja pv-cab-hoja--2" />
+            <span className="pv-cab-icono"><IconoPortfolio size={44} /></span>
+            <span className="pv-pegatina">Cartera<br />real</span>
           </div>
         </header>
 
         <PortfoliosTabs
           spot={
-            <>
-              <UltimosMovimientos movimientos={(movimientos ?? []) as Movimiento[]} />
-              <PortfolioClient initialPositions={positions ?? []} isAdmin={isAdmin} />
-            </>
+            <PortfolioClient
+              initialPositions={positions ?? []}
+              isAdmin={isAdmin}
+              registro={<UltimosMovimientos movimientos={(movimientos ?? []) as Movimiento[]} />}
+            />
           }
           dca={
             <DcaClient
@@ -99,7 +123,8 @@ export default async function PortfolioPage() {
         {/* El descargo va DEBAJO de las posiciones, no encima: aquí es donde
             alguien acaba de ver qué compro y a qué precio, y es el momento en
             que hay que dejar claro que no es una recomendación. Es el mismo
-            componente que la ficha pública, para que no digan cosas distintas. */}
+            componente que la ficha pública, para que no digan cosas distintas;
+            aquí se viste de aviso amarillo (portfolio.css). */}
         <DisclaimerRiesgo variante="portfolio" />
       </main>
 

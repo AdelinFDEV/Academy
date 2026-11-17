@@ -1,0 +1,118 @@
+/* La tarjeta de estudio que gira (TarjetaEstudio.tsx). Referencia:
+   disenos/sistema.html, «Tarjetas que giran y mazos». */
+
+.te {
+  --c: var(--naranja);
+  display: block;
+  width: 250px;
+  height: 320px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  perspective: 1400px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.te-giro {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.te.is-girada .te-giro { transform: rotateY(180deg); }
+
+@media (hover: hover) {
+  .te:hover .te-giro { transform: rotateY(180deg) translateY(-6px); }
+  .te.is-girada:hover .te-giro { transform: rotateY(0deg) translateY(-6px); }
+}
+
+.te:focus-visible { outline: none; }
+.te:focus-visible .te-cara { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.te-cara {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 rgba(29, 27, 51, 0.12), 0 30px 50px -30px rgba(29, 27, 51, 0.5);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.te-dorso {
+  transform: rotateY(180deg);
+  background: var(--c);
+  color: #fff;
+}
+
+.te-tema {
+  font-family: var(--letra-texto);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.te-dorso .te-tema { color: rgba(255, 255, 255, 0.85); }
+
+.te-pregunta {
+  font-family: var(--letra-titular);
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.12;
+  color: var(--tinta);
+  overflow-wrap: break-word;
+}
+
+.te-pista {
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  color: var(--tinta-2);
+}
+
+.te-respuesta {
+  font-family: var(--letra-titular);
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  /* Una palabra más ancha que la tarjeta se parte antes que salirse. */
+  overflow-wrap: break-word;
+}
+
+.te-detalle {
+  font-family: var(--letra-texto);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.te--azul { --c: var(--azul); }
+.te--menta { --c: var(--menta); }
+.te--lila { --c: var(--lila); }
+/* Sobre menta, cielo y amarillo, el dorso va en tinta (regla del sistema
+   desde el 17-11-2026): el blanco no llegaba al contraste mínimo. */
+.te--amarillo { --c: var(--amarillo); }
+.te--menta .te-dorso,
+.te--cielo .te-dorso,
+.te--amarillo .te-dorso { color: var(--tinta); }
+.te--menta .te-dorso .te-tema,
+.te--cielo .te-dorso .te-tema,
+.te--amarillo .te-dorso .te-tema { color: var(--tinta-2); }
+.te--coral { --c: var(--coral); }
+.te--cielo { --c: var(--cielo); }
+
+@media (prefers-reduced-motion: reduce) {
+  .te-giro { transition-duration: 0.01s; }
+}

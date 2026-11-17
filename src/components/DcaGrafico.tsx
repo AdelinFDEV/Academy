@@ -57,6 +57,10 @@ function pasoRedondo(rango: number, marcas: number): number {
  *    por debajo del precio medio, y la más barata y la más cara.
  *
  * Todo sale de las compras reales; nada es estimado.
+ *
+ * Vestido el 17-11-2026 con el estilo «Cuaderno de estudio»: la línea naranja
+ * de Bitcoin con su relleno suave, la rejilla tenue, la ficha de cada compra
+ * como un papel con su canto y los puntos en verde o rojo según vayan hoy.
  */
 export default function DcaGrafico({ compras, precioMedio, precioActual }: Props) {
   const lienzo = useRef<HTMLDivElement>(null);
@@ -160,13 +164,13 @@ export default function DcaGrafico({ compras, precioMedio, precioActual }: Props
   }
 
   return (
-    <div className="pv-grafico">
-      <div className="pv-grafico-cab">
+    <section className="pv-grafico" aria-labelledby="pv-grafico-titulo">
+      <div className="pv-bloque-cab">
         <div>
-          <span className="pv-etiqueta">Precio pagado en cada compra</span>
-          <p className="pv-grafico-sub">
+          <span className="pv-etiqueta">
             {puntos.length} compras · de {fechaLarga(puntos[0].fecha)} a {fechaLarga(puntos[puntos.length - 1].fecha)}
-          </p>
+          </span>
+          <h2 id="pv-grafico-titulo" className="pv-h2">Precio pagado en cada compra</h2>
         </div>
         <ul className="pv-grafico-leyenda">
           <li className="es-compras"><i aria-hidden="true" /> Precio de compra</li>
@@ -211,15 +215,17 @@ export default function DcaGrafico({ compras, precioMedio, precioActual }: Props
             ref={lienzo}
             onPointerMove={mover}
             onPointerDown={mover}
-            onPointerLeave={() => setActiva(null)}
+            // Con el dedo, «leave» llega justo al levantarlo: la ficha se borraba
+            // nada más verla. En táctil se queda hasta el siguiente toque.
+            onPointerLeave={(e) => { if (e.pointerType === "mouse") setActiva(null); }}
             role="img"
             aria-label={`Precio de Bitcoin en cada una de las ${puntos.length} compras del DCA, frente al precio medio de ${usd(precioMedio)}${precioActual ? ` y al de hoy, ${usd(precioActual)}` : ""}.`}
           >
             <svg viewBox={`0 0 ${ANCHO} ${ALTO}`} preserveAspectRatio="none" aria-hidden="true">
               <defs>
                 <linearGradient id="pvDcaArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#f7931a" stopOpacity="0.3" />
-                  <stop offset="1" stopColor="#f7931a" stopOpacity="0" />
+                  <stop offset="0" stopColor="#f7931a" stopOpacity="0.28" />
+                  <stop offset="1" stopColor="#f7931a" stopOpacity="0.02" />
                 </linearGradient>
               </defs>
               {datos.marcasY.map((m) => (
@@ -282,7 +288,7 @@ export default function DcaGrafico({ compras, precioMedio, precioActual }: Props
         </div>
       </div>
 
-      <p className="pv-g-pista">Pasa el ratón por el gráfico para ver cada compra.</p>
-    </div>
+      <p className="pv-g-pista">pasa el ratón (o el dedo) por el gráfico para ver cada compra</p>
+    </section>
   );
 }

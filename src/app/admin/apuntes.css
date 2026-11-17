@@ -1,0 +1,550 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   LAS PÁGINAS DE INSTRUCCIONES — /admin/guias-instrucciones (cielo, el color
+   de Guías) y /admin/seo-instrucciones (azul). Estilo «Cuaderno de estudio»:
+   un cuaderno de apuntes cómodo de leer, con el índice fijo a un lado.
+
+   Solo presentación: el contenido de las dos páginas es la fuente de verdad
+   de cómo se escriben las guías y el SEO, y no se toca desde aquí. Las dos
+   comparten las clases `agi-` y este archivo, que solo importan ellas.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.admin-guide-instructions {
+  --sec: var(--cielo);
+  --sec-o: var(--cielo-o);
+  --sec-s: var(--cielo-s);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 0 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  color: var(--tinta);
+}
+
+.agi--seo {
+  --sec: var(--azul);
+  --sec-o: var(--azul-o);
+  --sec-s: var(--azul-s);
+}
+
+/* Los enlaces del texto: a boli azul, subrayados. */
+.admin-guide-instructions a:not([class]) {
+  color: var(--azul-o);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--azul);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.admin-guide-instructions a:not([class]):hover { background: var(--azul-s); border-radius: 4px; }
+.admin-guide-instructions a:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 6px; }
+
+/* ── La portada del cuaderno ── */
+.agi-hero {
+  position: relative;
+  padding: 1.8rem 1.9rem 2rem;
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+  overflow: hidden;
+}
+.agi-hero::before {
+  content: "";
+  position: absolute;
+  right: -70px;
+  top: -80px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: var(--sec-s);
+}
+.agi-hero > * { position: relative; }
+
+.agi-hero-label {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  font-family: var(--letra-mano);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: var(--sec-o);
+  transform: rotate(-1.5deg);
+}
+
+.agi-hero-title {
+  margin: 0 0 0.9rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+
+.agi-hero-sub {
+  max-width: 68ch;
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta-2);
+}
+
+/* ── El cuaderno: índice a un lado, hojas al otro ── */
+.agi-cuaderno { display: grid; gap: 1.6rem; }
+.agi-hojas { display: flex; flex-direction: column; gap: 2.6rem; min-width: 0; }
+
+.agi-indice {
+  padding: 1.1rem 1.1rem 1rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+.agi-indice-titulo {
+  margin: 0 0 0.6rem 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+.agi-indice ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.agi-indice a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 12px;
+  color: var(--tinta-2);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+.agi-indice a span {
+  flex-shrink: 0;
+  font-family: var(--letra-mano);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--sec-o);
+  font-variant-numeric: tabular-nums;
+}
+@media (hover: hover) {
+  .agi-indice a:hover { background: var(--fondo); color: var(--tinta); }
+}
+/* Con el dedo, cada entrada del índice con sus 44 px de alto. */
+@media (pointer: coarse) {
+  .agi-indice a { align-items: center; min-height: 44px; }
+}
+.agi-indice a.is-actual { background: var(--sec-s); color: var(--tinta); }
+
+/* Con sitio de sobra, el índice se queda fijo a la izquierda, como las
+   pestañas de un cuaderno, y marca el bloque que estás leyendo. */
+@media (min-width: 1200px) {
+  .agi-cuaderno { grid-template-columns: 250px minmax(0, 1fr); align-items: start; gap: 2rem; }
+  .agi-indice { position: sticky; top: 0.5rem; max-height: calc(100vh - 3rem); overflow-y: auto; scrollbar-width: thin; }
+  .agi-indice ol { grid-template-columns: 1fr; gap: 0.15rem; }
+  .agi-indice a { padding: 0.45rem 0.6rem; font-size: 0.88rem; }
+  .agi-indice a.is-actual { box-shadow: inset 4px 0 0 var(--sec); }
+}
+
+/* ── Cada bloque: una hoja con su número a mano ── */
+.agi-section { display: flex; flex-direction: column; gap: 1.1rem; scroll-margin-top: 1.5rem; }
+
+.agi-section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px dashed var(--gris-o);
+  font-family: var(--letra-titular);
+  font-size: clamp(1.55rem, 3.2vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+.agi-section-num {
+  flex-shrink: 0;
+  font-family: var(--letra-mano);
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--sec-o);
+}
+
+.agi-section-intro {
+  margin: 0;
+  max-width: 72ch;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta-2);
+}
+
+/* ── Hojas de texto ── */
+.agi-card {
+  padding: 1.35rem 1.55rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.72;
+  color: var(--tinta-2);
+}
+.agi-card p { margin: 0 0 0.85rem; }
+.agi-card p:last-child { margin-bottom: 0; }
+.agi-card strong { color: var(--tinta); font-weight: 900; }
+.agi-card em { color: var(--tinta); }
+
+/* Una hoja que solo lleva un aviso: el aviso ya es la hoja. */
+.agi-card:has(> .agi-warning:only-child) { padding: 0; background: none; box-shadow: none; }
+
+/* Una hoja dentro de otra (el ejemplo de código de los anuncios). */
+.agi-card .agi-card { margin: 0.9rem 0 0; box-shadow: none; }
+
+/* El código: una ficha punteada sobre el fondo, que se lee tal cual. */
+.agi-card--mono {
+  display: block;
+  padding: 1.1rem 1.25rem;
+  border: 2px dashed var(--gris-o);
+  background: var(--fondo);
+  box-shadow: none;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--tinta);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.agi-card .agi-card--mono { background: var(--fondo); }
+.agi-card--mono code { padding: 0; background: none; box-shadow: none; }
+.agi-card--mono pre { margin: 0; font: inherit; color: var(--tinta); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Lo que rompe algo: el aviso amarillo de riesgo del sistema. */
+.agi-warning {
+  position: relative;
+  margin: 0;
+  padding: 1rem 1.15rem 1rem 3.7rem;
+  border: 3px solid var(--amarillo);
+  border-radius: 18px;
+  background: var(--amarillo-s);
+  font-weight: 700;
+  line-height: 1.6;
+  color: #6b5200;
+}
+.agi-warning::before {
+  content: "!";
+  position: absolute;
+  left: 1rem;
+  top: 0.95rem;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--amarillo-o);
+  color: #fff;
+  font-weight: 900;
+}
+.agi-warning strong { color: var(--tinta); }
+.agi-card .agi-warning:not(:last-child) { margin-bottom: 0.9rem; }
+
+/* El porqué de una regla: una nota al margen, sin la carga de un aviso. */
+.agi-note {
+  margin: 0.95rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: var(--fondo);
+  box-shadow: inset 4px 0 0 var(--sec);
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--tinta-2);
+}
+
+.agi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.agi-list li { position: relative; padding-left: 1.5rem; font-size: 0.98rem; line-height: 1.65; color: var(--tinta-2); }
+.agi-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  top: 0.62em;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--sec);
+  box-shadow: 0 2px 0 var(--sec-o);
+}
+.agi-list li strong { color: var(--tinta); }
+.agi-fuentes li { padding-left: 1.5rem; }
+
+/* ── El flujo: un camino de nodos, como el de los cursos ── */
+.agi-steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 1.4rem 0.4rem 1.2rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+.agi-step {
+  position: relative;
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  padding: 1rem 0;
+}
+/* El tramo que une un nodo con el siguiente. */
+.agi-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: calc(1rem + 56px);
+  bottom: calc(-1rem + 4px);
+  width: 4px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(180deg, var(--gris-o) 0 8px, transparent 8px 14px);
+}
+.agi-step + .agi-step { border-top: 2px dashed var(--gris); }
+.agi-step-num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sec);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--sec-o);
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.agi-step > div:last-child { min-width: 0; padding-top: 0.15rem; }
+.agi-step strong { display: block; margin-bottom: 0.3rem; font-family: var(--letra-titular); font-size: 1.15rem; font-weight: 800; color: var(--tinta); }
+.agi-step p { margin: 0; font-size: 0.98rem; font-weight: 600; line-height: 1.62; color: var(--tinta-2); }
+.agi-step p strong { display: inline; margin: 0; font-family: var(--letra-texto); font-size: inherit; font-weight: 900; }
+
+.agi-subsection { display: flex; flex-direction: column; gap: 0.75rem; }
+.agi-subsection-title {
+  margin: 0.4rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+/* ── Rutas de archivos y campos ── */
+.agi-code-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1.2rem;
+  padding: 0.65rem 0;
+  border-bottom: 2px dashed var(--gris);
+  font-size: 0.95rem;
+}
+.agi-code-row:last-child { border-bottom: 0; }
+.agi-code-path {
+  flex-shrink: 0;
+  min-width: 250px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--sec-o);
+  overflow-wrap: anywhere;
+}
+
+.agi-table-def { padding: 0.2rem 0; }
+.agi-table-name { margin-bottom: 0.4rem; font-family: var(--letra-texto); font-size: 0.95rem; font-weight: 900; color: var(--sec-o); }
+.agi-table-fields { font-size: 0.86rem; line-height: 1.7; color: var(--tinta-2); }
+
+/* ── Paleta de las guías (documentada tal cual: los colores son los suyos) ── */
+.agi-palette { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.agi-palette--4col { grid-template-columns: repeat(4, 1fr); }
+.agi-swatch {
+  --muestra: var(--gris);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 4.4rem 1.05rem 1.1rem;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+  overflow: hidden;
+}
+.agi-swatch::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3.4rem; background: var(--muestra); box-shadow: inset 0 -2px 0 rgba(29, 27, 51, 0.08); }
+.agi-swatch-name { font-family: var(--letra-titular); font-size: 1.15rem; font-weight: 800; color: var(--tinta); }
+.agi-swatch-var { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.76rem; font-weight: 700; color: var(--tinta-2); overflow-wrap: anywhere; }
+.agi-swatch-use { margin-top: 0.2rem; font-size: 0.86rem; font-weight: 600; line-height: 1.55; color: var(--tinta-2); }
+
+/* ── Niveles de dificultad: chips del sistema ── */
+.agi-diff-row { display: flex; align-items: center; gap: 1rem; padding: 0.45rem 0; font-size: 0.96rem; color: var(--tinta-2); }
+.agi-diff-badge { flex-shrink: 0; min-width: 7.2rem; padding: 6px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 900; text-align: center; white-space: nowrap; }
+.agi-diff--basic { background: var(--cielo-s); color: var(--cielo-o); }
+.agi-diff--intermediate { background: var(--naranja-s); color: var(--naranja-o); }
+.agi-diff--advanced { background: var(--lila-s); color: var(--lila-o); }
+
+/* ── Piezas interactivas: fichas de estudio ── */
+.agi-components-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+.agi-comp-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.3rem 1.35rem 1.25rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+  overflow: hidden;
+}
+.agi-comp-card::before { content: ""; position: absolute; right: -36px; top: -36px; width: 100px; height: 100px; border-radius: 50%; background: var(--sec-s); }
+.agi-comp-card > * { position: relative; }
+.agi-comp-name { padding-right: 2.5rem; font-family: var(--letra-titular); font-size: 1.15rem; font-weight: 800; line-height: 1.25; color: var(--tinta); overflow-wrap: anywhere; }
+.agi-comp-desc { flex: 1; font-size: 0.94rem; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
+/* La regla de cada pieza: un pósit pegado al pie de la ficha. */
+.agi-comp-rule {
+  align-self: flex-start;
+  margin-top: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px 4px 12px 4px;
+  background: var(--amarillo-s);
+  box-shadow: 0 6px 10px -8px rgba(29, 27, 51, 0.45);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #6b5200;
+  transform: rotate(-0.6deg);
+}
+
+/* ── Lista de cierre: casillas de cuaderno ── */
+.agi-checklist {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 1.4rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+.agi-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.7rem 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+  cursor: pointer;
+}
+.agi-check-item + .agi-check-item { border-top: 2px dashed var(--gris); }
+.agi-check-item strong { color: var(--tinta); font-weight: 900; }
+.agi-check-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin: 0.05rem 0 0;
+  border: 3px solid var(--gris-o);
+  border-radius: 8px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--gris-o);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+.agi-check-item input[type="checkbox"]:checked { border-color: var(--menta-o); background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); }
+.agi-check-item input[type="checkbox"]:checked::after { content: ""; width: 6px; height: 11px; margin-top: -2px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+.agi-check-item input[type="checkbox"]:active { transform: translateY(2px); }
+.agi-check-item input[type="checkbox"]:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+/* ── Pasos en fila: el embudo, las tres fases de Google, los tres umbrales ── */
+.agi-embudo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin: 1.1rem 0; }
+.agi-embudo--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.agi-card .agi-embudo:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.agi-embudo > div {
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: var(--sec-s);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--sec) 45%, transparent);
+}
+.agi-embudo b { display: block; margin-bottom: 0.3rem; font-family: var(--letra-titular); font-size: 1.02rem; font-weight: 800; line-height: 1.25; color: var(--tinta); }
+.agi-embudo span { display: block; font-size: 0.9rem; font-weight: 600; line-height: 1.5; color: var(--tinta-2); }
+
+/* ── Tablas ── */
+.agi-tabla-envoltura { overflow-x: auto; border-radius: 24px; background: var(--papel); box-shadow: 0 5px 0 var(--gris-o); }
+.agi-tabla { width: 100%; border-collapse: collapse; font-size: 0.94rem; line-height: 1.6; }
+.agi-tabla th {
+  padding: 0.85rem 1.05rem;
+  background: var(--sec-s);
+  text-align: left;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sec-o);
+}
+.agi-tabla td { padding: 0.85rem 1.05rem; vertical-align: top; font-weight: 600; color: var(--tinta-2); border-top: 2px dashed var(--gris); }
+.agi-tabla td:first-child { color: var(--tinta); }
+.agi-tabla td strong { color: var(--tinta); font-weight: 900; }
+
+@media (max-width: 900px) {
+  .agi-palette--4col { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .agi-embudo, .agi-embudo--tres { grid-template-columns: 1fr; }
+  .agi-card .agi-embudo:has(> :nth-child(3):last-child) { grid-template-columns: 1fr; }
+  .agi-components-grid { grid-template-columns: 1fr; }
+  .agi-palette { grid-template-columns: 1fr; }
+  .agi-code-path { min-width: 0; }
+}
+
+/* En el móvil, cada fila de una tabla pasa a ser una ficha: la primera
+   columna hace de título y las demás van debajo, separadas a lápiz. */
+@media (max-width: 640px) {
+  .agi-hero { padding: 1.4rem 1.25rem 1.5rem; border-radius: 26px; }
+  .agi-hero-sub { font-size: 1rem; }
+  .agi-card { padding: 1.15rem 1.15rem; border-radius: 20px; font-size: 0.97rem; }
+  .agi-steps { padding: 0.3rem 1rem 0.3rem 0.9rem; }
+  .agi-step { gap: 0.85rem; }
+  .agi-checklist { padding: 0.5rem 1.05rem; }
+
+  .agi-tabla-envoltura { overflow: visible; }
+  .agi-tabla thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .agi-tabla, .agi-tabla tbody, .agi-tabla tr, .agi-tabla td { display: block; width: 100%; }
+  .agi-tabla tr { padding: 0.9rem 1.1rem; }
+  .agi-tabla tr + tr { border-top: 3px solid var(--fondo); }
+  .agi-tabla td { padding: 0.35rem 0 0; border-top: 0; }
+  .agi-tabla td:first-child { padding-top: 0; font-family: var(--letra-titular); font-size: 1.05rem; font-weight: 800; }
+  .agi-tabla td + td { margin-top: 0.4rem; padding-top: 0.45rem; border-top: 2px dashed var(--gris); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agi-check-item input[type="checkbox"] { transition: none; }
+}

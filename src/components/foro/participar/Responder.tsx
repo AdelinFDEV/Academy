@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Tecla from "@/components/cuaderno/Tecla";
 import { pedirForo } from "@/components/foro/pedir";
 import { LIMITES } from "@/lib/foro/limites";
+import { sonar } from "@/lib/sonidos";
 import { useHilo } from "./ContextoHilo";
 import Invitacion from "./Invitacion";
 
@@ -17,11 +19,14 @@ import Invitacion from "./Invitacion";
 export default function Responder({
   a,
   alTerminar,
+  alCancelar,
 }: {
   /** El mensaje al que se contesta. Sin él, es una respuesta a la pregunta. */
   a?: string;
   /** Para cerrar el formulario de una réplica al publicarla o cancelar. */
   alTerminar?: () => void;
+  /** Cancelar sin publicar (con su sonido de cerrar). Sin él, cancelar es `alTerminar`. */
+  alCancelar?: () => void;
 }) {
   const router = useRouter();
   const { preguntaId, mio } = useHilo();
@@ -33,7 +38,8 @@ export default function Responder({
   const largo = Array.from(texto.trim()).length;
 
   if (!mio) return null;
-  if (!mio.puede) return <Invitacion motivo={mio.motivo} onCerrar={alTerminar} />;
+  const cancelar = alCancelar ?? alTerminar;
+  if (!mio.puede) return <Invitacion motivo={mio.motivo} onCerrar={cancelar} />;
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -42,9 +48,11 @@ export default function Responder({
     const r = await pedirForo("/api/foro/responder", { pregunta: preguntaId, ...(a ? { a } : {}), cuerpo: texto });
     setEnviando(false);
     if (!r.ok) {
+      sonar("error");
       setError(r.mensaje);
       return;
     }
+    sonar("guardado");
     setTexto("");
     alTerminar?.();
     // La página del hilo se vuelve a pedir al servidor: lo nuevo sale ya en su sitio.
@@ -69,10 +77,10 @@ export default function Responder({
           {largo} / {limite.max}
         </span>
         <span className="fp-fila">
-          {alTerminar && <button type="button" className="fp-btn" disabled={enviando} onClick={alTerminar}>Cancelar</button>}
-          <button type="submit" className="fp-btn fp-btn--firme" disabled={enviando || largo < limite.min || largo > limite.max}>
+          {cancelar && <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={cancelar}>Cancelar</Tecla>}
+          <Tecla type="submit" color="coral" tamano={a ? "peq" : "normal"} disabled={enviando || largo < limite.min || largo > limite.max}>
             {enviando ? "Publicando…" : a ? "Publicar réplica" : "Publicar respuesta"}
-          </button>
+          </Tecla>
         </span>
       </div>
       {error && <p className="fp-error" role="alert">{error}</p>}

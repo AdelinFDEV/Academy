@@ -61,19 +61,19 @@ export default function GuideAaveLiquidacion() {
       <div className="aave-calc-campos">
         <label htmlFor="aave-cantidad">
           <span>Cantidad que dejas como colateral</span>
-          <input id="aave-cantidad" inputMode="decimal" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
+          <input id="aave-cantidad" inputMode="decimal" autoComplete="off" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
         </label>
         <label htmlFor="aave-precio">
           <span>Precio de hoy de esa moneda, en euros</span>
-          <input id="aave-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="aave-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
         <label htmlFor="aave-deuda">
           <span>Lo que pides prestado en stablecoin, en euros</span>
-          <input id="aave-deuda" inputMode="decimal" value={deuda} onChange={(e) => setDeuda(e.target.value)} />
+          <input id="aave-deuda" inputMode="decimal" autoComplete="off" value={deuda} onChange={(e) => setDeuda(e.target.value)} />
         </label>
         <label htmlFor="aave-bono">
           <span>Bono de liquidación del activo, en %</span>
-          <input id="aave-bono" inputMode="decimal" value={bono} onChange={(e) => setBono(e.target.value)} />
+          <input id="aave-bono" inputMode="decimal" autoComplete="off" value={bono} onChange={(e) => setBono(e.target.value)} />
         </label>
         <label htmlFor="aave-umbral" className="aave-calc-rango">
           <span>
@@ -105,7 +105,7 @@ export default function GuideAaveLiquidacion() {
           <small>Sobre la mitad de tu deuda</small>
         </div>
       </div>
-      <p className="aave-calc-lectura">{lectura}</p>
+      <p className={`aave-calc-lectura ${estado}`} aria-live="polite">{lectura}</p>
       <p className="aave-calc-nota">
         Calcula con una deuda en stablecoin y un único colateral. Si mezclas varios, Aave usa la media ponderada de
         sus umbrales. Si el factor de salud llega a 0,95, o tu garantía o tu deuda valen menos de 2.000 dólares,

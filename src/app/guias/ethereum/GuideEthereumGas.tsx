@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Calculadora de gas de la guía de Ethereum. La cuenta es la del texto:
@@ -35,30 +36,29 @@ export default function GuideEthereumGas() {
     <div className="eth-gas">
       <p className="eth-gas-titulo">Calculadora de comisiones</p>
 
-      <div className="eth-gas-ops" role="radiogroup" aria-label="Operación">
+      <div className="eth-gas-ops" role="group" aria-label="Operación">
         {OPERACIONES.map((o) => (
-          <button
+          <Tecla
             key={o.id}
-            type="button"
-            role="radio"
-            aria-checked={o.id === operacion}
-            className={`eth-gas-op${o.id === operacion ? " is-activa" : ""}`}
+            tamano="peq"
+            color={o.id === operacion ? "cielo" : "blanca"}
+            aria-pressed={o.id === operacion}
             onClick={() => setOperacion(o.id)}
           >
             {o.nombre}
             <small>{num(o.gas, 0)} de gas</small>
-          </button>
+          </Tecla>
         ))}
       </div>
 
       <div className="eth-gas-campos">
         <label htmlFor="eth-gas-gwei">
           Precio del gas, en gwei
-          <input id="eth-gas-gwei" inputMode="decimal" value={gwei} onChange={(e) => setGwei(e.target.value)} />
+          <input id="eth-gas-gwei" inputMode="decimal" autoComplete="off" value={gwei} onChange={(e) => setGwei(e.target.value)} />
         </label>
         <label htmlFor="eth-gas-precio">
           Precio de 1 ETH, en euros
-          <input id="eth-gas-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="eth-gas-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
       </div>
 

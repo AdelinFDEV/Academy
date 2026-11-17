@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Lo que ve quien pulsa un botón de participar y no puede (FORO.md §3).
@@ -40,8 +40,8 @@ export default function Invitacion({ motivo, onCerrar }: { motivo: string | null
     <div className="fp-invitacion" role="status">
       <p>{caso.texto}</p>
       <div className="fp-fila">
-        {caso.enlace && <Link href={caso.enlace.href} className="fp-btn fp-btn--firme">{caso.enlace.nombre}</Link>}
-        {onCerrar && <button type="button" className="fp-btn" onClick={onCerrar}>Cerrar</button>}
+        {caso.enlace && <Tecla href={caso.enlace.href} color="naranja" tamano="peq">{caso.enlace.nombre}</Tecla>}
+        {onCerrar && <Tecla color="blanca" tamano="peq" onClick={onCerrar}>Cerrar</Tecla>}
       </div>
     </div>
   );

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Bookmark, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * «Guardar en mi diccionario», junto al título de la ficha.
@@ -33,6 +35,7 @@ export default function GuardarTermino({
 }) {
   const [guardado, setGuardado] = useState(guardadoInicial);
   const [enCurso, setEnCurso] = useState(false);
+  const [fallo, setFallo] = useState(false);
 
   async function alternar() {
     setEnCurso(true);
@@ -40,34 +43,50 @@ export default function GuardarTermino({
     // trivial y esperar medio segundo a un tic hace que parezca rota.
     const previo = guardado;
     setGuardado(!previo);
+    setFallo(false);
+    // Guardar suena a guardado; quitarlo, al interruptor que se apaga.
+    sonar(previo ? "interruptor" : "guardado");
+    const deshacer = () => {
+      sonar("error");
+      setGuardado(previo);
+      setFallo(true);
+    };
     try {
       const res = await fetch("/api/terms", {
         method: previo ? "DELETE" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ term, definition, category }),
       });
-      if (!res.ok) setGuardado(previo);
+      if (!res.ok) deshacer();
     } catch {
-      setGuardado(previo);
+      deshacer();
     } finally {
       setEnCurso(false);
     }
   }
 
+  // Una tecla, como todos los botones de la web: menta cuando ya está
+  // guardado (el color de «hecho, guardado» del estilo).
   return (
-    <button
-      type="button"
-      onClick={alternar}
-      disabled={enCurso}
-      className={`termino-guardar${guardado ? " is-guardado" : ""}`}
-      aria-pressed={guardado}
-    >
-      {guardado ? (
-        <Check size={14} strokeWidth={2.8} aria-hidden="true" />
-      ) : (
-        <Bookmark size={14} strokeWidth={2.4} aria-hidden="true" />
-      )}
-      {guardado ? "Guardado" : "Guardar"}
-    </button>
+    <span className="fe-guardar-caja">
+      <Tecla
+        tamano="peq"
+        color={guardado ? "menta" : "blanca"}
+        onClick={alternar}
+        disabled={enCurso}
+        className="fe-guardar"
+        aria-pressed={guardado}
+      >
+        {guardado ? (
+          <Check size={15} strokeWidth={3} aria-hidden="true" />
+        ) : (
+          <Bookmark size={15} strokeWidth={2.6} aria-hidden="true" />
+        )}
+        {guardado ? "Guardado" : "Guardar"}
+      </Tecla>
+      {/* Si el servidor dice que no, la tecla vuelve atrás y se explica: el
+          sonido nunca es la única respuesta. */}
+      {fallo && <span className="fe-guardar-error" role="alert">No se ha podido guardar. Inténtalo de nuevo.</span>}
+    </span>
   );
 }

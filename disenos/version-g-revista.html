@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión G · Revista moderna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --fondo: #fafaf7; --blanco: #ffffff; --tinta: #111110; --tinta-2: #6f6e69; --linea: #e6e4dd; --naranja: #ff6a13; --naranja-suave: #fff0e6; --verde: #12865a; --rojo: #c8352a; --serif: "Instrument Serif", Georgia, serif; --sans: "Inter Tight", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: rgba(250,250,247,.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--linea); }
+  .nav .ancho { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .marca { font-family: var(--serif); font-size: 30px; letter-spacing: -0.01em; }
+  .marca i { color: var(--naranja); }
+  .enlaces { display: flex; gap: 30px; font-size: 14px; font-weight: 500; color: var(--tinta-2); }
+  .enlaces a:hover { color: var(--tinta); }
+  .boton { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 22px; border-radius: 999px; background: var(--tinta); color: #fff; font-size: 14px; font-weight: 600; transition: gap .25s, background .25s; }
+  .boton:hover { gap: 16px; background: var(--naranja); }
+  .boton--claro { background: var(--blanco); color: var(--tinta); border: 1px solid var(--linea); }
+  .boton--claro:hover { background: var(--tinta); color: #fff; }
+
+  .portada .ancho { padding-top: 56px; padding-bottom: 40px; }
+  .kicker { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--tinta-2); border-bottom: 1px solid var(--tinta); padding-bottom: 14px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 132px; line-height: .92; letter-spacing: -0.035em; margin: 30px 0 0; }
+  h1 i { color: var(--naranja); }
+  .portada-pie { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-top: 40px; align-items: end; }
+  .portada-pie p { font-size: 18px; line-height: 1.55; color: var(--tinta-2); margin: 0; }
+
+  .escaparate { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-top: 50px; }
+  .tarjeta { border-radius: 28px; overflow: hidden; position: relative; background: var(--blanco); border: 1px solid var(--linea); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+  .tarjeta:hover { transform: translateY(-6px); }
+  .tarjeta--grande { background: var(--tinta); color: #fff; padding: 36px; min-height: 460px; display: flex; flex-direction: column; justify-content: space-between; }
+  .tarjeta--grande h2 { font-family: var(--serif); font-weight: 400; font-size: 58px; line-height: 1; margin: 0; }
+  .tarjeta--grande h2 i { color: var(--naranja); }
+  .pantalla { background: #1d1d1b; border-radius: 18px; padding: 22px; margin-top: 26px; }
+  .pantalla-cab { display: flex; justify-content: space-between; font-size: 12px; color: #9a9890; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #2e2e2b; margin-top: 14px; border-radius: 10px; overflow: hidden; }
+  .kpis div { background: #1d1d1b; padding: 12px; font-size: 12px; color: #9a9890; }
+  .kpis strong { display: block; font-size: 22px; color: #fff; font-weight: 600; margin-top: 2px; }
+  .pantalla svg { width: 100%; height: 110px; display: block; margin-top: 12px; }
+  .pila { display: grid; grid-template-rows: 1fr 1fr; gap: 20px; }
+  .tarjeta--media { padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
+  .tarjeta--media small { font-size: 13px; font-weight: 600; color: var(--naranja); }
+  .tarjeta--media h3 { font-family: var(--serif); font-weight: 400; font-size: 40px; margin: 6px 0 0; line-height: 1; }
+  .gran { font-size: 64px; font-weight: 700; letter-spacing: -0.04em; color: var(--verde); }
+  .tarjeta--media p { color: var(--tinta-2); margin: 6px 0 0; }
+  .sello-cert { position: absolute; right: 24px; top: 24px; width: 86px; height: 86px; border-radius: 50%; border: 1px dashed var(--naranja); display: grid; place-items: center; font-size: 11px; font-weight: 600; text-align: center; color: var(--naranja); animation: giro 24s linear infinite; }
+  @keyframes giro { to { transform: rotate(360deg); } }
+
+  .seccion .ancho { padding-top: 90px; padding-bottom: 90px; }
+  .seccion-cab { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; border-bottom: 1px solid var(--tinta); padding-bottom: 20px; }
+  .seccion-cab h2 { font-family: var(--serif); font-weight: 400; font-size: 76px; line-height: .95; margin: 0; letter-spacing: -0.02em; }
+  .seccion-cab h2 i { color: var(--naranja); }
+  .seccion-cab p { color: var(--tinta-2); font-size: 17px; line-height: 1.6; margin: 0; }
+  .filas { margin-top: 10px; }
+  .fila { display: grid; grid-template-columns: 70px 200px 1fr 140px 40px; gap: 26px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--linea); transition: background .3s, padding .3s; }
+  .fila:hover { background: var(--naranja-suave); padding-left: 14px; padding-right: 14px; }
+  .fila-num { font-family: var(--serif); font-size: 40px; color: var(--tinta-2); }
+  .fila-img { aspect-ratio: 16/10; border-radius: 12px; display: grid; place-items: center; font-family: var(--serif); font-style: italic; font-size: 56px; color: #fff; }
+  .fila h3 { font-family: var(--serif); font-weight: 400; font-size: 34px; margin: 0; line-height: 1.05; }
+  .fila p { color: var(--tinta-2); margin: 4px 0 0; font-size: 15px; }
+  .fila-meta { font-size: 13px; color: var(--tinta-2); }
+  .fila-flecha { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--tinta); display: grid; place-items: center; transition: transform .3s, background .3s, color .3s; }
+  .fila:hover .fila-flecha { transform: rotate(-45deg); background: var(--tinta); color: #fff; }
+
+  .cierre { background: var(--naranja); color: var(--tinta); }
+  .cierre .ancho { padding-top: 80px; padding-bottom: 80px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: end; }
+  .cierre h2 { font-family: var(--serif); font-weight: 400; font-size: 96px; line-height: .92; margin: 0; letter-spacing: -0.03em; }
+  .cierre .precio { font-size: 72px; font-weight: 700; letter-spacing: -0.04em; }
+  .cierre .precio small { font-size: 18px; font-weight: 500; }
+  .pie .ancho { display: flex; justify-content: space-between; padding-top: 28px; padding-bottom: 36px; font-size: 13px; color: var(--tinta-2); }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--tinta); color: #fff; font-size: 12px; font-weight: 600; padding: 9px 15px; border-radius: 999px; z-index: 20; }
+</style>
+</head>
+<body>
+<header class="nav"><div class="ancho">
+  <span class="marca">Adelin<i>BTC</i></span>
+  <nav class="enlaces"><a href="#">Guías</a><a href="#">Diccionario</a><a href="#">Diario</a><a href="#">Portfolio</a><a href="#">Cursos</a><a href="#">Foro</a></nav>
+  <a class="boton" href="#">Hazte Premium →</a>
+</div></header>
+
+<section class="portada"><div class="ancho">
+  <div class="kicker"><span>AdelinBTC Academy</span><span>Educación cripto en español</span><span>Noviembre 2026</span></div>
+  <h1>Entiende el dinero <i>que viene</i>, antes que los demás.</h1>
+  <div class="portada-pie">
+    <p>Guías gratuitas que explican cada proyecto por dentro, con gráficas, ejercicios y un quiz final.</p>
+    <p>Y cuando quieras operar: un diario que mide, una cartera real a la vista y cursos con certificado.</p>
+    <div style="display:flex;gap:12px;justify-content:flex-end"><a class="boton" href="#">Empezar gratis →</a><a class="boton boton--claro" href="#">Premium</a></div>
+  </div>
+
+  <div class="escaparate">
+    <a class="tarjeta tarjeta--grande" href="#">
+      <div><span style="font-size:13px;font-weight:600;color:var(--naranja)">Diario de Trading</span><h2>Deja de operar <i>de memoria</i>.</h2></div>
+      <div class="pantalla"><div class="pantalla-cab"><span>Tu mes · ejemplo</span><span>Nova activa</span></div>
+        <div class="kpis"><div>Win rate<strong>58 %</strong></div><div>Ratio R<strong>1,8</strong></div><div>P&amp;L<strong style="color:#3ad38b">+12,4 %</strong></div><div>Objetivo<strong>4/5</strong></div></div>
+        <svg viewBox="0 0 500 110" preserveAspectRatio="none"><path d="M0 95 L50 88 L100 92 L150 70 L200 76 L250 55 L300 60 L350 38 L400 44 L450 20 L500 12" fill="none" stroke="#ff6a13" stroke-width="2.5"/></svg>
+      </div>
+    </a>
+    <div class="pila">
+      <a class="tarjeta tarjeta--media" href="#"><span><small>Portfolio Adelin</small><h3>Mi cartera real</h3></span><span><span class="gran">+24,6 %</span><p>Ejemplo · también las que pierden</p></span></a>
+      <a class="tarjeta tarjeta--media" href="#"><span class="sello-cert">Con<br>certificado</span><span><small>Cursos</small><h3>Por módulos,<br>con examen</h3></span><p>Certificado verificable al aprobar.</p></a>
+    </div>
+  </div>
+</div></section>
+
+<section class="seccion"><div class="ancho">
+  <div class="seccion-cab"><h2>Guías, <i>gratis</i> y a fondo</h2><p>Qué es cada proyecto, cómo funciona por dentro y qué riesgos tiene. Escritas para quien empieza, sin dar nada por sabido.</p></div>
+  <div class="filas">
+    <a class="fila" href="#"><span class="fila-num">01</span><span class="fila-img" style="background:#2c2b6b">H</span><span><h3>Hyperliquid: qué es y cómo funciona</h3><p>El exchange descentralizado que compite con los grandes.</p></span><span class="fila-meta">Nueva · 14 min</span><span class="fila-flecha">→</span></a>
+    <a class="fila" href="#"><span class="fila-num">02</span><span class="fila-img" style="background:#222">X</span><span><h3>XRP y Ripple</h3><p>Pagos internacionales y la demanda de la SEC.</p></span><span class="fila-meta">Básico · 11 min</span><span class="fila-flecha">→</span></a>
+    <a class="fila" href="#"><span class="fila-num">03</span><span class="fila-img" style="background:#7a2233">R</span><span><h3>Render</h3><p>Potencia de cálculo repartida para gráficos e IA.</p></span><span class="fila-meta">Intermedio · 12 min</span><span class="fila-flecha">→</span></a>
+  </div>
+</div></section>
+
+<section class="cierre"><div class="ancho">
+  <h2>Tres herramientas.<br>Una suscripción.</h2>
+  <div><div class="precio">19,99 €<small> /mes</small></div><p>Sin permanencia. Acceso inmediato.</p><a class="boton" href="#">Hazte Premium →</a></div>
+</div></section>
+
+<footer class="pie"><div class="ancho"><span>© AdelinBTC Academy</span><span>Aviso legal · Privacidad · Cookies</span><span>No es asesoramiento financiero</span></div></footer>
+<span class="etiqueta-maqueta">Versión G · Revista moderna (maqueta)</span>
+</body>
+</html>

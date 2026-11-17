@@ -1,411 +1,325 @@
 /*
- * La vitrina de certificados (components/VitrinaCertificados.tsx).
- * La pintan la portada del dashboard (forma «estante») y /dashboard/certificados
- * (forma «completa»: resumen y galería de fichas). Cada pieza pone el color
- * de su curso en --cv-acento.
+ * La vitrina de certificados (VitrinaCertificados.tsx): el estante de
+ * /dashboard y la galería de /dashboard/certificados.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026), en lila (el color de los cursos):
+ * los certificados se sujetan con cinta adhesiva a una hoja del cuaderno. El
+ * certificado (components/aula/Certificado.tsx, clases `cq-*`) es de otro
+ * componente y trae su papel, su canto y su sombra: aquí el marco NO pinta
+ * fondo ni borde ni recorta, solo lo coloca, lo tuerce un poco y le pega la
+ * cinta. Las piezas pn-* están en dashboard.css (la vitrina solo sale en
+ * /dashboard/**).
  */
 
-/* ── Estante: la portada del dashboard ─────────────────────────────────────
-   Una vitrina de exposición: fondo de terciopelo azul noche, un foco que cae
-   desde arriba, los certificados enmarcados en oro sobre una balda que brilla
-   y su reflejo. Vacía, el mensaje y la muestra con el nombre del alumno. */
-.cv-estante {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  padding: 1.8rem 1.8rem 2rem;
-  border: 1px solid rgba(230, 180, 85, 0.22);
-  border-radius: 24px;
-  background:
-    radial-gradient(120% 70% at 50% 120%, rgba(230, 180, 85, 0.1), transparent 60%),
-    linear-gradient(180deg, #0f1f3c 0%, #0a1630 55%, #071023 100%);
-  box-shadow:
-    0 30px 70px -35px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 0 1px rgba(230, 180, 85, 0.05);
-}
-/* El foco: un cono de luz cálida desde el techo de la vitrina. */
-.cv-foco {
-  position: absolute;
-  z-index: -1;
-  top: -40%;
-  left: 50%;
-  width: 90%;
-  height: 120%;
-  transform: translateX(-50%);
-  background: radial-gradient(50% 55% at 50% 0%, rgba(255, 226, 160, 0.16), rgba(255, 226, 160, 0.04) 55%, transparent 75%);
-  pointer-events: none;
-  animation: cv-respirar 7s ease-in-out infinite;
-}
-@keyframes cv-respirar {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
-}
-/* Textura de terciopelo: un tramado finísimo que da cuerpo al fondo. */
-.cv-terciopelo {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 5px);
-  pointer-events: none;
-}
-
-.cv-estante-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #e6b455;
-}
-.cv-estante-titulo { margin: 0.45rem 0 0; font: 800 clamp(1.25rem, 2.4vw, 1.55rem)/1.2 var(--font-display); letter-spacing: -0.02em; color: #fff; }
-.cv-estante-titulo span {
-  background: linear-gradient(100deg, #f5d48a, #e6b455 50%, #fff2cf);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.cv-estante-cab { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
-.cv-estante-enlace { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.86rem; font-weight: 700; color: #e6b455; text-decoration: none; white-space: nowrap; }
-.cv-estante-enlace:hover { text-decoration: underline; }
-
-/* El marco dorado que rodea cada certificado. */
+/* ── El marco y la cinta ── */
 .cv-marco {
   position: relative;
   display: block;
-  padding: 7px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #fbe6b0 0%, #c9952f 30%, #7a5418 55%, #e6b455 80%, #fff0c8 100%);
-  box-shadow:
-    0 24px 40px -18px rgba(0, 0, 0, 0.85),
-    0 0 0 1px rgba(0, 0, 0, 0.35),
-    0 0 40px -10px rgba(230, 180, 85, 0.35);
+  width: 100%;
+  padding-bottom: 8px; /* el canto del certificado */
 }
-/* Dentro del marco de la vitrina, el certificado no lleva su propia sombra. */
-.cv-marco .dp { border-radius: 8px; box-shadow: none; }
 
-/* ── Con certificados: el expositor ── */
-.cv-expositor { position: relative; padding: 0.4rem 0 0; }
-.cv-expositor-fila {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 1.8rem;
-  margin: 0;
-  padding: 0.6rem 0.4rem 1.2rem;
-  list-style: none;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(230, 180, 85, 0.3) transparent;
-}
-.cv-expositor-fila > li { flex: 0 0 300px; }
-
-.cv-pieza { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; text-decoration: none; perspective: 900px; }
-.cv-pieza .cv-marco { width: 100%; transform: rotateX(4deg); transform-origin: bottom center; transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s ease; }
-.cv-pieza:hover .cv-marco {
-  transform: rotateX(0) translateY(-8px) scale(1.02);
-  box-shadow: 0 34px 50px -18px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 60px -6px rgba(230, 180, 85, 0.55);
-}
-/* Un destello de luz que cruza el cristal al pasar el ratón. */
-.cv-brillo {
+.cv-cinta {
   position: absolute;
-  inset: 7px;
-  border-radius: 9px;
-  overflow: hidden;
+  z-index: 2;
+  width: 22%;
+  max-width: 110px;
+  height: 26px;
+  background: color-mix(in srgb, var(--lila) 45%, transparent);
+  box-shadow: 0 2px 4px -2px rgba(29, 27, 51, 0.3);
   pointer-events: none;
 }
-.cv-brillo::before {
-  content: "";
-  position: absolute;
-  top: -20%;
-  left: 0;
-  width: 40%;
-  height: 140%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  /* Con transform y no con `left`: en el iPhone, `left` va a tirones. */
-  transform: translate3d(-150%, 0, 0) skewX(-18deg);
-  transition: transform 0.8s ease;
-  will-change: transform;
-}
-.cv-pieza:hover .cv-brillo::before { transform: translate3d(330%, 0, 0) skewX(-18deg); }
 
-/* La placa de latón bajo cada certificado. */
-.cv-placa {
+.cv-cinta--1 { top: -11px; left: 10%; transform: rotate(-6deg); }
+.cv-cinta--2 { top: -11px; right: 10%; transform: rotate(5deg); background: color-mix(in srgb, var(--amarillo) 60%, transparent); }
+
+/* ── El estante (/dashboard) ── */
+.cv-estante { border-radius: 34px; }
+
+.cv-estante-vacia {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.cv-estante-texto {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  min-width: 70%;
-  padding: 0.45rem 0.9rem;
-  border-radius: 8px;
-  background: linear-gradient(180deg, rgba(230, 180, 85, 0.16), rgba(230, 180, 85, 0.06));
-  border: 1px solid rgba(230, 180, 85, 0.28);
-  text-align: center;
+  align-items: flex-start;
+  gap: 0.75rem;
 }
-.cv-placa strong { font-size: 0.82rem; color: #fbe6b0; }
-.cv-placa span { font-size: 0.7rem; color: rgba(240, 244, 255, 0.5); }
 
+.cv-estante .pn-mano { color: var(--lila-o); }
+
+.cv-estante-titulo { font-size: clamp(1.6rem, 3.6vw, 2.3rem); }
+
+.cv-estante-p {
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.cv-estante-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0.6rem !important;
+}
+
+.cv-estante-lista li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+}
+
+.cv-estante-lista li > span {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--lila-s);
+  color: var(--lila-o);
+}
+
+.cv-estante-muestra {
+  position: relative;
+  padding-top: 20px;
+}
+
+.cv-estante-muestra .cv-marco {
+  transform: rotate(-2.5deg);
+  animation: cv-flotar 6s ease-in-out infinite;
+}
+
+@keyframes cv-flotar {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -6px; }
+}
+
+.cv-muestra-etiqueta {
+  position: absolute;
+  top: -8px;
+  right: 6%;
+  z-index: 3;
+  padding: 4px 12px;
+  background: var(--amarillo);
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  line-height: 1.2;
+  transform: rotate(4deg);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+}
+
+.cv-estante-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+/* Con certificados: una fila que se desliza si no caben. */
+.cv-expositor {
+  display: flex;
+  gap: 26px;
+  margin: 0 calc(-1 * clamp(1.25rem, 3vw, 1.9rem)) !important;
+  padding: 18px clamp(1.25rem, 3vw, 1.9rem) 10px !important;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding: 0 clamp(1.25rem, 3vw, 1.9rem);
+  scrollbar-width: thin;
+}
+
+.cv-expositor > li { flex: none; width: min(320px, 78%); scroll-snap-align: start; }
+
+.cv-pieza {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--tinta);
+  text-decoration: none;
+  border-radius: 16px;
+}
+
+.cv-expositor > li:nth-child(odd) .cv-marco { transform: rotate(-1.5deg); }
+.cv-expositor > li:nth-child(even) .cv-marco { transform: rotate(1.2deg); }
+.cv-pieza .cv-marco { transition: transform 0.35s cubic-bezier(0.34, 1.8, 0.5, 1); }
+
+@media (hover: hover) {
+  .cv-expositor > li .cv-pieza:hover .cv-marco { transform: rotate(0) translateY(-6px); }
+}
+
+.cv-pieza:focus-visible { outline: 3px solid var(--azul); outline-offset: 6px; }
+
+.cv-placa { display: flex; flex-direction: column; gap: 2px; padding: 0 4px; }
+.cv-placa strong { font-family: var(--letra-titular); font-size: 1.05rem; font-weight: 800; }
+.cv-placa span { font-size: 13px; font-weight: 700; color: var(--tinta-2); }
+
+/* El hueco del siguiente: punteado, esperando. */
 .cv-hueco {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  width: 100%;
+  gap: 8px;
   aspect-ratio: 1.414;
-  border: 1.5px dashed rgba(230, 180, 85, 0.3);
-  border-radius: 14px;
-  background: radial-gradient(60% 60% at 50% 50%, rgba(230, 180, 85, 0.07), transparent 70%);
-  color: rgba(230, 180, 85, 0.7);
-  font-size: 0.8rem;
-  font-weight: 700;
-  transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
-}
-.cv-pieza--hueco .cv-placa { opacity: 0.6; }
-.cv-pieza--hueco:hover .cv-hueco { border-color: #e6b455; color: #f5d48a; background: radial-gradient(60% 60% at 50% 50%, rgba(230, 180, 85, 0.14), transparent 70%); }
-
-/* La balda: un listón dorado que brilla, con su reflejo hacia abajo. */
-.cv-balda,
-.cv-balda-corta {
-  position: relative;
-  display: block;
-  height: 12px;
-  border-radius: 4px;
-  background: linear-gradient(180deg, #f5d48a 0%, #b9822a 45%, #5c3f12 100%);
-  box-shadow: 0 -10px 30px -6px rgba(230, 180, 85, 0.5), 0 14px 26px -10px rgba(0, 0, 0, 0.9);
-}
-.cv-balda::after,
-.cv-balda-corta::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 4%;
-  right: 4%;
-  height: 40px;
-  background: radial-gradient(50% 100% at 50% 0%, rgba(230, 180, 85, 0.18), transparent 70%);
+  margin-bottom: 8px;
+  border: 3px dashed var(--lila);
+  border-radius: 18px;
+  background: var(--lila-s);
+  color: var(--lila-o);
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-/* ── Vacía: el mensaje y la muestra con su nombre ── */
-.cv-estante-vacia {
-  display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 2.4rem;
-  align-items: center;
-}
-.cv-estante-p { margin: 0.9rem 0 0; max-width: 46ch; font-size: 0.95rem; line-height: 1.65; color: rgba(240, 244, 255, 0.62); }
-.cv-estante-lista { display: grid; gap: 0.55rem; margin: 1.2rem 0 1.5rem; padding: 0; list-style: none; }
-.cv-estante-lista li { display: flex; align-items: center; gap: 0.55rem; font-size: 0.88rem; color: rgba(240, 244, 255, 0.78); }
-.cv-estante-lista svg { color: #e6b455; flex-shrink: 0; }
-
-.cv-estante-muestra { position: relative; display: flex; flex-direction: column; align-items: stretch; padding-top: 1.4rem; }
-.cv-estante-muestra .cv-marco { transform: rotate(-2deg); animation: cv-flotar 6s ease-in-out infinite; }
-@keyframes cv-flotar {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -8px; }
-}
-.cv-balda-corta { margin: 1.4rem 6% 0; }
-.cv-muestra-etiqueta {
-  position: absolute;
-  top: 0;
-  right: 0.6rem;
-  z-index: 2;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  background: #e6b455;
-  color: #0a1628;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  box-shadow: 0 8px 20px -6px rgba(230, 180, 85, 0.6);
+@media (hover: hover) {
+  .cv-pieza--hueco:hover .cv-hueco { transform: scale(1.03) rotate(-1deg); }
 }
 
-@media (max-width: 860px) {
-  .cv-estante { padding: 1.4rem 1.1rem 1.6rem; }
-  .cv-estante-vacia { grid-template-columns: 1fr; gap: 1.6rem; }
-  .cv-expositor-fila > li { flex-basis: 250px; }
-}
-
-/* ── Botones ── */
-.cv-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.6rem 1rem;
-  border: 1px solid transparent;
-  border-radius: 11px;
-  background: var(--cv-acento, #5ec8c4);
-  color: #0a1628;
-  font-size: 0.86rem;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: filter 0.2s ease, transform 0.2s ease;
-}
-.cv-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.cv-btn--ghost { background: transparent; border-color: rgba(240, 244, 255, 0.16); color: rgba(240, 244, 255, 0.88); }
-.cv-btn--grande { padding: 0.85rem 1.35rem; font-size: 0.95rem; border-radius: 13px; }
-.cv-acciones { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-
-/* ── Página completa: resumen y galería (rehecha el 08-11-2026) ──────────── */
-
-/* El resumen: cuatro casillas con las cifras de su vitrina. */
+/* ── La página completa (/dashboard/certificados) ── */
 .cv-resumen {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.8rem;
-  margin: 0;
+  gap: 14px;
 }
-.cv-resumen div {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.25rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 16px;
-  background: radial-gradient(120% 120% at 0% 0%, rgba(230, 180, 85, 0.08), transparent 60%), rgba(12, 24, 47, 0.8);
-}
-.cv-resumen dt { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240, 244, 255, 0.45); }
-.cv-resumen dd { display: flex; align-items: center; gap: 0.35rem; margin: 0; font: 800 1.7rem/1.1 var(--font-display); color: #fff; font-variant-numeric: tabular-nums; }
-.cv-resumen dd small { font-size: 0.9rem; font-weight: 600; color: rgba(240, 244, 255, 0.45); }
-.cv-resumen dd.is-texto { font-size: 0.98rem; font-weight: 700; }
-.cv-resumen dd svg { color: #e6b455; flex-shrink: 0; }
 
-/* La galería: una ficha grande por certificado. */
+.cv-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--c-s);
+  box-shadow: 0 5px 0 var(--c);
+}
+
+.cv-resumen dt {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-o);
+}
+
+.cv-resumen > div.tono-amarillo dt { color: #7a5d00; }
+
+.cv-resumen dd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--letra-titular);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.cv-resumen dd small { font-size: 0.5em; color: var(--tinta-2); }
+.cv-resumen dd.is-texto { font-size: 1.1rem; }
+
 .cv-galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
-  gap: 1.4rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
 .cv-ficha {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--cv-acento) 28%, rgba(240, 244, 255, 0.08));
-  border-radius: 24px;
-  background: linear-gradient(180deg, #0f1e3b 0%, #0a1429 100%);
-  box-shadow: 0 30px 70px -35px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
-.cv-ficha:hover {
-  border-color: color-mix(in srgb, var(--cv-acento) 55%, transparent);
-  box-shadow: 0 40px 80px -35px rgba(0, 0, 0, 0.95), 0 0 70px -30px var(--cv-acento);
-  transform: translateY(-3px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  align-items: center;
+  border-radius: 30px;
 }
 
-/* El escaparate: fondo de terciopelo con el foco en el color del curso, y el
-   certificado de verdad enmarcado en oro. */
 .cv-escaparate {
-  position: relative;
-  isolation: isolate;
   display: block;
-  padding: 2rem 2.2rem 2.2rem;
-  background:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 5px),
-    radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--cv-acento) 24%, transparent), transparent 70%),
-    linear-gradient(180deg, #13284e 0%, #0b1832 100%);
-  border-bottom: 1px solid color-mix(in srgb, var(--cv-acento) 25%, rgba(240, 244, 255, 0.06));
+  padding-top: 12px;
+  border-radius: 16px;
 }
-.cv-escaparate-foco {
-  position: absolute;
-  z-index: -1;
-  top: -30%;
-  left: 15%;
-  right: 15%;
-  height: 90%;
-  background: radial-gradient(50% 60% at 50% 0%, rgba(255, 236, 190, 0.16), transparent 75%);
-  pointer-events: none;
+
+.cv-escaparate .cv-marco { transform: rotate(-1.5deg); transition: transform 0.4s cubic-bezier(0.34, 1.8, 0.5, 1); }
+
+@media (hover: hover) {
+  .cv-escaparate:hover .cv-marco { transform: rotate(0) scale(1.02); }
 }
-.cv-escaparate .cv-marco { transform: rotate(-1.2deg); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.cv-escaparate:hover .cv-marco,
-.cv-escaparate:focus-visible .cv-marco { transform: rotate(0) scale(1.02); }
-.cv-escaparate:hover .cv-brillo::before,
-.cv-escaparate:focus-visible .cv-brillo::before { transform: translate3d(330%, 0, 0) skewX(-18deg); }
-.cv-escaparate:focus-visible { outline: 2px solid var(--cv-acento); outline-offset: -2px; }
 
-.cv-ficha-cuerpo { display: flex; flex: 1; flex-direction: column; gap: 1rem; padding: 1.4rem 1.5rem 1.5rem; }
-.cv-ficha-cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-.cv-kicker { display: block; margin-bottom: 0.3rem; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cv-acento); }
-.cv-curso { margin: 0; font: 800 1.35rem/1.2 var(--font-display); letter-spacing: -0.02em; color: #fff; }
+.cv-escaparate:focus-visible { outline: 3px solid var(--azul); outline-offset: 6px; }
 
-/* La nota, en un sello redondo con el color del curso. */
+.cv-ficha-cuerpo { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.cv-ficha-cab {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cv-curso { margin-top: 4px !important; font-size: clamp(1.4rem, 3vw, 1.8rem); }
+
+/* La nota, como una pegatina lila. */
 .cv-nota {
   display: grid;
+  flex: none;
   place-items: center;
   align-content: center;
-  flex-shrink: 0;
-  width: 68px;
-  height: 68px;
+  width: 84px;
+  height: 84px;
+  border: 4px solid var(--papel);
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--cv-acento) 30%, transparent), transparent 70%),
-    #0c1a35;
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv-acento) 70%, transparent), 0 0 30px -10px var(--cv-acento);
-  text-align: center;
-}
-.cv-nota strong { font: 800 1.35rem/1 var(--font-display); color: #fff; }
-.cv-nota small { font-size: 0.66rem; color: rgba(240, 244, 255, 0.5); }
-
-.cv-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.cv-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.04);
-  font-size: 0.78rem;
-  color: rgba(240, 244, 255, 0.75);
-}
-.cv-chip--logro {
-  border-color: color-mix(in srgb, var(--cv-acento) 45%, transparent);
-  background: color-mix(in srgb, var(--cv-acento) 12%, transparent);
+  background: var(--lila);
   color: #fff;
-  font-weight: 700;
-}
-.cv-chip-icono { display: inline-grid; place-items: center; color: var(--cv-acento); }
-
-.cv-codigo-fila {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  padding: 0.7rem 0.9rem;
-  border: 1px dashed rgba(240, 244, 255, 0.14);
-  border-radius: 12px;
-  background: rgba(6, 13, 28, 0.5);
-}
-.cv-codigo-fila span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240, 244, 255, 0.45); }
-.cv-codigo { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.95rem; letter-spacing: 0.14em; color: #fff; }
-
-.cv-ficha .cv-acciones { margin-top: auto; }
-.cv-ficha .cv-acciones .cv-btn { flex: 1; justify-content: center; padding: 0.75rem 1rem; }
-.cv-ficha .cv-acciones .cv-btn:not(.cv-btn--ghost) { flex: 1.6; font-weight: 800; }
-
-@media (max-width: 860px) {
-  .cv-resumen { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 560px) {
-  .cv-escaparate { padding: 1.4rem 1.2rem 1.6rem; }
-  .cv-ficha-cuerpo { padding: 1.2rem; }
-  .cv-curso { font-size: 1.15rem; }
-  .cv-nota { width: 58px; height: 58px; }
-  .cv-ficha .cv-acciones { flex-direction: column; }
-  .cv-resumen dd { font-size: 1.4rem; }
+  box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.1), 0 6px 14px -6px rgba(29, 27, 51, 0.45);
+  transform: rotate(8deg);
 }
 
-/* El botón dorado de la vitrina vacía. */
-.cv-btn--oro { padding: 0.8rem 1.25rem; background: linear-gradient(135deg, #f5d48a, #e6b455 55%, #d4952a); box-shadow: 0 12px 30px -12px rgba(230, 180, 85, 0.8); }
+.cv-nota strong { font-family: var(--letra-titular); font-size: 1.7rem; font-weight: 800; line-height: 1; }
+.cv-nota small { font-size: 12px; font-weight: 900; opacity: 0.85; }
+
+.cv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.cv-chip-icono { display: inline-flex; }
+
+.cv-codigo-fila { display: flex; flex-direction: column; gap: 4px; }
+
+.cv-codigo {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--fondo);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  word-break: break-all;
+}
+
+.cv-acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ── Tableta y móvil ── */
+@media (max-width: 900px) {
+  .cv-estante-vacia,
+  .cv-ficha { grid-template-columns: minmax(0, 1fr); }
+  .cv-resumen { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 420px) {
+  .cv-resumen { grid-template-columns: minmax(0, 1fr); }
+  .cv-nota { width: 70px; height: 70px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .cv-foco, .cv-estante-muestra .cv-marco { animation: none; }
-  .cv-pieza .cv-marco, .cv-brillo::before, .cv-hueco, .cv-btn, .cv-ficha, .cv-escaparate .cv-marco { transition: none; }
+  .cv-estante-muestra .cv-marco { animation: none; }
+  .cv-pieza .cv-marco,
+  .cv-escaparate .cv-marco,
+  .cv-hueco { transition: none; }
+}
+
+/* Al imprimir, el certificado ocupa la hoja (regla de certificado.css): un
+   antepasado girado o con transform rompería su `position: fixed`. */
+@media print {
+  .cv-marco { transform: none !important; animation: none !important; padding: 0; }
 }

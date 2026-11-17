@@ -1,17 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, RotateCcw } from "lucide-react";
-import { Marco } from "./comun";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
+import { Marco, Opcion, letra, useLetras } from "./comun";
 
 /**
  * Pregunta de repaso dentro de una lección. No puntúa nada: sirve para que
  * el alumno compruebe al momento si lo ha entendido, con la explicación.
  *
- * Al contestar se marcan la buena y, si falló, la que eligió. **Las demás se
- * quedan legibles** (`is-neutra`): hasta el 12-11-2026 bajaban al 45 % de
- * opacidad y, sobre el fondo oscuro, parecía que habían desaparecido.
+ * Cada respuesta es una tecla con su letra, y se pulsa también con el teclado
+ * físico (A, B, C…). Al contestar se marcan la buena (menta) y, si falló, la
+ * que eligió (coral). **Las demás se quedan legibles** (`neutra`): hasta el
+ * 12-11-2026 bajaban al 45 % de opacidad y parecía que habían desaparecido.
+ * Acertar suena a `acierto` y fallar a `fallo`.
  * (La solución viaja al navegador, y no pasa nada: esto no es el examen.
  * Las preguntas del examen NO van nunca en un bloque.)
  *
@@ -34,30 +38,33 @@ export function validarPregunta(d: unknown): d is DatosPregunta {
 export default function Pregunta({ datos: p }: { datos: DatosPregunta }) {
   const [elegida, setElegida] = useState<number | null>(null);
   const acierto = elegida === p.correcta;
+  const grupo = useRef<HTMLDivElement>(null);
+
+  function contestar(i: number) {
+    if (elegida !== null) return;
+    sonar(i === p.correcta ? "acierto" : "fallo");
+    setElegida(i);
+  }
+
+  const pulsada = useLetras(grupo, p.opciones.map((_, i) => letra(i)), contestar, elegida === null);
 
   return (
     <Marco clase="pregunta" titulo={p.enunciado}>
-      <div className="aula-opciones" role="radiogroup" aria-label={p.enunciado}>
-        {p.opciones.map((o, i) => {
-          const estado =
-            elegida === null ? "" : i === p.correcta ? " is-buena" : i === elegida ? " is-mala" : " is-neutra";
-          return (
-            <button
-              key={i}
-              type="button"
-              role="radio"
-              aria-checked={elegida === i}
-              className={`aula-opcion${estado}`}
-              disabled={elegida !== null}
-              onClick={() => setElegida(i)}
-            >
-              <span className="aula-opcion-letra">{String.fromCharCode(65 + i)}</span>
-              <span className="aula-opcion-texto">{o}</span>
-              {elegida !== null && i === p.correcta && <Check size={16} strokeWidth={2.6} aria-hidden="true" />}
-              {elegida === i && i !== p.correcta && <X size={16} strokeWidth={2.6} aria-hidden="true" />}
-            </button>
-          );
-        })}
+      <div ref={grupo} className="aula-opciones" role="radiogroup" aria-label={p.enunciado}>
+        {p.opciones.map((o, i) => (
+          <Opcion
+            key={i}
+            marca={letra(i)}
+            role="radio"
+            aria-checked={elegida === i}
+            estado={elegida === null ? undefined : i === p.correcta ? "buena" : i === elegida ? "mala" : "neutra"}
+            pulsada={pulsada === i}
+            disabled={elegida !== null}
+            onClick={() => contestar(i)}
+          >
+            {o}
+          </Opcion>
+        ))}
       </div>
 
       <AnimatePresence>
@@ -65,19 +72,21 @@ export default function Pregunta({ datos: p }: { datos: DatosPregunta }) {
           <motion.div
             className={`aula-feedback ${acierto ? "is-buena" : "is-mala"}`}
             role="status"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ type: "spring", stiffness: 420, damping: 24 }}
           >
             <p className="aula-feedback-cab">
-              {acierto ? <Check size={16} strokeWidth={3} aria-hidden="true" /> : <X size={16} strokeWidth={3} aria-hidden="true" />}
+              <span className="aula-feedback-ic">
+                {acierto ? <Check size={16} strokeWidth={3.2} aria-hidden="true" /> : <X size={16} strokeWidth={3.2} aria-hidden="true" />}
+              </span>
               {acierto ? "Correcto" : "No es esa"}
             </p>
             {p.explicacion && <p>{p.explicacion}</p>}
-            <button type="button" className="aula-btn aula-btn--ghost aula-btn--small" onClick={() => setElegida(null)}>
-              <RotateCcw size={13} aria-hidden="true" /> Intentarlo otra vez
-            </button>
+            <Tecla color="blanca" tamano="peq" onClick={() => setElegida(null)}>
+              <RotateCcw size={14} strokeWidth={2.6} aria-hidden="true" /> Intentarlo otra vez
+            </Tecla>
           </motion.div>
         )}
       </AnimatePresence>

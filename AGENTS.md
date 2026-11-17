@@ -21,6 +21,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Tocar el **limitador por IP**, el middleware (`src/proxy.ts`) o **añadir un webhook** | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
 | Tocar **muro de pago, portfolios, legal, analítica, sitemap, robots, canónicas, JSON-LD o el catálogo de herramientas** | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | Escribir **código**: CSS, tipos, hooks, guardarraíles | [`CODIGO.md`](./CODIGO.md) |
+| **Diseñar o rediseñar** cualquier pantalla (aspecto, colores, botones, animaciones) | [`ESTILO.md`](./ESTILO.md) — el estilo «Cuaderno de estudio», elegido el 17-11-2026 |
 | Tocar el **foro** o el **perfil público** (alias, foto, avisos) | [`FORO.md`](./FORO.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 | Una **historia de Instagram** (o cualquier imagen vertical para redes) para anunciar algo de la web | La skill [`historia-instagram`](./.claude/skills/historia-instagram/SKILL.md): estilo aprobado el 15-11-2026, con su modelo |

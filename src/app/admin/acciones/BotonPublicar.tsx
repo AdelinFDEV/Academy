@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * Publica una guía o un curso, o lo devuelve a borrador. Pide confirmación en
  * el propio botón: publicar es visible para todo el mundo al instante.
+ *
+ * Teclas del cuaderno: publicar en menta (hecho), devolver a borrador en
+ * blanca, y su confirmación en coral, porque lo quita de la web. Hecho, suena
+ * `guardado`; si falla, `error`.
  */
 export default function BotonPublicar({ tipo, slug, publicar }: { tipo: "guia" | "curso"; slug: string; publicar: boolean }) {
   const router = useRouter();
@@ -24,13 +30,16 @@ export default function BotonPublicar({ tipo, slug, publicar }: { tipo: "guia" |
       if (!res.ok) {
         const datos = (await res.json().catch(() => null)) as { error?: string } | null;
         setError(datos?.error ?? "No se pudo guardar. Inténtalo de nuevo.");
+        sonar("error");
         setPaso("reposo");
         return;
       }
+      sonar("guardado");
       router.refresh();
       setPaso("reposo");
     } catch {
       setError("No se pudo conectar. Inténtalo de nuevo.");
+      sonar("error");
       setPaso("reposo");
     }
   }
@@ -38,9 +47,9 @@ export default function BotonPublicar({ tipo, slug, publicar }: { tipo: "guia" |
   if (paso === "reposo") {
     return (
       <div className="ac-boton-caja">
-        <button type="button" className={`ac-boton${publicar ? " ac-boton--publicar" : ""}`} onClick={() => setPaso("confirmar")}>
+        <Tecla color={publicar ? "menta" : "blanca"} tamano="peq" ancho onClick={() => setPaso("confirmar")}>
           {publicar ? "Publicar" : "Volver a borrador"}
-        </button>
+        </Tecla>
         {error && <p className="ac-error" role="alert">{error}</p>}
       </div>
     );
@@ -52,12 +61,12 @@ export default function BotonPublicar({ tipo, slug, publicar }: { tipo: "guia" |
         {publicar ? "Será visible para todos y Google podrá indexarlo." : "Dejará de verse en la web."}
       </p>
       <div className="ac-confirmar-botones">
-        <button type="button" className={`ac-boton${publicar ? " ac-boton--publicar" : " ac-boton--peligro"}`} onClick={enviar} disabled={paso === "enviando"}>
+        <Tecla color={publicar ? "menta" : "coral"} tamano="peq" ancho onClick={enviar} disabled={paso === "enviando"}>
           {paso === "enviando" ? "Guardando…" : publicar ? "Sí, publicar" : "Sí, retirar"}
-        </button>
-        <button type="button" className="ac-boton" onClick={() => setPaso("reposo")} disabled={paso === "enviando"}>
+        </Tecla>
+        <Tecla color="blanca" tamano="peq" ancho onClick={() => setPaso("reposo")} disabled={paso === "enviando"}>
           Cancelar
-        </button>
+        </Tecla>
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export default function PrivacidadPage() {
   return (
     <LegalShell title="Política de Privacidad" lastUpdated={LEGAL.ultimaActualizacion}>
 
-      <p className="legal-intro">
+      <p className="lg-intro">
         En {LEGAL.marca} respetamos tu privacidad y tratamos tus datos personales conforme al
         Reglamento (UE) 2016/679 (RGPD) y a la {LEGAL.leyProteccionDatos}, norma nacional aplicable por
         estar el responsable establecido en {LEGAL.pais}. El RGPD es un reglamento europeo y te ampara
@@ -40,7 +40,7 @@ export default function PrivacidadPage() {
 
       <section>
         <h2>2. Datos que tratamos y para qué</h2>
-        <table className="legal-table">
+        <table className="lg-tabla">
           <thead>
             <tr>
               <th>Categoría de datos</th>
@@ -131,7 +131,7 @@ export default function PrivacidadPage() {
           servicio, que actúan como <strong>encargados del tratamiento</strong> bajo contrato. No vendemos
           ni cedemos tus datos a terceros con fines comerciales propios.
         </p>
-        <table className="legal-table">
+        <table className="lg-tabla">
           <thead>
             <tr>
               <th>Proveedor</th>

@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const ALLOCATION = [
-  { label: "Comunidad (grants humanos)", v: 75, color: "#e6b455" },
-  { label: "Tools for Humanity (equipo)", v: 13.5, color: "#ff6b2b" },
-  { label: "Inversores", v: 9.8, color: "#3a6090" },
-  { label: "Worldcoin Foundation", v: 1.7, color: "#2a4870" },
+  { label: "Comunidad (grants humanos)", v: 75, color: "#2fbff5" },
+  { label: "Tools for Humanity (equipo)", v: 13.5, color: "#ff8a1f" },
+  { label: "Inversores", v: 9.8, color: "#8f7cff" },
+  { label: "Worldcoin Foundation", v: 1.7, color: "#ffd23f" },
 ];
 
 export default function GuideWorldTokenomics() {
@@ -40,9 +40,9 @@ export default function GuideWorldTokenomics() {
   return (
     <div ref={ref} className="gbc-chart-wrap">
       <div className="gbc-chart-lbl">Distribución del suministro de WLD — 10.000 millones de tokens (tope máximo)</div>
-      <div className="tokenomics-donut-wrap">
-        <svg width="160" height="160" viewBox="0 0 160 160" aria-label="Distribución del suministro de WLD">
-          <circle cx="80" cy="80" r={r} fill="none" stroke="rgba(240,244,255,0.06)" strokeWidth="18" />
+      <div className="wld-tok">
+        <svg width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="Distribución del suministro de WLD">
+          <circle cx="80" cy="80" r={r} fill="none" stroke="#e2e5f4" strokeWidth="18" />
           {segments.map((s, i) => (
             <circle
               key={i}
@@ -53,22 +53,19 @@ export default function GuideWorldTokenomics() {
               strokeDasharray={`${triggered ? s.dash : 0} ${circ}`}
               strokeDashoffset={s.offset}
               strokeLinecap="butt"
-              style={{
-                transform: "rotate(-90deg)",
-                transformOrigin: "80px 80px",
-                transition: `stroke-dasharray 1s cubic-bezier(0.4,0,0.2,1) ${i * 150}ms`,
-              }}
+              className="wld-tok-arco"
+              style={{ transitionDelay: `${i * 150}ms` }}
             />
           ))}
-          <text x="80" y="76" textAnchor="middle" fontSize="20" fontWeight="800" fill="#fff">10B</text>
-          <text x="80" y="94" textAnchor="middle" fontSize="10" fill="#8fa3b8">WLD tope máximo</text>
+          <text x="80" y="78" textAnchor="middle" className="wld-tok-cifra">10B</text>
+          <text x="80" y="96" textAnchor="middle" className="wld-tok-unidad">WLD tope máximo</text>
         </svg>
-        <div className="tokenomics-legend">
+        <div className="wld-tok-leyenda">
           {ALLOCATION.map((a) => (
-            <div key={a.label} className="tokenomics-legend-row">
-              <span className="tokenomics-legend-dot" style={{ background: a.color }} />
-              <span className="tokenomics-legend-label">{a.label}</span>
-              <span className="tokenomics-legend-val">{a.v}%</span>
+            <div key={a.label} className="wld-tok-fila">
+              <span className="wld-tok-punto" style={{ background: a.color }} aria-hidden="true" />
+              <span className="wld-tok-nombre">{a.label}</span>
+              <span className="wld-tok-valor">{a.v}%</span>
             </div>
           ))}
         </div>

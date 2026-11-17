@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Tecla from "@/components/cuaderno/Tecla";
 import { pedirForo } from "@/components/foro/pedir";
+import { sonar } from "@/lib/sonidos";
 
 /** Marcar todos los avisos como leídos. Solo los propios: lo decide el servidor. */
 export function MarcarLeidos({ hay }: { hay: boolean }) {
@@ -16,42 +18,73 @@ export function MarcarLeidos({ hay }: { hay: boolean }) {
     setError("");
     const r = await pedirForo("/api/foro/avisos", {});
     setEnviando(false);
-    if (!r.ok) setError(r.mensaje);
-    else router.refresh();
+    if (!r.ok) {
+      sonar("error");
+      setError(r.mensaje);
+    } else {
+      sonar("guardado");
+      router.refresh();
+    }
   }
 
   return (
     <>
-      <button type="button" className="fp-btn" disabled={enviando} onClick={marcar}>
+      <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={marcar}>
         {enviando ? "Marcando…" : "Marcar todos como leídos"}
-      </button>
+      </Tecla>
       {error && <span className="fp-error" role="alert">{error}</span>}
     </>
   );
 }
 
-/** Aparecer o no en el ranking. Quien sale sigue ganando puntos y nivel (FORO.md §10.4). */
+/**
+ * Aparecer o no en el ranking: el interruptor del sistema (disenos/sistema.html
+ * §11). Quien sale sigue ganando puntos y nivel (FORO.md §10.4).
+ *
+ * Es un `role="switch"` y no una tecla: un conmutador on/off se lee y se usa
+ * mejor así. Cambia en el acto y, si el servidor dice que no, vuelve atrás y
+ * lo explica.
+ */
 export function PreferenciaRanking({ fuera }: { fuera: boolean }) {
   const router = useRouter();
+  const [dentro, setDentro] = useState(!fuera);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
 
   async function cambiar() {
+    if (enviando) return;
+    const antes = dentro;
+    sonar("interruptor");
+    setDentro(!antes);
     setEnviando(true);
     setError("");
-    const r = await pedirForo("/api/foro/ranking", { fuera: !fuera });
+    const r = await pedirForo("/api/foro/ranking", { fuera: antes });
     setEnviando(false);
-    if (!r.ok) setError(r.mensaje);
-    else router.refresh();
+    if (!r.ok) {
+      sonar("error");
+      setDentro(antes);
+      setError(r.mensaje);
+    } else {
+      router.refresh();
+    }
   }
 
   return (
-    <p className="fm-ranking">
-      {fuera ? "No apareces en el ranking." : "Apareces en el ranking con tu alias."}{" "}
-      <button type="button" className="fp-accion" disabled={enviando} onClick={cambiar}>
-        {enviando ? "Guardando…" : fuera ? "Volver a aparecer" : "No aparecer"}
-      </button>
+    <div className="fm-ranking">
+      <button
+        type="button"
+        role="switch"
+        aria-checked={dentro}
+        aria-labelledby="fm-ranking-texto"
+        className={`fm-interruptor${dentro ? " is-on" : ""}`}
+        disabled={enviando}
+        onClick={cambiar}
+      />
+      <p id="fm-ranking-texto">
+        <b>Aparecer en el ranking</b>
+        <span>{dentro ? "Sales con tu alias y tu foto." : "No sales, pero sigues ganando puntos y nivel."}</span>
+      </p>
       {error && <span className="fp-error" role="alert">{error}</span>}
-    </p>
+    </div>
   );
 }

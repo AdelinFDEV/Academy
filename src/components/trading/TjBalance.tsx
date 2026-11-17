@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Pencil, RotateCcw, TrendingUp, TrendingDown } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import { Sparkline } from "./TjCharts";
 import { moneyStr, pctStr, pnlStr, toneOf } from "./tjFormat";
 import type { EquityPoint } from "./tjStats";
@@ -41,6 +43,7 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
     e.preventDefault();
     const value = parseFloat(input);
     if (!Number.isFinite(value) || value <= 0) {
+      sonar("error");
       setError("Escribe una cantidad mayor que cero");
       return;
     }
@@ -53,9 +56,11 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
         body: JSON.stringify({ capital: value }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Error al guardar");
+      sonar("guardado");
       onCapitalSaved(value);
       onEditingChange(false);
     } catch (err) {
+      sonar("error");
       setError(errorMessage(err));
     } finally {
       setSaving(false);
@@ -63,63 +68,65 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
   }
 
   return (
-    <div className="tjb">
-      <span className="tjb-aros" aria-hidden="true" />
-      <div className="tjb-head">
-        <span className="tjb-eyebrow">{obligatorio ? "Primer paso" : current != null ? "Balance actual" : "P&L acumulado"}</span>
-        {!obligatorio && <div className="tjb-tools">
-          <button
-            type="button" className="tj-icon-btn" onClick={() => { onEditingChange(!editing); setError(""); }}
+    <div className={`djb${obligatorio ? " is-primer-paso" : ""}`}>
+      <div className="djb-cab">
+        <span className="dj-etq">{obligatorio ? "Primer paso" : current != null ? "Balance actual" : "P&L acumulado"}</span>
+        {!obligatorio && <div className="djb-herramientas">
+          <Tecla
+            color="blanca" tamano="peq" icono onClick={() => { onEditingChange(!editing); setError(""); }}
             aria-label={capital == null ? "Definir capital inicial" : "Cambiar capital inicial"} title="Capital inicial"
           >
-            <Pencil size={14} />
-          </button>
-          <button type="button" className="tj-icon-btn tone-loss" onClick={onReset} aria-label="Resetear el diario" title="Resetear el diario">
-            <RotateCcw size={14} />
-          </button>
+            <Pencil size={15} strokeWidth={2.4} />
+          </Tecla>
+          <Tecla color="coral" tamano="peq" icono onClick={onReset} aria-label="Reiniciar el diario" title="Reiniciar el diario">
+            <RotateCcw size={15} strokeWidth={2.4} />
+          </Tecla>
         </div>}
       </div>
 
       {editing || obligatorio ? (
-        <form className="tjb-form" onSubmit={save}>
-          <div className="field">
-            <label htmlFor="tj-capital">{obligatorio ? "¿Con cuánto capital empiezas? ($)" : "Capital inicial ($)"}</label>
-            <input
-              id="tj-capital" type="number" step="any" min="0.01" inputMode="decimal" autoFocus required
-              value={input} onChange={(e) => setInput(e.target.value)} placeholder="1000"
-            />
+        <form className="djb-form" onSubmit={save}>
+          <div className={`dj-campo${error ? " error" : ""}`}>
+            <label htmlFor="tj-capital">{obligatorio ? "¿Con cuánto capital empiezas?" : "Capital inicial"}</label>
+            <div className="djb-dinero">
+              <input
+                id="tj-capital" type="number" step="any" min="0.01" inputMode="decimal" autoFocus required
+                value={input} onChange={(e) => setInput(e.target.value)} placeholder="1000"
+              />
+              <span aria-hidden="true">$</span>
+            </div>
+            {error ? <span className="ayuda">{error}</span> : <span className="ayuda">en dólares; podrás cambiarlo luego</span>}
           </div>
-          <div className="tj-actions">
-            <button type="submit" className="tj-btn is-primary" disabled={saving}>
+          <div className="djb-acciones">
+            <Tecla type="submit" color={obligatorio ? "naranja" : "azul"} disabled={saving} ancho={obligatorio}>
               {saving ? "Guardando..." : obligatorio ? "Empezar mi diario" : "Guardar"}
-            </button>
-            {!obligatorio && <button type="button" className="tj-btn" onClick={() => onEditingChange(false)}>Cancelar</button>}
+            </Tecla>
+            {!obligatorio && <Tecla color="blanca" onClick={() => onEditingChange(false)}>Cancelar</Tecla>}
           </div>
-          {error && <p className="auth-error">{error}</p>}
         </form>
       ) : (
         <>
-          <div className="tjb-main">
-            <strong className={`tjb-value${current == null ? ` tone-${tone}` : ""}`}>
+          <div className="djb-cifra">
+            <strong className={`dj-cifra${current == null ? ` tone-${tone}` : ""}`}>
               {current != null ? moneyStr(current) : pnlStr(totalPnl)}
             </strong>
             {returnPct != null && (
-              <span className={`tjb-pct tone-${tone}`}>
-                {totalPnl >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+              <span className={`dj-chip tone-${tone}`}>
+                {totalPnl >= 0 ? <TrendingUp size={15} strokeWidth={2.6} /> : <TrendingDown size={15} strokeWidth={2.6} />}
                 {pctStr(returnPct, true, 2)}
               </span>
             )}
           </div>
           {series.length > 1 && <Sparkline values={series.map(p => p.equity)} base={capital ?? 0} />}
           {current != null ? (
-            <dl className="tjb-pie">
+            <dl className="djb-pie">
               <div><dt>Empezaste con</dt><dd>{moneyStr(capital!)}</dd></div>
               <div><dt>{totalPnl >= 0 ? "Llevas ganado" : "Llevas perdido"}</dt><dd className={`tone-${tone}`}>{pnlStr(totalPnl)}</dd></div>
             </dl>
           ) : (
-            <button type="button" className="tjb-cta" onClick={() => onEditingChange(true)}>
+            <Tecla color="azul" ancho className="dj-llana" onClick={() => onEditingChange(true)}>
               Define tu capital inicial para ver tu balance y la rentabilidad en %
-            </button>
+            </Tecla>
           )}
         </>
       )}

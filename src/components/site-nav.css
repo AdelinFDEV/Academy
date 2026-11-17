@@ -1,0 +1,778 @@
+/* La barra de arriba (SiteNav.tsx y lo que cuelga de ella: NavPrincipal,
+   NavForo, NavSaludo, el botón del menú y el altavoz). Estilo «Cuaderno de
+   estudio» desde el 17-11-2026: una tira de papel que cuelga sobre el fondo
+   lavanda, con su canto, la marca en Fraunces y cada enlace con el color de su
+   sección (ESTILO.md). Referencia: disenos/version-o-equilibrio.html.
+
+   Vivió en globals.css hasta ese día. Lo importan SiteNav, LegalShell y
+   error.tsx (las páginas legales y la de error llevan la misma tira, solo con
+   la marca y el altavoz). El menú a pantalla completa tiene su propio
+   archivo: menu-movil.css.
+
+   NO se queda pegada arriba al hacer scroll (repaso del 17-11-2026: el admin
+   rechazó las barras ancladas). Solo con el menú abierto pasa a `fixed`,
+   porque entonces es la cabecera de una ventana modal: la marca, el altavoz y
+   el botón de cerrar tienen que verse aunque la página esté desplazada. */
+
+/* ── La tira ──────────────────────────────────────────────────────────────── */
+
+.blog-nav {
+  position: relative;
+  z-index: 400;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  /* Alto FIJO, no derivado del contenido: el menú abierto (menu-movil.css)
+     deja su hueco exacto debajo. El valor está en :root (globals.css). */
+  height: var(--nav-h);
+  padding: 0 clamp(1rem, 2.4vw, 2rem);
+  border-radius: 0 0 26px 26px;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+  box-shadow:
+    0 4px 0 var(--gris-o),
+    0 16px 30px -22px rgba(29, 27, 51, 0.5);
+}
+
+/* Con el menú abierto (BlogMobileMenu), la tira se queda arriba sobre la
+   ventana del menú, esté donde esté la página: el scroll está bloqueado, así
+   que el hueco que deja en el flujo queda tapado por el propio menú. */
+.blog-nav:has(.btn-hamburger.open) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* La marca: «Adelin» en tinta y «BTC» en naranja, en la letra de los
+   titulares. Se ladea un poco al pasar el ratón, como una pegatina. */
+.blog-brand {
+  position: relative;
+  z-index: 500;
+  justify-self: start;
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--letra-titular);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.blog-brand em {
+  font-style: normal;
+  color: var(--naranja);
+}
+
+@media (hover: hover) {
+  .blog-brand:hover { transform: rotate(-3deg) scale(1.03); }
+}
+
+.blog-brand:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.blog-nav-center {
+  grid-column: 2;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Tercera columna: redes, altavoz, cuenta y el menú. Ocupa el alto de la barra
+   para que el desplegable del nombre cuelgue desde su borde inferior. */
+.blog-nav-end {
+  grid-column: 3;
+  justify-self: end;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ── Las tres piezas de pago (NavPrincipal.tsx) ────────────────────────────
+   Una bandeja lavanda donde descansan; la de la página en la que estás es una
+   tecla de su color, con su canto. La ficha de su tono suave se desliza
+   (framer-motion) hasta la que tiene el ratón encima. */
+
+/* --t, el texto sobre la base: tinta sobre menta (contraste), blanco en el resto. */
+.nav-tono--azul { --c: var(--azul); --o: var(--azul-o); --s: var(--azul-s); --t: #fff; }
+.nav-tono--menta { --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s); --t: var(--tinta); }
+.nav-tono--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); --t: #fff; }
+
+.nav-principal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 5px 5px 8px;
+  list-style: none;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: inset 0 2px 0 rgba(29, 27, 51, 0.06);
+}
+
+.nav-principal > li {
+  display: flex;
+  align-items: center;
+}
+
+.nav-principal-enlace {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 0.95rem 0 0.4rem;
+  border-radius: 13px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--tinta-2);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 0.2s ease,
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.nav-principal-enlace:hover,
+.nav-principal-enlace:focus-visible {
+  color: var(--tinta);
+  outline: none;
+}
+
+.nav-principal-enlace:focus-visible {
+  box-shadow: 0 0 0 3px var(--azul);
+}
+
+/* La ficha que se desliza: papel de su tono suave, con un canto fino. */
+.nav-principal-ficha {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--s);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+/* Donde estás: la tecla de su color. */
+.nav-principal-enlace.is-activo {
+  background: var(--c);
+  color: var(--t);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    0 4px 0 var(--o);
+}
+
+.nav-principal-enlace:active {
+  transform: translateY(3px);
+  transition-duration: 0.06s;
+}
+
+.nav-principal-enlace.is-activo:active {
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2), 0 1px 0 var(--o);
+}
+
+.nav-principal-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--s);
+  color: var(--o);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), background 0.2s ease;
+}
+
+.nav-principal-enlace:hover .nav-principal-icono,
+.nav-principal-enlace:focus-visible .nav-principal-icono {
+  background: var(--papel);
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.nav-principal-enlace.is-activo .nav-principal-icono {
+  background: rgba(255, 255, 255, 0.24);
+  color: var(--t);
+}
+
+/* Nova (nova.css), al final de la bandeja, junto a su Diario. Aquí solo se
+   coloca: el separador y los aros del aviso y del candado toman el color de
+   la bandeja, que ya no es oscura. */
+.blog-nav .nova-dock-sep {
+  width: 2px;
+  height: 22px;
+  border-radius: 2px;
+  background: var(--gris-o);
+}
+
+.blog-nav .nova-nav .nh {
+  filter: drop-shadow(0 3px 0 rgba(29, 27, 51, 0.16));
+}
+
+.blog-nav .nova-nav-ping,
+.blog-nav .nova-nav-candado {
+  border-color: var(--fondo);
+}
+
+.blog-nav .nova-nav-bocadillo {
+  border: 2px solid var(--gris);
+  box-shadow: 0 5px 0 var(--gris-o), 0 18px 30px -18px rgba(29, 27, 51, 0.5);
+}
+
+/* ── El foro (NavForo.tsx) ────────────────────────────────────────────────
+   Fuera de la bandeja y distinto de las piezas: es donde está la gente. Una
+   tecla blanca con tres caras y un punto que late; el coral, el color del
+   foro, entra al pasar el ratón, y dentro del foro la tecla es coral. */
+
+.nav-foro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 42px;
+  margin-bottom: 4px;
+  padding: 0 1rem 0 8px;
+  border: 2px solid var(--gris);
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o);
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--tinta-2);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.nav-foro-caras {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-foro-cara.avatar-usuario {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--papel);
+  animation: nav-foro-turno 3.6s ease-in-out infinite;
+  transition: margin 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.nav-foro-cara + .nav-foro-cara { margin-left: -8px; }
+.nav-foro-cara:nth-child(2) { animation-delay: 0.4s; }
+.nav-foro-cara:nth-child(3) { animation-delay: 0.8s; }
+
+@keyframes nav-foro-turno {
+  0%, 70%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-2px); }
+}
+
+/* El punto que late: actividad, no un aviso sin leer. */
+.nav-foro-latido {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.nav-foro-latido::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--coral);
+  animation: nav-foro-latido 2.4s ease-out infinite;
+}
+
+@keyframes nav-foro-latido {
+  0% { transform: scale(1); opacity: 0.6; }
+  70%, 100% { transform: scale(2.8); opacity: 0; }
+}
+
+.nav-foro:hover,
+.nav-foro:focus-visible {
+  border-color: var(--coral-s);
+  background: var(--coral-s);
+  box-shadow: 0 4px 0 var(--coral);
+  color: var(--coral-o);
+}
+
+.nav-foro:hover .nav-foro-cara.avatar-usuario,
+.nav-foro:focus-visible .nav-foro-cara.avatar-usuario { box-shadow: 0 0 0 2px var(--coral-s); }
+
+.nav-foro:hover .nav-foro-cara + .nav-foro-cara,
+.nav-foro:focus-visible .nav-foro-cara + .nav-foro-cara { margin-left: -4px; }
+
+.nav-foro:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.nav-foro:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--coral);
+  transition-duration: 0.06s;
+}
+
+/* Dentro del foro: la tecla coral. */
+.nav-foro.is-activo {
+  border-color: var(--coral);
+  background: var(--coral);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--coral-o);
+  color: #fff;
+}
+
+.nav-foro.is-activo .nav-foro-cara.avatar-usuario { box-shadow: 0 0 0 2px var(--coral); }
+.nav-foro.is-activo .nav-foro-latido,
+.nav-foro.is-activo .nav-foro-latido::after { background: #fff; }
+.nav-foro.is-activo .nav-foro-latido::after { animation: none; opacity: 0; }
+
+/* El foro en la barra del móvil (NavForoMovil): una tecla coral, solo por
+   debajo de 1280 px, donde el de escritorio se esconde, y solo con sesión. */
+.tecla.nav-foro-movil { display: none; }
+
+/* ── Las redes: Instagram (mensaje directo) y YouTube (el canal) ────────────
+   Dos teclas blancas gemelas con el icono en su color de marca. Se ven donde
+   hay sitio: entre 900 y 1279 px (sin las piezas en el centro) y desde 1440.
+   En medio, y en el móvil, viven en el menú. */
+
+.nav-redes {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tecla.nav-red--instagram { --t: #d62976; }
+.tecla.nav-red--youtube { --t: #e01b1b; }
+
+@media (min-width: 900px) and (max-width: 1279px), (min-width: 1440px) {
+  .nav-redes { display: inline-flex; }
+}
+
+/* El altavoz: siempre a la vista, también con el menú abierto (que tapa el
+   resto de la barra). */
+.nav-sonido {
+  position: relative;
+  z-index: 500;
+  display: inline-flex;
+}
+
+/* ── Visitante sin cuenta: entrar o registrarse ────────────────────────────
+   Los dos a la vista, también en el teléfono (desde el 07-09-2026): «Entrar»
+   en blanco, «Registrarse» en naranja. */
+
+.nav-acceso {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* Sin esto, un centro que crezca podría partir el texto en dos líneas. */
+  flex-shrink: 0;
+}
+
+/* ── El botón del menú (BlogMobileMenu.tsx) ──────────────────────────────── */
+
+.btn-hamburger {
+  position: relative;
+  z-index: 500;
+}
+
+.hamburger-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.hamburger-lines span {
+  display: block;
+  width: 18px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: center;
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.2s ease,
+    width 0.2s ease;
+}
+
+/* La línea de en medio, más corta: un detalle que la distingue de un icono
+   genérico. */
+.hamburger-lines span:nth-child(2) {
+  width: 12px;
+  margin-left: auto;
+}
+
+.btn-hamburger.open .hamburger-lines span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.btn-hamburger.open .hamburger-lines span:nth-child(2) { opacity: 0; width: 0; }
+.btn-hamburger.open .hamburger-lines span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── La tarjeta de quien ha iniciado sesión (NavSaludo.tsx) ─────────────────
+   Una tecla blanca con la moneda, el nombre de pila y el plan. Ocupa el alto
+   de la barra para que el desplegable cuelgue desde su borde inferior. */
+
+.nav-saludo-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+}
+
+.tecla.nav-saludo {
+  gap: 0.6rem;
+  height: 44px;
+  padding: 0 0.75rem 0 5px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* La moneda: la inicial (o la foto) en un cuadrado redondeado naranja. */
+.nav-saludo-avatar {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--naranja-s);
+  font-family: var(--letra-titular);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--naranja-o);
+}
+
+/* La foto de perfil (`AvatarUsuario`) llena la moneda y hereda sus esquinas. */
+.nav-saludo-foto {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+/* La coronita de Premium y Admin, en la esquina de la moneda. */
+.nav-saludo-corona {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--papel);
+}
+
+.nav-saludo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.nav-saludo-nombre {
+  /* 14ch y no 11: un nombre de pila como "Maximiliano" se cortaba. */
+  max-width: 14ch;
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--tinta);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-saludo-plan {
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--tinta-3);
+}
+
+.nav-saludo.is-premium .nav-saludo-plan { color: var(--naranja-o); }
+
+.nav-saludo-flecha {
+  color: var(--tinta-3);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.nav-saludo.is-abierto .nav-saludo-flecha { transform: rotate(180deg); }
+
+/* En estrecho queda solo la moneda: el texto empujaría al menú fuera de la
+   barra, pero el acceso al panel tiene que seguir estando. */
+@media (max-width: 1023px) {
+  .nav-saludo-texto,
+  .nav-saludo-flecha { display: none; }
+  .tecla.nav-saludo { width: 44px; padding: 0; }
+}
+
+/* ── El desplegable: una hoja de papel ── */
+
+.nav-saludo-menu {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  z-index: 500;
+  width: 260px;
+  padding: 0.5rem;
+  border: 2px solid var(--gris);
+  border-radius: 20px;
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow:
+    0 6px 0 var(--gris-o),
+    0 26px 40px -22px rgba(29, 27, 51, 0.5);
+  transform-origin: calc(100% - 30px) 0;
+  animation: nav-saludo-entra 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes nav-saludo-entra {
+  from { opacity: 0; transform: translateY(-6px) scale(0.94); }
+}
+
+.nav-saludo-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  padding: 0.6rem 0.55rem 0.85rem;
+  border-bottom: 2px dashed var(--gris);
+}
+
+.nav-saludo-avatar--grande {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  font-size: 1.2rem;
+}
+
+.nav-saludo-cabecera-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.nav-saludo-cabecera-nombre {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--letra-titular);
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--tinta);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-saludo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 8px;
+  background: var(--gris);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.nav-saludo-chip.is-premium {
+  background: var(--naranja-s);
+  color: var(--naranja-o);
+}
+
+.nav-saludo-item,
+.nav-saludo-premium,
+.nav-saludo-salir {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.7rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.nav-saludo-item svg { color: var(--tinta-3); transition: color 0.16s ease; }
+
+.nav-saludo-item:hover,
+.nav-saludo-item:focus-visible {
+  background: var(--fondo);
+  outline: none;
+}
+
+.nav-saludo-item:hover svg,
+.nav-saludo-item:focus-visible svg { color: var(--azul); }
+
+/* El paso a Premium, solo para quien no lo es: en naranja, como una tecla. */
+.nav-saludo-premium {
+  margin: 0.35rem 0 0.2rem;
+  background: var(--naranja-s);
+  color: var(--naranja-o);
+  box-shadow: 0 3px 0 var(--naranja);
+}
+
+.nav-saludo-premium svg:last-child { margin-left: auto; }
+
+.nav-saludo-premium:hover,
+.nav-saludo-premium:focus-visible {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 var(--naranja);
+  outline: none;
+}
+
+/* Cerrar sesión, separada: deshace algo, no lleva a ninguna parte. */
+.nav-saludo-salir {
+  margin-top: 0.4rem;
+  border-top: 2px dashed var(--gris);
+  border-radius: 0 0 12px 12px;
+  color: var(--tinta-2);
+}
+
+.nav-saludo-salir:hover,
+.nav-saludo-salir:focus-visible {
+  background: var(--coral-s);
+  color: var(--coral-o);
+  outline: none;
+}
+
+/* ── Anchos ───────────────────────────────────────────────────────────────── */
+
+/* Por debajo de 1280 px las tres piezas y el foro de escritorio no caben
+   junto a la marca y los accesos (medido sin sesión, que es el caso más
+   ancho): van en el menú, y el foro pasa a su tecla de móvil. */
+@media (max-width: 1279px) {
+  .blog-nav-center { display: none; }
+  .tecla.nav-foro-movil { display: inline-flex; }
+}
+
+/* Y la barra, más baja. Se declara sobre la propia barra y no en :root porque
+   aquí solo la necesita ella. */
+@media (max-width: 1200px) {
+  .blog-nav {
+    --nav-h: 58px;
+    padding: 0 1.1rem;
+    border-radius: 0 0 22px 22px;
+  }
+
+  .blog-brand { font-size: 1.5rem; }
+}
+
+/* Teléfonos: marca, altavoz, accesos y menú tienen que caber en una línea
+   hasta en 360 px, sin esconder ni «Entrar» ni «Registrarse». El sitio sale
+   de las teclas (más ceñidas), de los huecos y de la marca. */
+@media (max-width: 600px) {
+  .blog-nav { gap: 0.5rem; }
+  /* La marca lleva a la portada: 44 px de alto para el dedo, sin ocupar más ancho. */
+  .blog-brand { align-items: center; min-height: 44px; font-size: 1.3rem; }
+  .blog-nav-end { gap: 0.45rem; }
+  .nav-acceso { gap: 0.4rem; }
+
+  .blog-nav .tecla--peq:not(.tecla--icono) {
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+
+  .blog-nav .tecla--icono.tecla--peq,
+  .tecla.nav-saludo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-saludo-avatar { width: 30px; height: 30px; border-radius: 9px; }
+
+  /* Las teclas se ven más ceñidas, pero el dedo sigue teniendo 44 px de
+     alto donde acertar: una zona invisible que desborda la tecla por arriba
+     y por abajo (y apenas a los lados, para no pisar a la vecina). */
+  .blog-nav .tecla--peq::after {
+    content: "";
+    position: absolute;
+    inset: min(0px, calc((100% - 44px) / 2)) -2px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Sin hueco de rejilla: la columna del centro está vacía y sus dos huecos
+     eran 13 px que aquí no sobran. */
+  .blog-nav { padding: 0 0.6rem; gap: 0; }
+  .blog-brand { font-size: 1.15rem; }
+  .blog-nav-end { gap: 0.32rem; }
+  .nav-acceso { gap: 0.32rem; }
+
+  .blog-nav .tecla--peq:not(.tecla--icono) {
+    padding: 8px 8px;
+    font-size: 11px;
+    letter-spacing: 0.01em;
+  }
+
+  .blog-nav .tecla--icono.tecla--peq,
+  .tecla.nav-saludo {
+    width: 34px;
+    height: 34px;
+  }
+
+  .blog-nav .tecla--icono svg { width: 17px; height: 17px; }
+  .nav-saludo-avatar { width: 28px; height: 28px; }
+  .hamburger-lines span { width: 16px; }
+  .hamburger-lines span:nth-child(2) { width: 10px; }
+}
+
+@media (max-width: 360px) {
+  .blog-nav { padding: 0 0.45rem; }
+  .blog-brand { font-size: 1.05rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-brand,
+  .nav-principal-enlace,
+  .nav-principal-icono,
+  .nav-foro,
+  .nav-foro-cara.avatar-usuario,
+  .nav-saludo-flecha,
+  .hamburger-lines span { transition: none; }
+
+  .blog-brand:hover,
+  .nav-principal-enlace:hover .nav-principal-icono { transform: none; }
+
+  .nav-foro-cara.avatar-usuario,
+  .nav-foro-latido::after,
+  .nav-saludo-menu { animation: none; }
+
+  .nav-foro-latido::after { opacity: 0; }
+}

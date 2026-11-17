@@ -7,14 +7,21 @@ import TerminoCta from "@/components/TerminoCta";
 import TerminoVideo from "@/components/TerminoVideo";
 import GuardarTermino from "@/components/GuardarTermino";
 import JsonLd from "@/components/JsonLd";
+import Tecla from "@/components/cuaderno/Tecla";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import MarcasEstudio from "@/components/marcas/MarcasEstudio";
 import { createClient } from "@/lib/supabase/server";
+import { vestirTexto } from "@/lib/marcas-texto";
 import { breadcrumbSchema, definedTermSchema } from "@/lib/schema";
 import {
   GLOSARIO,
   GLOSARIO_CATEGORIAS,
   GLOSARIO_CON_PAGINA,
   buscarTermino,
+  type GlosarioTerm,
 } from "@/lib/glosario";
+import PreguntaFrecuente from "./PreguntaFrecuente";
+import "./ficha.css";
 
 /**
  * Página propia de un término del diccionario — punto 7 del plan SEO.
@@ -23,6 +30,17 @@ import {
  * que aún no lo tienen siguen viviendo únicamente en el listado de /glosario:
  * publicar una URL con 25 palabras es contenido escaso, y hacerlo en masa
  * arrastra al dominio entero. Se abren por tandas conforme se escriben.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026), en el amarillo del diccionario:
+ * la ficha es una ficha de estudio cómoda de leer, las preguntas frecuentes
+ * son tarjetas que se abren y los «ver también», fichas de cartulina. Solo
+ * cambió la presentación: el texto, los metadatos y el JSON-LD son los mismos.
+ *
+ * Y es el cuaderno de quien la ha estudiado (ESTILO.md, «Las marcas de estudio
+ * en TODOS los textos explicativos»): la definición con rotulador amarillo, el
+ * resumen y los avisos como pósits (`vestirTexto`, solo clases) y, en el
+ * navegador, los trazos y símbolos por estructura (`MarcasEstudio`). Ni una
+ * palabra cambia: se comprueba con el texto visible del HTML antes y después.
  */
 
 /** Solo los términos ya ampliados se prerrenderizan y existen como URL. */
@@ -106,7 +124,7 @@ export default async function TerminoPage({
   ).slice(0, 6);
 
   return (
-    <>
+    <div className="fe">
       <JsonLd
         data={[
           definedTermSchema(t),
@@ -138,19 +156,22 @@ export default async function TerminoPage({
         isAdmin={isAdmin}
       />
 
-      <main className="termino-page">
+      <main className="fe-main">
         {/* Las mismas migas que declara el JSON-LD, en el mismo orden. */}
-        <nav className="termino-breadcrumb" aria-label="Breadcrumb">
+        <nav className="fe-migas" aria-label="Estás en">
           <Link href="/">Inicio</Link>
-          <span className="termino-breadcrumb-sep">›</span>
+          <span className="fe-migas-sep" aria-hidden="true">›</span>
           <Link href="/glosario">Diccionario</Link>
-          <span className="termino-breadcrumb-sep">›</span>
-          <span className="termino-breadcrumb-current">{t.term}</span>
+          <span className="fe-migas-sep" aria-hidden="true">›</span>
+          <span className="fe-migas-actual">{t.term}</span>
         </nav>
 
-        <header className="termino-header">
-          <div className="termino-header-top">
-            <span className={`termino-cat termino-cat--${t.category}`}>{etiquetaCat}</span>
+        {/* La cabecera es la ficha de cartulina: su pestaña de letra, la
+            categoría, el término y la respuesta en una línea. */}
+        <header className="fe-cab">
+          <span className="fe-pestana" aria-hidden="true">{t.term.charAt(0).toUpperCase()}</span>
+          <div className="fe-cab-top">
+            <span className={`fe-cat fe-cat--${t.category}`}>{etiquetaCat}</span>
             {/* Guardar es la única acción de esta página que necesita cuenta,
                 así que es lo único que se le ofrece a quien ya la tiene. */}
             {user && (
@@ -162,8 +183,14 @@ export default async function TerminoPage({
               />
             )}
           </div>
-          <h1 className="termino-title">{t.term}</h1>
-          <p className="termino-lead">{t.definition}</p>
+          <h1 className="fe-titulo">
+            <span className="fluor">{t.term}</span>
+          </h1>
+          <p className="fe-lead">
+            <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>
+              {t.definition}
+            </Anotacion>
+          </p>
         </header>
 
         {/* La banda va DEBAJO de la definición corta: quien llega buscando qué
@@ -171,61 +198,76 @@ export default async function TerminoPage({
             Si lo primero es un banner, se vuelve a Google — y eso Google lo mide. */}
         <TerminoCta termino={t.term} logueado={!!user} />
 
+        {/* `termino-body` va PRIMERO en la clase: `npm run check:seo` acota el
+            cuerpo de la ficha buscando `class="termino-body`. Lo mismo con
+            `termino-faq`, `tvid` y `termino-relacionados`, que marcan su final. */}
         <div
-          className="termino-body prose-content"
-          dangerouslySetInnerHTML={{ __html: t.extended }}
+          className="termino-body prose-content fe-texto"
+          dangerouslySetInnerHTML={{ __html: vestirTexto(t.extended) }}
         />
+        <MarcasEstudio selector=".fe .termino-body" clave={t.slug} conclusion />
 
         {t.faq && t.faq.length > 0 && (
-          <section className="termino-faq">
-            <h2>Preguntas frecuentes</h2>
+          <section className="termino-faq fe-faq">
+            <h2 className="fe-h2">Preguntas frecuentes</h2>
             {t.faq.map((f) => (
-              <details key={f.q} className="termino-faq-item">
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
-              </details>
+              <PreguntaFrecuente key={f.q} pregunta={f.q} respuesta={f.a} />
             ))}
           </section>
         )}
 
         {/* El vídeo va AQUÍ, al final. Quien ha llegado hasta el final de la
             ficha ya ha decidido que el sitio le sirve, y ese es el momento de
-            pedirle otro paso — no el primer segundo. Y solo, tiene el ancho
-            entero: arriba salía en 92 px y un vídeo pequeño no invita a nadie. */}
+            pedirle otro paso — no el primer segundo. */}
         <TerminoVideo />
 
         {relacionados.length > 0 && (
-          <section className="termino-relacionados">
-            <h2>Ver también</h2>
-            <div className="termino-chips">
-              {relacionados.map((r) => (
-                <Link key={r.slug} href={`/glosario/${r.slug}`} className="termino-chip">
-                  {r.term}
-                </Link>
-              ))}
-            </div>
+          <section className="termino-relacionados fe-rel">
+            <h2 className="fe-h2">Ver también</h2>
+            <FichasRelacionadas terminos={relacionados} />
           </section>
         )}
 
         {mismaCategoria.length > 0 && (
-          <section className="termino-relacionados">
-            <h2>Más de {etiquetaCat}</h2>
-            <div className="termino-chips">
-              {mismaCategoria.map((r) => (
-                <Link key={r.slug} href={`/glosario/${r.slug}`} className="termino-chip">
-                  {r.term}
-                </Link>
-              ))}
-            </div>
+          <section className="termino-relacionados fe-rel fe-rel--cat">
+            <h2 className="fe-h2">Más de {etiquetaCat}</h2>
+            <FichasRelacionadas terminos={mismaCategoria} />
           </section>
         )}
 
-        <p className="termino-volver">
-          <Link href="/glosario">← Todos los términos del diccionario</Link>
+        <p className="fe-volver">
+          <Tecla href="/glosario" color="blanca">
+            ← Todos los términos del diccionario
+          </Tecla>
         </p>
       </main>
 
       <Footer />
-    </>
+    </div>
+  );
+}
+
+/**
+ * Los «ver también», como fichas de cartulina sobre la mesa. El texto del
+ * enlace es SOLO el término (el ancla que lee Google); la pestaña con la letra
+ * la pinta el CSS desde `data-letra`. Sin `data-sin-popup`: al pulsar se abre
+ * la definición corta en el popup del diccionario, como cualquier enlace a una
+ * ficha.
+ */
+function FichasRelacionadas({ terminos }: { terminos: GlosarioTerm[] }) {
+  return (
+    <ul className="fe-fichas">
+      {terminos.map((r) => (
+        <li key={r.slug}>
+          <Link
+            href={`/glosario/${r.slug}`}
+            className={`fe-mini fe-mini--${r.category}`}
+            data-letra={r.term.charAt(0).toUpperCase()}
+          >
+            {r.term}
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

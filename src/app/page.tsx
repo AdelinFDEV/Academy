@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ShieldCheck, Star } from "lucide-react";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import PremiumHome from "@/components/PremiumHome";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
+import CursosHome from "@/components/CursosHome";
 import RecursosGratisHome from "@/components/RecursosGratisHome";
 import ForoEnPortada from "@/components/foro/ForoEnPortada";
-import HeroVideo from "@/components/HeroVideo";
-import HeroSlider, { type ResumenHero } from "@/components/HeroSlider";
+import type { ResumenHero } from "@/lib/portfolio-publico";
+import HeroCuaderno from "@/components/HeroCuaderno";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import { cursosPublicados } from "@/lib/cursos";
@@ -50,10 +50,10 @@ export default async function HomePage() {
   const isAdmin = profileData?.role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "";
 
-  // Cifras reales de la cartera para la tarjeta del hero. Si falla, la
-  // tarjeta cae a su microvisual de siempre y nadie se entera.
+  // Cifras reales de la cartera para el bloque de Premium. Si falla, el
+  // bloque enseña su texto en lugar de la cifra y nadie se entera.
   //
-  // Recortadas a lo que se enseña: HeroSlider es de cliente, y lo que recibe
+  // Recortadas a lo que se enseña: lo que llega a un componente de cliente
   // viaja en el HTML. Pasarle el resumen entero publicaba los importes
   // invertidos aunque `MOSTRAR_IMPORTES` diga que no (arreglado el 04-11-2026).
   const resumenPortfolio: ResumenHero = resumenCompleto && {
@@ -68,72 +68,31 @@ export default async function HomePage() {
 
   return (
     <div className="blog-page home-page">
-      <link rel="preload" as="image" href="/hero-poster.webp" fetchPriority="high" />
-      <div className="bg-ambient" />
-
       {/* ── Nav ── */}
       <SiteNav user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
 
-      {/* ── Hero ── */}
-      <div className="hero">
-        <HeroVideo />
-        <div className="hero-scrim" />
-        <div className="hero-aurora" aria-hidden="true" />
+      {/* El orden cuenta una historia (repaso del 17-11-2026): lo gratuito
+          primero (guías y, «también gratis», el diccionario y la
+          calculadora), luego los cursos, la comunidad (foro y canal) y, al
+          final, Premium con las dudas. Cada sección, su color (ESTILO.md). */}
 
-        <div className="hero-content">
-          {/* El único <h1> de la portada. Las diapositivas del slider llevan
-              <h2> (uno por pieza, y cambian), así que el tema de la página lo
-              fija esta línea, con la consulta del `title`: «formación en
-              criptomonedas». Visible a propósito: un h1 escondido es lo que
-              Google trata como texto oculto. */}
-          <h1 className="hero-h1">
-            AdelinBTC Academy · Formación en criptomonedas en español
-          </h1>
-          <HeroSlider isPremium={isPremium} portfolio={resumenPortfolio} />
-
-          {!user && (
-            <div className="hero-trust hero-anim hero-anim-4">
-              <div className="hero-social-proof">
-                <div className="hero-avatars" aria-hidden="true">
-                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#ff9a00,#ff6b2b)" }}>A</span>
-                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#4f9dff,#2b6bff)" }}>M</span>
-                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#34d399,#10b981)" }}>J</span>
-                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#a78bfa,#7c3aed)" }}>L</span>
-                  <span className="hero-avatar hero-avatar-count">+98</span>
-                </div>
-                <div className="hero-proof-text">
-                  <div className="hero-stars" aria-label="Valoración 4.9 sobre 5">
-                    <Star size={13} fill="currentColor" aria-hidden="true" />
-                    <Star size={13} fill="currentColor" aria-hidden="true" />
-                    <Star size={13} fill="currentColor" aria-hidden="true" />
-                    <Star size={13} fill="currentColor" aria-hidden="true" />
-                    <Star size={13} fill="currentColor" aria-hidden="true" />
-                  </div>
-                  <span><strong>+100 traders</strong> aprendiendo cada día</span>
-                </div>
-              </div>
-
-              <p className="hero-guarantee">
-                <ShieldCheck size={14} aria-hidden="true" />
-                Cancela cuando quieras · Sin permanencia
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* ── Hero: estilo «Cuaderno de estudio». Lleva el único <h1>. ── */}
+      <HeroCuaderno />
 
       {/* ── Las guías, justo tras el hero ─────────────────────────────────
-          Desde el 10-10-2026 la academia son las guías: el bloque entero
-          sube aquí, tras el hero. */}
+          Desde el 10-10-2026 la academia son las guías. */}
       <GuidesHomeSection />
 
       {/* ── Lo otro gratuito: el diccionario y la calculadora ── */}
       <RecursosGratisHome />
 
-      {/* ── Lo último del foro, debajo de las guías ──
+      {/* ── Los cursos: el camino de un curso real y la lista de los publicados.
+          Sin cursos publicados, no sale. ── */}
+      <CursosHome cursos={cursos} />
+
+      {/* ── Lo último del foro ──
           Solo sale si el foro existe para quien mira y hay preguntas. */}
       <ForoEnPortada conSesion={!!user} />
-
 
       {/* ── Los últimos vídeos del canal ──
           Va a youtube.com (lento y fuera de nuestro control), así que se
@@ -142,9 +101,9 @@ export default async function HomePage() {
         <YouTubeLatestSection />
       </Suspense>
 
-      {/* ── Cierre: Premium, lo gratuito y las preguntas frecuentes. Para
-          todos: a quien ya es Premium no se le enseña la oferta, pero sí las
-          piezas (que le llevan a sus herramientas) y las dudas. ── */}
+      {/* ── Cierre: Premium y las preguntas frecuentes. Para todos: a quien
+          ya es Premium no se le enseña la oferta, pero sí los accesos a sus
+          herramientas y las dudas. ── */}
       <PremiumHome portfolio={resumenPortfolio} cursos={cursos} isPremium={isPremium} />
 
       <Footer />

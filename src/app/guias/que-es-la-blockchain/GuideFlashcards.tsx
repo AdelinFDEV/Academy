@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { sonar } from "@/lib/sonidos";
 
 const CARDS = [
   { term: "Blockchain", def: "Registro distribuido de transacciones agrupadas en bloques encadenados criptográficamente. Ninguna entidad central lo controla." },
@@ -15,25 +16,30 @@ const CARDS = [
 export default function GuideFlashcards() {
   const [flipped, setFlipped] = useState<Record<number, boolean>>({});
 
-  const toggle = (i: number) =>
+  // La tarjeta que gira (como TarjetaEstudio): un botón conmutador que suena a papel.
+  const toggle = (i: number) => {
     setFlipped((prev) => ({ ...prev, [i]: !prev[i] }));
+    sonar("girar");
+  };
 
   return (
     <div className="gbc-fc-grid">
       {CARDS.map((c, i) => (
         <div key={i} className="gbc-fc-outer">
           <button
+            type="button"
             className={`gbc-fc${flipped[i] ? " flipped" : ""}`}
+            aria-pressed={!!flipped[i]}
             onClick={() => toggle(i)}
-            aria-label={flipped[i] ? `Definición de ${c.term}: ${c.def}` : `Término: ${c.term}. Click para ver definición`}
+            aria-label={flipped[i] ? `Definición de ${c.term}: ${c.def}` : `Término: ${c.term}. Toca para ver la definición`}
           >
             <div className="gbc-fc-front">
               <span className="gbc-fc-term">{c.term}</span>
-              <span className="gbc-fc-hint">Click para ver definición</span>
+              <span className="gbc-fc-hint">Toca para ver la definición</span>
             </div>
             <div className="gbc-fc-back">
               <span className="gbc-fc-def">{c.def}</span>
-              <span className="gbc-fc-hint">Click para volver</span>
+              <span className="gbc-fc-hint">Toca para volver</span>
             </div>
           </button>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Cómo se reparte un día de emisión de Bittensor dentro de una subred.
@@ -59,16 +60,17 @@ export default function GuideBittensorReparto() {
 
       <div className="tao-epocas" role="group" aria-label="Emisión por bloque">
         {EPOCAS.map((e) => (
-          <button
+          <Tecla
             key={e.id}
-            type="button"
+            tamano="peq"
+            color={epoca === e.id ? "cielo" : "blanca"}
             aria-pressed={epoca === e.id}
-            className={epoca === e.id ? "is-activa" : ""}
+            className="tao-epoca"
             onClick={() => setEpoca(e.id)}
           >
             <span>{e.nombre}</span>
             <small>{num(e.porBloque, 2)} TAO por bloque</small>
-          </button>
+          </Tecla>
         ))}
       </div>
 
@@ -83,7 +85,7 @@ export default function GuideBittensorReparto() {
         </label>
         <label htmlFor="tao-precio" className="tao-campo">
           <span>Precio de 1 TAO, en euros</span>
-          <input id="tao-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="tao-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
       </div>
 

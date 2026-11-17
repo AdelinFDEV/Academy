@@ -1,20 +1,23 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info, Plus } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { WEEKDAYS, MONTHS } from "./tjFormat";
+import { useSonidoVentana } from "./useSonidoVentana";
 
 function useClickOutside<T extends HTMLElement = HTMLDivElement>(open: boolean, onClose: () => void) {
   const ref = useRef<T>(null);
 
   useEffect(() => {
     if (!open) return;
-    function onDocClick(e: MouseEvent) {
+    // pointerdown y no mousedown: con el dedo, mousedown llega tarde (tras
+    // soltar) y a veces no llega; así un toque fuera cierra igual que un clic.
+    function onDocClick(e: PointerEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
     }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
+    document.addEventListener("pointerdown", onDocClick);
+    return () => document.removeEventListener("pointerdown", onDocClick);
   }, [open, onClose]);
 
   return ref;
@@ -29,17 +32,34 @@ function useClickOutside<T extends HTMLElement = HTMLDivElement>(open: boolean, 
 export function TjInfo({ label, children }: { label: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside<HTMLSpanElement>(open, () => setOpen(false));
+  const pop = useRef<HTMLSpanElement>(null);
   const id = useId();
+  useSonidoVentana(open);
+
+  // El papelito va centrado sobre la tecla; si la tecla está cerca de un borde
+  // de la pantalla (en el móvil, casi siempre), se corre lo justo para no
+  // salirse. La flecha sigue apuntando a la tecla (--dx en diario.css).
+  useLayoutEffect(() => {
+    const el = pop.current;
+    if (!el) return;
+    if (!open) { el.style.removeProperty("--dx"); return; }
+    el.style.removeProperty("--dx");
+    const r = el.getBoundingClientRect();
+    const margen = 12;
+    const ancho = document.documentElement.clientWidth;
+    const dx = r.left < margen ? margen - r.left : r.right > ancho - margen ? ancho - margen - r.right : 0;
+    if (dx) el.style.setProperty("--dx", `${Math.round(dx)}px`);
+  }, [open]);
 
   return (
-    <span className={`tj-info${open ? " open" : ""}`} ref={ref} onKeyDown={e => e.key === "Escape" && setOpen(false)}>
-      <button
-        type="button" className="tj-info-btn" aria-label={`Qué significa: ${label}`}
+    <span className={`dj-info${open ? " is-abierta" : ""}`} ref={ref} onKeyDown={e => e.key === "Escape" && setOpen(false)}>
+      <Tecla
+        color="blanca" icono className="dj-mini" aria-label={`Qué significa: ${label}`}
         aria-expanded={open} aria-describedby={id} onClick={() => setOpen(o => !o)}
       >
-        <Info size={12} aria-hidden="true" />
-      </button>
-      <span role="tooltip" id={id} className="tj-info-pop">{children}</span>
+        <Info size={12} strokeWidth={2.6} aria-hidden="true" />
+      </Tecla>
+      <span role="tooltip" id={id} className="dj-info-pop" ref={pop}>{children}</span>
     </span>
   );
 }
@@ -47,38 +67,38 @@ export function TjInfo({ label, children }: { label: string; children: React.Rea
 // ─────────────────────────── Segmented ───────────────────────────
 
 /**
- * Opciones en fila con una sola activa. La píldora dorada de la activa se
- * DESLIZA de una opción a otra (layoutId, único por cada segmentado), en vez
- * de aparecer y desaparecer.
+ * Opciones en fila con una sola activa: una tecla cada una (estilo «Cuaderno
+ * de estudio», 17-11-2026). La activa es azul, el color del Diario; las demás,
+ * blancas. Sin pastilla deslizante: ya no hay nada que framer-motion tenga que
+ * medir al cambiar de vista.
  */
 export function TjSegmented<T extends string>({
   value,
   onChange,
   options,
   label,
+  className,
 }: {
   value: T;
   onChange: (v: T) => void;
   options: { value: T; label: string }[];
   label: string;
+  className?: string;
 }) {
-  const id = useId();
   return (
-    <div className="tj-seg" role="tablist" aria-label={label}>
+    <div className={`dj-seg${className ? ` ${className}` : ""}`} role="tablist" aria-label={label}>
       {options.map(o => (
-        <button
+        <Tecla
           key={o.value}
-          type="button"
           role="tab"
+          tamano="peq"
+          color={o.value === value ? "azul" : "blanca"}
           aria-selected={o.value === value}
-          className={o.value === value ? "active" : undefined}
+          className={o.value === value ? "is-activa" : undefined}
           onClick={() => onChange(o.value)}
         >
-          {o.value === value && (
-            <motion.span layoutId={`tj-seg-${id}`} className="tj-seg-pill" transition={{ type: "spring", stiffness: 520, damping: 40 }} aria-hidden="true" />
-          )}
-          <span className="tj-seg-label">{o.label}</span>
-        </button>
+          {o.label}
+        </Tecla>
       ))}
     </div>
   );
@@ -100,22 +120,57 @@ export function TjSelect({
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(open, () => setOpen(false));
   const selected = options.find(o => o.value === value);
+  useSonidoVentana(open);
+
+  const lista = useRef<HTMLUListElement>(null);
+
+  // Al abrir, el foco pasa a la opción elegida: así el menú se maneja también
+  // con el teclado (flechas, Intro y Escape), no solo con el ratón.
+  useEffect(() => {
+    if (!open) return;
+    const activa = lista.current?.querySelector<HTMLElement>('[aria-selected="true"]') ?? lista.current?.querySelector<HTMLElement>("li");
+    activa?.focus({ preventScroll: true });
+  }, [open]);
+
+  function elegir(v: string) {
+    onChange(v);
+    setOpen(false);
+    ref.current?.querySelector<HTMLElement>("button")?.focus({ preventScroll: true });
+  }
+
+  function conTeclado(e: React.KeyboardEvent<HTMLLIElement>, v: string) {
+    const li = e.currentTarget;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); elegir(v); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); (li.nextElementSibling as HTMLElement | null)?.focus(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); (li.previousElementSibling as HTMLElement | null)?.focus(); }
+    else if (e.key === "Escape" || e.key === "Tab") {
+      // Escape cierra el menú, no la ventana en la que esté.
+      if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); }
+      setOpen(false);
+      if (e.key === "Escape") ref.current?.querySelector<HTMLElement>("button")?.focus({ preventScroll: true });
+    }
+  }
 
   return (
-    <div className={`tj-select${compact ? " compact" : ""}`} ref={ref}>
-      <button type="button" className={`tj-select-btn${open ? " open" : ""}`} onClick={() => setOpen(o => !o)}>
+    <div className={`dj-select${compact ? " is-compacto" : ""}`} ref={ref}>
+      <Tecla
+        color="blanca" tamano="peq" aria-haspopup="listbox" aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
         <span>{selected?.label ?? value}</span>
-        <ChevronDown size={15} className={`tj-select-chevron${open ? " open" : ""}`} />
-      </button>
+        <ChevronDown size={15} strokeWidth={2.6} className={`dj-select-flecha${open ? " is-abierta" : ""}`} aria-hidden="true" />
+      </Tecla>
       {open && (
-        <ul className="tj-select-menu" role="listbox">
+        <ul className="dj-menu" role="listbox" ref={lista}>
           {options.map(opt => (
             <li
               key={opt.value}
               role="option"
+              tabIndex={-1}
               aria-selected={opt.value === value}
-              className={`tj-select-option${opt.value === value ? " active" : ""}`}
-              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`dj-menu-op${opt.value === value ? " is-activa" : ""}`}
+              onClick={() => elegir(opt.value)}
+              onKeyDown={e => conTeclado(e, opt.value)}
             >
               {opt.label}
             </li>
@@ -158,24 +213,27 @@ export function TjCombobox({
   const esNuevo = escrito !== "" && !options.some(o => o.toLowerCase() === escrito.toLowerCase());
 
   return (
-    <div className="tj-select" ref={ref}>
+    <div className="dj-select" ref={ref}>
       <input
         type="text"
         value={value}
         placeholder={placeholder}
         onChange={(e) => { onChange(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
+        onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); setOpen(false); } }}
         autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
         required={required}
         maxLength={maxLength}
       />
       {open && (filtered.length > 0 || esNuevo) && (
-        <ul className="tj-select-menu" role="listbox">
+        <ul className="dj-menu" role="listbox">
           {esNuevo && (
             <li
               role="option"
               aria-selected="true"
-              className="tj-select-option is-nuevo"
+              className="dj-menu-op is-nueva"
               onClick={() => { onChange(escrito); setOpen(false); }}
             >
               <Plus size={14} aria-hidden="true" />
@@ -188,7 +246,7 @@ export function TjCombobox({
               key={opt}
               role="option"
               aria-selected={opt === value}
-              className={`tj-select-option${opt === value ? " active" : ""}`}
+              className={`dj-menu-op${opt === value ? " is-activa" : ""}`}
               onClick={() => { onChange(opt); setOpen(false); }}
             >
               {opt}
@@ -229,6 +287,7 @@ export function TjDateTimePicker({
   const [viewYear, setViewYear] = useState(selected.getFullYear());
   const [viewMonth, setViewMonth] = useState(selected.getMonth());
   const ref = useClickOutside(open, () => setOpen(false));
+  useSonidoVentana(open);
 
   function openPicker() {
     setViewYear(selected.getFullYear());
@@ -282,58 +341,65 @@ export function TjDateTimePicker({
     day === selected.getDate() && viewMonth === selected.getMonth() && viewYear === selected.getFullYear();
 
   return (
-    <div className="tj-select" ref={ref}>
-      <button type="button" className={`tj-select-btn is-date${open ? " open" : ""}`} onClick={() => (open ? setOpen(false) : openPicker())}>
-        <CalendarIcon size={14} />
+    <div className="dj-select" ref={ref}>
+      <Tecla color="blanca" className="dj-llana" aria-expanded={open} onClick={() => (open ? setOpen(false) : openPicker())}>
+        <CalendarIcon size={16} strokeWidth={2.4} aria-hidden="true" />
         <span>{formatDisplay(selected)}</span>
-      </button>
+      </Tecla>
 
       {open && (
-        <div className="tj-datepicker-panel">
-          <div className="tj-datepicker-head">
-            <button type="button" onClick={() => shiftMonth(-1)} aria-label="Mes anterior">
-              <ChevronLeft size={16} />
-            </button>
+        <div
+          className="dj-fecha-panel"
+          onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } }}
+        >
+          <div className="dj-fecha-cab">
+            <Tecla color="blanca" tamano="peq" icono onClick={() => shiftMonth(-1)} aria-label="Mes anterior">
+              <ChevronLeft size={16} strokeWidth={2.6} />
+            </Tecla>
             <span>{MONTHS[viewMonth]} {viewYear}</span>
-            <button type="button" onClick={() => shiftMonth(1)} aria-label="Mes siguiente">
-              <ChevronRight size={16} />
-            </button>
+            <Tecla color="blanca" tamano="peq" icono onClick={() => shiftMonth(1)} aria-label="Mes siguiente">
+              <ChevronRight size={16} strokeWidth={2.6} />
+            </Tecla>
           </div>
 
-          <div className="tj-datepicker-weekdays">
+          <div className="dj-fecha-semana">
             {WEEKDAYS.map(w => <span key={w}>{w}</span>)}
           </div>
 
-          <div className="tj-datepicker-grid">
-            {cells.map((day, i) => (
-              <button
-                type="button"
+          <div className="dj-fecha-dias">
+            {cells.map((day, i) => day == null ? (
+              <span key={i} className="dj-fecha-hueco" aria-hidden="true" />
+            ) : (
+              <Tecla
                 key={i}
-                disabled={day == null}
-                className={`tj-datepicker-day${day != null && isSelectedDay(day) ? " active" : ""}`}
-                onClick={() => day != null && pickDay(day)}
+                color={isSelectedDay(day) ? "azul" : "blanca"}
+                className="dj-mini"
+                aria-pressed={isSelectedDay(day)}
+                onClick={() => pickDay(day)}
               >
-                {day ?? ""}
-              </button>
+                {day}
+              </Tecla>
             ))}
           </div>
 
-          <div className="tj-datepicker-time">
+          <div className="dj-fecha-hora">
             <label>
               Hora
               <input
-                type="number" min={0} max={23} value={selected.getHours()}
+                type="number" inputMode="numeric" min={0} max={23} value={selected.getHours()}
                 onChange={(e) => setHour(Math.min(23, Math.max(0, Number(e.target.value) || 0)))}
               />
             </label>
             <label>
               Min.
               <input
-                type="number" min={0} max={59} value={selected.getMinutes()}
+                type="number" inputMode="numeric" min={0} max={59} value={selected.getMinutes()}
                 onChange={(e) => setMinute(Math.min(59, Math.max(0, Number(e.target.value) || 0)))}
               />
             </label>
-            <button type="button" className="tj-datepicker-today" onClick={goToday}>Ahora</button>
+            <Tecla color="blanca" tamano="peq" onClick={goToday}>Ahora</Tecla>
+            {/* Cerrar a la vista: en el móvil no hay «fuera» cómodo que tocar. */}
+            <Tecla color="azul" tamano="peq" className="dj-fecha-listo" onClick={() => setOpen(false)}>Listo</Tecla>
           </div>
         </div>
       )}

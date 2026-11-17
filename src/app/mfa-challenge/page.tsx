@@ -3,8 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import LogoutButton from "@/components/LogoutButton";
+import { sonar } from "@/lib/sonidos";
+import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import { Aviso, Campo } from "@/components/acceso/Campos";
 
 export default function MfaChallengePage() {
   const router = useRouter();
@@ -52,6 +56,7 @@ export default function MfaChallengePage() {
       setVerifying(false);
       setError("Código incorrecto. Comprueba tu app de autenticación e inténtalo de nuevo.");
       setCode("");
+      sonar("error");
       return;
     }
 
@@ -70,69 +75,70 @@ export default function MfaChallengePage() {
     // navegación blanda de Next dispara la petición al servidor antes de que
     // esas cookies se propaguen (sobre todo en Safari/iOS, que las escribe más
     // lento), así el middleware leería la cookie vieja (AAL1), creería que el
-    // 2FA sigue pendiente y rebotaría aquí → página colgada en "Verificando...".
+    // 2FA sigue pendiente y rebotaría aquí → página colgada en «Verificando…».
     // `location.replace` fuerza una carga nueva con las cookies AAL2 ya puestas
     // y, además, no deja /mfa-challenge en el historial (el botón atrás no vuelve).
     window.location.replace(target);
   }
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
-  }
-
   return (
-    <div className="auth-page">
-      <div className="bg-ambient" />
-
-      <div className="auth-card mfa-challenge-card">
-        <Link href="/" className="auth-brand" style={{ textDecoration: "none" }}>
-          adelin<span>btc</span>
-        </Link>
-
-        <div className="mfa-challenge-icon">
-          <ShieldCheck size={26} strokeWidth={1.8} />
-        </div>
-
-        <p className="auth-subtitle">Verificación en dos pasos</p>
-        <p className="mfa-challenge-desc">
-          Introduce el código de 6 dígitos de tu app de autenticación (Google Authenticator o similar).
+    <AccesoShell
+      nota="Último paso"
+      titulo={<>Verificación en <span className="fluor">dos pasos</span></>}
+      lead="Introduce el código de 6 dígitos de tu app de autenticación (Google Authenticator o similar)."
+      icono={<ShieldCheck size={28} strokeWidth={2.2} />}
+      apunte={APUNTE}
+    >
+      {loading ? (
+        <p className="acc-cargando" role="status">
+          Cargando…
         </p>
+      ) : (
+        <form onSubmit={handleSubmit} className="acc-form">
+          <Campo
+            id="mfa-code"
+            name="one-time-code"
+            inputRef={inputRef}
+            etiqueta="Código de verificación"
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+            placeholder="000000"
+            claseInput="acc-codigo"
+            aria-invalid={error ? true : undefined}
+            required
+          />
 
-        {loading ? (
-          <p className="mfa-challenge-loading">Cargando…</p>
-        ) : (
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="field">
-              <label htmlFor="mfa-code">Código de verificación</label>
-              <input
-                id="mfa-code"
-                ref={inputRef}
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={6}
-                value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                placeholder="000000"
-                className="mfa-challenge-input"
-                required
-              />
-            </div>
+          {error && (
+            <Aviso tipo="error" titulo="No se ha podido verificar">
+              {error}
+            </Aviso>
+          )}
 
-            {error && <p className="auth-error">{error}</p>}
+          <Tecla type="submit" tamano="grande" ancho disabled={verifying || code.length < 6}>
+            {verifying ? "Verificando…" : "Verificar"}
+          </Tecla>
+        </form>
+      )}
 
-            <button type="submit" className="btn-primary" disabled={verifying || code.length < 6}>
-              {verifying ? "Verificando..." : "Verificar"}
-            </button>
-          </form>
-        )}
-
-        <button onClick={handleLogout} className="mfa-challenge-logout">
-          Usar otra cuenta / cerrar sesión
-        </button>
-      </div>
-    </div>
+      {/* El mismo cierre de sesión que el resto de la web, vestido de tecla. */}
+      <LogoutButton tecla={{ color: "blanca", tamano: "peq", ancho: true }}>
+        Usar otra cuenta / cerrar sesión
+      </LogoutButton>
+    </AccesoShell>
   );
 }
+
+/** El apunte de la derecha: por qué el código cambia solo. */
+const APUNTE: Apunte = {
+  tema: "Seguridad",
+  pregunta: "¿Por qué el código cambia cada poco?",
+  respuesta: "Cada 30 s",
+  detalle: "Tu app genera uno nuevo cada medio minuto: si alguien ve uno, enseguida deja de servirle.",
+  color: "naranja",
+  postit: "Casi dentro",
+  nota: "Tu cuenta, con doble llave",
+};

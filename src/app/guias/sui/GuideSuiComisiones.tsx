@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Cpu, Database, Undo2, Receipt } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Lo que cuesta una operación en Sui, con la fórmula del protocolo:
@@ -72,15 +73,16 @@ export default function GuideSuiComisiones() {
 
       <div className="sui-calc-ejemplos" role="group" aria-label="Elige un ejemplo">
         {EJEMPLOS.map((e) => (
-          <button
+          <Tecla
             key={e.id}
-            type="button"
+            tamano="peq"
+            color={ejemplo === e.id ? "cielo" : "blanca"}
+            className="sui-calc-ejemplo"
             aria-pressed={ejemplo === e.id}
-            className={ejemplo === e.id ? "is-activo" : ""}
             onClick={() => elegir(e)}
           >
             {e.texto}
-          </button>
+          </Tecla>
         ))}
       </div>
 
@@ -91,6 +93,7 @@ export default function GuideSuiComisiones() {
           <input
             id="sui-calc-crea"
             inputMode="numeric"
+            autoComplete="off"
             value={crea}
             onChange={(e) => { setCrea(e.target.value); setEjemplo(""); }}
           />
@@ -101,6 +104,7 @@ export default function GuideSuiComisiones() {
           <input
             id="sui-calc-libera"
             inputMode="numeric"
+            autoComplete="off"
             value={libera}
             onChange={(e) => { setLibera(e.target.value); setEjemplo(""); }}
           />
@@ -108,17 +112,17 @@ export default function GuideSuiComisiones() {
         <label htmlFor="sui-calc-precio" className="sui-calc-campo">
           <span className="sui-calc-etiqueta">Precio de SUI, en euros</span>
           <span className="sui-calc-ayuda">Pon el del día: solo cambia la línea en euros</span>
-          <input id="sui-calc-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="sui-calc-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
       </div>
 
       <div className="sui-calc-ticket" aria-live="polite">
-        <div className="sui-calc-linea">
+        <div className="sui-calc-linea es-coste">
           <span><Cpu size={15} aria-hidden="true" /> Cálculo</span>
           <small>{num(unidades, 0)} unidades × {PRECIO_REFERENCIA} MIST</small>
           <strong>+{sui(calculo)} SUI</strong>
         </div>
-        <div className="sui-calc-linea">
+        <div className="sui-calc-linea es-coste">
           <span><Database size={15} aria-hidden="true" /> Almacenamiento</span>
           <small>{num(bytesCrea, 0)} bytes × 7.600 MIST</small>
           <strong>+{sui(almacenamiento)} SUI</strong>

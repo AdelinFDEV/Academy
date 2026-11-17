@@ -4,7 +4,6 @@ import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideAnimatedStat from "@/components/GuideAnimatedStat";
 import GuideSpotlightCards from "@/components/GuideSpotlightCards";
@@ -14,6 +13,9 @@ import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideVideoEmbed from "@/components/GuideVideoEmbed";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import GuideRenderNetwork from "./GuideRenderNetwork";
 import GuideRenderTokenomics from "./GuideRenderTokenomics";
 import GuideRenderQuiz from "./GuideRenderQuiz";
@@ -161,7 +163,6 @@ export default async function RenderPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
@@ -176,7 +177,6 @@ export default async function RenderPage() {
 
       {/* Hero */}
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           ¿Qué es Render?<br />
@@ -184,8 +184,8 @@ export default async function RenderPage() {
         </h1>
         <p className="gbc-hero-desc">
           Renderizar una escena 3D fotorrealista puede tardar horas en un solo ordenador — mientras
-          millones de tarjetas gráficas por el mundo están apagadas o sin usar. Render conecta ambas
-          cosas: quien necesita potencia de renderizado y quien tiene una GPU ociosa. Esto es Render,
+          millones de tarjetas gráficas por el mundo están apagadas o sin usar. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Render conecta ambas
+          cosas: quien necesita potencia de renderizado y quien tiene una GPU ociosa.</Anotacion> Esto es Render,
           cómo funciona y por qué se ha convertido en la estrella del sector DePIN.
         </p>
         <div className="gbc-hero-pills">
@@ -206,7 +206,7 @@ export default async function RenderPage() {
             <p>
               Detrás de cada plano de una película de animación, de cada efecto visual imposible y de
               cada anuncio en 3D fotorrealista hay un proceso invisible y brutalmente exigente: el
-              <strong> renderizado</strong>. Es el cálculo que convierte un modelo 3D en una imagen final,
+              <strong> renderizado</strong>. <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Es el cálculo que convierte un modelo 3D en una imagen final</Anotacion>,
               simulando cómo la luz rebota en cada superficie. Una sola imagen compleja puede tardar horas
               en calcularse, y una película tiene decenas de miles de fotogramas.
             </p>
@@ -215,7 +215,7 @@ export default async function RenderPage() {
               que cuestan una fortuna en hardware, electricidad y mantenimiento. Los que no pueden permitírselo
               alquilan potencia en la nube (AWS, Google Cloud), que también sale cara. Mientras tanto,
               millones de GPUs potentes —en ordenadores de gamers, estudios pequeños o mineros reconvertidos—
-              pasan gran parte del día <strong>encendidas sin hacer nada útil</strong>.
+              pasan gran parte del día <strong><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>encendidas sin hacer nada útil</Anotacion></strong>.
             </p>
           </div>
 
@@ -229,8 +229,9 @@ export default async function RenderPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              De esa idea nació Render Network. Su creador, <strong>Jules Urbach</strong>, no es un recién llegado: lleva décadas en el mundo del
-              renderizado. Es el fundador de <strong>OTOY</strong>, la empresa detrás de
+              <SimboloEstudio tipo="estrella" margen semilla={7} retraso={200} />
+              De esa idea nació Render Network. Su creador, <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}><strong>Jules Urbach</strong></Anotacion>, no es un recién llegado: lleva décadas en el mundo del
+              renderizado. Es el fundador de <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={500}><strong>OTOY</strong></Anotacion>, la empresa detrás de
               <strong>OctaneRender</strong>, uno de los motores de render por GPU más usados de la industria. Es su apuesta por descentralizar
               esa potencia: en lugar de granjas
               propiedad de unos pocos, un mercado abierto donde cualquiera con una buena GPU puede ofrecer su
@@ -247,31 +248,34 @@ export default async function RenderPage() {
           <h2 className="gbc-title">Cómo funciona: un mercado de GPUs que se reparten el trabajo</h2>
           <div className="gbc-body">
             <p>
-              El funcionamiento tiene tres protagonistas. Por un lado, el <strong>artista o estudio</strong>
-              que necesita renderizar y sube su trabajo a la red. Por otro, los <strong>node operators</strong>:
-              personas que conectan su GPU ociosa para hacer ese trabajo a cambio de tokens RENDER. Y en el
-              medio, la <strong>propia red</strong>, que reparte las tareas, verifica los resultados y liquida
-              los pagos.
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                El funcionamiento tiene tres protagonistas. Por un lado, el <strong>artista o estudio</strong>
+                que necesita renderizar y sube su trabajo a la red. Por otro, los <strong>node operators</strong>:
+                personas que conectan su GPU ociosa para hacer ese trabajo a cambio de tokens RENDER. Y en el
+                medio, la <strong>propia red</strong>, que reparte las tareas, verifica los resultados y liquida
+                los pagos.
+              </Anotacion>
             </p>
             <p>
-              La clave está en el <strong>reparto en paralelo</strong>. Un trabajo de render no se envía entero
+              La clave está en el <strong><Anotacion tipo="circle" junta retraso={300}>reparto en paralelo</Anotacion></strong>. Un trabajo de render no se envía entero
               a una sola máquina: se trocea en fragmentos (tiles o fotogramas) que se distribuyen entre muchas
-              GPUs a la vez. Cada una renderiza su parte y devuelve el resultado, que la red recompone. Así, un
-              trabajo que tardaría horas en un solo equipo puede terminarse en minutos entre decenas de nodos.
+              GPUs a la vez. Cada una renderiza su parte y devuelve el resultado, que la red recompone. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Así, un
+              trabajo que tardaría horas en un solo equipo puede terminarse en minutos entre decenas de nodos.</Anotacion>
             </p>
           </div>
 
           <GuideRenderNetwork />
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La pieza de confianza: Proof of Render</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5} className="render-nota">
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">La pieza de confianza: Proof of Render</div>
+            <div className="postit-cuerpo">
               <p>¿Cómo sabe la red que un nodo ha hecho bien su trabajo antes de pagarle? Mediante el
-              <em> Proof of Render</em>: un sistema de verificación y reputación que comprueba que el resultado
-              es correcto y penaliza a quien intente cobrar por trabajo defectuoso o falso. Sin este mecanismo,
+              <em> Proof of Render</em>: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>un sistema de verificación y reputación que comprueba que el resultado
+              es correcto</Anotacion> y penaliza a quien intente cobrar por trabajo defectuoso o falso. Sin este mecanismo,
               nadie confiaría su render —ni su dinero— a un desconocido al otro lado de internet.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -288,10 +292,10 @@ export default async function RenderPage() {
               micropagos entre artistas y nodos.
             </p>
             <p>
-              La respuesta llegó a finales de <strong>2023</strong>: la comunidad aprobó migrar la red a
-              <strong> <Link href="/guias/solana">Solana</Link></strong>, una blockchain mucho más rápida y barata, y aprovechó para renombrar
-              el token de <strong>RNDR a RENDER</strong>. Desde entonces, el proyecto ha surfeado la
-              narrativa que lo cambió todo en 2024: la unión de <strong>IA y DePIN</strong>. Las mismas GPUs
+              La respuesta llegó a finales de <strong>2023</strong>: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>la comunidad aprobó migrar la red a
+              <strong> <Link href="/guias/solana">Solana</Link></strong></Anotacion>, una blockchain mucho más rápida y barata, y aprovechó para renombrar
+              el token de <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta animar={false}><strong>RNDR a RENDER</strong></Anotacion>. Desde entonces, el proyecto ha surfeado la
+              narrativa que lo cambió todo en 2024: la unión de <strong><Anotacion tipo="circle" junta retraso={600}>IA y DePIN</Anotacion></strong>. Las mismas GPUs
               que renderizan gráficos sirven para entrenar y ejecutar modelos de inteligencia artificial, y
               eso colocó a Render en el centro de una de las tesis de inversión más calientes del sector.
             </p>
@@ -304,16 +308,17 @@ export default async function RenderPage() {
             <GuideAnimatedStat end={1} suffix="º" decimals={0} label="Referente del sector DePIN de GPU" source="Narrativa de mercado 2024–2026" />
           </div>
 
-          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Gobernanza por propuestas: las RNP</div>
-            <div className="gbc-box-body">
+          <Postit color="menta" giro={1.5} className="render-nota">
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={4} animar={false} />
+            <div className="postit-titulo">Gobernanza por propuestas: las RNP</div>
+            <div className="postit-cuerpo">
               <p>Los grandes cambios de Render —incluida la migración a Solana o su modelo económico— no
               los decide una sola empresa a puerta cerrada, sino que se discuten y votan como
               <em> Render Network Proposals</em> (RNP), al estilo de otras comunidades cripto. Es el intento
               del proyecto de gobernarse de forma cada vez más descentralizada, aunque, como veremos en los
-              riesgos, el peso de OTOY sigue siendo grande.</p>
+              riesgos, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>el peso de OTOY sigue siendo grande</Anotacion>.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -327,7 +332,7 @@ export default async function RenderPage() {
           <h2 className="gbc-title">Para qué se usa Render de verdad</h2>
           <div className="gbc-body">
             <p>
-              Render no es una idea abstracta: mueve trabajo real. Empezó centrado en el renderizado 3D y
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>Render no es una idea abstracta: mueve trabajo real.</Anotacion> Empezó centrado en el renderizado 3D y
               los efectos visuales, y con el tiempo se ha ido abriendo a la computación de IA y a mundos
               inmersivos. Estos son sus usos principales.
             </p>
@@ -354,28 +359,30 @@ export default async function RenderPage() {
             <p>
               El token RENDER es el que engrasa toda la máquina. Los artistas pagan sus trabajos en RENDER
               y los node operators cobran en RENDER. Pero lo interesante es <strong>cómo</strong> se conecta
-              lo uno con lo otro: mediante un modelo llamado <strong>Burn-and-Mint Equilibrium</strong> (BME).
+              lo uno con lo otro: mediante un modelo llamado <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={200}><strong>Burn-and-Mint Equilibrium</strong></Anotacion> (BME).
             </p>
             <p>
-              La idea es sencilla: cuando un artista paga un trabajo, esos tokens se <strong>queman</strong>
-              (burn) — desaparecen de circulación. A la vez, la red <strong>emite</strong> (mint) tokens
-              nuevos para pagar a los nodos que hicieron el trabajo. Si se quema más de lo que se emite, la
-              oferta baja (deflacionario); si se emite más de lo que se quema, sube (inflacionario). Prueba
+              <SimboloEstudio tipo="flecha" color="azul" margen giro={-10} semilla={12} animar={false} />
+              La idea es sencilla: <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>cuando un artista paga un trabajo, esos tokens se <strong>queman</strong></Anotacion>
+              (burn) — desaparecen de circulación. A la vez, <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>la red <strong>emite</strong></Anotacion> (mint) tokens
+              nuevos para pagar a los nodos que hicieron el trabajo. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>Si se quema más de lo que se emite, la
+              oferta baja (deflacionario)</Anotacion>; si se emite más de lo que se quema, sube (inflacionario). Prueba
               a mover la demanda y observa el efecto:
             </p>
           </div>
 
           <GuideRenderTokenomics />
 
-          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Por qué importa el equilibrio</div>
-            <div className="gbc-box-body">
-              <p>El BME ata el valor del token a la <strong>utilidad real</strong> de la red: cuanto más
+          <Postit color="amarillo" giro={-1} className="render-nota">
+            <SimboloEstudio tipo="estrella" color="naranja" className="postit-esquina" semilla={15} retraso={300} />
+            <div className="postit-titulo">Por qué importa el equilibrio</div>
+            <div className="postit-cuerpo">
+              <p>El BME ata el valor del token a la <strong><Anotacion tipo="circle" junta animar={false}>utilidad real</Anotacion></strong> de la red: cuanto más
               renderizado de verdad se paga, más RENDER se quema. En teoría, una red muy usada tiende a ser
-              deflacionaria, lo que alinea el interés de los que tienen tokens con el crecimiento del uso.
-              El reto es que ese uso sea genuino y no solo especulación — algo que abordamos en los riesgos.</p>
+              deflacionaria, lo que alinea el interés de los que tienen tokens con el crecimiento del uso.{" "}
+              <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>El reto es que ese uso sea genuino y no solo especulación</Anotacion> — algo que abordamos en los riesgos.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -387,7 +394,7 @@ export default async function RenderPage() {
           <div className="gbc-body">
             <p>
               Render es uno de los proyectos DePIN más sólidos por tener un producto y una empresa reales
-              detrás, pero eso no lo hace inmune a los riesgos. Antes de sacar conclusiones, conviene mirar
+              detrás, pero <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>eso no lo hace inmune a los riesgos</Anotacion>. Antes de sacar conclusiones, conviene mirar
               las cuatro tensiones que más se le señalan.
             </p>
           </div>
@@ -397,16 +404,17 @@ export default async function RenderPage() {
             <GuideFlipCards cards={RISK_CARDS} />
           </div>
 
-          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">La pregunta que decide su futuro</div>
-            <div className="gbc-box-body">
-              <p>Todo se reduce a una cosa: ¿habrá suficiente demanda real de renderizado (y de cómputo de
-              IA) para sostener la red más allá de los ciclos de entusiasmo del mercado? Si la respuesta es
+          <Postit color="coral" giro={1.5} className="render-nota">
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={300} />
+            <div className="postit-titulo">La pregunta que decide su futuro</div>
+            <div className="postit-cuerpo">
+              <p>Todo se reduce a una cosa: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>¿habrá suficiente demanda real de renderizado (y de cómputo de
+              IA) para sostener la red más allá de los ciclos de entusiasmo del mercado?</Anotacion> Si la respuesta es
               sí, Render tiene una utilidad tangible que pocas criptomonedas pueden presumir. Si es no, su
               valor dependerá sobre todo de la narrativa. Esta guía es educativa y no es consejo de
               inversión: infórmate y decide por ti mismo.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -426,7 +434,7 @@ export default async function RenderPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Nodo Verificado</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong className="gbc-logro">Nodo Verificado</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideRenderQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

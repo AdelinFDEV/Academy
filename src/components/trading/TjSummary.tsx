@@ -23,10 +23,9 @@ function WinRing({ stats }: { stats: Stats }) {
   ];
   let offset = 0;
   return (
-    <div className="tja-ring">
-      <span className="tja-ring-well" aria-hidden="true" />
+    <div className="djs-anillo">
       <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r={R} className="tja-ring-track" />
+        <circle cx="60" cy="60" r={R} className="djs-anillo-pista" />
         {parts.map((p, i) => {
           const len = (p.n / total) * C;
           // Un hueco de 3 entre tramos; con un solo tramo, el anillo se cierra entero.
@@ -34,7 +33,7 @@ function WinRing({ stats }: { stats: Stats }) {
           const el = p.n ? (
             <motion.circle
               key={p.tone} cx="60" cy="60" r={R}
-              className={`tja-ring-arc tone-${p.tone}`}
+              className={`djs-anillo-arco tone-${p.tone}`}
               strokeDashoffset={-offset}
               initial={{ strokeDasharray: `0 ${C}` }}
               animate={{ strokeDasharray: `${dash} ${C}` }}
@@ -45,8 +44,8 @@ function WinRing({ stats }: { stats: Stats }) {
           return el;
         })}
       </svg>
-      <span className="tja-ring-value">
-        <strong>{Math.round(stats.winRate)}<span>%</span></strong>
+      <span className="djs-anillo-valor">
+        <strong className="dj-cifra">{Math.round(stats.winRate)}<span> %</span></strong>
         <small>de acierto</small>
       </span>
     </div>
@@ -60,7 +59,7 @@ function WinRing({ stats }: { stats: Stats }) {
 export default function TjSummary({ stats, drawdown }: Props) {
   const pf = stats.profitFactor;
   // Textos cortos a propósito: caben en una línea en la columna de la tarjeta.
-  const metrics: { label: string; icon: LucideIcon; hint: string; value: string; sub: string; tone: Tone }[] = [
+  const metrics: { label: string; icon: LucideIcon; hint: string; value: string; sub: string; tone: Tone; conSigno?: boolean }[] = [
     {
       label: "Profit factor",
       icon: Scale,
@@ -77,6 +76,7 @@ export default function TjSummary({ stats, drawdown }: Props) {
       value: stats.expectancyR != null ? rStr(stats.expectancyR) : "—",
       sub: `${pnlStr(stats.avgPnl)} de media`,
       tone: toneOf(stats.expectancyR ?? 0),
+      conSigno: true,
     },
     {
       label: "Drawdown máx.",
@@ -85,6 +85,7 @@ export default function TjSummary({ stats, drawdown }: Props) {
       value: drawdown.abs === 0 ? "0 %" : drawdown.pct != null ? pctStr(drawdown.pct) : pnlStr(drawdown.abs),
       sub: drawdown.abs === 0 ? "Sin caídas por ahora" : drawdown.pct != null ? pnlStr(drawdown.abs) : "Desde el máximo",
       tone: drawdown.abs < 0 ? "loss" : "be",
+      conSigno: true,
     },
     {
       label: "Ganancia / pérdida",
@@ -111,22 +112,22 @@ export default function TjSummary({ stats, drawdown }: Props) {
    * columnas miden lo mismo y no quedan huecos.
    */
   return (
-    <section className="tj-card tja" aria-label="Tu cuenta">
-      <div className="tja-zone tja-z2">
-        <header className="tja-zone-head">
-          <span className="tja-eyebrow">Tus operaciones</span>
+    <section className="dj-hoja djs" aria-label="Tu cuenta">
+      <div className="djs-zona djs-ops">
+        <header className="djs-cab">
+          <h3>Tus operaciones</h3>
           {streak.tone && streak.count >= 2 && (
-            <span className={`tja-streak tone-${streak.tone}`} title={`Racha de ${streak.count} ${streak.tone === "win" ? "ganadas" : "perdidas"} seguidas`}>
-              <Flame size={12} /> {streak.count} seguidas
+            <span className={`dj-chip tone-${streak.tone}`} title={`Racha de ${streak.count} ${streak.tone === "win" ? "ganadas" : "perdidas"} seguidas`}>
+              <Flame size={13} aria-hidden="true" /> {streak.count} seguidas
             </span>
           )}
         </header>
-        <div className="tja-ops">
+        <div className="djs-ops-cuerpo">
           <WinRing stats={stats} />
-          <ul className="tja-counts">
+          <ul className="djs-cuentas">
             {counts.map(c => (
               <li key={c.tone} className={`tone-${c.tone}`}>
-                <strong>{c.n}</strong>
+                <strong className="dj-cifra">{c.n}</strong>
                 <span><i aria-hidden="true" />{c.label}</span>
               </li>
             ))}
@@ -134,19 +135,22 @@ export default function TjSummary({ stats, drawdown }: Props) {
         </div>
       </div>
 
-      <div className="tja-zone tja-z3">
-        <header className="tja-zone-head">
-          <span className="tja-eyebrow">Calidad de tu sistema</span>
+      <div className="djs-zona djs-calidad">
+        <header className="djs-cab">
+          <h3>Calidad de tu sistema</h3>
+          <span className="dj-nota">lo que dicen tus números</span>
         </header>
-        <dl className="tja-metrics">
+        <dl className="djs-metricas">
           {metrics.map(m => (
-            <div key={m.label} className={`tj-metric tja-tile tone-${m.tone}`}>
+            <div key={m.label} className="djs-metrica">
               <dt>
-                <span className="tja-tile-ic" aria-hidden="true"><m.icon size={13} strokeWidth={2.2} /></span>
-                {m.label} <TjInfo label={m.label}>{m.hint}</TjInfo>
+                <span className="djs-metrica-ic" aria-hidden="true"><m.icon size={14} strokeWidth={2.4} /></span>
+                <span className="djs-metrica-nombre">{m.label}</span> <TjInfo label={m.label}>{m.hint}</TjInfo>
               </dt>
-              <dd>{m.value}</dd>
-              <dd className="tj-metric-sub">{m.sub}</dd>
+              {/* Verde y rojo solo en cifras con signo (esperanza y caída); el profit
+                  factor y el ratio no lo tienen: su lectura va en la línea de abajo. */}
+              <dd className={`dj-cifra${m.conSigno ? ` tone-${m.tone}` : ""}`}>{m.value}</dd>
+              <dd className={`djs-metrica-sub${m.conSigno ? "" : ` is-${m.tone}`}`}>{m.sub}</dd>
             </div>
           ))}
         </dl>

@@ -1,0 +1,678 @@
+/*
+ * Nova en el Diario: sus estilos, APARTADOS el 17-11-2026.
+ *
+ * Nova está oculta (src/components/trading/nova-visible.ts, MOSTRAR_NOVA =
+ * false) hasta que llegue la mascota. No se borra: esto es lo que TjBot
+ * necesita para pintarse si se vuelve a encender. Salió tal cual del antiguo
+ * trading.css (el diseño oscuro), con las variables que usa; el resto del
+ * Diario ya no las tiene.
+ */
+
+.tjbot,
+.tjbot-stage {
+  --tj-win: #5fd39a;
+  --tj-loss: #ff5c5c;
+  --tj-be: #93a3c4;
+  --tj-accent: var(--premium-gold);
+  --tj-accent-soft: rgba(230, 180, 85, 0.13);
+  --tj-accent-line: rgba(230, 180, 85, 0.35);
+  --tj-accent-2: #f5d48a;
+  --tj-surface: rgba(240, 244, 255, 0.04);
+  --tj-surface-2: rgba(240, 244, 255, 0.08);
+}
+
+.tjbot .tone-win, .tjbot-stage .tone-win { --tone: var(--tj-win); color: var(--tone); }
+.tjbot .tone-loss, .tjbot-stage .tone-loss { --tone: var(--tj-loss); color: var(--tone); }
+.tjbot .tone-be, .tjbot-stage .tone-be { --tone: var(--tj-be); color: var(--tone); }
+
+:is(.tjbot, .tjbot-stage) .tj-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex-shrink: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  color: var(--tone, var(--text-secondary));
+  cursor: pointer;
+}
+
+.tjbot { position: relative; z-index: 30; width: 100%; }
+
+/* ── Su espacio ──
+ * Nova, una cabeza que vuela por todo el hueco bajo el saludo (TjBot la mueve
+ * con transform). Es un botón: pulsarla abre el bocadillo.
+ */
+
+.tjbot-habitat { position: relative; width: 100%; height: 172px; }
+/* La habitación de fondo: recortada en su recuadro, apagada para que Nova destaque. */
+.tjbot-room {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  /* La misma pared y el mismo suelo del dibujo (NovaRoom): el SVG se encaja entero
+     y, si sobra sitio a los lados o arriba, la sala sigue sin costuras. */
+  background: linear-gradient(180deg, #172c58 0%, #0f1d3c 79%, #1d2e5a 79.2%, #1d2e5a 80.8%, #0d1933 81%, #080f22 100%);
+  opacity: 0.92;
+  box-shadow: inset 0 0 40px rgba(4, 10, 22, 0.55);
+  pointer-events: none;
+}
+
+.tjbot-room svg { display: block; width: 100%; height: 100%; }
+
+/* Un velo que oscurece un poco los bordes: la habitación se intuye, no compite. */
+.tjbot-room::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 140% at 50% 40%, transparent 55%, rgba(6, 12, 26, 0.55)); }
+
+.tjbot-walker { position: absolute; top: 0; left: 0; will-change: transform; }
+
+.tjbot-trigger {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 40px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tjbot-trigger:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 4px; }
+
+.tjbot-avatar-wrap { position: relative; display: grid; transform-origin: 50% 50%; }
+/* Nova en su habitación va al 75 % (REPOSO en TjBot.tsx): 112 px × 0,75. */
+.tjbot-habitat .nh { width: 84px; height: 84px; }
+.tjbot-habitat .tjbot-shadow { width: 46px; margin-left: -23px; bottom: -9px; }
+.tjbot-habitat .tjbot-ping { top: 9px; right: 0; }
+.tjbot-habitat .tjbot-anuncio { left: 42px; }
+
+/* Sombra lejana en el «suelo»: Nova vuela, así que es tenue y respira con él. */
+.tjbot-shadow {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  width: 60px;
+  height: 9px;
+  margin-left: -30px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.42), transparent);
+  animation: nh-shadow 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Aviso: cuántas cosas nuevas tiene Nova que el usuario aún no ha abierto. */
+.tjbot-ping {
+  position: absolute;
+  top: 14px;
+  right: 2px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border: 2px solid #0f1e39;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff8f8f, #ff5c5c);
+  box-shadow: 0 4px 10px -4px rgba(255, 92, 92, 0.9);
+}
+
+.tjbot-ping b { font-size: 0.64rem; font-weight: 800; line-height: 1; color: #fff; }
+
+.tjbot-ping::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid #ff7a7a;
+  animation: tjbot-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/*
+ * El anuncio: cuando el análisis cambia, Nova saca sobre su cabeza un bocadillo
+ * corto con lo que ha visto (TjBot lo pone unos segundos). Cuelga del walker,
+ * a la derecha de la cabeza, con el piquito hacia ella.
+ */
+.tjbot-anuncio {
+  position: absolute;
+  bottom: calc(100% - 6px);
+  left: 56px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  width: max-content;
+  max-width: 240px;
+  padding: 0.55rem 0.85rem 0.6rem;
+  border-radius: 14px 14px 14px 4px;
+  background: linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  transform-origin: 0 100%;
+  pointer-events: none;
+}
+
+.tjbot-anuncio::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: #eef2ff;
+  transform: rotate(45deg);
+}
+
+.tjbot-anuncio b { position: relative; font-size: 0.84rem; line-height: 1.3; color: #0b1426; text-wrap: pretty; }
+.tjbot-anuncio span { position: relative; font-size: 0.68rem; font-weight: 600; color: #4a5675; }
+
+@keyframes tjbot-ping { 75%, 100% { transform: scale(2.1); opacity: 0; } }
+@keyframes tjbot-dot { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-4px); opacity: 1; } }
+@keyframes tjbot-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+
+/* ── La escena del diálogo ──
+ * Al pulsar a Nova, su copia vuela a lo alto del centro de la pantalla (y se
+ * agranda: se acerca) con su estela, y debajo se abre el popup grande. Al
+ * cerrar, vuelve. Rehecho el 10-11-2026: cristal oscuro con filo dorado, barra
+ * de progreso por capítulos y tarjetas más limpias. Sin scroll por dentro: cada
+ * capítulo lleva pocos mensajes y el popup crece con ellos.
+ */
+
+.tjbot-trigger.is-away { visibility: hidden; }
+
+.tjbot-stage { position: fixed; inset: 0; z-index: 1500; }
+
+.tjbot-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 50% 12%, rgba(230, 180, 85, 0.12), transparent 70%),
+    radial-gradient(40% 40% at 80% 90%, rgba(126, 166, 255, 0.08), transparent 70%),
+    rgba(3, 8, 20, 0.72);
+  backdrop-filter: blur(9px) saturate(120%);
+}
+
+/* Nova volando: posición y tamaño los anima TjBot (transform), desde la esquina. */
+.tjbot-flyer { position: fixed; top: 0; left: 0; z-index: 3; transform-origin: 0 0; pointer-events: none; will-change: transform; }
+
+/* El popup, centrado bajo Nova. */
+.tjbot-dialog {
+  position: fixed;
+  top: var(--dlg-top);
+  right: 0;
+  bottom: clamp(16px, 3.5vh, 40px);
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 3vw;
+  pointer-events: none;
+}
+
+.tjbot-panel.is-modal {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: flex;
+  flex-direction: column;
+  width: min(900px, 100%);
+  max-height: 100%;
+  border-radius: 26px;
+  pointer-events: auto;
+  transform-origin: 50% 0;
+}
+
+/* Cabecera y pie fijos; lo de en medio se encoge y se desplaza por dentro. */
+.tjbot-panel.is-modal .tjbot-modal-head,
+.tjbot-panel.is-modal .tjbot-foot { flex-shrink: 0; }
+
+/* La barra de progreso por capítulos, en el filo de arriba del popup. */
+.tjbot-progress { position: absolute; top: 0; left: 24px; right: 24px; height: 2px; overflow: hidden; border-radius: 999px; background: rgba(240, 244, 255, 0.07); }
+.tjbot-progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c98f35, var(--tj-accent-2)); box-shadow: 0 0 10px rgba(230, 180, 85, 0.6); }
+
+/* Cabecera: el saludo de Nova. */
+.tjbot-modal-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.35rem 1.4rem 1.1rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tjbot-greet { flex: 1; min-width: 0; }
+.tjbot-greet-kicker { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjbot-greet-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tj-win); box-shadow: 0 0 0 3px rgba(95, 211, 154, 0.2); animation: tjbot-live 2s ease-in-out infinite; }
+.tjbot-greet h2 {
+  margin: 0.35rem 0 0.25rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, #fff 0%, #f7e2ad 60%, var(--tj-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tjbot-greet p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+.tjbot-greet p.tjbot-corte { margin-top: 0.35rem; font-size: 0.72rem; color: var(--text-muted); opacity: 0.8; }
+.tjbot-close { width: 36px; height: 36px; border-radius: 12px; }
+
+/* Índice a la izquierda, sección a la derecha. */
+.tjbot-modal-grid { display: grid; flex: 1; grid-template-columns: 240px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); min-height: 0; }
+
+.tjbot-index {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0.9rem 0.7rem;
+  border-right: 1px solid var(--hairline);
+  background: rgba(4, 9, 20, 0.35);
+}
+
+.tjbot-index-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--text-secondary);
+  font: 600 0.84rem var(--font-family);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.tjbot-index-item:hover { background: var(--tj-surface); color: var(--text-primary); }
+.tjbot-index-item:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 1px; }
+.tjbot-index-item.is-on { color: var(--text-primary); }
+.tjbot-index-item.is-done { color: var(--text-muted); }
+
+/* El resalte de la sección activa: se desliza de una a otra (layoutId). */
+.tjbot-index-on {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border: 1px solid rgba(230, 180, 85, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(230, 180, 85, 0.2), rgba(230, 180, 85, 0.04));
+  box-shadow: inset 3px 0 0 var(--tj-accent), 0 10px 24px -18px rgba(230, 180, 85, 0.9);
+}
+
+.tjbot-index-item > :not(.tjbot-index-on) { position: relative; z-index: 1; }
+.tjbot-index-emoji { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: rgba(240, 244, 255, 0.05); font-size: 1rem; line-height: 1; }
+.tjbot-index-item.is-on .tjbot-index-emoji { background: rgba(230, 180, 85, 0.16); }
+.tjbot-index-label { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tjbot-index-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff7a7a; box-shadow: 0 0 0 3px rgba(255, 122, 122, 0.18); }
+.tjbot-index-count { min-width: 24px; padding: 0.1rem 0.45rem; border-radius: 999px; background: var(--tj-surface-2); text-align: center; font-size: 0.66rem; font-weight: 700; color: var(--text-muted); }
+.tjbot-index-item.is-on .tjbot-index-count { background: rgba(230, 180, 85, 0.24); color: var(--text-primary); }
+
+.tjbot-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+.tjbot-section-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.tjbot-section-head span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: rgba(230, 180, 85, 0.12); font-size: 1.15rem; line-height: 1; }
+.tjbot-section-head h3 { flex: 1; margin: 0; font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text-primary); }
+.tjbot-section-head small { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+
+/* Anillo de luz al aterrizar en el centro. */
+.tjbot-arrive-ring {
+  position: absolute;
+  inset: -6px;
+  border: 2px solid rgba(230, 180, 85, 0.65);
+  border-radius: 50%;
+  box-shadow: 0 0 24px rgba(230, 180, 85, 0.5);
+  pointer-events: none;
+}
+
+.tjbot-panel.is-modal .tjbot-tail { left: 50%; margin-left: -8px; }
+.tjbot-panel.is-modal .tjbot-body { flex: 1 1 auto; min-height: 0; max-height: none; padding: 1.1rem 1.4rem 0.8rem; overflow: hidden; }
+
+/*
+ * El ajuste (TjBot): .tjbot-fit mide lo que se ve; .tjbot-fit-inner se reduce
+ * desde la esquina de arriba, con el ancho compensado para que el texto se
+ * recoloque en vez de quedarse estrecho.
+ */
+.tjbot-fit { position: relative; overflow: hidden; }
+.tjbot-fit-inner { transform-origin: 0 0; }
+.tjbot-body.is-scroll { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.tjbot-body.is-scroll .tjbot-fit { height: auto !important; overflow: visible; }
+
+/* Con ancho de sobra, los mensajes van de dos en dos: la mitad de alto. Si son
+   impares, el primero (el más importante) ocupa la fila entera. */
+@media (min-width: 900px) {
+  .tjbot-panel.is-modal .tjbot-list.is-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .tjbot-panel.is-modal .tjbot-list.is-grid > :first-child:nth-last-child(2n + 1) { grid-column: 1 / -1; }
+  .tjbot-panel.is-modal .tjbot-list.is-grid .tjbot-msg { font-size: 0.88rem; }
+}
+
+/* Pantallas bajas: cabecera y márgenes más compactos, para que quede sitio a los mensajes. */
+@media (max-height: 820px) {
+  .tjbot-greet p.tjbot-corte { display: none; }
+  .tjbot-modal-head { padding: 1rem 1.3rem 0.85rem; }
+  .tjbot-greet h2 { margin: 0.2rem 0 0.15rem; font-size: clamp(1.15rem, 2vw, 1.4rem); }
+  .tjbot-section-head { margin-bottom: 0.7rem; }
+  .tjbot-panel.is-modal .tjbot-foot { padding: 0.65rem 1.1rem 0.75rem; }
+  .tjbot-panel.is-modal .tjbot-msg { padding: 0.7rem 0.85rem; }
+  .tjbot-index { padding: 0.6rem 0.6rem; }
+  .tjbot-index-item { padding: 0.45rem 0.6rem; }
+}
+.tjbot-panel.is-modal .tjbot-foot { padding: 0.9rem 1.2rem 1.05rem; }
+.tjbot-panel.is-modal .tjbot-msg { font-size: 0.92rem; padding: 0.9rem 1rem; }
+
+/* ── Bocadillo ── */
+
+.tjbot-panel:focus { outline: none; }
+
+.tjbot-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(480px, calc(100vw - 2.5rem));
+  border: 1px solid rgba(230, 180, 85, 0.32);
+  border-radius: 22px;
+  background:
+    radial-gradient(90% 55% at 0% 0%, rgba(230, 180, 85, 0.12), transparent 60%),
+    radial-gradient(70% 50% at 100% 100%, rgba(126, 166, 255, 0.09), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 30%),
+    #0c182f;
+  box-shadow:
+    0 40px 90px -28px rgba(0, 0, 0, 0.95),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 60px -20px rgba(230, 180, 85, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform-origin: 30px -12px;
+}
+
+.tjbot-tail {
+  position: absolute;
+  top: -8px;
+  left: 28px;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid rgba(230, 180, 85, 0.32);
+  border-left: 1px solid rgba(230, 180, 85, 0.32);
+  background: #11203d;
+  transform: rotate(45deg);
+}
+
+/* Cuerpo: una sección cada vez. Sin scroll: los capítulos son cortos a propósito. */
+.tjbot-body { padding: 1rem 1rem 0.5rem; }
+
+.tjbot-typing {
+  display: inline-flex;
+  gap: 5px;
+  margin-bottom: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  overflow: hidden;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--tj-surface-2);
+}
+
+.tjbot-typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-secondary); animation: tjbot-dot 1s infinite; }
+.tjbot-typing i:nth-child(2) { animation-delay: 0.15s; }
+.tjbot-typing i:nth-child(3) { animation-delay: 0.3s; }
+
+.tjbot-section { touch-action: pan-y; cursor: grab; }
+.tjbot-section:active { cursor: grabbing; }
+.tjbot-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.tjbot-kicker { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tj-accent-2); }
+
+/* Mensajes: tarjeta con el emoji en su pastilla, un filo del color de lo que dicen y, si toca, un botón. */
+.tjbot-msg {
+  --bot-tone: var(--text-muted);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.9rem 1rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--bot-tone) 22%, rgba(240, 244, 255, 0.06));
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bot-tone) 10%, transparent), transparent 60%),
+    rgba(6, 12, 26, 0.6);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.tjbot-msg::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px; background: color-mix(in srgb, var(--bot-tone) 55%, transparent); }
+.tjbot-msg.is-win { --bot-tone: var(--tj-win); }
+.tjbot-msg.is-loss { --bot-tone: var(--tj-loss); }
+.tjbot-msg.is-accent { --bot-tone: var(--tj-accent); }
+.tjbot-msg.is-be { --bot-tone: #8ab8ff; }
+.tjbot-msg.is-important { border-color: color-mix(in srgb, var(--bot-tone) 48%, transparent); box-shadow: 0 14px 30px -22px color-mix(in srgb, var(--bot-tone) 90%, transparent); }
+.tjbot-msg.is-important::before { width: 4px; background: var(--bot-tone); }
+.tjbot-msg.is-persistente { border-style: dashed; }
+
+.tjbot-emoji {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bot-tone) 16%, rgba(240, 244, 255, 0.04));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.tjbot-msg-body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; min-width: 0; padding-top: 0.15rem; }
+.tjbot-msg-text { color: var(--text-primary); opacity: 0.9; text-wrap: pretty; }
+.tjbot-flags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
+.tjbot-flag {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bot-tone) 16%, transparent);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bot-tone);
+}
+
+/* «Sigue igual»: Nova ya lo dijo hace una semana. */
+.tjbot-flag.is-memoria { background: rgba(201, 162, 255, 0.16); color: #c9a2ff; }
+
+.tjbot-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
+  padding: 0.38rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--bot-tone) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bot-tone) 12%, transparent);
+  color: var(--text-primary);
+  font: 600 0.74rem var(--font-family);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.tjbot-action:hover { transform: translateX(2px); background: color-mix(in srgb, var(--bot-tone) 24%, transparent); }
+.tjbot-action:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjbot-kicker-row { margin: 0.7rem 0 0.1rem; }
+
+/* ── Tu objetivo de la semana ── */
+
+.tjbot-obj {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid rgba(230, 180, 85, 0.25);
+  border-radius: 18px;
+  background:
+    radial-gradient(100% 120% at 100% 0%, rgba(230, 180, 85, 0.14), transparent 60%),
+    rgba(6, 12, 26, 0.6);
+}
+
+.tjbot-obj.is-done { border-color: rgba(95, 211, 154, 0.4); background: radial-gradient(100% 120% at 100% 0%, rgba(95, 211, 154, 0.16), transparent 60%), rgba(6, 12, 26, 0.6); }
+.tjbot-obj-ring { position: relative; flex-shrink: 0; width: 96px; height: 96px; color: var(--tj-accent); }
+.tjbot-obj.is-done .tjbot-obj-ring { color: var(--tj-win); }
+.tjbot-obj-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.tjbot-obj-track { fill: rgba(230, 180, 85, 0.05); stroke: rgba(240, 244, 255, 0.08); stroke-width: 8; }
+.tjbot-obj-arc { fill: none; stroke: currentColor; stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 0 6px color-mix(in srgb, currentColor 60%, transparent)); }
+.tjbot-obj-ring-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 1px; line-height: 1; color: var(--text-primary); }
+.tjbot-obj-ring-value strong { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; }
+.tjbot-obj-ring-value small { position: relative; top: 0.35rem; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
+.tjbot-obj-text { display: flex; flex: 1; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.tjbot-obj-text > strong { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; color: var(--text-primary); }
+.tjbot-obj-text > p { margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); text-wrap: pretty; }
+.tjbot-obj-estado { align-self: flex-start; margin-top: 0.2rem; padding: 0.25rem 0.6rem; border-radius: 999px; background: rgba(230, 180, 85, 0.14); font-size: 0.72rem; font-weight: 700; color: var(--tj-accent-2); }
+.tjbot-obj-estado.is-done { background: rgba(95, 211, 154, 0.16); color: var(--tj-win); }
+
+/* ── Pie ── */
+
+.tjbot-foot { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 0.9rem 0.9rem; border-top: 1px solid var(--hairline); }
+
+.tjbot-back {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  background: var(--tj-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.tjbot-back:hover:not(:disabled) { background: var(--tj-surface-2); color: var(--text-primary); }
+.tjbot-back:disabled { opacity: 0.3; cursor: default; }
+
+/* Puntos de progreso: uno por sección; el activo, alargado. */
+.tjbot-dots { display: inline-flex; align-items: center; gap: 5px; }
+.tjbot-dots i { display: block; width: 7px; height: 7px; border-radius: 999px; background: var(--tj-surface-2); }
+.tjbot-dots i.is-done { background: rgba(230, 180, 85, 0.45); }
+.tjbot-dots i.is-on { background: linear-gradient(90deg, #c98f35, var(--tj-accent)); box-shadow: 0 0 8px rgba(230, 180, 85, 0.6); }
+
+.tjbot-next {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-template-areas: "kicker icon arrow" "label icon arrow";
+  align-items: center;
+  column-gap: 0.6rem;
+  margin-left: auto;
+  padding: 0.45rem 0.6rem 0.45rem 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(230, 180, 85, 0.45);
+  border-radius: 14px;
+  background: linear-gradient(100deg, rgba(230, 180, 85, 0.2), rgba(230, 180, 85, 0.05));
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Un brillo que cruza el botón al pasar el ratón. */
+.tjbot-next::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.14) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+}
+
+.tjbot-next:hover { transform: translateY(-1px); border-color: var(--tj-accent); box-shadow: 0 12px 26px -16px rgba(230, 180, 85, 0.9); }
+.tjbot-next:hover::after { transform: translateX(120%); }
+.tjbot-next:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjbot-next-kicker { grid-area: kicker; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjbot-next-label { grid-area: label; font-family: var(--font-display); font-size: 0.88rem; font-weight: 600; white-space: nowrap; }
+.tjbot-next-icon { grid-area: icon; font-size: 1.25rem; line-height: 1; }
+.tjbot-next-arrow { grid-area: arrow; color: var(--tj-accent); animation: tjbot-nudge 1.4s ease-in-out infinite; }
+.tjbot-next.is-done { grid-template-areas: "label icon"; grid-template-columns: auto auto; padding: 0.6rem 0.9rem 0.6rem 1rem; }
+
+@media (max-width: 760px) {
+  .tjbot-modal-grid { grid-template-columns: 1fr; }
+  .tjbot-index { flex-direction: row; gap: 4px; padding: 0.6rem; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--hairline); scrollbar-width: none; }
+  .tjbot-index-item { flex-shrink: 0; padding: 0.5rem 0.65rem; }
+  .tjbot-index-label { display: none; }
+  .tjbot-index-item.is-on .tjbot-index-label { display: inline; }
+  .tjbot-modal-grid { grid-template-rows: auto minmax(0, 1fr); }
+}
+
+/*
+ * Bocadillo en el móvil: ocupa desde debajo de Nova hasta el fondo de la
+ * pantalla, así se ve entero. Cabecera corta, el contenido se desplaza por
+ * dentro y abajo solo dos flechas con la sección en medio.
+ */
+.tjbot-dialog.is-movil { bottom: calc(10px + env(safe-area-inset-bottom)); align-items: flex-start; padding: 0 10px; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal { display: flex; flex-direction: column; width: 100%; max-height: 100%; border-radius: 20px; }
+.tjbot-dialog.is-movil .tjbot-modal-head { flex-shrink: 0; align-items: center; padding: 0.85rem 0.9rem 0.8rem 1rem; }
+.tjbot-dialog.is-movil .tjbot-greet h2 { margin: 0.2rem 0 0; font-size: 1.05rem; line-height: 1.3; }
+.tjbot-dialog.is-movil .tjbot-close { width: 34px; height: 34px; flex-shrink: 0; }
+.tjbot-dialog.is-movil .tjbot-modal-grid { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.tjbot-dialog.is-movil .tjbot-main { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+/* En el móvil la pantalla manda: si no cabe, el cuerpo se desplaza por dentro. */
+.tjbot-dialog.is-movil .tjbot-panel.is-modal { max-height: 100%; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-body { flex: 1 1 auto; min-height: 0; max-height: none; padding: 0.95rem 0.9rem 0.6rem; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-msg { font-size: 0.9rem; padding: 0.75rem 0.85rem; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-foot-movil { flex-shrink: 0; justify-content: space-between; gap: 0.5rem; padding: 0.65rem 0.7rem 0.75rem; }
+.tjbot-dialog.is-movil .tjbot-obj { flex-direction: column; align-items: stretch; text-align: center; }
+.tjbot-dialog.is-movil .tjbot-obj-ring { align-self: center; }
+.tjbot-dialog.is-movil .tjbot-obj-estado { align-self: center; }
+
+.tjbot-arrow {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--tj-surface);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s, opacity 0.15s;
+}
+
+.tjbot-arrow:active:not(:disabled) { transform: scale(0.92); }
+.tjbot-arrow:disabled { opacity: 0.3; cursor: default; }
+.tjbot-arrow.is-next,
+.tjbot-arrow.is-done { border-color: rgba(230, 180, 85, 0.55); background: linear-gradient(135deg, rgba(230, 180, 85, 0.28), rgba(230, 180, 85, 0.1)); color: var(--tj-accent); }
+
+.tjbot-where { display: flex; flex: 1; min-width: 0; flex-direction: column; align-items: center; gap: 0.4rem; }
+.tjbot-where strong { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: var(--font-display); font-size: 0.92rem; font-weight: 600; color: var(--text-primary); }
+.tjbot-where .tjbot-dots i { height: 6px; }
+
+@media (max-width: 520px) {
+  .tjbot-next-kicker { display: none; }
+  .tjbot-next { grid-template-areas: "label icon arrow"; }
+}
+
+@keyframes tjbot-live { 0%, 100% { box-shadow: 0 0 0 3px rgba(95, 211, 154, 0.2); } 50% { box-shadow: 0 0 0 5px rgba(95, 211, 154, 0.08); } }
+
+@media (max-width: 640px) {
+  .tjbot-habitat { height: 150px; }
+  .tjbot-anuncio { max-width: min(220px, 58vw); }
+  .tjbot-panel { left: -0.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tjbot-shadow,
+  .tjbot-next-arrow,
+  .tjbot-ping::after,
+  .tjbot-greet-dot,
+  .tjbot-typing i { animation: none !important; }
+}

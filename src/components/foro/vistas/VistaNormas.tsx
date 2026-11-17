@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Anotacion from "@/components/cuaderno/Anotacion";
 import MarcoForo from "@/components/foro/MarcoForo";
 import AceptarNormas from "@/components/foro/participar/AceptarNormas";
-import { NORMAS_VERSION } from "@/lib/foro/limites";
+import { LIMITES, NORMAS_VERSION } from "@/lib/foro/limites";
 import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import "@/app/foro/normas.css";
 
@@ -11,8 +12,10 @@ import "@/app/foro/normas.css";
  * aceptada (`NORMAS_VERSION`): si el texto cambia de fondo, se sube el número
  * aquí y en `foro_ajustes`, y todos vuelven a aceptarlas.
  *
- * Un índice a la izquierda, que se queda fijo, y las secciones numeradas a la
- * derecha. La de lo prohibido va marcada en rojo: es la que hay que leer.
+ * Estilo «Cuaderno de estudio» (17-11-2026): un índice de fichas a la
+ * izquierda, que se queda fijo, y las secciones como hojas numeradas a mano a
+ * la derecha. La de lo prohibido va en coral, con un pósit: es la que hay que
+ * leer.
  *
  * ⚠️ El texto es un borrador: falta la revisión legal de la fase 10.
  */
@@ -78,7 +81,7 @@ const SECCIONES: Seccion[] = [
     titulo: "Tus mensajes",
     cuerpo: (
       <ul>
-        <li>Puedes editar un mensaje durante los 30 minutos siguientes a publicarlo.</li>
+        <li>Puedes editar un mensaje durante los {LIMITES.minutosParaEditar} minutos siguientes a publicarlo.</li>
         <li>Puedes borrar tus respuestas cuando quieras, salvo la elegida, y tu pregunta mientras nadie haya respondido.</li>
         <li>Si borras tu cuenta, tus mensajes se quedan publicados sin tu alias, como «Usuario eliminado». Si además quieres que se borren, pídelo.</li>
         <li>Si dejas de ser Premium, lo que publicaste se queda; solo dejas de poder participar.</li>
@@ -120,11 +123,10 @@ export default function VistaNormas({ conSesion }: { conSesion: boolean }) {
       </nav>
 
       <header className="fn-cabecera">
-        <span className="fo-antetitulo">
-          <span className="fo-antetitulo-punto" aria-hidden="true" />
-          Normas · versión {NORMAS_VERSION}
-        </span>
-        <h1 className="fo-titulo">Un sitio útil y <em>seguro</em>.</h1>
+        <p className="fo-nota">Normas · versión {NORMAS_VERSION}</p>
+        <h1 className="fo-titulo">
+          Un sitio útil y <Anotacion tipo="underline" color="var(--coral)" retraso={300}>seguro</Anotacion>.
+        </h1>
         <p className="fo-entradilla">
           El foro es para resolver dudas reales sobre criptomonedas entre personas que quieren aprender. Estas
           normas existen para que siga siendo un sitio útil y seguro.
@@ -149,6 +151,7 @@ export default function VistaNormas({ conSesion }: { conSesion: boolean }) {
           {SECCIONES.map((s, i) => (
             <section key={s.id} id={s.id} className={`fn-seccion fo-tarjeta${s.prohibido ? " es-prohibido" : ""}`}>
               <span className="fn-num" aria-hidden="true">{dos(i + 1)}</span>
+              {s.prohibido && <span className="fn-postit" aria-hidden="true">¡Léela!</span>}
               <h2>{s.titulo}</h2>
               {s.cuerpo}
             </section>

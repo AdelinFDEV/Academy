@@ -11,6 +11,11 @@ const OPTIONS = (Object.keys(BREAKDOWNS) as BreakdownId[]).map(id => ({ value: i
 /** Días y franjas se leen en su orden natural; el resto, del que más aporta al que más resta. */
 const NATURAL_ORDER: BreakdownId[] = ["weekday", "hour"];
 
+/**
+ * El desglose: una tabla en el ordenador y, en el móvil, un renglón por grupo
+ * con sus cuatro datos rotulados y la barra del resultado a todo el ancho
+ * (diario-analisis.css, `.dja-tabla`). No se esconde ninguna columna.
+ */
 export default function TjBreakdown({ trades }: { trades: Trade[] }) {
   const [by, setBy] = useState<BreakdownId>("pair");
 
@@ -22,47 +27,45 @@ export default function TjBreakdown({ trades }: { trades: Trade[] }) {
   const maxAbs = Math.max(...rows.map(r => Math.abs(r.pnl)), 1);
 
   return (
-    <section className="tj-card">
-      <header className="tjr-head">
+    <section className="dj-hoja">
+      <header className="dj-cabeza">
         <div>
           <h3>¿Dónde ganas y dónde pierdes?</h3>
-          <span className="tj-count">
+          <p>
             {by === "hour" ? "Franjas de cuatro horas en tu hora local" : `Tu resultado repartido por ${BREAKDOWNS[by].label.toLowerCase()}`}
-          </span>
+          </p>
         </div>
         <TjSegmented label="Agrupar por" value={by} onChange={setBy} options={OPTIONS} />
       </header>
 
-      <div className="tj-table-wrap">
-        <table className="tj-table tjn-table">
-          <thead>
-            <tr>
-              <th>{BREAKDOWNS[by].label}</th>
-              <th className="num">Ops.</th>
-              <th className="num">Acierto</th>
-              <th className="num tj-hide-sm">P. factor</th>
-              <th className="num tj-hide-sm">Esperanza</th>
-              <th className="num">P&L</th>
+      <table className="dja-tabla">
+        <thead>
+          <tr>
+            <th scope="col">{BREAKDOWNS[by].label}</th>
+            <th scope="col" className="num">Ops.</th>
+            <th scope="col" className="num">Acierto</th>
+            <th scope="col" className="num">P. factor</th>
+            <th scope="col" className="num">Esperanza</th>
+            <th scope="col" className="dja-tabla-pnl">P&L</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(r => (
+            <tr key={r.key}>
+              <th scope="row" className="cap">{r.label}</th>
+              <td className="num" data-et="Ops.">{r.count}</td>
+              <td className="num" data-et="Acierto">{Math.round(r.winRate)} %</td>
+              <td className="num" data-et="P. factor">{factorStr(r.profitFactor)}</td>
+              <td className={`num tone-${toneOf(r.expectancyR ?? 0)}`} data-et="Esperanza">
+                {r.expectancyR != null ? rStr(r.expectancyR) : "—"}
+              </td>
+              <td className="dja-tabla-pnl">
+                <DivergingBar value={r.pnl} max={maxAbs} />
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {rows.map(r => (
-              <tr key={r.key}>
-                <td className="cap strong">{r.label}</td>
-                <td className="num">{r.count}</td>
-                <td className="num">{Math.round(r.winRate)} %</td>
-                <td className="num tj-hide-sm">{factorStr(r.profitFactor)}</td>
-                <td className={`num tj-hide-sm tone-${toneOf(r.expectancyR ?? 0)}`}>
-                  {r.expectancyR != null ? rStr(r.expectancyR) : "—"}
-                </td>
-                <td className={`num tone-${toneOf(r.pnl)}`}>
-                  <DivergingBar value={r.pnl} max={maxAbs} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 }

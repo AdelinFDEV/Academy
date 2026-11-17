@@ -3,6 +3,7 @@
 import { Play, MonitorPlay, ArrowUpRight } from "lucide-react";
 import { getLatestVideos } from "@/lib/youtube";
 import { YOUTUBE_URL } from "@/lib/contacto";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * El último vídeo del canal, al final de cada ficha del diccionario.
@@ -43,10 +44,10 @@ export default async function TerminoVideo() {
         className="tvid-thumb"
         aria-label={`Ver «${ultimo.title}» en YouTube`}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         {/* Sin icono de reproducción encima: la miniatura ya es de YouTube y
             se reconoce sola, y el botón «Ver el vídeo» de al lado dice lo
             mismo. Superponerlo solo tapaba la cara del vídeo. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={ultimo.thumbnail} alt="" loading="lazy" />
         <span className="tvid-velo" aria-hidden="true" />
       </a>
@@ -69,24 +70,25 @@ export default async function TerminoVideo() {
         </p>
 
         <div className="tvid-botones">
-          <a
+          <Tecla
             href={ultimo.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="tvid-btn"
+            tamano="peq"
           >
             <Play size={14} strokeWidth={2.6} fill="currentColor" aria-hidden="true" />
             Ver el vídeo
-          </a>
-          <a
+          </Tecla>
+          <Tecla
             href={YOUTUBE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="tvid-btn tvid-btn--ghost"
+            color="blanca"
+            tamano="peq"
           >
             Suscribirse al canal
-            <ArrowUpRight size={14} strokeWidth={2.4} aria-hidden="true" />
-          </a>
+            <ArrowUpRight size={14} strokeWidth={2.6} aria-hidden="true" />
+          </Tecla>
         </div>
       </div>
     </section>

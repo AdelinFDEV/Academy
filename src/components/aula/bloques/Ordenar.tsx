@@ -2,12 +2,16 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUp, ArrowDown, RotateCcw } from "lucide-react";
+import { ArrowUp, ArrowDown, RotateCcw, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import { Marco, barajarFijo } from "./comun";
 
 /**
  * Minijuego de ordenar: los pasos salen desordenados y el alumno los coloca
- * con las flechas. Sirve para procesos (cómo se declara, qué va antes).
+ * con las flechas (teclas pequeñas). Sirve para procesos (cómo se declara,
+ * qué va antes). Al comprobar, cada paso en su sitio se pone menta y el que
+ * no, coral; y suena a `acierto` con el orden perfecto o a `fallo` si no.
  *
  * datos: { titulo, instrucciones?, pasos: string[] }  ← en el orden CORRECTO
  */
@@ -35,6 +39,11 @@ export default function Ordenar({ datos }: { datos: DatosOrdenar }) {
   const [comprobado, setComprobado] = useState(false);
   const aciertos = orden.filter((v, i) => v === i).length;
 
+  function comprobar() {
+    sonar(aciertos === orden.length ? "acierto" : "fallo");
+    setComprobado(true);
+  }
+
   function mover(pos: number, delta: -1 | 1) {
     const destino = pos + delta;
     if (destino < 0 || destino >= orden.length) return;
@@ -56,12 +65,12 @@ export default function Ordenar({ datos }: { datos: DatosOrdenar }) {
               <span className="aula-orden-num">{pos + 1}</span>
               <span className="aula-orden-texto">{datos.pasos[paso]}</span>
               <span className="aula-orden-flechas">
-                <button type="button" onClick={() => mover(pos, -1)} disabled={pos === 0} aria-label="Subir">
-                  <ArrowUp size={15} />
-                </button>
-                <button type="button" onClick={() => mover(pos, 1)} disabled={pos === orden.length - 1} aria-label="Bajar">
-                  <ArrowDown size={15} />
-                </button>
+                <Tecla color="blanca" tamano="peq" icono onClick={() => mover(pos, -1)} disabled={pos === 0} aria-label="Subir">
+                  <ArrowUp size={16} strokeWidth={2.8} aria-hidden="true" />
+                </Tecla>
+                <Tecla color="blanca" tamano="peq" icono onClick={() => mover(pos, 1)} disabled={pos === orden.length - 1} aria-label="Bajar">
+                  <ArrowDown size={16} strokeWidth={2.8} aria-hidden="true" />
+                </Tecla>
               </span>
             </motion.li>
           );
@@ -69,17 +78,19 @@ export default function Ordenar({ datos }: { datos: DatosOrdenar }) {
       </ol>
 
       {comprobado && (
-        <div className={`aula-feedback ${aciertos === orden.length ? "is-buena" : "is-mala"}`}>
+        <div className={`aula-feedback ${aciertos === orden.length ? "is-buena" : "is-mala"}`} role="status">
           <strong>{aciertos === orden.length ? "Orden perfecto." : `${aciertos} de ${orden.length} en su sitio.`}</strong>{" "}
           {aciertos === orden.length ? "" : "Mueve las rojas y vuelve a comprobar."}
         </div>
       )}
 
       <div className="aula-bloque-acciones">
-        <button type="button" className="aula-btn" onClick={() => setComprobado(true)}>Comprobar</button>
-        <button type="button" className="aula-btn aula-btn--ghost" onClick={() => { setOrden(inicial); setComprobado(false); }}>
-          <RotateCcw size={14} aria-hidden="true" /> Empezar de nuevo
-        </button>
+        <Tecla color="menta" tamano="peq" onClick={comprobar}>
+          <Check size={15} strokeWidth={3} aria-hidden="true" /> Comprobar
+        </Tecla>
+        <Tecla color="blanca" tamano="peq" onClick={() => { setOrden(inicial); setComprobado(false); }}>
+          <RotateCcw size={14} strokeWidth={2.6} aria-hidden="true" /> Empezar de nuevo
+        </Tecla>
       </div>
     </Marco>
   );

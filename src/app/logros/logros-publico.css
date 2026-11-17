@@ -1,0 +1,151 @@
+/*
+ * /logros para quien no tiene cuenta (page.tsx). Estilo «Cuaderno de estudio»
+ * (17-11-2026): amarillo, el color de los logros, y la colección de pegatinas
+ * (components/panel/PegatinaLogro.tsx). Vivía en globals.css como
+ * `logros-gate-*` hasta ese día.
+ */
+
+.lgp {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+}
+
+.lgp * { color-scheme: light; }
+
+.lgp-main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem) 5rem;
+}
+
+.lgp :where(h1, h2, p, ul) { margin: 0; }
+.lgp :where(ul) { padding: 0; list-style: none; }
+
+.lgp-cab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.lgp-nota {
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  color: #7a5d00;
+  transform: rotate(-2deg);
+}
+
+.lgp-titulo {
+  font-family: var(--letra-titular);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+
+.lgp-sub {
+  max-width: 50ch;
+  margin-top: 0.4rem;
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.lgp-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 1.4rem;
+}
+
+/* La hoja con la colección. */
+.lgp-hoja {
+  position: relative;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 4vw, 2.5rem);
+  border-radius: 34px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o), 0 30px 50px -36px rgba(29, 27, 51, 0.5);
+}
+
+.lgp-postit {
+  position: absolute;
+  top: -18px;
+  left: clamp(1rem, 4vw, 2.5rem);
+  padding: 6px 14px;
+  background: var(--amarillo);
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  transform: rotate(-4deg);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+}
+
+.lgp-h2 {
+  font-family: var(--letra-titular);
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lgp-hoja-sub {
+  margin-top: 0.4rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.lgp-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 28px 16px;
+  margin-top: 2rem;
+}
+
+.lgp-logro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.lgp-logro .pgl { margin-bottom: 6px; }
+
+.lgp-logro-nombre { max-width: 100%; font-weight: 900; line-height: 1.25; overflow-wrap: anywhere; }
+
+.lgp-logro-cond {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+
+.lgp-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 2.2rem;
+  padding-top: 1.4rem;
+  border-top: 2px dashed var(--gris);
+}
+
+.lgp-pie-texto {
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  color: var(--tinta-2);
+}
+
+@media (max-width: 560px) {
+  .lgp-acciones .tecla { flex: 1 1 100%; }
+  .lgp-rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

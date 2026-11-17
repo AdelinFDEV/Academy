@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Shuffle } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { Marco, formatear } from "./comun";
 
 /**
@@ -79,7 +80,8 @@ export default function Rachas({ datos }: { datos: DatosRachas }) {
             {tirada.serie.map((gana, i) => <i key={i} className={gana ? "is-gana" : "is-pierde"} />)}
           </div>
           <div className="aula-calc-total aula-calc-total--3">
-            <div className="is-perdida"><span>Peor racha de pérdidas</span><strong>{tirada.rachaPerdidas} seguidas</strong></div>
+            {/* Un recuento, no una cifra con signo: sin el rojo de cifras. */}
+            <div><span>Peor racha de pérdidas</span><strong>{tirada.rachaPerdidas} seguidas</strong></div>
             <div className="is-perdida"><span>Peor caída desde un máximo</span><strong>{r(tirada.peorR)}</strong></div>
             <div className={tirada.totalR >= 0 ? "is-ganancia" : "is-perdida"}><span>Resultado de la serie</span><strong>{r(tirada.totalR)}</strong></div>
           </div>
@@ -91,9 +93,9 @@ export default function Rachas({ datos }: { datos: DatosRachas }) {
         </>
       )}
       <div className="aula-bloque-acciones">
-        <button type="button" className="aula-btn" onClick={lanzar}>
-          <Shuffle size={14} aria-hidden="true" /> {tirada ? "Otra serie" : "Simular"}
-        </button>
+        <Tecla tamano="peq" onClick={lanzar}>
+          <Shuffle size={15} strokeWidth={2.6} aria-hidden="true" /> {tirada ? "Otra serie" : "Simular"}
+        </Tecla>
       </div>
       {datos.nota && <p className="aula-bloque-nota">{datos.nota}</p>}
     </Marco>

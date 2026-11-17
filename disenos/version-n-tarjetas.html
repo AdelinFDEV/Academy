@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión N · Tarjetas de estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --fondo: #f3f5ff; --tinta: #14162b; --tinta-2: #6a6f8f; --azul: #4255ff; --azul-o: #2a3ad6; --coral: #ff6b5e; --coral-o: #d84b3f; --lima: #c6f432; --lima-o: #98bf14; --blanco: #fff; --gris: #dfe3f3; --gris-o: #c3c8de; --f: "Plus Jakarta Sans", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: var(--f); }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+  .boton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 26px; border-radius: 16px; font-weight: 800; font-size: 16px; color: #fff; background: var(--azul); box-shadow: 0 5px 0 var(--azul-o); transition: transform .08s, box-shadow .08s; }
+  .boton:hover { transform: translateY(3px); box-shadow: 0 2px 0 var(--azul-o); }
+  .boton--lima { background: var(--lima); color: var(--tinta); box-shadow: 0 5px 0 var(--lima-o); } .boton--lima:hover { box-shadow: 0 2px 0 var(--lima-o); }
+  .boton--blanco { background: #fff; color: var(--tinta); box-shadow: 0 5px 0 var(--gris-o); } .boton--blanco:hover { box-shadow: 0 2px 0 var(--gris-o); }
+
+  .nav .ancho { display: flex; justify-content: space-between; align-items: center; padding-top: 22px; padding-bottom: 22px; }
+  .marca { font-weight: 800; font-size: 24px; display: flex; align-items: center; gap: 10px; }
+  .marca i { width: 36px; height: 36px; border-radius: 10px; background: var(--azul); box-shadow: 0 4px 0 var(--azul-o); display: grid; place-items: center; color: #fff; font-style: normal; }
+  .enlaces { display: flex; gap: 6px; }
+  .enlaces a { padding: 9px 14px; border-radius: 12px; font-weight: 700; color: var(--tinta-2); }
+  .enlaces a:hover { background: #fff; color: var(--tinta); }
+
+  .hero .ancho { text-align: center; padding-top: 40px; padding-bottom: 30px; }
+  h1 { font-weight: 800; font-size: 68px; line-height: 1.02; letter-spacing: -0.035em; margin: 0 auto; max-width: 15ch; }
+  h1 span { color: var(--azul); }
+  .lead { font-size: 20px; color: var(--tinta-2); margin: 18px auto 0; max-width: 46ch; line-height: 1.55; font-weight: 500; }
+  .acciones { display: flex; gap: 14px; justify-content: center; margin-top: 28px; }
+
+  /* El mazo de tarjetas que giran */
+  .mazo { display: flex; justify-content: center; gap: 26px; padding: 50px 0 70px; perspective: 1400px; }
+  .tarjeta { width: 270px; height: 340px; position: relative; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,1.4,.5,1); cursor: pointer; }
+  .tarjeta:nth-child(1) { transform: rotate(-6deg) translateY(16px); } .tarjeta:nth-child(3) { transform: rotate(6deg) translateY(16px); }
+  .tarjeta:hover { transform: rotateY(180deg) translateY(-8px); }
+  .cara { position: absolute; inset: 0; border-radius: 26px; padding: 24px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 0 rgba(20,22,43,.12), 0 30px 50px -30px rgba(20,22,43,.5); }
+  .frente { background: #fff; }
+  .dorso { transform: rotateY(180deg); color: #fff; }
+  .cara small { font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-2); }
+  .dorso small { color: rgba(255,255,255,.75); }
+  .pregunta { font-size: 30px; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; }
+  .pista { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--tinta-2); font-size: 14px; }
+  .pista i { width: 30px; height: 30px; border-radius: 50%; background: var(--fondo); display: grid; place-items: center; font-style: normal; }
+  .respuesta { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .dorso p { margin: 0; font-weight: 600; line-height: 1.5; }
+
+  .barra-progreso { max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 14px; font-weight: 800; color: var(--tinta-2); }
+  .barra-progreso div { flex: 1; height: 16px; background: var(--gris); border-radius: 999px; overflow: hidden; }
+  .barra-progreso i { display: block; height: 100%; width: 62%; background: var(--lima); border-radius: 999px; box-shadow: inset 0 -4px 0 rgba(0,0,0,.08); }
+
+  h2 { font-weight: 800; font-size: 44px; letter-spacing: -0.03em; margin: 0; }
+  .sec { display: flex; justify-content: space-between; align-items: end; margin-bottom: 26px; }
+  .guias .ancho { padding-top: 70px; padding-bottom: 70px; }
+  .mazos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .mazo-guia { position: relative; height: 240px; }
+  .mazo-guia span { position: absolute; inset: 0; border-radius: 22px; background: #fff; box-shadow: 0 5px 0 var(--gris-o); }
+  .mazo-guia span:nth-child(1) { transform: rotate(-5deg); background: var(--gris); }
+  .mazo-guia span:nth-child(2) { transform: rotate(3deg); background: #eceffc; }
+  .mazo-guia .top { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .25s; }
+  .mazo-guia:hover .top { transform: translateY(-10px) rotate(-2deg); }
+  .top b { font-size: 60px; line-height: 1; letter-spacing: -0.04em; }
+  .top h3 { font-size: 22px; margin: 0; letter-spacing: -0.02em; }
+  .top em { font-style: normal; font-weight: 700; color: var(--tinta-2); font-size: 14px; }
+
+  .premium { margin: 0 28px 70px; background: var(--tinta); color: #fff; border-radius: 34px; }
+  .premium .ancho { padding-top: 60px; padding-bottom: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .premium p { color: #b6b9d4; font-size: 18px; line-height: 1.6; }
+  .fichas-premium { display: grid; gap: 14px; }
+  .ficha-p { background: #23264a; border-radius: 18px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px; box-shadow: 0 5px 0 #0b0c1d; transition: transform .1s, box-shadow .1s; }
+  .ficha-p:hover { transform: translateY(3px); box-shadow: 0 2px 0 #0b0c1d; }
+  .ficha-p span { font-size: 14px; color: #b6b9d4; }
+  .pie { text-align: center; padding: 0 28px 40px; color: var(--tinta-2); font-weight: 600; font-size: 14px; }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--lima); color: var(--tinta); font-weight: 800; font-size: 13px; padding: 10px 16px; border-radius: 14px; box-shadow: 0 4px 0 var(--lima-o); }
+</style>
+</head>
+<body>
+<header class="nav"><div class="ancho">
+  <span class="marca"><i>₿</i>AdelinBTC</span>
+  <nav class="enlaces"><a href="#">Guías</a><a href="#">Diccionario</a><a href="#">Cursos</a><a href="#">Foro</a></nav>
+  <a class="boton boton--blanco" href="#" style="padding:11px 18px;font-size:14px">Entrar</a>
+</div></header>
+
+<section class="hero"><div class="ancho">
+  <h1>Aprende cripto <span>tarjeta a tarjeta</span></h1>
+  <p class="lead">Pasa el ratón por encima y gíralas. Así son nuestras guías gratuitas: preguntas claras, respuestas que se entienden y un quiz para comprobarlo.</p>
+  <div class="acciones"><a class="boton" href="#">Empezar gratis</a><a class="boton boton--lima" href="#">Ver Premium</a></div>
+
+  <div class="mazo">
+    <div class="tarjeta"><div class="cara frente"><small>Bitcoin · 1/3</small><span class="pregunta">¿Cuántos bitcoin existirán como máximo?</span><span class="pista"><i>↻</i>Gira la tarjeta</span></div><div class="cara dorso" style="background:var(--azul)"><small>Respuesta</small><span class="respuesta">21 millones</span><p>Lo fija el propio código. Nadie puede imprimir más.</p></div></div>
+    <div class="tarjeta"><div class="cara frente"><small>Conceptos · 2/3</small><span class="pregunta">¿Qué es el halving?</span><span class="pista"><i>↻</i>Gira la tarjeta</span></div><div class="cara dorso" style="background:var(--coral)"><small>Respuesta</small><span class="respuesta">Recompensa ÷ 2</span><p>Cada unos cuatro años, los mineros reciben la mitad por bloque.</p></div></div>
+    <div class="tarjeta"><div class="cara frente"><small>Estrategia · 3/3</small><span class="pregunta">¿Qué es hacer DCA?</span><span class="pista"><i>↻</i>Gira la tarjeta</span></div><div class="cara dorso" style="background:#16a46b"><small>Respuesta</small><span class="respuesta">Comprar poco a poco</span><p>La misma cantidad cada cierto tiempo, pase lo que pase con el precio.</p></div></div>
+  </div>
+  <div class="barra-progreso"><span>Tu progreso</span><div><i></i></div><span>62 %</span></div>
+</div></section>
+
+<section class="guias"><div class="ancho">
+  <div class="sec"><h2>Mazos para estudiar</h2><a class="boton boton--blanco" href="#" style="padding:11px 18px;font-size:14px">Todas las guías</a></div>
+  <div class="mazos">
+    <a class="mazo-guia" href="#"><span></span><span></span><span class="top" style="background:#e8ebff"><b style="color:var(--azul)">H</b><span><h3>Hyperliquid</h3><em>Nueva · 14 min</em></span></span></a>
+    <a class="mazo-guia" href="#"><span></span><span></span><span class="top" style="background:#ffe9e6"><b style="color:var(--coral)">X</b><span><h3>XRP y Ripple</h3><em>Básico · 11 min</em></span></span></a>
+    <a class="mazo-guia" href="#"><span></span><span></span><span class="top" style="background:#f2fbd3"><b style="color:#5c7a00">R</b><span><h3>Render</h3><em>Intermedio · 12 min</em></span></span></a>
+    <a class="mazo-guia" href="#"><span></span><span></span><span class="top" style="background:#e5f7ef"><b style="color:#16a46b">W</b><span><h3>Worldcoin</h3><em>Básico · 10 min</em></span></span></a>
+  </div>
+</div></section>
+
+<section class="premium"><div class="ancho">
+  <div><h2>Cuando pases a operar</h2><p>Premium te da el diario de trading con Nova, la cartera real de Adelin y todos los cursos con certificado. 19,99 €/mes, sin permanencia.</p><a class="boton boton--lima" href="#">Hazte Premium</a></div>
+  <div class="fichas-premium"><a class="ficha-p" href="#">Diario de Trading<span>con Nova</span></a><a class="ficha-p" href="#">Portfolio Adelin<span>en directo</span></a><a class="ficha-p" href="#">Cursos<span>con certificado</span></a></div>
+</div></section>
+
+<footer class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No es asesoramiento financiero</footer>
+<span class="etiqueta-maqueta">Versión N · Tarjetas de estudio (maqueta)</span>
+</body>
+</html>

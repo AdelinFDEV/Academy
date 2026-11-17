@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { certificadosDelAlumno } from "@/lib/cursos";
 import Certificado from "@/components/aula/Certificado";
+import Tecla from "@/components/cuaderno/Tecla";
 import BotonImprimir from "@/components/aula/BotonImprimir";
 import "@/components/vitrina-certificados.css";
 import "../certificados.css";
@@ -31,37 +31,44 @@ export default async function CertificadoVitrinaPage({ params }: Props) {
   if (!cert) notFound();
 
   return (
-    <main className="dashboard-main">
+    <main className="dashboard-main cv-page">
+      <header className="pn-cab tono-lila">
+        <Tecla href="/dashboard/certificados" color="blanca" tamano="peq" className="pn-volver">
+          <ArrowLeft size={14} strokeWidth={2.6} aria-hidden="true" /> Mis certificados
+        </Tecla>
+        <p className="pn-mano">tu certificado</p>
+        <h1 className="pn-titulo">{cert.curso.titulo}</h1>
+        <p className="pn-lead">
+          Pulsa «Descargar en PDF» y, en el diálogo de impresión, elige «Guardar como PDF». Sale en A4
+          apaisado, con tu nota y el código que cualquiera puede comprobar.
+        </p>
+        <div className="cv-acciones">
+          <BotonImprimir color="lila" />
+          <Tecla href={`/cursos/verificar/${cert.codigo}`} color="blanca">
+            <ShieldCheck size={16} aria-hidden="true" /> Página de verificación
+          </Tecla>
+        </div>
+      </header>
+
+      {/* El certificado, sujeto con cinta a la hoja. Su diseño es suyo
+          (components/aula/Certificado.tsx): aquí solo se enmarca. */}
       <div className="cv-detalle">
-        <Link href="/dashboard/certificados" className="cv-volver">
-          <ArrowLeft size={15} aria-hidden="true" /> Mis certificados
-        </Link>
-        <header className="cv-detalle-cab">
-          <div>
-            <h1 className="cv-detalle-titulo">{cert.curso.titulo}</h1>
-            <p className="cv-detalle-sub">
-              Pulsa «Descargar en PDF» y, en el diálogo de impresión, elige «Guardar como PDF». Sale en A4
-              apaisado, con tu nota y el código que cualquiera puede comprobar.
-            </p>
-          </div>
-          <div className="cv-acciones">
-            <BotonImprimir className="cv-btn cv-btn--grande" />
-            <Link href={`/cursos/verificar/${cert.codigo}`} className="cv-btn cv-btn--ghost">
-              <ShieldCheck size={15} aria-hidden="true" /> Página de verificación
-            </Link>
-          </div>
-        </header>
-        <Certificado
-          nombre={cert.nombre}
-          curso={cert.curso.titulo}
-          logro={cert.curso.logro}
-          notaFinal={cert.nota_final}
-          notaModulos={cert.nota_modulos}
-          notaExamen={cert.nota_examen}
-          fecha={cert.created_at}
-          codigo={cert.codigo}
-          color={cert.curso.color}
-        />
+        <div className="cv-marco cv-marco--grande">
+          <span className="cv-cinta cv-cinta--1" aria-hidden="true" />
+          <span className="cv-cinta cv-cinta--2" aria-hidden="true" />
+          <Certificado
+            completo
+            nombre={cert.nombre}
+            curso={cert.curso.titulo}
+            logro={cert.curso.logro}
+            notaFinal={cert.nota_final}
+            notaModulos={cert.nota_modulos}
+            notaExamen={cert.nota_examen}
+            fecha={cert.created_at}
+            codigo={cert.codigo}
+            color={cert.curso.color}
+          />
+        </div>
       </div>
     </main>
   );

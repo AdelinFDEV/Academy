@@ -6,6 +6,8 @@ import {
   PieChart, ListOrdered, Bitcoin, CalendarClock, Target, Eye, GraduationCap, HeartCrack, Ruler, Crown,
   RefreshCw, Layers,
 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import Anotacion from "@/components/cuaderno/Anotacion";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
@@ -40,6 +42,12 @@ import "./portfolio.css";
  * (valor, P&L, mejor y peor posición, mayor peso, reparto, tabla ordenable;
  * rentabilidad del DCA, BTC acumulado, precio medio, ritmo, gráfico de
  * compras y la proyección rotulada). Si cambian, revisa esta página.
+ *
+ * Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md): el Portfolio
+ * es menta; el DCA de bitcoin, naranja (el color de bitcoin y de la marca);
+ * Premium y el pago, naranja, con el precio en el bloque de tinta. Todos los
+ * botones son `<Tecla>`. Los colores de las monedas de las maquetas son los de
+ * la paleta: dicen «monedas», no cuáles.
  */
 export const metadata: Metadata = {
   title: "Portfolio real de cripto, posición a posición",
@@ -52,8 +60,8 @@ export const metadata: Metadata = {
 const PRECIO = precioEur(PREMIUM_PRICE_EUR);
 const PRECIO_DIA = precioEur(Math.round((PREMIUM_PRICE_EUR / 30) * 100) / 100);
 
-/** Colores de los círculos de las maquetas: dicen «monedas», no cuáles. */
-const COLORES = ["#4f9dff", "#f7931a", "#a78bfa", "#22d3ee", "#34d399", "#f472b6"];
+/** Colores de los círculos de las maquetas (los de la paleta): dicen «monedas», no cuáles. */
+const COLORES = ["var(--menta)", "var(--naranja)", "var(--lila)", "var(--cielo)", "var(--azul)", "var(--coral)"];
 
 /** El reparto de la maqueta del spot: tramos del anillo (suman 100). */
 const REPARTO = [34, 24, 18, 14, 10];
@@ -154,23 +162,22 @@ function ConTermino({ text, termino }: { text: string; termino?: { texto: string
 
 /** El botón principal. Quien ya es Premium abre la herramienta; el resto paga. */
 function Cta({ premium, grande = false, texto = "Ver la cartera completa" }: { premium: boolean; grande?: boolean; texto?: string }) {
-  const clase = `fh-btn${grande ? " fh-btn--grande" : ""}`;
   if (premium) {
     return (
-      <Link href="/portfolio" className={clase}>
+      <Tecla href="/portfolio" color="menta" tamano={grande ? "grande" : "normal"}>
         Abrir el portfolio
-        <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
-      </Link>
+        <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+      </Tecla>
     );
   }
   // /api/checkout manda primero al registro si no hay sesión y vuelve solo
   // al pago (ver su ruta): un paso menos que pasar por /premium.
   return (
-    <Link href="/api/checkout" prefetch={false} className={clase}>
-      <Lock size={16} strokeWidth={2.4} aria-hidden="true" />
+    <Tecla href="/api/checkout" prefetch={false} tamano={grande ? "grande" : "normal"}>
+      <Lock size={16} strokeWidth={2.6} aria-hidden="true" />
       {texto}
-      <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
-    </Link>
+      <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+    </Tecla>
   );
 }
 
@@ -180,7 +187,7 @@ function ListaTrae({ items }: { items: Trae[] }) {
     <ul className="pa-trae">
       {items.map(({ icon: Icon, titulo, texto, termino }) => (
         <li key={titulo}>
-          <span className="pa-trae-icono" aria-hidden="true"><Icon size={16} strokeWidth={2.1} /></span>
+          <span className="pa-trae-icono" aria-hidden="true"><Icon size={16} strokeWidth={2.4} /></span>
           <span className="pa-trae-texto">
             <strong>{titulo}</strong>
             <span><ConTermino text={texto} termino={termino} /></span>
@@ -222,8 +229,7 @@ export default async function FichaPortfolioPage() {
   }));
 
   return (
-    <div className="blog-page">
-      <div className="bg-ambient" />
+    <div className="blog-page fh-pagina">
       <JsonLd
         data={[
           breadcrumbSchema([
@@ -243,10 +249,7 @@ export default async function FichaPortfolioPage() {
 
       <SiteNav user={!!user} isPremium={isPremium} isAdmin={role === "admin"} />
 
-      <main
-        className={`fh pa${isPremium ? "" : " fh--con-barra"}`}
-        style={{ "--fh-acento": "#4f9dff", "--fh-acento-2": "#a8c9ff" } as React.CSSProperties}
-      >
+      <main className="fh fh-c-menta pa">
         <nav className="fh-migas" aria-label="Migas de pan">
           <Link href="/">Inicio</Link>
           <span aria-hidden="true">›</span>
@@ -254,19 +257,19 @@ export default async function FichaPortfolioPage() {
         </nav>
 
         {/* ── Cabecera: la promesa y el panel, velado ─────────────────────── */}
-        <section className="pa-hero">
-          <div className="pa-hero-texto">
-            <span className="pa-sello">
-              <span className="pa-sello-icono" aria-hidden="true"><IconoPortfolio size={15} /></span>
+        <section className="fh-hero pa-hero">
+          <div className="fh-hero-texto">
+            <span className="fh-eyebrow">
+              <IconoPortfolio size={15} />
               Cartera real · Precios en vivo
             </span>
 
-            <h1 className="pa-titulo">
-              Portfolio Adelin
-              <span>Mira mi cartera real, posición a posición.</span>
+            <h1 className="fh-titulo">
+              Portfolio <span className="fluor">Adelin</span>
+              <span className="fh-titulo-2">Mira mi cartera real, posición a posición.</span>
             </h1>
 
-            <p className="pa-lead">
+            <p className="fh-lead">
               Qué compré, a qué precio entré y cuánto lleva cada moneda, con precios de mercado al momento. Mi cartera
               en <Link href="/glosario/spot">spot</Link> y mi <Link href="/glosario/dca">DCA</Link> de Bitcoin.{" "}
               <strong>También lo que va en pérdidas.</strong>
@@ -294,7 +297,7 @@ export default async function FichaPortfolioPage() {
             )}
 
             <div className="fh-cta">
-              <Cta premium={isPremium} />
+              <Cta premium={isPremium} grande />
               {!isPremium && (
                 <p className="fh-cta-nota">
                   <ShieldCheck size={14} aria-hidden="true" />
@@ -310,15 +313,14 @@ export default async function FichaPortfolioPage() {
             </div>
           </div>
 
-          {/* El panel tal y como es, con lo de pago velado. Plano y nítido:
-              girado en 3D emborronaba el texto. */}
+          {/* El panel tal y como es, con lo de pago velado. */}
           <div className="pa-escena">
             <div className="pa-panel" aria-label="Vista previa del panel del Portfolio Adelin">
               <div className="pa-panel-barra">
-                <span className="pa-puntos" aria-hidden="true"><i /><i /><i /></span>
+                <span className="fh-ventana-puntos" aria-hidden="true"><i /><i /><i /></span>
                 <span className="pa-pestanas" aria-hidden="true">
-                  <span className="is-activa" style={{ "--t": spot.color } as React.CSSProperties}>{spot.label}</span>
-                  <span style={{ "--t": dca.color } as React.CSSProperties}>{dca.label}</span>
+                  <span className="is-activa">{spot.label}</span>
+                  <span>{dca.label}</span>
                 </span>
                 <span className="pa-vivo"><span aria-hidden="true" />En vivo</span>
               </div>
@@ -326,7 +328,7 @@ export default async function FichaPortfolioPage() {
               <div className="pa-panel-cuerpo">
                 <div className="pa-kpis">
                   <div className="pa-kpi pa-kpi--principal">
-                    <span className="pa-etiqueta">Valor actual</span>
+                    <span className="fh-cifra-label">Valor actual</span>
                     <span className="pa-velo pa-velo--grande" aria-hidden="true" />
                     {resumen ? (
                       <span className={`pa-pill ${sube ? "es-sube" : "es-baja"}`}>
@@ -338,12 +340,12 @@ export default async function FichaPortfolioPage() {
                     )}
                   </div>
                   <div className="pa-kpi">
-                    <span className="pa-etiqueta">Invertido</span>
+                    <span className="fh-cifra-label">Invertido</span>
                     <span className="pa-velo pa-velo--medio" aria-hidden="true" />
                     <small>Coste de entrada</small>
                   </div>
                   <div className="pa-kpi">
-                    <span className="pa-etiqueta">Posiciones</span>
+                    <span className="fh-cifra-label">Posiciones</span>
                     <b>{resumen ? resumen.posiciones : "—"}</b>
                     <small>
                       {resumen && conPrecio > 0
@@ -375,21 +377,21 @@ export default async function FichaPortfolioPage() {
               </div>
 
               <div className="pa-candado">
-                <span className="pa-candado-icono"><Lock size={17} strokeWidth={2.4} aria-hidden="true" /></span>
+                <span className="pa-candado-icono"><Lock size={17} strokeWidth={2.6} aria-hidden="true" /></span>
                 <p>
                   {resumen
                     ? <><strong>{resumen.posiciones} posiciones reales</strong> con su precio de entrada</>
                     : <><strong>Todas las posiciones</strong> con su precio de entrada</>}
                 </p>
                 {!isPremium && (
-                  <Link href="/api/checkout" prefetch={false} className="pa-candado-btn">
-                    Desbloquear <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
-                  </Link>
+                  <Tecla href="/api/checkout" prefetch={false} tamano="peq">
+                    Desbloquear <ArrowRight size={14} strokeWidth={2.6} aria-hidden="true" />
+                  </Tecla>
                 )}
               </div>
             </div>
 
-            {/* Un aviso flotante. Decorativo: lo que dice ya está en la página. */}
+            {/* Un pósit pegado al panel. Decorativo: lo que dice ya está en la página. */}
             <div className="pa-flota" aria-hidden="true">
               <span className="pa-flota-icono"><CoinGeckoGlyph size={16} /></span>
               <span><b>Precios de CoinGecko</b><small>al abrir y al refrescar</small></span>
@@ -399,10 +401,10 @@ export default async function FichaPortfolioPage() {
 
         {/* ── Las cifras, calculadas al abrir ─────────────────────────────── */}
         {resumen && (
-          <section className="pa-cifras" aria-labelledby="pa-cifras-titulo">
+          <section className="fh-bloque pa-cifras" aria-labelledby="pa-cifras-titulo">
             <div className="pa-cabeza">
-              <span className="pa-kicker pa-kicker--verde"><Radio size={14} aria-hidden="true" /> Calculado ahora mismo</span>
-              <h2 id="pa-cifras-titulo" className="pa-h2">Números que no se pueden maquillar</h2>
+              <span className="fh-kicker"><Radio size={14} aria-hidden="true" /> Calculado ahora mismo</span>
+              <h2 id="pa-cifras-titulo" className="fh-h2">Números que no se pueden <Anotacion tipo="circle" color="var(--menta)">maquillar</Anotacion></h2>
               <p className="pa-p">
                 Salen de la cartera de verdad y de los precios de mercado de este momento. Si fueran negativos, se
                 verían igual.
@@ -410,7 +412,7 @@ export default async function FichaPortfolioPage() {
             </div>
 
             <div className="pa-cifras-rejilla">
-              <div className="pa-cifra pa-cifra--azul">
+              <div className="pa-cifra">
                 <span className="pa-cifra-cab">
                   <span className="pa-cifra-icono" aria-hidden="true"><Layers size={16} /></span>
                   Rentabilidad de la cartera spot
@@ -421,7 +423,7 @@ export default async function FichaPortfolioPage() {
                 </small>
               </div>
 
-              <div className="pa-cifra pa-cifra--azul">
+              <div className="pa-cifra">
                 <span className="pa-cifra-cab">
                   <span className="pa-cifra-icono" aria-hidden="true"><Scale size={16} /></span>
                   En verde y en rojo
@@ -464,7 +466,7 @@ export default async function FichaPortfolioPage() {
             </div>
 
             <p className="pa-cifras-nota">
-              <RefreshCw size={12} aria-hidden="true" />
+              <RefreshCw size={13} aria-hidden="true" />
               Sin importes a propósito: el capital no prueba nada. La rentabilidad, sí.
             </p>
           </section>
@@ -473,8 +475,8 @@ export default async function FichaPortfolioPage() {
         {/* ── Dos carteras ────────────────────────────────────────────────── */}
         <section className="fh-bloque" aria-labelledby="pa-carteras-titulo">
           <div className="pa-cabeza">
-            <span className="pa-kicker"><PieChart size={14} aria-hidden="true" /> Lo que hay dentro</span>
-            <h2 id="pa-carteras-titulo" className="pa-h2">Dos carteras, cada una por su lado</h2>
+            <span className="fh-kicker"><PieChart size={14} aria-hidden="true" /> Lo que hay dentro</span>
+            <h2 id="pa-carteras-titulo" className="fh-h2">Dos carteras, cada una por su lado</h2>
             <p className="pa-p">
               No se suman a propósito: el DCA y las compras puntuales son estrategias distintas, y una media de las
               dos no describiría a ninguna.
@@ -483,9 +485,9 @@ export default async function FichaPortfolioPage() {
 
           <div className="pa-carteras">
             {/* ── Spot ── */}
-            <article className="pa-cartera" style={{ "--c": spot.color } as React.CSSProperties}>
+            <article className="pa-cartera pa-cartera--spot">
               <header className="pa-cartera-cab">
-                <span className="pa-cartera-icono" aria-hidden="true"><Layers size={20} strokeWidth={2.1} /></span>
+                <span className="pa-cartera-icono" aria-hidden="true"><Layers size={20} strokeWidth={2.4} /></span>
                 <span>
                   <span className="pa-cartera-etiqueta">{spot.label}</span>
                   <h3>Cada moneda, con su precio de entrada</h3>
@@ -541,9 +543,9 @@ export default async function FichaPortfolioPage() {
             </article>
 
             {/* ── DCA ── */}
-            <article className="pa-cartera" style={{ "--c": dca.color } as React.CSSProperties}>
+            <article className="pa-cartera pa-cartera--dca">
               <header className="pa-cartera-cab">
-                <span className="pa-cartera-icono" aria-hidden="true"><Bitcoin size={20} strokeWidth={2.1} /></span>
+                <span className="pa-cartera-icono" aria-hidden="true"><Bitcoin size={20} strokeWidth={2.4} /></span>
                 <span>
                   <span className="pa-cartera-etiqueta">{dca.label}</span>
                   <h3>Bitcoin, compra a compra, pase lo que pase</h3>
@@ -591,7 +593,7 @@ export default async function FichaPortfolioPage() {
               <ListaTrae items={DCA_TRAE} />
 
               <p className="pa-cartera-nota">
-                <Target size={13} aria-hidden="true" />
+                <Target size={14} aria-hidden="true" />
                 Incluye una proyección a un precio redondo, rotulada como supuesto: no es una previsión.
               </p>
             </article>
@@ -601,14 +603,14 @@ export default async function FichaPortfolioPage() {
         {/* ── Qué se aprende ──────────────────────────────────────────────── */}
         <section className="fh-bloque" aria-labelledby="pa-aprende-titulo">
           <div className="pa-cabeza">
-            <span className="pa-kicker"><GraduationCap size={14} aria-hidden="true" /> Para qué sirve</span>
-            <h2 id="pa-aprende-titulo" className="pa-h2">No es para copiar. Es para aprender a gestionar</h2>
+            <span className="fh-kicker"><GraduationCap size={14} aria-hidden="true" /> Para qué sirve</span>
+            <h2 id="pa-aprende-titulo" className="fh-h2">No es para copiar. Es para aprender a gestionar</h2>
           </div>
           <div className="pa-aprende">
             {APRENDES.map(({ icon: Icon, titulo, texto, termino }, i) => (
               <article key={titulo} className="pa-aprende-tarjeta">
                 <span className="pa-aprende-cab">
-                  <span className="pa-aprende-icono" aria-hidden="true"><Icon size={19} strokeWidth={2} /></span>
+                  <span className="fh-icono" aria-hidden="true"><Icon size={19} strokeWidth={2.2} /></span>
                   <span className="pa-aprende-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                 </span>
                 <h3>{titulo}</h3>
@@ -621,19 +623,19 @@ export default async function FichaPortfolioPage() {
         {/* ── Frente a lo habitual ────────────────────────────────────────── */}
         <section className="fh-bloque" aria-labelledby="pa-versus-titulo">
           <div className="pa-cabeza">
-            <h2 id="pa-versus-titulo" className="pa-h2">Lo que suele enseñarse, y lo que ves aquí</h2>
+            <h2 id="pa-versus-titulo" className="fh-h2">Lo que suele enseñarse, y lo que ves aquí</h2>
           </div>
           <div className="pa-versus">
             <div className="pa-versus-col pa-versus-col--no">
-              <span className="pa-versus-cab"><X size={15} strokeWidth={2.6} aria-hidden="true" /> En redes</span>
+              <span className="pa-versus-cab"><span className="fh-marca"><X size={13} strokeWidth={3.2} aria-hidden="true" /></span> En redes</span>
               <ul>
-                {COMPARA.map((c) => <li key={c.otros}><X size={14} strokeWidth={2.6} aria-hidden="true" />{c.otros}</li>)}
+                {COMPARA.map((c) => <li key={c.otros}><X size={14} strokeWidth={3} aria-hidden="true" />{c.otros}</li>)}
               </ul>
             </div>
             <div className="pa-versus-col pa-versus-col--si">
-              <span className="pa-versus-cab"><Check size={15} strokeWidth={2.6} aria-hidden="true" /> Portfolio Adelin</span>
+              <span className="pa-versus-cab"><span className="fh-marca"><Check size={13} strokeWidth={3.2} aria-hidden="true" /></span> Portfolio Adelin</span>
               <ul>
-                {COMPARA.map((c) => <li key={c.aqui}><Check size={14} strokeWidth={2.8} aria-hidden="true" />{c.aqui}</li>)}
+                {COMPARA.map((c) => <li key={c.aqui}><Check size={14} strokeWidth={3.2} aria-hidden="true" />{c.aqui}</li>)}
               </ul>
             </div>
           </div>
@@ -643,7 +645,9 @@ export default async function FichaPortfolioPage() {
         <section className="fh-bloque fh-bloque--estrecho">
           <h2 className="fh-h2 fh-h2--peq">Para que nadie se lleve otra idea</h2>
           <ul className="fh-noes">
-            {NO_ES.map((n) => <li key={n}>{n}</li>)}
+            {NO_ES.map((n) => (
+              <li key={n}><span className="fh-marca" aria-hidden="true"><X size={12} strokeWidth={3.2} /></span>{n}</li>
+            ))}
           </ul>
           <p className="fh-nota">
             Solo hay compras en spot: sin <Link href="/glosario/futuros">futuros</Link> ni{" "}
@@ -652,32 +656,31 @@ export default async function FichaPortfolioPage() {
           </p>
         </section>
 
-        {/* ── Precio y llamada final ──────────────────────────────────────── */}
-        <section className="pa-precio" id="suscribirse" aria-labelledby="pa-precio-titulo">
-          <div className="pa-precio-texto">
-            <span className="pa-kicker pa-kicker--oro"><Crown size={14} aria-hidden="true" /> Premium · todo incluido</span>
-            <h2 id="pa-precio-titulo" className="pa-precio-titulo">Ábrelo y júzgalo tú</h2>
-            <ul className="pa-incluye">
-              <li><Check size={14} strokeWidth={3} aria-hidden="true" />Portfolio Adelin: spot y DCA de Bitcoin</li>
-              <li><Check size={14} strokeWidth={3} aria-hidden="true" />Precios de mercado en cada posición</li>
-              <li><Check size={14} strokeWidth={3} aria-hidden="true" />El <Link href="/herramientas/diario">Diario de Trading</Link> con Nova</li>
-              <li><Check size={14} strokeWidth={3} aria-hidden="true" />Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
+        {/* ── Precio y llamada final, en el bloque de tinta de Premium ────── */}
+        <section className="fh-precio" id="suscribirse" aria-labelledby="pa-precio-titulo">
+          <div className="fh-precio-texto">
+            <span className="fh-sello"><Crown size={14} aria-hidden="true" /> Premium · todo incluido</span>
+            <h2 id="pa-precio-titulo" className="fh-precio-titulo">Ábrelo y júzgalo tú</h2>
+            <ul className="fh-incluye">
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Portfolio Adelin: spot y DCA de Bitcoin</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Precios de mercado en cada posición</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/diario">Diario de Trading</Link> con Nova</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
             </ul>
           </div>
 
-          <div className="pa-precio-caja">
+          <div className="fh-precio-caja">
             {isPremium ? (
-              <p className="pa-precio-ya">Ya tienes acceso.</p>
+              <p className="fh-precio-ya">Ya tienes acceso.</p>
             ) : (
               <>
-                <span className="pa-precio-plan"><Crown size={13} aria-hidden="true" /> Premium</span>
-                <p className="pa-precio-cifra">{PRECIO}<span>/mes</span></p>
-                <p className="pa-precio-dia">Unos {PRECIO_DIA} al día · el precio se te queda fijado</p>
+                <p className="fh-precio-cifra">{PRECIO}<span>/mes</span></p>
+                <p className="fh-precio-dia">Unos {PRECIO_DIA} al día · el precio se te queda fijado</p>
               </>
             )}
             <Cta premium={isPremium} grande texto="Desbloquear el portfolio" />
             {!isPremium && (
-              <ul className="pa-confianza">
+              <ul className="fh-confianza">
                 <li><ShieldCheck size={13} aria-hidden="true" />Sin permanencia</li>
                 <li><Zap size={13} aria-hidden="true" />Acceso inmediato</li>
                 <li><CreditCard size={13} aria-hidden="true" />Pago seguro con Stripe</li>
@@ -690,27 +693,20 @@ export default async function FichaPortfolioPage() {
         <section className="fh-bloque fh-bloque--estrecho">
           <h2 className="fh-h2">Preguntas frecuentes</h2>
           <div className="fh-faq">
-            {FAQ.map((f) => (
+            {FAQ.map((f, i) => (
               <details key={f.q} className="fh-faq-item">
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
+                <summary>
+                  <span className="fh-faq-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="fh-faq-q">{f.q}</span>
+                  <span className="fh-faq-icono" aria-hidden="true"><ArrowRight size={16} strokeWidth={3} /></span>
+                </summary>
+                <div className="fh-faq-respuesta"><p>{f.a}</p></div>
               </details>
             ))}
           </div>
         </section>
 
         <DisclaimerRiesgo variante="portfolio" />
-
-        {/* Barra fija en móvil: en pantalla pequeña el botón de la cabecera se
-            pierde al primer gesto, y aquí es donde se decide. */}
-        {!isPremium && (
-          <div className="fh-barra">
-            <span className="fh-barra-precio">{PRECIO}<small>/mes</small></span>
-            <Link href="/api/checkout" prefetch={false} className="fh-barra-btn">
-              Desbloquear <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
-            </Link>
-          </div>
-        )}
       </main>
 
       <Footer />

@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
-import { motion } from "framer-motion";
+import { useMemo, type CSSProperties } from "react";
 import TjPeriodSummary from "./TjPeriodSummary";
 import TjBreakdown from "./TjBreakdown";
 import { TjInfo } from "./TjControls";
@@ -136,103 +135,117 @@ export default function TjAnalysis({ trades, ctx }: { trades: Trade[]; ctx: Map<
   ];
   const grossMax = Math.max(stats.grossProfit, stats.grossLoss, 1e-9);
 
+  const share = (n: number) => `${(n / Math.max(stats.count, 1)) * 100}%`;
+  const barra = (c: string): CSSProperties => ({ "--c": c } as CSSProperties);
+
   return (
     <>
-      <dl className="tjn-head">
+      <dl className="dja-cuatro">
         {headline.map(k => (
-          <div key={k.label} className={`tjn-kpi${k.tone ? ` tone-${k.tone}` : ""}`}>
-            <dt>{k.label} <TjInfo label={k.label}>{k.info}</TjInfo></dt>
-            <dd className="tjn-kpi-value">{k.value}</dd>
-            <dd className="tjn-kpi-sub">{k.sub}</dd>
+          <div key={k.label} className="dj-hoja dja-kpi">
+            <dt className="dj-etq">{k.label} <TjInfo label={k.label}>{k.info}</TjInfo></dt>
+            <dd className={`dj-cifra dja-kpi-cifra${k.tone ? ` tone-${k.tone}` : ""}`}>{k.value}</dd>
+            <dd className="dja-kpi-pie">{k.sub}</dd>
             {k.label === "Acierto" && stats.count > 0 && (
-              <dd className="tjn-split-bar" aria-hidden="true">
-                <i className="tone-win" style={{ width: `${(stats.wins / stats.count) * 100}%` }} />
-                <i className="tone-be" style={{ width: `${(stats.bes / stats.count) * 100}%` }} />
-                <i className="tone-loss" style={{ width: `${(stats.losses / stats.count) * 100}%` }} />
+              <dd className="dja-reparto" aria-hidden="true">
+                <i className="tone-win" style={{ width: share(stats.wins) }} />
+                <i className="tone-be" style={{ width: share(stats.bes) }} />
+                <i className="tone-loss" style={{ width: share(stats.losses) }} />
               </dd>
             )}
           </div>
         ))}
       </dl>
 
-      <section className="tj-card tjn-duel">
-        <header className="tjr-head">
+      <section className="dj-hoja">
+        <header className="dj-cabeza">
           <div>
             <h3>Ganadoras frente a perdedoras</h3>
-            <span className="tj-count">
-              {stats.payoff != null
-                ? `Cada ganadora vale de media ${stats.payoff.toFixed(2).replace(".", ",")} veces una perdedora`
-                : "Hacen falta ganadoras y perdedoras para compararlas"}
-            </span>
+            <p>Lo mismo medido a cada lado, para compararlo de un vistazo</p>
           </div>
         </header>
-        <div className="tjn-duel-bars" aria-hidden="true">
-          <span className="tone-win"><motion.i initial={{ width: 0 }} animate={{ width: `${(stats.grossProfit / grossMax) * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }} /></span>
-          <span className="tone-loss"><motion.i initial={{ width: 0 }} animate={{ width: `${(stats.grossLoss / grossMax) * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }} /></span>
-        </div>
-        <table className="tjn-duel-table">
-          <thead>
-            <tr>
-              <th scope="col"><span className="sr-only">Medida</span></th>
-              <th scope="col" className="tone-win">Ganadoras</th>
-              <th scope="col" className="tone-loss">Perdedoras</th>
-            </tr>
-          </thead>
-          <tbody>
-            {duel.map(d => (
-              <tr key={d.label}>
-                <th scope="row">{d.label}</th>
-                <td className="tone-win">{d.win}</td>
-                <td className="tone-loss">{d.loss}</td>
+        <div className="dja-duelo-cuerpo">
+          <div className="dja-duelo-izq">
+            <div className="dja-duelo-barras" aria-hidden="true">
+              <span className="dj-etq">Ganado</span>
+              <span className="dj-barra" style={barra("var(--sube)")}>
+                <i style={{ width: `${(stats.grossProfit / grossMax) * 100}%` }} />
+              </span>
+              <span className="dj-etq">Perdido</span>
+              <span className="dj-barra" style={barra("var(--baja)")}>
+                <i style={{ width: `${(stats.grossLoss / grossMax) * 100}%`, animationDelay: "120ms" }} />
+              </span>
+            </div>
+            <p className="dja-lectura">
+              {stats.payoff != null
+                ? <>Cada ganadora vale de media <b>{stats.payoff.toFixed(2).replace(".", ",")} veces</b> una perdedora.</>
+                : "Hacen falta ganadoras y perdedoras para compararlas."}
+            </p>
+          </div>
+          <table className="dja-duelo-tabla">
+            <thead>
+              <tr>
+                <th scope="col"><span className="sr-only">Medida</span></th>
+                <th scope="col"><span className="dj-chip tone-win">Ganadoras</span></th>
+                <th scope="col"><span className="dj-chip tone-loss">Perdedoras</span></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {duel.map(d => (
+                <tr key={d.label}>
+                  <th scope="row">{d.label}</th>
+                  <td className="tone-win">{d.win}</td>
+                  <td className="tone-loss">{d.loss}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <TjPeriodSummary trades={trades} ctx={ctx} />
 
-      <div className="tjn-pair">
-        <section className="tj-card tjn-hist">
-          <header className="tjr-head">
+      <div className="dja-par">
+        <section className="dj-hoja">
+          <header className="dj-cabeza">
             <div>
               <h3>Distribución en R</h3>
-              <span className="tj-count">Cuántas operaciones cerraron en cada tramo de riesgo</span>
+              <p>Cuántas operaciones cerraron en cada tramo de riesgo</p>
             </div>
           </header>
-          <div className="tjn-hist-bars">
+          <div className="dja-hist-barras">
             {histogram.map((b, i) => (
-              <div key={b.label} className={`tone-${b.tone}${b.count ? "" : " is-zero"}`} title={plural(b.count, "operación", "operaciones")}>
+              <div
+                key={b.label}
+                className={`tone-${b.tone}${b.count ? "" : " is-cero"}`}
+                title={`${b.label}: ${plural(b.count, "operación", "operaciones")}`}
+              >
                 <strong>{b.count || ""}</strong>
-                <motion.i
-                  initial={{ height: 0 }}
-                  animate={{ height: `${Math.max((b.count / histMax) * 100, b.count ? 4 : 0)}%` }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 + i * 0.06 }}
-                />
+                <i style={{ height: `${Math.max((b.count / histMax) * 100, b.count ? 4 : 0)}%`, animationDelay: `${100 + i * 60}ms` }} />
               </div>
             ))}
           </div>
-          <div className="tjn-hist-axis" aria-hidden="true">
+          <div className="dja-hist-eje" aria-hidden="true">
             {histogram.map(b => <span key={b.label}>{b.label}</span>)}
           </div>
+          <span className="dj-nota dja-hist-nota">a la derecha del 0R, lo que ganaste</span>
         </section>
 
-        <section className="tj-card tjn-risk">
-          <header className="tjr-head">
+        <section className="dj-hoja">
+          <header className="dj-cabeza">
             <div>
               <h3>Riesgo y ejecución</h3>
-              <span className="tj-count">Cómo planeas y cómo cumples el plan</span>
+              <p>Cómo planeas y cómo cumples el plan</p>
             </div>
           </header>
-          <dl className="tjn-risk-list">
+          <dl className="dja-papeles">
             {riskItems.map(r => (
-              <div key={r.label} className={r.tone ? `tone-${r.tone}` : "tone-none"}>
+              <div key={r.label} className={`dja-papel${r.tone ? ` is-${r.tone}` : ""}`}>
                 <dt>
-                  <span className="tjn-risk-dot" aria-hidden="true" />
-                  <span className="tjn-risk-label">{r.label} <TjInfo label={r.label}>{r.info}</TjInfo></span>
-                  <span className="tjn-risk-sub">{r.sub}</span>
+                  <span className="dja-papel-tit">{r.label} <TjInfo label={r.label}>{r.info}</TjInfo></span>
+                  <span className="dja-papel-pie">{r.sub}</span>
                 </dt>
-                <dd>{r.value}</dd>
+                <dd className={`dj-cifra${r.tone ? ` tone-${r.tone}` : ""}`}>{r.value}</dd>
               </div>
             ))}
           </dl>

@@ -1,14 +1,26 @@
 "use client";
 
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { useSonidoVentana } from "./useSonidoVentana";
+import { bloquearScroll } from "./useVentanaMovil";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
-import { Activity, CalendarCheck, ChevronLeft, ChevronRight, Crown, Target, TrendingDown, TrendingUp, X, ArrowUpRight, ArrowDownRight, Pencil, Plus, NotebookPen } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Star, TrendingDown, TrendingUp, X, ArrowUpRight, ArrowDownRight, Pencil, Plus, NotebookPen } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { TjSegmented } from "./TjControls";
 import { WEEKDAYS, WEEKDAY_NAMES, MONTHS, pnlStr, rStr, toneOf } from "./tjFormat";
 import { rOf, resultTone, type Trade } from "./tjStats";
 import { animoDeMedia, animoInfo, fechaKey, type DiaDiario, type DiasMap } from "./tjDias";
 import { Cara } from "./TjDayJournal";
+
+/*
+ * El calendario del Diario (17-11-2026, estilo «Cuaderno de estudio»): una hoja
+ * de calendario de papel, con sus anillas arriba y el mes en grande. Cada día
+ * pulsable es una tecla teñida por el signo de su resultado (verde suave si
+ * ganó, rojo suave si perdió, gris si quedó en breakeven, papel si no hubo
+ * operaciones); los días futuros, apagados; hoy, rodeado a boli. El CSS vive
+ * en src/app/dashboard/trading/diario-calendario.css (prefijo djc-).
+ */
 
 interface DayInfo {
   pnl: number;
@@ -22,12 +34,16 @@ interface DayInfo {
 
 type Mode = "month" | "year";
 type Unit = "usd" | "r";
+type Pestana = "resumen" | "dias" | "pares";
 
 /**
  * Puntos de un día: uno por operación, hasta este tope; el resto va como «+n».
  * Cuatro caben siempre en su hueco junto a las marcas, en cualquier ancho.
  */
 const MAX_DOTS = 4;
+
+/** Anillas de la hoja (en móvil se esconden las que no caben). */
+const ANILLAS = 14;
 
 function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -87,11 +103,23 @@ const timeOf = (iso: string) =>
 const isTyping = (el: EventTarget | null) =>
   el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
+/** El tono de un día o de un mes, como clase de la tecla (el color lo pone el CSS). */
+const SIGNO = { win: "gana", loss: "pierde", be: "be" } as const;
+
 function DayDots({ trades }: { trades: Trade[] }) {
   return (
-    <span className="tjc-dots" aria-hidden="true">
+    <span className="djc-puntos" aria-hidden="true">
       {trades.slice(0, MAX_DOTS).map(t => <i key={t.id} className={`tone-${resultTone(t.result)}`} />)}
       {trades.length > MAX_DOTS && <em>+{trades.length - MAX_DOTS}</em>}
+    </span>
+  );
+}
+
+/** La pegatina del mejor día (o mes): una estrella pequeña, ladeada. */
+function Estrella({ className = "" }: { className?: string }) {
+  return (
+    <span className={`djc-estrella ${className}`} aria-hidden="true">
+      <Star size={12} strokeWidth={2.6} />
     </span>
   );
 }
@@ -102,7 +130,6 @@ interface Props {
   onEdit: (t: Trade) => void;
   /** Abre el formulario de operación nueva con esa fecha. */
   onAdd: (date: Date) => void;
-  /** Ánimo y nota de cada día, por fecha AAAA-MM-DD. */
   /** Ánimo y nota de cada día, para marcarlos en su casilla. Se apuntan desde el formulario de operación. */
   dias: DiasMap;
 }
@@ -118,7 +145,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   const [selected, setSelected] = useState<number | null>(null);
   // Vista Año: el mes cuyo resumen está abierto en una ventana, y su pestaña.
   const [mesAbierto, setMesAbierto] = useState<number | null>(null);
-  const [pestana, setPestana] = useState<"resumen" | "dias" | "pares">("resumen");
+  const [pestana, setPestana] = useState<Pestana>("resumen");
   const abrirResumen = (m: number) => { setPestana("resumen"); setMesAbierto(m); };
 
   const dayMap = useMemo(() => buildDayMap(trades), [trades]);
@@ -172,57 +199,64 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
 
   // Con una ventana abierta (un día o el resumen de un mes), la página de detrás no se desplaza.
   const hayVentana = selected != null || mesAbierto != null;
+  useSonidoVentana(selected != null);
+  useSonidoVentana(mesAbierto != null);
   useEffect(() => {
     if (!hayVentana) return;
-    const antes = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = antes; };
+    return bloquearScroll();
   }, [hayVentana]);
 
   const isCurrent = mode === "year" ? year === now.getFullYear() : year === now.getFullYear() && month === now.getMonth();
+  const totalDias = new Date(year, month + 1, 0).getDate();
 
   return (
-    <section className="tj-card tjc" aria-label="Calendario de operaciones">
-      <header className="tjc-head">
-        <div className="tjc-head-main">
-          <div className="tjc-titulo">
-            <h2 className="tjc-title">
+    <MotionConfig reducedMotion="user">
+      <section className="dj-hoja djc" aria-label="Calendario de operaciones">
+        {/* Las anillas de la hoja de calendario: puro adorno. */}
+        <div className="djc-anillas" aria-hidden="true">
+          {Array.from({ length: ANILLAS }, (_, i) => <i key={i} />)}
+        </div>
+
+        <header className="djc-cab">
+          <div className="djc-titulo">
+            <span className="dj-etq">{mode === "month" ? "Calendario de operaciones" : "El año, mes a mes"}</span>
+            <h2 className="djc-mes">
               {mode === "month" ? (
-                <><span className="cap">{MONTHS[month]}</span> <span className="tjc-year">{year}</span></>
+                <><span className="cap">{MONTHS[month]}</span> <span className="djc-anio">{year}</span></>
               ) : (
                 <>{year}</>
               )}
             </h2>
-            {mode === "month" && isCurrent && (() => {
-              const total = new Date(year, month + 1, 0).getDate();
-              return (
-                <span className="tjc-avance">
-                  <i aria-hidden="true"><b style={{ width: `${(now.getDate() / total) * 100}%` }} /></i>
-                  Día {now.getDate()} de {total}
-                </span>
-              );
-            })()}
+            {mode === "month" && isCurrent && (
+              <div className="djc-avance">
+                <span className="dj-nota">Día {now.getDate()} de {totalDias}</span>
+                <span className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(now.getDate() / totalDias) * 100}%` }} /></span>
+              </div>
+            )}
           </div>
-          <div className="tjc-nav">
-            <button type="button" onClick={() => shift(-1)} aria-label={mode === "year" ? "Año anterior" : "Mes anterior"} title="Flecha izquierda">
-              <ChevronLeft size={16} />
-            </button>
-            <button type="button" onClick={goToday} disabled={isCurrent} className="tjc-today">Hoy</button>
-            <button type="button" onClick={() => shift(1)} aria-label={mode === "year" ? "Año siguiente" : "Mes siguiente"} title="Flecha derecha">
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-        <div className="tjc-head-tools">
-          <TjSegmented label="Unidad" value={unit} onChange={setUnit}
-            options={[{ value: "usd", label: "$" }, { value: "r", label: "R" }]} />
-          <TjSegmented label="Vista del calendario" value={mode} onChange={v => { setSelected(null); setMode(v); }}
-            options={[{ value: "month", label: "Mes" }, { value: "year", label: "Año" }]} />
-        </div>
-      </header>
 
-      {mode === "month" ? renderMonth() : renderYear()}
-    </section>
+          <div className="djc-mandos">
+            <div className="djc-nav">
+              <Tecla color="blanca" tamano="peq" icono onClick={() => shift(-1)} aria-label={mode === "year" ? "Año anterior" : "Mes anterior"} title="Flecha izquierda">
+                <ChevronLeft size={18} strokeWidth={2.6} />
+              </Tecla>
+              <Tecla color="azul" tamano="peq" onClick={goToday} disabled={isCurrent}>Hoy</Tecla>
+              <Tecla color="blanca" tamano="peq" icono onClick={() => shift(1)} aria-label={mode === "year" ? "Año siguiente" : "Mes siguiente"} title="Flecha derecha">
+                <ChevronRight size={18} strokeWidth={2.6} />
+              </Tecla>
+            </div>
+            <div className="djc-vistas">
+              <TjSegmented label="Unidad" value={unit} onChange={setUnit}
+                options={[{ value: "usd", label: "$" }, { value: "r", label: "R" }]} />
+              <TjSegmented label="Vista del calendario" value={mode} onChange={v => { setSelected(null); setMode(v); }}
+                options={[{ value: "month", label: "Mes" }, { value: "year", label: "Año" }]} />
+            </div>
+          </div>
+        </header>
+
+        {mode === "month" ? renderMonth() : renderYear()}
+      </section>
+    </MotionConfig>
   );
 
   // Vistas como funciones de render, no como componentes: un componente definido
@@ -240,7 +274,6 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
     const prevDays = monthCells(prevDate.getFullYear(), prevDate.getMonth()).filter((d): d is number => d != null);
     const prev = sumInfos(prevDays.map(d => infoOf(prevDate.getFullYear(), prevDate.getMonth(), d)).filter((i): i is DayInfo => !!i));
     const diff = { pnl: sum.pnl - prev.pnl, r: sum.r - prev.r };
-    const maxAbs = Math.max(...active.map(d => Math.abs(valueOf(d.info))), 1e-9);
     // Mejor día del mes: el de mayor resultado, solo si fue positivo.
     const best = active.reduce<{ day: number; info: DayInfo } | null>(
       (b, d) => (valueOf(d.info) > (b ? valueOf(b.info) : 0) ? d : b),
@@ -252,169 +285,169 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
 
     return (
       <>
-        <dl className="tjc-band">
-          <div className={`tjc-band-main tone-${toneOf(valueOf(sum))}`}>
-            <dt><span className="tjc-band-ico" aria-hidden="true">{valueOf(sum) < 0 ? <TrendingDown size={16} /> : <TrendingUp size={16} />}</span>Resultado del mes</dt>
-            <dd>{sum.count ? fmt(sum) : "—"}</dd>
+        <dl className="djc-franja">
+          <div className={`djc-dato djc-dato--total djc-${SIGNO[toneOf(valueOf(sum))]}`}>
+            <dt className="dj-etq">
+              <span className="djc-dato-ico" aria-hidden="true">{valueOf(sum) < 0 ? <TrendingDown size={15} /> : <TrendingUp size={15} />}</span>
+              Resultado del mes
+            </dt>
+            <dd className={`dj-cifra djc-dato-grande tone-${toneOf(valueOf(sum))}`}>{sum.count ? fmt(sum) : "—"}</dd>
             {prev.count > 0 && (
-              <dd className={`tjc-band-diff tone-${toneOf(valueOf(diff))}`}>
-                {valueOf(diff) >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+              <dd className={`dj-chip tone-${toneOf(valueOf(diff))}`}>
+                {valueOf(diff) >= 0 ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
                 {fmt(diff)} frente a {MONTHS[prevDate.getMonth()]}
               </dd>
             )}
           </div>
-          <div>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><Activity size={15} /></span>Operaciones</dt><dd>{sum.count}</dd>
+          <div className="djc-dato">
+            <dt className="dj-etq">Operaciones</dt>
+            <dd className="dj-cifra">{sum.count}</dd>
           </div>
-          <div>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><Target size={15} /></span>Acierto</dt><dd>{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd>
-            {sum.count > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>}
+          <div className="djc-dato">
+            <dt className="dj-etq">Acierto</dt>
+            <dd className="dj-cifra">{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd>
+            {sum.count > 0 && <dd className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></dd>}
           </div>
-          <div>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><CalendarCheck size={15} /></span>Días en verde</dt><dd>{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd>
-            {sum.days > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.green / sum.days) * 100}%` }} /></i>}
+          <div className="djc-dato">
+            <dt className="dj-etq">Días en verde</dt>
+            <dd className="dj-cifra">{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd>
+            {sum.days > 0 && <dd className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(sum.green / sum.days) * 100}%` }} /></dd>}
           </div>
-          <div className={best ? "tjc-band-mejor" : undefined}>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><Crown size={15} /></span>Mejor día</dt>
-            <dd>{best ? `${best.day} de ${MONTHS[month].slice(0, 3)}.` : "—"}</dd>
-            {best && <dd className="tjc-band-sub">{fmt(best.info)}</dd>}
+          <div className={`djc-dato${best ? " is-mejor" : ""}`}>
+            <dt className="dj-etq">{best && <Estrella className="djc-estrella--linea" />}Mejor día</dt>
+            <dd className="dj-cifra">{best ? `${best.day} de ${MONTHS[month].slice(0, 3)}.` : "—"}</dd>
+            {best && <dd className="djc-dato-sub tone-win">{fmt(best.info)}</dd>}
           </div>
-          <div className={`tjc-band-mood${moodAvg ? ` mood-${moodAvg.value}` : ""}`}>
-            <dt>Ánimo del mes</dt>
-            <dd>{moodAvg ? <><Cara valor={moodAvg.value} /> {moodAvg.label}</> : "—"}</dd>
+          <div className={`djc-dato djc-dato--animo${moodAvg ? ` mood-${moodAvg.value}` : ""}`}>
+            <dt className="dj-etq">Ánimo del mes</dt>
+            <dd className="djc-dato-animo">{moodAvg ? <><Cara valor={moodAvg.value} /> {moodAvg.label}</> : "—"}</dd>
           </div>
         </dl>
 
-        <div className="tjc-grid tjc-weekdays" aria-hidden="true">
-          {WEEKDAYS.map((w, i) => <span key={w} className={i > 4 ? "is-weekend" : undefined}>{w}</span>)}
-          <span className="tjc-weekhead">Semana</span>
-        </div>
+        <div>
+          <div className="djc-cols djc-dias-sem" aria-hidden="true">
+            {WEEKDAYS.map((w, i) => <span key={w} className={i > 4 ? "is-finde" : undefined}>{w}</span>)}
+            <span className="djc-dias-sem-tot">Semana</span>
+          </div>
 
-        <div className="tjc-viewport">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={`${year}-${month}`}
-              className="tjc-grid"
-              initial={{ opacity: 0, x: direction * 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -direction * 24 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-            >
-              {weeks.map((week, w) => {
-                const wk = sumInfos(week.map(d => (d ? infoOf(year, month, d) : undefined)).filter((i): i is DayInfo => !!i));
-                const firstDay = week.find((d): d is number => d != null)!;
-                return (
-                  <Fragment key={w}>
-                    {week.map((day, i) => {
-                      if (day == null) return <div key={i} className="tjc-day is-empty" />;
-                      const info = infoOf(year, month, day);
-                      const isToday = dayKey(new Date(year, month, day)) === today;
-                      const future = isFuture(year, month, day);
-                      const dia = diaOf(year, month, day);
-                      const mood = dia?.animo ? animoInfo(dia.animo) : null;
-                      const isBest = best?.day === day;
-                      const cls = [
-                        "tjc-day",
-                        i > 4 && "is-weekend",
-                        info && `tone-${toneOf(valueOf(info))} has-data`,
-                        !info && !future && "is-open",
-                        mood && `mood-${mood.value}`,
-                        future && "is-future",
-                        isToday && "is-today",
-                        isBest && "is-best",
-                        selected === day && "is-selected",
-                      ].filter(Boolean).join(" ");
-                      const label = [
-                        `${day} de ${MONTHS[month]}`,
-                        info ? `${fmt(info)} en ${info.trades.length} ${info.trades.length === 1 ? "operación" : "operaciones"}` : "sin operaciones",
-                        isBest && "mejor día del mes",
-                        mood && `ánimo: ${mood.label.toLowerCase()}`,
-                        dia?.nota && "con nota",
-                      ].filter(Boolean).join(", ");
+          <div className="djc-ventanilla">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={`${year}-${month}`}
+                className="djc-cols djc-rejilla"
+                initial={{ opacity: 0, x: direction * 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -direction * 24 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+              >
+                {weeks.map((week, w) => {
+                  const wk = sumInfos(week.map(d => (d ? infoOf(year, month, d) : undefined)).filter((i): i is DayInfo => !!i));
+                  const firstDay = week.find((d): d is number => d != null)!;
+                  return (
+                    <Fragment key={w}>
+                      {week.map((day, i) => {
+                        if (day == null) return <div key={i} className="djc-hueco" aria-hidden="true" />;
+                        const info = infoOf(year, month, day);
+                        const isToday = dayKey(new Date(year, month, day)) === today;
+                        const future = isFuture(year, month, day);
+                        const dia = diaOf(year, month, day);
+                        const mood = dia?.animo ? animoInfo(dia.animo) : null;
+                        const isBest = best?.day === day;
+                        const signo = info ? SIGNO[toneOf(valueOf(info))] : null;
+                        const cls = [
+                          "djc-dia",
+                          i > 4 && "is-finde",
+                          signo ? `djc-${signo}` : "is-vacio",
+                          isToday && "is-hoy",
+                          isBest && "is-mejor",
+                          selected === day && "is-pulsada",
+                        ].filter(Boolean).join(" ");
+                        const label = [
+                          `${day} de ${MONTHS[month]}`,
+                          info ? `${fmt(info)} en ${info.trades.length} ${info.trades.length === 1 ? "operación" : "operaciones"}` : "sin operaciones",
+                          isBest && "mejor día del mes",
+                          mood && `ánimo: ${mood.label.toLowerCase()}`,
+                          dia?.nota && "con nota",
+                        ].filter(Boolean).join(", ");
 
-                      if (future) {
+                        if (future) {
+                          return (
+                            <div key={i} className={`djc-dia is-futuro${isToday ? " is-hoy" : ""}`}>
+                              <span className="djc-num">{day}</span>
+                            </div>
+                          );
+                        }
+                        // Día con operaciones: abre su panel. Día pasado sin operaciones: el «+»
+                        // abre el formulario de operación nueva en esa fecha, que ya trae sus sensaciones.
+                        const addOn = () => onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes()));
                         return (
-                          <div key={i} className={cls}>
-                            <span className="tjc-num">{day}</span>
-                          </div>
+                          <Tecla
+                            key={i}
+                            color="blanca"
+                            className={cls}
+                            onClick={info ? () => setSelected(selected === day ? null : day) : addOn}
+                            aria-pressed={info ? selected === day : undefined}
+                            aria-label={info ? label : `${label}. Apuntar una operación este día`}
+                          >
+                            {/*
+                              Huecos fijos (rejilla con áreas en diario-calendario.css), uno por
+                              cosa: número · ánimo / resultado / puntos · nota. Nada comparte
+                              hueco, así que nada se pisa. Si el calendario se estrecha (móvil),
+                              la casilla se queda en lo mínimo: número, ánimo y un punto de color.
+                            */}
+                            {isBest && <Estrella />}
+                            <span className="djc-num">{day}</span>
+                            {mood && <span className="djc-emoji" title={mood.label} aria-hidden="true"><Cara valor={mood.value} peq /></span>}
+                            {info && <strong className={`djc-pnl tone-${toneOf(valueOf(info))}`}>{fmt(info)}</strong>}
+                            {info && <DayDots trades={info.trades} />}
+                            {info && <i className={`djc-punto tone-${toneOf(valueOf(info))}`} aria-hidden="true" />}
+                            {!info && <span className="djc-mas" aria-hidden="true"><Plus size={14} strokeWidth={3} /></span>}
+                            {dia?.nota && <span className="djc-con-nota" aria-hidden="true"><NotebookPen size={12} /></span>}
+                          </Tecla>
                         );
-                      }
-                      // Día con operaciones: abre su panel. Día pasado sin operaciones: el «+»
-                      // abre el formulario de operación nueva en esa fecha, que ya trae sus sensaciones.
-                      const addOn = () => onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes()));
-                      return (
-                        <button
-                          key={i}
-                          type="button"
-                          className={cls}
-                          style={info ? ({ "--intensity": 0.25 + 0.75 * (Math.abs(valueOf(info)) / maxAbs) } as React.CSSProperties) : undefined}
-                          onClick={info ? () => setSelected(selected === day ? null : day) : addOn}
-                          aria-pressed={info ? selected === day : undefined}
-                          aria-label={info ? label : `${label}. Apuntar una operación este día`}
-                        >
-                          {/*
-                            Cinco huecos fijos (rejilla con áreas en trading.css), uno por cosa:
-                            número · ánimo / resultado / operaciones · marcas. Nada comparte
-                            hueco, así que nada se pisa; si la casilla se estrecha, se ocultan
-                            por orden según su propio ancho, no el de la pantalla.
-                          */}
-                          {isBest && <span className="tjc-corona" title="Tu mejor día del mes" aria-hidden="true"><Crown size={17} strokeWidth={2.3} /></span>}
-                          <span className="tjc-num">{day}</span>
-                          {mood && <span className="tjc-mood" title={mood.label} aria-hidden="true"><Cara valor={mood.value} /></span>}
-                          {info && <strong className="tjc-pnl">{fmt(info)}</strong>}
-                          {info && <DayDots trades={info.trades} />}
-                          {!info && <span className="tjc-plus" aria-hidden="true"><Plus size={14} /></span>}
-                          {dia?.nota && (
-                            <span className="tjc-flags" aria-hidden="true">
-                              <NotebookPen size={12} className="tjc-flag-note" />
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                    <div className={`tjc-week${wk.count ? ` tone-${toneOf(valueOf(wk))}` : " is-quiet"}`}>
-                      <span className="tjc-week-label">Sem. {isoWeek(new Date(year, month, firstDay))}</span>
-                      {wk.count ? (
-                        <>
-                          <strong>{fmt(wk)}</strong>
-                          <span className="tjc-week-meta">{wk.count} op. · {Math.round((wk.wins / wk.count) * 100)} %</span>
-                          <i className="tjc-week-barra" aria-hidden="true"><b style={{ width: `${(wk.wins / wk.count) * 100}%` }} /></i>
-                        </>
-                      ) : (
-                        <span className="tjc-week-meta">—</span>
-                      )}
-                    </div>
-                  </Fragment>
-                );
-              })}
-            </motion.div>
-          </AnimatePresence>
+                      })}
+                      <div className={`djc-semana${wk.count ? ` djc-${SIGNO[toneOf(valueOf(wk))]}` : " is-quieta"}`}>
+                        <span className="djc-semana-n">Sem. {isoWeek(new Date(year, month, firstDay))}</span>
+                        {wk.count ? (
+                          <>
+                            <strong className={`djc-semana-pnl tone-${toneOf(valueOf(wk))}`}>{fmt(wk)}</strong>
+                            <span className="djc-semana-meta">{wk.count} op. · {Math.round((wk.wins / wk.count) * 100)} %</span>
+                            <span className="dj-barra dj-barra--fina djc-semana-barra" aria-hidden="true"><i style={{ width: `${(wk.wins / wk.count) * 100}%` }} /></span>
+                          </>
+                        ) : (
+                          <span className="djc-semana-meta">Sin operaciones</span>
+                        )}
+                      </div>
+                    </Fragment>
+                  );
+                })}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
-        <ul className="tjc-leyenda" aria-label="Qué significa cada marca">
-          <li><i className="tone-win" /> Ganada</li>
-          <li><i className="tone-loss" /> Perdida</li>
-          <li><i className="tone-be" /> Breakeven</li>
-          <li><span className="tjc-leyenda-corona"><Crown size={11} strokeWidth={2.4} /></span> Mejor día del mes</li>
-          <li><NotebookPen size={12} /> Con nota</li>
-          <li><span className="tjc-leyenda-mas"><Plus size={11} /></span> Pulsa un día vacío para apuntar</li>
+        <ul className="djc-leyenda" aria-label="Qué significa cada marca">
+          <li><i className="djc-muestra djc-gana" /> Día en ganancia</li>
+          <li><i className="djc-muestra djc-pierde" /> Día en pérdida</li>
+          <li><i className="djc-muestra djc-be" /> Breakeven</li>
+          <li><span className="djc-puntos"><i className="tone-win" /><i className="tone-loss" /><i className="tone-be" /></span> Un punto por operación</li>
+          <li><Estrella className="djc-estrella--linea" /> Mejor día del mes</li>
+          <li><NotebookPen size={13} /> Con nota</li>
+          <li><span className="djc-leyenda-mas"><Plus size={11} strokeWidth={3} /></span> Pulsa un día vacío para apuntar</li>
         </ul>
 
         {/* Las operaciones del día pulsado: una ventana en el centro de la pantalla
             (pedido por el admin el 13-11-2026; antes se desplegaba bajo el calendario
             y había que bajar a buscarla). Va en un portal para quedar por encima de
-            todo; `tjc-dia-velo` recibe las variables de color del Diario en el CSS. */}
+            todo; el velo lleva `trading-journal` para heredar las piezas del Diario. */}
         {selected != null && infoOf(year, month, selected) && createPortal(
-          <div className="tjc-dia-velo" onClick={() => setSelected(null)}>
+          <div className="dj-velo trading-journal" onClick={() => setSelected(null)}>
             <div
-              className={`tjc-dia${best?.day === selected ? " is-mejor" : ""}`}
+              className={`dj-ventana djc-ventana${best?.day === selected ? " is-mejor" : ""}`}
               role="dialog" aria-modal="true" aria-label={`Operaciones del ${selected} de ${MONTHS[month]}`}
               onClick={e => e.stopPropagation()}
             >
-              {best?.day === selected && (
-                <p className="tjc-dia-mejor"><span className="tjc-leyenda-corona" aria-hidden="true"><Crown size={11} strokeWidth={2.4} /></span> Tu mejor día de {MONTHS[month]}</p>
-              )}
-              {renderDayDetail(selected, infoOf(year, month, selected)!)}
+              {renderDayDetail(selected, infoOf(year, month, selected)!, best?.day === selected)}
             </div>
           </div>,
           document.body,
@@ -424,61 +457,84 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   }
 
   /** Panel de un día con operaciones: la lista para verlas o editarlas, y añadir otra. */
-  function renderDayDetail(day: number, info: DayInfo) {
+  function renderDayDetail(day: number, info: DayInfo, esMejor: boolean) {
     const date = new Date(year, month, day);
     const weekday = WEEKDAY_NAMES[(date.getDay() + 6) % 7];
     const isToday = dayKey(date) === today;
+    const dia = diaOf(year, month, day);
+    const mood = dia?.animo ? animoInfo(dia.animo) : null;
     return (
-      <div className="tjc-detail-inner">
-        <div className="tjc-detail-head">
-          <div>
-            <span className="tjc-detail-date">{isToday ? "Hoy, " : ""}{weekday} {day} de {MONTHS[month]}</span>
-            <span className="tjc-detail-meta">
-              {info.trades.length} {info.trades.length === 1 ? "operación" : "operaciones"}
-              {info.wins > 0 && ` · ${info.wins} ganada${info.wins === 1 ? "" : "s"}`}
-              {info.losses > 0 && ` · ${info.losses} perdida${info.losses === 1 ? "" : "s"}`}
-              {info.bes > 0 && ` · ${info.bes} BE`}
-            </span>
-          </div>
-          <div className="tjc-detail-total">
-            <strong className={`tone-${toneOf(info.pnl)}`}>{pnlStr(info.pnl)}</strong>
-            <span className={`tone-${toneOf(info.r)}`}>{rStr(info.r)}</span>
-          </div>
-          <button type="button" className="tj-icon-btn" onClick={() => setSelected(null)} aria-label="Cerrar el detalle del día" title="Cerrar (Esc)" autoFocus>
-            <X size={15} />
-          </button>
+      <>
+        <Tecla color="blanca" tamano="peq" icono className="dj-ventana-cerrar" onClick={() => setSelected(null)} aria-label="Cerrar el detalle del día" title="Cerrar (Esc)" autoFocus>
+          <X size={18} strokeWidth={2.6} />
+        </Tecla>
+
+        <header className="djc-v-cab">
+          {esMejor && (
+            <span className="djc-v-mejor"><Estrella className="djc-estrella--linea" /> Tu mejor día de {MONTHS[month]}</span>
+          )}
+          <span className="dj-etq">{isToday ? "Hoy" : "El día"}</span>
+          <h3 className="djc-v-fecha"><span className="cap">{weekday}</span> {day} de {MONTHS[month]}</h3>
+          <p className="djc-v-meta">
+            {info.trades.length} {info.trades.length === 1 ? "operación" : "operaciones"}
+            {info.wins > 0 && ` · ${info.wins} ganada${info.wins === 1 ? "" : "s"}`}
+            {info.losses > 0 && ` · ${info.losses} perdida${info.losses === 1 ? "" : "s"}`}
+            {info.bes > 0 && ` · ${info.bes} BE`}
+          </p>
+        </header>
+
+        <div className={`djc-v-total djc-${SIGNO[toneOf(info.pnl)]}`}>
+          <strong className={`dj-cifra tone-${toneOf(info.pnl)}`}>{pnlStr(info.pnl)}</strong>
+          <span className={`dj-chip tone-${toneOf(info.r)}`}>{rStr(info.r)}</span>
         </div>
-        <ul className="tjc-detail-list">
+
+        {(mood || dia?.nota) && (
+          <div className={`djc-v-animo${mood ? ` mood-${mood.value}` : ""}`}>
+            {mood && <span className="djc-v-animo-cara"><Cara valor={mood.value} peq /> {mood.label}</span>}
+            {dia?.nota && <p className="djc-v-nota">{dia.nota}</p>}
+          </div>
+        )}
+
+        <ul className="djc-v-lista">
           {info.trades.map(t => {
             const r = rOf(t);
             return (
-              <li key={t.id} className={`tone-${resultTone(t.result)}`}>
-                <span className="tjc-detail-time">{timeOf(t.date)}</span>
-                <span className="tjc-detail-pair">
+              <li key={t.id} className={`djc-v-op djc-${SIGNO[resultTone(t.result)]}`}>
+                <span className="djc-v-hora">{timeOf(t.date)}</span>
+                <span className="djc-v-par">
                   {t.pair}
-                  <span className={`tj-dir is-${t.direction}`}>
+                  <span className={`dj-dir is-${t.direction}`}>
                     {t.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                     {t.direction === "long" ? "Long" : "Short"}
                   </span>
                 </span>
-                <span className="tjc-detail-strategy">{t.strategy ?? ""}</span>
-                <span className={`tjc-detail-r tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</span>
-                <strong className={`tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</strong>
-                <button type="button" className="tj-icon-btn" onClick={() => { setSelected(null); onEdit(t); }} aria-label={`Editar ${t.pair} de las ${timeOf(t.date)}`} title="Editar">
-                  <Pencil size={13} />
-                </button>
+                {t.strategy && <span className="djc-v-estrategia">{t.strategy}</span>}
+                <span className={`djc-v-r tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</span>
+                <strong className={`djc-v-pnl tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</strong>
+                <Tecla
+                  color="blanca"
+                  tamano="peq"
+                  icono
+                  className="djc-v-editar"
+                  onClick={() => { setSelected(null); onEdit(t); }}
+                  aria-label={`Editar ${t.pair} de las ${timeOf(t.date)}`}
+                  title="Editar"
+                >
+                  <Pencil size={15} />
+                </Tecla>
               </li>
             );
           })}
         </ul>
-        <button
-          type="button"
-          className="tjc-detail-add"
+
+        <Tecla
+          color="azul"
+          ancho
           onClick={() => { setSelected(null); onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes())); }}
         >
-          <Plus size={14} /> Añadir otra operación este día
-        </button>
-      </div>
+          <Plus size={16} strokeWidth={3} /> Añadir otra operación este día
+        </Tecla>
+      </>
     );
   }
 
@@ -507,68 +563,69 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
 
     return (
       <>
-        <dl className="tjc-band">
-          <div className={`tjc-band-main tone-${toneOf(valueOf(total))}`}>
-            <dt><span className="tjc-band-ico" aria-hidden="true">{valueOf(total) < 0 ? <TrendingDown size={16} /> : <TrendingUp size={16} />}</span>Resultado de {year}</dt>
-            <dd>{total.count ? fmt(total) : "—"}</dd>
-            {mediaMes && <dd className="tjc-band-diff">{fmt(mediaMes)} de media por mes operado</dd>}
+        <dl className="djc-franja">
+          <div className={`djc-dato djc-dato--total djc-${SIGNO[toneOf(valueOf(total))]}`}>
+            <dt className="dj-etq">
+              <span className="djc-dato-ico" aria-hidden="true">{valueOf(total) < 0 ? <TrendingDown size={15} /> : <TrendingUp size={15} />}</span>
+              Resultado de {year}
+            </dt>
+            <dd className={`dj-cifra djc-dato-grande tone-${toneOf(valueOf(total))}`}>{total.count ? fmt(total) : "—"}</dd>
+            {mediaMes && <dd className="djc-dato-sub">{fmt(mediaMes)} de media por mes operado</dd>}
           </div>
-          <div>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><Activity size={15} /></span>Operaciones</dt>
-            <dd>{total.count}</dd>
+          <div className="djc-dato">
+            <dt className="dj-etq">Operaciones</dt>
+            <dd className="dj-cifra">{total.count}</dd>
           </div>
-          <div>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><Target size={15} /></span>Acierto</dt>
-            <dd>{total.count ? `${Math.round((total.wins / total.count) * 100)} %` : "—"}</dd>
-            {total.count > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(total.wins / total.count) * 100}%` }} /></i>}
+          <div className="djc-dato">
+            <dt className="dj-etq">Acierto</dt>
+            <dd className="dj-cifra">{total.count ? `${Math.round((total.wins / total.count) * 100)} %` : "—"}</dd>
+            {total.count > 0 && <dd className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(total.wins / total.count) * 100}%` }} /></dd>}
           </div>
-          <div>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><CalendarCheck size={15} /></span>Meses en verde</dt>
-            <dd>{traded.length ? `${greenMonths}/${traded.length}` : "—"}</dd>
-            {traded.length > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(greenMonths / traded.length) * 100}%` }} /></i>}
+          <div className="djc-dato">
+            <dt className="dj-etq">Meses en verde</dt>
+            <dd className="dj-cifra">{traded.length ? `${greenMonths}/${traded.length}` : "—"}</dd>
+            {traded.length > 0 && <dd className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(greenMonths / traded.length) * 100}%` }} /></dd>}
           </div>
-          <div className={best ? "tjc-band-mejor" : undefined}>
-            <dt><span className="tjc-band-ico" aria-hidden="true"><Crown size={15} /></span>Mejor mes</dt>
-            <dd className="cap">{best ? MONTHS[best.m] : "—"}</dd>
-            {best && <dd className="tjc-band-sub">{fmt(best.sum)}</dd>}
+          <div className={`djc-dato${best ? " is-mejor" : ""}`}>
+            <dt className="dj-etq">{best && <Estrella className="djc-estrella--linea" />}Mejor mes</dt>
+            <dd className="dj-cifra cap">{best ? MONTHS[best.m] : "—"}</dd>
+            {best && <dd className="djc-dato-sub tone-win">{fmt(best.sum)}</dd>}
           </div>
-          <div className={`tjc-band-mood${yearMood ? ` mood-${yearMood.value}` : ""}`}>
-            <dt>Ánimo del año</dt>
-            <dd>{yearMood ? <><Cara valor={yearMood.value} /> {yearMood.label}</> : "—"}</dd>
+          <div className={`djc-dato djc-dato--animo${yearMood ? ` mood-${yearMood.value}` : ""}`}>
+            <dt className="dj-etq">Ánimo del año</dt>
+            <dd className="djc-dato-animo">{yearMood ? <><Cara valor={yearMood.value} /> {yearMood.label}</> : "—"}</dd>
           </div>
         </dl>
 
-        {/* El año de un vistazo: una barra por mes, hacia arriba si acabó en verde. */}
-        <div className="tjy-barras" role="group" aria-label={`Resultado de cada mes de ${year}`}>
+        {/* El año de un vistazo: una tecla por mes con su barra, hacia arriba si acabó en verde. */}
+        <div className="djc-anual" role="group" aria-label={`Resultado de cada mes de ${year}`}>
           {months.map(({ m, sum }) => {
             const v = valueOf(sum);
             const alto = sum.count ? Math.max((Math.abs(v) / maxMes) * 100, 6) : 0;
             const esMejor = best?.m === m;
             return (
-              <button
+              <Tecla
                 key={m}
-                type="button"
-                className={`tjy-barra${sum.count ? ` tone-${toneOf(v)}` : " is-quiet"}${esMejor ? " is-mejor" : ""}${worst?.m === m ? " is-peor" : ""}`}
+                color="blanca"
+                className={`djc-ab${sum.count ? ` djc-${SIGNO[toneOf(v)]}` : " is-quieta"}${worst?.m === m ? " is-peor" : ""}`}
                 onClick={() => abrirResumen(m)}
                 title={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}`}
                 aria-label={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}${esMejor ? ", el mejor mes del año" : ""}. Ver su resumen`}
               >
-                <span className="tjy-barra-arriba">
-                  {esMejor && <span className="tjy-barra-corona" aria-hidden="true"><Crown size={12} strokeWidth={2.4} /></span>}
-                  {v > 0 && <i style={{ height: `${alto}%` }} />}
-                </span>
-                <span className="tjy-barra-abajo">{v < 0 && <i style={{ height: `${alto}%` }} />}</span>
-                <span className="tjy-barra-mes cap">{MONTHS[m].slice(0, 3)}</span>
-              </button>
+                {esMejor && <Estrella />}
+                <span className="djc-ab-arriba">{v > 0 && <i style={{ height: `${alto}%` }} />}</span>
+                <span className="djc-ab-abajo">{v < 0 && <i style={{ height: `${alto}%` }} />}</span>
+                <span className="djc-ab-mes cap">{MONTHS[m].slice(0, 3)}</span>
+              </Tecla>
             );
           })}
         </div>
 
-        <div className="tjc-viewport">
+        <div className="djc-ventanilla">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={year}
-              className="tjy-grid"
+              className="djc-hojitas"
               initial={{ opacity: 0, x: direction * 24 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 24 }}
@@ -578,37 +635,37 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                 const isNow = year === now.getFullYear() && m === now.getMonth();
                 const esMejor = best?.m === m;
                 return (
-                  <button
+                  <Tecla
                     key={m}
-                    type="button"
-                    className={`tjy-month${sum.count ? ` tone-${toneOf(valueOf(sum))}` : " is-quiet"}${isNow ? " is-now" : ""}${esMejor ? " is-mejor" : ""}`}
+                    color="blanca"
+                    className={`djc-hojita${sum.count ? ` djc-${SIGNO[toneOf(valueOf(sum))]}` : " is-quieta"}${isNow ? " is-ahora" : ""}${esMejor ? " is-mejor" : ""}`}
                     onClick={() => abrirResumen(m)}
                     aria-label={`${MONTHS[m]} de ${year}: ${sum.count ? `${fmt(sum)} en ${sum.count} operaciones` : "sin operaciones"}${esMejor ? ". El mejor mes del año" : ""}. Ver su resumen`}
                   >
-                    {esMejor && <span className="tjy-mejor" aria-hidden="true"><Crown size={12} strokeWidth={2.4} /> Mejor mes</span>}
-                    {isNow && !esMejor && <span className="tjy-ahora" aria-hidden="true">En curso</span>}
-                    <span className="tjy-head">
-                      <span className="tjy-name cap">{MONTHS[m]}</span>
-                      <strong>{sum.count ? fmt(sum) : "—"}</strong>
+                    {esMejor && <Estrella />}
+                    <span className="djc-hojita-cab">
+                      <span className="djc-hojita-mes cap">{MONTHS[m]}</span>
+                      {isNow && <span className="dj-chip dj-chip--azul">En curso</span>}
                     </span>
-                    <span className="tjy-mini" aria-hidden="true">
+                    <strong className={`djc-hojita-pnl${sum.count ? ` tone-${toneOf(valueOf(sum))}` : ""}`}>{sum.count ? fmt(sum) : "—"}</strong>
+                    <span className="djc-hojita-dias" aria-hidden="true">
                       {cells.map((d, i) => {
                         const info = infos[i];
-                        if (d == null) return <i key={i} className="is-empty" />;
+                        if (d == null) return <i key={i} className="is-hueco" />;
                         return (
                           <i
                             key={i}
-                            className={info ? `tone-${toneOf(valueOf(info))} has-data` : undefined}
-                            style={info ? ({ "--intensity": 0.3 + 0.7 * (Math.abs(valueOf(info)) / maxAbs) } as React.CSSProperties) : undefined}
+                            className={info ? `djc-${SIGNO[toneOf(valueOf(info))]}` : undefined}
+                            style={info ? ({ "--intensidad": 0.35 + 0.65 * (Math.abs(valueOf(info)) / maxAbs) } as React.CSSProperties) : undefined}
                           />
                         );
                       })}
                     </span>
-                    {sum.count > 0 && <i className="tjy-acierto" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>}
-                    <span className="tjy-meta">
+                    {sum.count > 0 && <span className="dj-barra dj-barra--fina djc-hojita-barra" aria-hidden="true"><i style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></span>}
+                    <span className="djc-hojita-meta">
                       {sum.count ? `${sum.count} op. · ${Math.round((sum.wins / sum.count) * 100)} % de acierto · ${sum.green}/${sum.days} días en verde` : "Sin operaciones"}
                     </span>
-                  </button>
+                  </Tecla>
                 );
               })}
             </motion.div>
@@ -627,16 +684,16 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
    * puede saltar al mes en el calendario.
    */
   function renderMonthSummary(m: number, esMejor: boolean) {
-    const dias = monthCells(year, m)
+    const diasMes = monthCells(year, m)
       .filter((d): d is number => d != null)
       .map(d => ({ day: d, info: infoOf(year, m, d) }))
       .filter((d): d is { day: number; info: DayInfo } => !!d.info);
-    const sum = sumInfos(dias.map(d => d.info));
-    const ops = dias.flatMap(d => d.info.trades);
-    const mejor = dias.reduce<(typeof dias)[number] | null>((b, d) => (valueOf(d.info) > (b ? valueOf(b.info) : 0) ? d : b), null);
-    const peor = dias.reduce<(typeof dias)[number] | null>((b, d) => (valueOf(d.info) < (b ? valueOf(b.info) : 0) ? d : b), null);
+    const sum = sumInfos(diasMes.map(d => d.info));
+    const ops = diasMes.flatMap(d => d.info.trades);
+    const mejor = diasMes.reduce<(typeof diasMes)[number] | null>((b, d) => (valueOf(d.info) > (b ? valueOf(b.info) : 0) ? d : b), null);
+    const peor = diasMes.reduce<(typeof diasMes)[number] | null>((b, d) => (valueOf(d.info) < (b ? valueOf(b.info) : 0) ? d : b), null);
     const media = sum.count ? { pnl: sum.pnl / sum.count, r: sum.r / sum.count } : null;
-    const animos = dias.map(d => diaOf(year, m, d.day)?.animo).filter((a): a is NonNullable<typeof a> => a != null);
+    const animos = diasMes.map(d => diaOf(year, m, d.day)?.animo).filter((a): a is NonNullable<typeof a> => a != null);
     const animo = animos.length ? animoInfo(animoDeMedia(animos.reduce((x, a) => x + a, 0) / animos.length)) : null;
 
     // Agrupa las operaciones del mes por una clave (el par, la estrategia).
@@ -657,13 +714,13 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
     const porEstrategia = agrupar(t => t.strategy ?? "Sin estrategia");
 
     const tabla = (titulo: string, filas: ReturnType<typeof agrupar>) => (
-      <div className="tjm-tabla">
-        <h4>{titulo}</h4>
+      <div className="djc-tabla">
+        <h4 className="dj-etq">{titulo}</h4>
         <ul>
           {filas.map(g => (
             <li key={g.nombre}>
-              <span className="tjm-tabla-nombre">{g.nombre}</span>
-              <span className="tjm-tabla-meta">{g.count} op. · {Math.round((g.wins / g.count) * 100)} %</span>
+              <span className="djc-tabla-nombre">{g.nombre}</span>
+              <span className="djc-tabla-meta">{g.count} op. · {Math.round((g.wins / g.count) * 100)} %</span>
               <strong className={`tone-${toneOf(valueOf(g))}`}>{fmt(g)}</strong>
             </li>
           ))}
@@ -671,87 +728,92 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
       </div>
     );
 
-    const PESTANAS = [["resumen", "Resumen"], ["dias", `Días (${dias.length})`], ["pares", "Pares y estrategias"]] as const;
-
     return createPortal(
-      <div className="tjc-dia-velo" onClick={() => setMesAbierto(null)}>
+      <div className="dj-velo trading-journal" onClick={() => setMesAbierto(null)}>
         <div
-          className={`tjc-dia tjm${esMejor ? " is-mejor" : ""}`}
+          className={`dj-ventana djc-ventana djc-ventana--mes${esMejor ? " is-mejor" : ""}`}
           role="dialog" aria-modal="true" aria-label={`Resumen de ${MONTHS[m]} de ${year}`}
           onClick={e => e.stopPropagation()}
         >
-          <header className="tjm-cab">
-            <div>
-              <span className="tjm-rotulo">Resumen del mes</span>
-              <h3><span className="cap">{MONTHS[m]}</span> <small>{year}</small></h3>
-            </div>
-            {esMejor && <span className="tjc-dia-mejor"><span className="tjc-leyenda-corona" aria-hidden="true"><Crown size={11} strokeWidth={2.4} /></span> Tu mejor mes de {year}</span>}
-            <button type="button" className="tj-icon-btn" onClick={() => setMesAbierto(null)} aria-label="Cerrar el resumen" title="Cerrar (Esc)" autoFocus>
-              <X size={15} />
-            </button>
+          <Tecla color="blanca" tamano="peq" icono className="dj-ventana-cerrar" onClick={() => setMesAbierto(null)} aria-label="Cerrar el resumen" title="Cerrar (Esc)" autoFocus>
+            <X size={18} strokeWidth={2.6} />
+          </Tecla>
+
+          <header className="djc-v-cab">
+            {esMejor && <span className="djc-v-mejor"><Estrella className="djc-estrella--linea" /> Tu mejor mes de {year}</span>}
+            <span className="dj-etq">Resumen del mes</span>
+            <h3 className="djc-v-fecha"><span className="cap">{MONTHS[m]}</span> <span className="djc-anio">{year}</span></h3>
           </header>
 
           {sum.count === 0 ? (
-            <p className="tjm-vacio">No apuntaste ninguna operación en {MONTHS[m]}.</p>
+            <p className="djc-v-vacio">No apuntaste ninguna operación en {MONTHS[m]}.</p>
           ) : (
             <>
-              <div className="tjm-pestanas" role="tablist" aria-label="Apartados del resumen">
-                {PESTANAS.map(([id, texto]) => (
-                  <button key={id} type="button" role="tab" aria-selected={pestana === id} className={pestana === id ? "is-on" : undefined} onClick={() => setPestana(id)}>
-                    {texto}
-                  </button>
-                ))}
-              </div>
+              <TjSegmented
+                label="Apartados del resumen"
+                className="djc-v-pestanas"
+                value={pestana}
+                onChange={setPestana}
+                options={[
+                  { value: "resumen", label: "Resumen" },
+                  { value: "dias", label: `Días (${diasMes.length})` },
+                  { value: "pares", label: "Pares y estrategias" },
+                ]}
+              />
 
               {pestana === "resumen" && (
-                <div className="tjm-panel" role="tabpanel">
-                  <div className={`tjm-resultado tone-${toneOf(valueOf(sum))}`}>
-                    <span>Resultado de {MONTHS[m]}</span>
-                    <strong>{fmt(sum)}</strong>
+                <div className="djc-v-panel" role="tabpanel">
+                  <div className={`djc-v-total djc-${SIGNO[toneOf(valueOf(sum))]}`}>
+                    <span className="dj-etq">Resultado de {MONTHS[m]}</span>
+                    <strong className={`dj-cifra tone-${toneOf(valueOf(sum))}`}>{fmt(sum)}</strong>
                     {media && <small>{fmt(media)} de media por operación</small>}
                   </div>
-                  <dl className="tjm-datos">
-                    <div><dt>Operaciones</dt><dd>{sum.count}</dd></div>
+                  <dl className="djc-v-datos">
+                    <div><dt className="dj-etq">Operaciones</dt><dd className="dj-cifra">{sum.count}</dd></div>
                     <div>
-                      <dt>Acierto</dt><dd>{Math.round((sum.wins / sum.count) * 100)} %</dd>
-                      <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>
-                    </div>
-                    <div>
-                      <dt>Días en verde</dt><dd>{sum.green}/{sum.days}</dd>
-                      <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.green / sum.days) * 100}%` }} /></i>
-                    </div>
-                    <div><dt>{unit === "r" ? "En dólares" : "En R"}</dt><dd className={`tone-${toneOf(unit === "r" ? sum.pnl : sum.r)}`}>{unit === "r" ? pnlStr(sum.pnl) : rStr(sum.r)}</dd></div>
-                    <div className={mejor ? "is-oro" : undefined}>
-                      <dt>Mejor día</dt>
-                      <dd>{mejor ? `${mejor.day} de ${MONTHS[m].slice(0, 3)}.` : "—"}</dd>
-                      {mejor && <small className="tone-win">{fmt(mejor.info)}</small>}
+                      <dt className="dj-etq">Acierto</dt><dd className="dj-cifra">{Math.round((sum.wins / sum.count) * 100)} %</dd>
+                      <dd className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></dd>
                     </div>
                     <div>
-                      <dt>Peor día</dt>
-                      <dd>{peor ? `${peor.day} de ${MONTHS[m].slice(0, 3)}.` : "Ninguno en rojo"}</dd>
-                      {peor && <small className="tone-loss">{fmt(peor.info)}</small>}
+                      <dt className="dj-etq">Días en verde</dt><dd className="dj-cifra">{sum.green}/{sum.days}</dd>
+                      <dd className="dj-barra dj-barra--fina" aria-hidden="true"><i style={{ width: `${(sum.green / sum.days) * 100}%` }} /></dd>
                     </div>
-                    <div><dt>Par más operado</dt><dd>{[...porPar].sort((a, b) => b.count - a.count)[0]?.nombre ?? "—"}</dd></div>
-                    <div className={animo ? `tjc-band-mood mood-${animo.value}` : undefined}>
-                      <dt>Ánimo del mes</dt>
-                      <dd>{animo ? <><Cara valor={animo.value} /> {animo.label}</> : "Sin apuntar"}</dd>
+                    <div>
+                      <dt className="dj-etq">{unit === "r" ? "En dólares" : "En R"}</dt>
+                      <dd className={`dj-cifra tone-${toneOf(unit === "r" ? sum.pnl : sum.r)}`}>{unit === "r" ? pnlStr(sum.pnl) : rStr(sum.r)}</dd>
+                    </div>
+                    <div className={mejor ? "is-mejor" : undefined}>
+                      <dt className="dj-etq">{mejor && <Estrella className="djc-estrella--linea" />}Mejor día</dt>
+                      <dd className="dj-cifra">{mejor ? `${mejor.day} de ${MONTHS[m].slice(0, 3)}.` : "—"}</dd>
+                      {mejor && <dd className="djc-dato-sub tone-win">{fmt(mejor.info)}</dd>}
+                    </div>
+                    <div>
+                      <dt className="dj-etq">Peor día</dt>
+                      <dd className="dj-cifra">{peor ? `${peor.day} de ${MONTHS[m].slice(0, 3)}.` : "Ninguno en rojo"}</dd>
+                      {peor && <dd className="djc-dato-sub tone-loss">{fmt(peor.info)}</dd>}
+                    </div>
+                    <div><dt className="dj-etq">Par más operado</dt><dd className="dj-cifra">{[...porPar].sort((a, b) => b.count - a.count)[0]?.nombre ?? "—"}</dd></div>
+                    <div className={animo ? `mood-${animo.value}` : undefined}>
+                      <dt className="dj-etq">Ánimo del mes</dt>
+                      <dd className="djc-dato-animo">{animo ? <><Cara valor={animo.value} /> {animo.label}</> : "Sin apuntar"}</dd>
                     </div>
                   </dl>
                 </div>
               )}
 
               {pestana === "dias" && (
-                <ul className="tjm-panel tjm-dias" role="tabpanel">
-                  {dias.map(({ day, info }) => {
+                <ul className="djc-v-panel djc-v-dias" role="tabpanel">
+                  {diasMes.map(({ day, info }) => {
                     const fecha = new Date(year, m, day);
                     const an = diaOf(year, m, day)?.animo;
                     return (
-                      <li key={day} className={`tone-${toneOf(valueOf(info))}${mejor?.day === day ? " is-mejor" : ""}`}>
-                        <span className="tjm-dia-fecha"><b>{day}</b> {WEEKDAY_NAMES[(fecha.getDay() + 6) % 7]}</span>
+                      <li key={day} className={`djc-${SIGNO[toneOf(valueOf(info))]}${mejor?.day === day ? " is-mejor" : ""}`}>
+                        <span className="djc-v-dia-n">{day}</span>
+                        <span className="djc-v-dia-sem cap">{WEEKDAY_NAMES[(fecha.getDay() + 6) % 7]}</span>
                         <DayDots trades={info.trades} />
-                        <span className="tjm-tabla-meta">{info.trades.length} op.</span>
-                        {an ? <span className={`tjc-mood mood-${an}`} title={animoInfo(an).label}><Cara valor={an} /></span> : <span />}
-                        <strong>{fmt(info)}</strong>
+                        <span className="djc-tabla-meta">{info.trades.length} op.</span>
+                        {an ? <span className="djc-emoji" role="img" aria-label={`Ánimo: ${animoInfo(an).label}`} title={animoInfo(an).label}><Cara valor={an} peq /></span> : <span />}
+                        <strong className={`tone-${toneOf(valueOf(info))}`}>{fmt(info)}</strong>
                       </li>
                     );
                   })}
@@ -759,7 +821,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
               )}
 
               {pestana === "pares" && (
-                <div className="tjm-panel tjm-dos" role="tabpanel">
+                <div className="djc-v-panel djc-v-dos" role="tabpanel">
                   {tabla("Por par", porPar)}
                   {tabla("Por estrategia", porEstrategia)}
                 </div>
@@ -767,11 +829,9 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
             </>
           )}
 
-          <footer className="tjm-pie">
-            <button type="button" className="tjc-detail-add" onClick={() => openMonth(m)}>
-              Ver {MONTHS[m]} en el calendario <ArrowUpRight size={14} />
-            </button>
-          </footer>
+          <Tecla color="azul" ancho className="djc-v-pie" onClick={() => openMonth(m)}>
+            Ver <span className="cap">{MONTHS[m]}</span> en el calendario <ArrowUpRight size={16} strokeWidth={2.6} />
+          </Tecla>
         </div>
       </div>,
       document.body,

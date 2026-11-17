@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 import { formatoNota } from "@/lib/cursos-progreso";
 import { ArrowLeft, ArrowRight, Check, X, ClipboardCheck, AlertTriangle, BookOpen, Award, RotateCcw } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
+import { bloquearScroll } from "@/components/trading/useVentanaMovil";
+import { Opcion, letra, useLetras } from "./bloques/comun";
 
 /**
  * El examen, del lado del alumno. **Aquí no hay ninguna respuesta correcta**:
@@ -15,6 +20,13 @@ import { ArrowLeft, ArrowRight, Check, X, ClipboardCheck, AlertTriangle, BookOpe
  * Las respuestas se guardan en el navegador mientras tanto, así que recargar
  * o cerrar la pestaña no las pierde (el intento sigue abierto en el servidor
  * con las mismas preguntas).
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): el color del examen es el lila.
+ * Las respuestas son teclas con su letra y se pulsan también con el teclado
+ * físico (A, B, C, D); las flechas ← y → pasan de pregunta. Al aprobar, confeti
+ * (nunca con «reducir movimiento») y el sonido `logro`; al suspender, `fallo`.
+ * La ventana de «¿Entregar?» suena al abrirse y al cerrarse, y se cierra
+ * también con Escape.
  */
 
 interface PreguntaVisible {
@@ -104,6 +116,7 @@ export default function Examen(props: PropsExamen) {
       setIntento({ intentoId: d.intentoId, preguntas: d.preguntas });
       setActual(0);
     } catch (e) {
+      sonar("error");
       setError(e instanceof Error ? e.message : "No se pudo abrir el examen.");
     } finally {
       setEnviando(false);
@@ -124,6 +137,8 @@ export default function Examen(props: PropsExamen) {
       if (!r.ok) throw new Error(d.error ?? "No se pudo entregar.");
       setCorreccion(d);
       setConfirmar(false);
+      // El resultado llega por la entrega de la persona: es el momento de sonar.
+      sonar(d.aprobado ? "logro" : "fallo");
       try {
         if (clave) localStorage.removeItem(clave);
       } catch {
@@ -134,6 +149,7 @@ export default function Examen(props: PropsExamen) {
       // examen entregado, y el resultado desaparecería de la pantalla. El
       // temario se pone al día en la siguiente navegación.
     } catch (e) {
+      sonar("error");
       setError(e instanceof Error ? e.message : "No se pudo entregar.");
       setConfirmar(false);
     } finally {
@@ -149,8 +165,8 @@ export default function Examen(props: PropsExamen) {
   // ── Portada, antes de empezar ──
   if (!intento) {
     return (
-      <div className="aula-examen-intro">
-        <span className="aula-examen-icono"><ClipboardCheck size={28} strokeWidth={1.8} aria-hidden="true" /></span>
+      <div className="aula-hoja aula-examen-intro">
+        <span className="aula-examen-icono"><ClipboardCheck size={30} strokeWidth={2.2} aria-hidden="true" /></span>
         <h1 className="aula-h1">{props.titulo}</h1>
         <div className="aula-examen-cifras">
           <div><strong>{props.numPreguntas}</strong><span>preguntas, todas obligatorias</span></div>
@@ -167,114 +183,226 @@ export default function Examen(props: PropsExamen) {
           <p className="aula-examen-previos">Este será tu intento número {props.intentosPrevios + 1}.</p>
         )}
         {error && <p className="aula-error" role="alert">{error}</p>}
-        <button type="button" className="aula-btn aula-btn--grande" onClick={empezar} disabled={enviando}>
+        <Tecla color="lila" tamano="grande" onClick={empezar} disabled={enviando}>
           {enviando ? "Preparando el examen…" : "Empezar el examen"}
-          {!enviando && <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />}
-        </button>
+          {!enviando && <ArrowRight size={20} strokeWidth={2.6} aria-hidden="true" />}
+        </Tecla>
       </div>
     );
   }
 
   // ── Haciendo el examen ──
+  return (
+    <Haciendo
+      props={props}
+      preguntas={preguntas}
+      respuestas={respuestas}
+      elegir={(id, i) => setRespuestas((r) => ({ ...r, [id]: i }))}
+      actual={actual}
+      setActual={setActual}
+      contestadas={contestadas}
+      completo={completo}
+      confirmar={confirmar}
+      setConfirmar={setConfirmar}
+      enviando={enviando}
+      error={error}
+      entregar={entregar}
+    />
+  );
+}
+
+function Haciendo({
+  props,
+  preguntas,
+  respuestas,
+  elegir,
+  actual,
+  setActual,
+  contestadas,
+  completo,
+  confirmar,
+  setConfirmar,
+  enviando,
+  error,
+  entregar,
+}: {
+  props: PropsExamen;
+  preguntas: PreguntaVisible[];
+  respuestas: Record<string, number>;
+  elegir: (id: string, i: number) => void;
+  actual: number;
+  setActual: React.Dispatch<React.SetStateAction<number>>;
+  contestadas: number;
+  completo: boolean;
+  confirmar: boolean;
+  setConfirmar: (v: boolean) => void;
+  enviando: boolean;
+  error: string | null;
+  entregar: () => void;
+}) {
   const p = preguntas[actual];
+  const caja = useRef<HTMLDivElement>(null);
+  const ventana = useRef<HTMLDivElement>(null);
+
+  const abrirConfirmar = () => {
+    sonar("abrir");
+    setConfirmar(true);
+  };
+  const cerrarConfirmar = () => {
+    sonar("cerrar");
+    setConfirmar(false);
+  };
+
+  // La ventana de entregar: el foco entra en ella («Revisar antes»), Escape la
+  // cierra y, mientras está abierta, la página de detrás no hace scroll.
+  useEffect(() => {
+    if (!confirmar) return;
+    ventana.current?.querySelector<HTMLElement>("button")?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || enviando) return;
+      sonar("cerrar");
+      setConfirmar(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const soltar = bloquearScroll();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      soltar();
+    };
+  }, [confirmar, enviando, setConfirmar]);
+  const pulsada = useLetras(caja, p.opciones.map((_, i) => letra(i)), (i) => elegir(p.id, i), !confirmar);
+  const total = preguntas.length;
+
+  // Las flechas del teclado pasan de pregunta (no con una ventana abierta encima).
+  useEffect(() => {
+    if (confirmar) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (document.querySelector('[aria-modal="true"]')) return;
+      if (e.key === "ArrowRight") setActual((a) => Math.min(total - 1, a + 1));
+      if (e.key === "ArrowLeft") setActual((a) => Math.max(0, a - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [confirmar, total, setActual]);
+
   return (
     <div className="aula-examen">
       <header className="aula-examen-cab">
-        <span className="aula-kicker">{props.titulo}</span>
-        <span className="aula-examen-contador">{contestadas} de {preguntas.length} contestadas</span>
+        {/* El único título de la pantalla mientras se hace el examen. */}
+        <h1 className="aula-kicker">{props.titulo}</h1>
+        <span className="aula-examen-contador">{contestadas} de {total} contestadas</span>
       </header>
 
       <div className="aula-examen-avance" aria-hidden="true">
-        <span className="aula-barra"><i style={{ width: `${preguntas.length ? (contestadas / preguntas.length) * 100 : 0}%` }} /></span>
+        <span className="aula-barra aula-barra--gruesa"><i style={{ width: `${total ? (contestadas / total) * 100 : 0}%` }} /></span>
       </div>
 
       <nav className="aula-examen-puntos" aria-label="Preguntas">
         {preguntas.map((q, i) => (
-          <button
+          <Tecla
             key={q.id}
-            type="button"
-            className={`${respuestas[q.id] !== undefined ? "is-contestada" : ""}${i === actual ? " is-actual" : ""}`}
+            color={i === actual ? "naranja" : respuestas[q.id] !== undefined ? "lila" : "blanca"}
+            tamano="peq"
+            icono
+            className="aula-examen-punto"
             onClick={() => setActual(i)}
             aria-label={`Pregunta ${i + 1}${respuestas[q.id] !== undefined ? ", contestada" : ""}`}
             aria-current={i === actual}
           >
             {i + 1}
-          </button>
+          </Tecla>
         ))}
       </nav>
 
       <AnimatePresence mode="wait">
         <motion.div
           key={p.id}
+          ref={caja}
           className="aula-examen-pregunta"
-          initial={{ opacity: 0, x: 24 }}
+          initial={{ opacity: 0, x: 28 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -24 }}
-          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, x: -28 }}
+          transition={{ type: "spring", stiffness: 420, damping: 32 }}
         >
           <span className="aula-examen-num">Pregunta {actual + 1}</span>
           <h2 className="aula-examen-enunciado">{p.enunciado}</h2>
           <div className="aula-opciones" role="radiogroup" aria-label={p.enunciado}>
             {p.opciones.map((o, i) => (
-              <button
+              <Opcion
                 key={i}
-                type="button"
+                marca={letra(i)}
                 role="radio"
                 aria-checked={respuestas[p.id] === i}
-                className={`aula-opcion${respuestas[p.id] === i ? " is-elegida" : ""}`}
-                onClick={() => setRespuestas((r) => ({ ...r, [p.id]: i }))}
+                estado={respuestas[p.id] === i ? "elegida" : undefined}
+                pulsada={pulsada === i}
+                onClick={() => elegir(p.id, i)}
               >
-                <span className="aula-opcion-letra">{String.fromCharCode(65 + i)}</span>
-                <span className="aula-opcion-texto">{o}</span>
-              </button>
+                {o}
+              </Opcion>
             ))}
           </div>
+          <p className="aula-examen-pista" aria-hidden="true">
+            también con el teclado: {letra(0)}–{letra(p.opciones.length - 1)} para contestar, ← → para moverte
+          </p>
         </motion.div>
       </AnimatePresence>
 
       <div className="aula-examen-nav">
-        <button type="button" className="aula-btn aula-btn--ghost" onClick={() => setActual((a) => a - 1)} disabled={actual === 0}>
-          <ArrowLeft size={15} aria-hidden="true" /> Anterior
-        </button>
-        {actual < preguntas.length - 1 ? (
-          <button type="button" className="aula-btn" onClick={() => setActual((a) => a + 1)}>
-            Siguiente <ArrowRight size={15} aria-hidden="true" />
-          </button>
+        <Tecla color="blanca" onClick={() => setActual((a) => a - 1)} disabled={actual === 0}>
+          <ArrowLeft size={17} strokeWidth={2.6} aria-hidden="true" /> Anterior
+        </Tecla>
+        {actual < total - 1 ? (
+          <Tecla onClick={() => setActual((a) => a + 1)}>
+            Siguiente <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+          </Tecla>
         ) : (
-          <button type="button" className="aula-btn" onClick={() => setConfirmar(true)} disabled={!completo}>
-            Entregar <Check size={15} aria-hidden="true" />
-          </button>
+          <Tecla color="menta" onClick={abrirConfirmar} disabled={!completo}>
+            Entregar <Check size={17} strokeWidth={3} aria-hidden="true" />
+          </Tecla>
         )}
       </div>
 
-      {!completo && actual === preguntas.length - 1 && (
+      {!completo && actual === total - 1 && (
         <p className="aula-examen-aviso">
-          Te faltan {preguntas.length - contestadas} por contestar. Toca los números de arriba para ir a ellas.
+          Te faltan {total - contestadas} por contestar. Toca los números de arriba para ir a ellas.
         </p>
       )}
       {error && <p className="aula-error" role="alert">{error}</p>}
 
       <AnimatePresence>
         {confirmar && (
-          <motion.div className="aula-modal-velo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            className="aula-modal-velo"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            // Tocar fuera de la ficha la cierra, como Escape (no mientras corrige).
+            onClick={() => !enviando && cerrarConfirmar()}
+          >
             <motion.div
+              ref={ventana}
+              onClick={(e) => e.stopPropagation()}
               className="aula-modal"
               role="dialog"
               aria-modal="true"
               aria-labelledby="aula-modal-titulo"
-              initial={{ scale: 0.95, y: 10 }}
+              initial={{ scale: 0.9, y: 16 }}
               animate={{ scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 420, damping: 24 }}
             >
-              <AlertTriangle size={22} aria-hidden="true" />
+              <span className="aula-modal-ic"><AlertTriangle size={22} strokeWidth={2.4} aria-hidden="true" /></span>
               <h2 id="aula-modal-titulo">¿Entregar el examen?</h2>
               <p>Una vez entregado no se puede cambiar ninguna respuesta. Si suspendes, podrás repetirlo dentro de 24 horas.</p>
               <div className="aula-modal-acciones">
-                <button type="button" className="aula-btn aula-btn--ghost" onClick={() => setConfirmar(false)} disabled={enviando}>
+                <Tecla color="blanca" onClick={cerrarConfirmar} disabled={enviando}>
                   Revisar antes
-                </button>
-                <button type="button" className="aula-btn" onClick={entregar} disabled={enviando}>
+                </Tecla>
+                <Tecla color="menta" onClick={entregar} disabled={enviando}>
                   {enviando ? "Corrigiendo…" : "Sí, entregar"}
-                </button>
+                </Tecla>
               </div>
             </motion.div>
           </motion.div>
@@ -282,6 +410,19 @@ export default function Examen(props: PropsExamen) {
       </AnimatePresence>
     </div>
   );
+}
+
+/** La celebración de aprobar: confeti con los colores del cuaderno. */
+function celebrar(grande: boolean) {
+  const colors = ["#8f7cff", "#ff8a1f", "#2fc488", "#ffd23f", "#2fbff5", "#ff6b81"];
+  const base = { colors, zIndex: 20000, disableForReducedMotion: true };
+  void confetti({ ...base, particleCount: grande ? 90 : 60, spread: grande ? 110 : 80, startVelocity: 48, origin: { x: 0.5, y: 0.35 } });
+  if (grande) {
+    window.setTimeout(() => {
+      void confetti({ ...base, particleCount: 50, spread: 120, startVelocity: 45, angle: 60, origin: { x: 0.1, y: 0.6 } });
+      void confetti({ ...base, particleCount: 50, spread: 120, startVelocity: 45, angle: 120, origin: { x: 0.9, y: 0.6 } });
+    }, 250);
+  }
 }
 
 function Anillo({ valor, aprobado }: { valor: number; aprobado: boolean }) {
@@ -299,7 +440,7 @@ function Anillo({ valor, aprobado }: { valor: number; aprobado: boolean }) {
           strokeDasharray={c}
           initial={{ strokeDashoffset: c }}
           animate={{ strokeDashoffset: c * (1 - valor / 10) }}
-          transition={{ duration: 1.3, ease: "easeOut" }}
+          transition={{ duration: 1.3, ease: [0.3, 1.3, 0.5, 1] }}
         />
       </svg>
       <div className="aula-nota-centro">
@@ -318,15 +459,30 @@ function Resultado({ correccion: c, preguntas, props }: { correccion: Correccion
     return [...vistas];
   }, [c.detalle]);
 
+  // Aprobar se celebra una vez, al llegar el resultado: es un momento ganado.
+  useEffect(() => {
+    if (c.aprobado) celebrar(props.examen === "final");
+  }, [c.aprobado, props.examen]);
+
   return (
     <div className="aula-resultado">
-      <motion.div className="aula-resultado-cab" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div
+        className={`aula-hoja aula-resultado-cab${c.aprobado ? " is-aprobado" : " is-suspenso"}`}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 24 }}
+      >
         <Anillo valor={c.nota} aprobado={c.aprobado} />
         <div>
-          <span className={`aula-resultado-sello${c.aprobado ? " is-aprobado" : " is-suspenso"}`}>
-            {c.aprobado ? <Check size={14} strokeWidth={3} aria-hidden="true" /> : <X size={14} strokeWidth={3} aria-hidden="true" />}
+          <motion.span
+            className={`aula-resultado-sello${c.aprobado ? " is-aprobado" : " is-suspenso"}`}
+            initial={{ scale: 0, rotate: -30 }}
+            animate={{ scale: 1, rotate: c.aprobado ? -6 : 4 }}
+            transition={{ type: "spring", stiffness: 380, damping: 14, delay: 0.5 }}
+          >
+            {c.aprobado ? <Check size={16} strokeWidth={3.2} aria-hidden="true" /> : <X size={16} strokeWidth={3.2} aria-hidden="true" />}
             {c.aprobado ? "Aprobado" : "Suspendido"}
-          </span>
+          </motion.span>
           <h1 className="aula-h1">
             {c.aprobado
               ? props.examen === "final" ? "Has terminado el curso" : "Módulo superado"
@@ -338,18 +494,18 @@ function Resultado({ correccion: c, preguntas, props }: { correccion: Correccion
           </p>
           {c.certificado && (
             <p className="aula-resultado-cert">
-              <Award size={16} aria-hidden="true" /> Nota final del curso: <strong>{nota(c.certificado.notaFinal)}</strong>. Tu certificado y tu logro ya están listos.
+              <Award size={18} aria-hidden="true" /> Nota final del curso: <strong>{nota(c.certificado.notaFinal)}</strong>. Tu certificado y tu logro ya están listos.
             </p>
           )}
           <div className="aula-resultado-acciones">
             {c.aprobado ? (
-              <Link href={props.siguiente.href} className="aula-btn aula-btn--grande">
-                {props.siguiente.etiqueta} <ArrowRight size={17} aria-hidden="true" />
-              </Link>
+              <Tecla href={props.siguiente.href} tamano="grande">
+                {props.siguiente.etiqueta} <ArrowRight size={20} strokeWidth={2.6} aria-hidden="true" />
+              </Tecla>
             ) : (
-              <Link href={`/aula/${props.curso}`} className="aula-btn aula-btn--grande">
-                <RotateCcw size={16} aria-hidden="true" /> Volver al curso y repasar
-              </Link>
+              <Tecla href={`/aula/${props.curso}`} color="blanca" tamano="grande">
+                <RotateCcw size={18} strokeWidth={2.6} aria-hidden="true" /> Volver al curso y repasar
+              </Tecla>
             )}
           </div>
           {!c.aprobado && (
@@ -359,17 +515,21 @@ function Resultado({ correccion: c, preguntas, props }: { correccion: Correccion
       </motion.div>
 
       {!c.aprobado && repasar.length > 0 && (
-        <section className="aula-repaso">
-          <h2><BookOpen size={17} aria-hidden="true" /> Lo que conviene repasar</h2>
+        <section className="aula-hoja aula-repaso">
+          <h2><BookOpen size={18} aria-hidden="true" /> Lo que conviene repasar</h2>
           <ul>
             {repasar.map(([slug, titulo]) => (
-              <li key={slug}><Link href={`/aula/${props.curso}/${slug}`}>{titulo}</Link></li>
+              <li key={slug}>
+                <Tecla href={`/aula/${props.curso}/${slug}`} color="blanca" tamano="peq">
+                  <BookOpen size={14} strokeWidth={2.6} aria-hidden="true" /> {titulo}
+                </Tecla>
+              </li>
             ))}
           </ul>
         </section>
       )}
 
-      <section className="aula-revision">
+      <section className="aula-hoja aula-revision">
         <h2>{c.aprobado ? "La corrección, pregunta a pregunta" : "Qué acertaste y qué no"}</h2>
         {!c.aprobado && (
           <p className="aula-revision-nota">Con un suspenso no se enseña la respuesta buena: verías el examen, no la materia. Al aprobar sí sale entera, con su explicación.</p>
@@ -380,7 +540,7 @@ function Resultado({ correccion: c, preguntas, props }: { correccion: Correccion
             if (!p) return null;
             return (
               <li key={d.id} className={d.acertada ? "is-buena" : "is-mala"}>
-                <span className="aula-revision-icono">{d.acertada ? <Check size={14} strokeWidth={3} /> : <X size={14} strokeWidth={3} />}</span>
+                <span className="aula-revision-icono">{d.acertada ? <Check size={15} strokeWidth={3.2} /> : <X size={15} strokeWidth={3.2} />}</span>
                 <div>
                   <p className="aula-revision-enunciado">{i + 1}. {p.enunciado}</p>
                   <p className="aula-revision-resp">Contestaste: <strong>{p.opciones[d.elegida]}</strong></p>

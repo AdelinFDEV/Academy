@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Scale } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Simulador de la cobertura de Ethena, en dos pestañas:
@@ -135,15 +136,15 @@ export default function GuideEthenaCobertura() {
   return (
     <div className="ena-sim">
       <p className="ena-sim-titulo">Simulador de la cobertura de USDe</p>
-      <div className="ena-sim-tabs" role="tablist" aria-label="Qué quieres simular">
-        <button type="button" role="tab" id="ena-tab-precio" aria-controls="ena-panel" aria-selected={tab === "precio"} className={tab === "precio" ? "is-activa" : ""} onClick={() => setTab("precio")}>
+      <div className="ena-sim-tabs" role="group" aria-label="Qué quieres simular">
+        <Tecla tamano="peq" color={tab === "precio" ? "cielo" : "blanca"} aria-controls="ena-panel" aria-pressed={tab === "precio"} onClick={() => setTab("precio")}>
           Si ETH se mueve
-        </button>
-        <button type="button" role="tab" id="ena-tab-funding" aria-controls="ena-panel" aria-selected={tab === "funding"} className={tab === "funding" ? "is-activa" : ""} onClick={() => setTab("funding")}>
+        </Tecla>
+        <Tecla tamano="peq" color={tab === "funding" ? "cielo" : "blanca"} aria-controls="ena-panel" aria-pressed={tab === "funding"} onClick={() => setTab("funding")}>
           Si cambia el funding
-        </button>
+        </Tecla>
       </div>
-      <div role="tabpanel" id="ena-panel" aria-labelledby={tab === "precio" ? "ena-tab-precio" : "ena-tab-funding"}>{tab === "precio" ? <Precio /> : <Funding />}</div>
+      <div id="ena-panel">{tab === "precio" ? <Precio /> : <Funding />}</div>
     </div>
   );
 }

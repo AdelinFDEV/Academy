@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Layers } from "lucide-react";
 
 /** Lotes de compra de ejemplo — ordenados del más antiguo al más reciente. */
@@ -22,6 +22,7 @@ const btc = (n: number) => `${n.toFixed(3).replace(".", ",")} BTC`;
 export default function GuideFiscalFifo() {
   const [sellQty, setSellQty] = useState(0.30);
   const [sellPrice, setSellPrice] = useState(95000);
+  const quieto = useReducedMotion();
 
   const calc = useMemo(() => {
     // Consumo FIFO: se gastan primero los lotes más antiguos.
@@ -115,7 +116,7 @@ export default function GuideFiscalFifo() {
                   className="fisc-lot-fill"
                   initial={false}
                   animate={{ width: `${usedPct}%` }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  transition={quieto ? { duration: 0 } : { duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
                 />
               </div>
               <div className="fisc-lot-body">
@@ -144,7 +145,7 @@ export default function GuideFiscalFifo() {
       </div>
 
       {/* Resultado */}
-      <div className="fisc-result">
+      <div className="fisc-result" aria-live="polite">
         <div className="fisc-result-row">
           <span>Valor de transmisión</span>
           <strong>{eur2(calc.proceeds)}</strong>

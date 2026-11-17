@@ -58,11 +58,11 @@ export default function GuideQuantLicencias() {
         </label>
         <label htmlFor="qnt-cuota" className="qnt-calc-campo">
           <span>Lo que paga cada uno al año (€)</span>
-          <input id="qnt-cuota" inputMode="decimal" value={cuota} onChange={(e) => setCuota(e.target.value)} />
+          <input id="qnt-cuota" inputMode="decimal" autoComplete="off" value={cuota} onChange={(e) => setCuota(e.target.value)} />
         </label>
         <label htmlFor="qnt-precio" className="qnt-calc-campo">
           <span>Precio de un QNT (€)</span>
-          <input id="qnt-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="qnt-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
       </div>
 

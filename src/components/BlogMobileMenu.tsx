@@ -8,8 +8,11 @@ import LogoutButton from "./LogoutButton";
 import AvatarUsuario from "./AvatarUsuario";
 import GuideSearch from "./GuideSearch";
 import { destinoPorRuta, herramienta } from "@/lib/herramientas";
+import { sonar } from "@/lib/sonidos";
 import { INSTAGRAM_DM_URL, YOUTUBE_URL } from "@/lib/contacto";
 import { InstagramIcon } from "./SocialLinks";
+import Tecla from "./cuaderno/Tecla";
+import "./menu-movil.css";
 
 interface Props {
   user: boolean;
@@ -20,7 +23,14 @@ interface Props {
   avatar?: string | null;
   /** El foro existe para quien mira (lo decide `SiteNav` en el servidor). */
   foro?: boolean;
+  /** El precio de Premium, ya formateado («19,99€»). Llega del servidor
+   *  (`SiteNav`, de `@/lib/stripe`): este componente es de cliente y no puede
+   *  importarlo, y escribirlo a mano aquí era una segunda copia que olvidar. */
+  precio: string;
 }
+
+/** El color de cada sección (ESTILO.md, «Cada sección, su color»). */
+type Tono = "naranja" | "azul" | "menta" | "lila" | "amarillo" | "coral" | "cielo";
 
 type Entrada = {
   id: string;
@@ -29,31 +39,34 @@ type Entrada = {
   /** Una línea: qué es, no un eslogan. */
   linea: string;
   icon: LucideIcon;
-  color: string;
+  tono: Tono;
 };
 
 /**
  * Lo que va en el menú, en dos grupos: lo que se paga y lo que se aprende
- * gratis. Las herramientas toman icono, color y nombre del catálogo
+ * gratis. Las herramientas toman icono y nombre del catálogo
  * (`@/lib/herramientas`, fuente única); Guías y Diccionario no son
- * herramientas y se declaran aquí.
+ * herramientas y se declaran aquí. El color es el de su sección en el estilo
+ * «Cuaderno de estudio» (ESTILO.md): Diario azul, Portfolio menta, Cursos
+ * lila, Guías cielo, Diccionario y Logros amarillo, Foro coral; la Predicción
+ * de Precio, sin sección propia en el mapa, lleva el naranja de la marca.
  */
-function deCatalogo(id: string, ruta: string, linea: string): Entrada {
+function deCatalogo(id: string, ruta: string, linea: string, tono: Tono): Entrada {
   const h = herramienta(id);
-  return { id, ruta, label: h.label, linea, icon: h.icon, color: h.color };
+  return { id, ruta, label: h.label, linea, icon: h.icon, tono };
 }
 
 const PREMIUM: Entrada[] = [
-  deCatalogo("diario", "/dashboard/trading", "Cada operación registrada y medida"),
-  deCatalogo("portfolio", "/portfolio", "Mis compras reales, al momento"),
-  deCatalogo("cursos", "/cursos", "Por módulos, con examen y certificado"),
+  deCatalogo("diario", "/dashboard/trading", "Cada operación registrada y medida", "azul"),
+  deCatalogo("portfolio", "/portfolio", "Mis compras reales, al momento", "menta"),
+  deCatalogo("cursos", "/cursos", "Por módulos, con examen y certificado", "lila"),
 ];
 
 const GRATIS: Entrada[] = [
-  { id: "guias", ruta: "/guias", label: "Guías interactivas", linea: "Criptomonedas, explicadas a fondo", icon: BookOpenText, color: "#e6b455" },
-  { id: "glosario", ruta: "/glosario", label: "Diccionario cripto", linea: "El vocabulario, en cristiano", icon: BookA, color: "#7dd3fc" },
-  deCatalogo("prediccion", "/calculadora", "¿Qué market cap necesita tu token?"),
-  deCatalogo("logros", "/logros", "Insignias y rachas de tu progreso"),
+  { id: "guias", ruta: "/guias", label: "Guías interactivas", linea: "Criptomonedas, explicadas a fondo", icon: BookOpenText, tono: "cielo" },
+  { id: "glosario", ruta: "/glosario", label: "Diccionario cripto", linea: "El vocabulario, en cristiano", icon: BookA, tono: "amarillo" },
+  deCatalogo("prediccion", "/calculadora", "¿Qué market cap necesita tu token?", "naranja"),
+  deCatalogo("logros", "/logros", "Insignias y rachas de tu progreso", "amarillo"),
 ];
 
 /**
@@ -61,40 +74,59 @@ const GRATIS: Entrada[] = [
  * catálogo de herramientas porque no es una herramienta, igual que las guías
  * y el diccionario. Solo se añade a la lista si el foro existe para quien mira.
  */
-const FORO: Entrada = { id: "foro", ruta: "/foro", label: "Foro", linea: "Preguntas y respuestas de la comunidad", icon: MessagesSquare, color: "#ff8552" };
+const FORO: Entrada = { id: "foro", ruta: "/foro", label: "Foro", linea: "Preguntas y respuestas de la comunidad", icon: MessagesSquare, tono: "coral" };
 
 /** Las entradas que no salen del catálogo: su ruta es siempre la misma. */
 const FUERA_DEL_CATALOGO = new Set(["guias", "glosario", "foro"]);
 
 /**
- * El menú de la web, a pantalla completa. Rehecho desde cero el 31-10-2026.
+ * El menú de la web, a pantalla completa. Rehecho desde cero el 31-10-2026 y
+ * pasado al estilo «Cuaderno de estudio» el 17-11-2026 (CSS en
+ * `menu-movil.css`): fondo lavanda y cada destino una fila-tecla de papel con
+ * el color de su sección, que se hunde al pulsarla.
  *
  * Dos columnas de destinos —lo de pago y lo gratuito— y un panel lateral con
- * la cuenta y, a quien no lo tiene, Premium una sola vez. En el móvil todo se
- * apila y el panel de cuenta queda al final.
+ * la cuenta y, a quien no lo tiene, Premium una sola vez. En el móvil los
+ * destinos van en teclas de tres en fondo (sin la línea de explicación) para
+ * que el menú quepa en la pantalla, y el panel de cuenta queda al final.
+ *
+ * Solo hay UNA barra de desplazamiento, la del propio menú: al abrirlo se
+ * bloquea el scroll del documento entero (el elemento html), no solo el del
+ * body. Con `overflow-x: hidden` en los dos (globals.css), bloquear solo el
+ * body dejaba la barra de la página a la vista junto a la del menú.
  *
  * A dónde lleva cada enlace NO se decide aquí: lo decide el catálogo con
  * `destinoPorRuta`, según quién mire (la ficha pública a quien no tiene
  * acceso, la herramienta a quien sí).
  */
-export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null, foro = false }: Props) {
+export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null, foro = false, precio }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const primerEnlace = useRef<HTMLAnchorElement>(null);
+  const boton = useRef<HTMLButtonElement>(null);
 
   const activo = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const destino = (ruta: string) => destinoPorRuta(ruta, { logueado: user, premium: isPremium });
   const close = () => setOpen(false);
 
   // Con el menú abierto, la página de debajo no se desplaza; Escape lo cierra
-  // y el foco entra en el primer enlace, como en cualquier diálogo.
+  // (con su sonido, y el foco vuelve al botón del menú) y el foco entra en el
+  // primer enlace, como en cualquier diálogo.
   useEffect(() => {
     if (!open) return;
+    const raiz = document.documentElement;
+    raiz.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
     primerEnlace.current?.focus();
-    const alPulsar = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const alPulsar = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      sonar("cerrar");
+      setOpen(false);
+      boton.current?.focus();
+    };
     window.addEventListener("keydown", alPulsar);
     return () => {
+      raiz.style.overflow = "";
       document.body.style.overflow = "";
       window.removeEventListener("keydown", alPulsar);
     };
@@ -102,9 +134,16 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
   return (
     <>
-      <button
+      <Tecla
+        color={open ? "tinta" : "blanca"}
+        tamano="peq"
+        icono
         className={`btn-hamburger${open ? " open" : ""}`}
-        onClick={() => setOpen(!open)}
+        ref={boton}
+        onClick={() => {
+          sonar(open ? "cerrar" : "abrir");
+          setOpen(!open);
+        }}
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
       >
@@ -113,7 +152,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
           <span />
           <span />
         </span>
-      </button>
+      </Tecla>
 
       {open && (
         <div className="mm" role="dialog" aria-modal="true" aria-label="Menú">
@@ -164,36 +203,38 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   <p className="mm-cuenta-texto">
                     Con una cuenta gratuita haces el quiz de cada guía y desbloqueas sus logros.
                   </p>
-                  <Link href="/register" onClick={close} className="mm-btn mm-btn--principal">
-                    Crear cuenta gratis <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
-                  </Link>
-                  <Link href="/login" onClick={close} className="mm-btn mm-btn--secundario">
+                  <Tecla href="/register" onClick={close} ancho className="mm-btn">
+                    Crear cuenta gratis <ArrowRight size={16} strokeWidth={2.6} aria-hidden="true" />
+                  </Tecla>
+                  <Tecla href="/login" onClick={close} color="blanca" ancho className="mm-btn">
                     Ya tengo cuenta
-                  </Link>
+                  </Tecla>
                 </div>
               )}
 
-              <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-instagram">
-                <span className="mm-instagram-icono" aria-hidden="true"><InstagramIcon size={19} /></span>
-                <span className="mm-instagram-texto">
-                  <strong>Escríbeme por Instagram</strong>
-                  <small>@adelinbtc · te contesto yo</small>
-                </span>
-                <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" />
-              </a>
+              <div className="mm-redes">
+                <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-red mm-instagram">
+                  <span className="mm-red-icono" aria-hidden="true"><InstagramIcon size={19} /></span>
+                  <span className="mm-red-texto">
+                    <strong>Escríbeme por Instagram</strong>
+                    <small>@adelinbtc · te contesto yo</small>
+                  </span>
+                  <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" className="mm-red-flecha" />
+                </a>
 
-              <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-instagram mm-youtube">
-                <span className="mm-instagram-icono" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z" />
-                  </svg>
-                </span>
-                <span className="mm-instagram-texto">
-                  <strong>Mi canal de YouTube</strong>
-                  <small>@AdelinBTC · todos mis vídeos</small>
-                </span>
-                <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" />
-              </a>
+                <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-red mm-youtube">
+                  <span className="mm-red-icono" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z" />
+                    </svg>
+                  </span>
+                  <span className="mm-red-texto">
+                    <strong>Mi canal de YouTube</strong>
+                    <small>@AdelinBTC · todos mis vídeos</small>
+                  </span>
+                  <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" className="mm-red-flecha" />
+                </a>
+              </div>
 
               {!isPremium && (
                 <Link href="/premium" onClick={close} className="mm-premium">
@@ -202,8 +243,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   </span>
                   <span className="mm-premium-titulo">Diario, Portfolio Adelin y Cursos en una suscripción</span>
                   <span className="mm-premium-pie">
-                    {/* A mano: este componente es de cliente y no puede importar `@/lib/stripe`. Si cambia el precio, aquí también. */}
-                    <span className="mm-premium-precio">19,99 €<small>/mes</small></span>
+                    <span className="mm-premium-precio">{precio}<small>/mes</small></span>
                     <span className="mm-premium-ir">
                       Ver qué incluye <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
                     </span>
@@ -248,8 +288,8 @@ function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEn
                 ref={desde + i === 0 ? primerEnlace : undefined}
                 href={href}
                 onClick={close}
-                className={`mm-item${activo(e.ruta) ? " is-activo" : ""}`}
-                style={{ "--c": e.color } as React.CSSProperties}
+                className={`mm-item mm-tono--${e.tono}${activo(e.ruta) ? " is-activo" : ""}`}
+                onPointerDown={() => sonar("tecla")}
                 aria-current={activo(e.ruta) ? "page" : undefined}
               >
                 <span className="mm-item-icono" aria-hidden="true"><Icono size={19} strokeWidth={2} /></span>

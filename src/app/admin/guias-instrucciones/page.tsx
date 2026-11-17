@@ -1,4 +1,6 @@
 import Link from "next/link";
+import IndiceApuntes from "../IndiceApuntes";
+import "../apuntes.css";
 
 /**
  * /admin/guias-instrucciones · La fuente de verdad de cómo se hace una guía.
@@ -64,7 +66,7 @@ export default function GuiasInstruccionesPage() {
     <div className="admin-guide-instructions">
       <div className="agi-hero">
         <div className="agi-hero-label">Referencia interna · fuente de verdad</div>
-        <h1 className="agi-hero-title">Cómo se hace una guía</h1>
+        <h1 className="agi-hero-title">Cómo se hace <span className="fluor">una guía</span></h1>
         <p className="agi-hero-sub">
           Las guías son gratuitas y son lo que Google enseña de la academia. Cada una tiene dos trabajos: responder
           mejor que nadie a lo que alguien ha buscado, y presentarle, sin estorbar, lo que la academia vende. Léelo
@@ -72,11 +74,9 @@ export default function GuiasInstruccionesPage() {
         </p>
       </div>
 
-      <nav className="agi-indice" aria-label="Índice">
-        {INDICE.map(([id, texto], i) => (
-          <a key={id} href={`#${id}`}><span>{String(i + 1).padStart(2, "0")}</span>{texto}</a>
-        ))}
-      </nav>
+      <div className="agi-cuaderno">
+      <IndiceApuntes items={INDICE} />
+      <div className="agi-hojas">
 
       <Seccion id="objetivo" n="01" titulo="Para qué sirve una guía">
         <div className="agi-card">
@@ -279,11 +279,6 @@ export default function GuiasInstruccionesPage() {
             <div className="agi-comp-desc">Un vídeo del canal, en modo de privacidad mejorada. Se carga solo al pulsar.</div>
             <div className="agi-comp-rule">Solo vídeos propios que traten justo ese tema.</div>
           </div>
-          <div className="agi-comp-card">
-            <div className="agi-comp-name">GuideProgressBar</div>
-            <div className="agi-comp-desc">La barra de lectura de arriba. Es visual y no guarda nada.</div>
-            <div className="agi-comp-rule">En toda guía.</div>
-          </div>
         </div>
         <div className="agi-card">
           <p>Librerías instaladas: <strong>Recharts</strong> (gráficas), <strong>Framer Motion</strong> (animaciones de entrada) y <strong>Lucide</strong> (iconos). No se añade una dependencia para una sola guía sin preguntarlo antes.</p>
@@ -332,37 +327,51 @@ export default function GuiasInstruccionesPage() {
 
       <Seccion id="diseno" n="10" titulo="Diseño">
         <div className="agi-card">
-          <p>Las guías tienen identidad propia dentro de la web: <strong>oro, naranja, navy y blanco</strong>. El oro manda; el naranja es para lo que se pulsa.</p>
+          <p>Las guías visten el estilo de toda la web, el <strong>«Cuaderno de estudio»</strong>: fondo lavanda claro, hojas de papel con canto, teclas que se hunden y tres letras (Fraunces para titulares y cifras, Nunito para leer y pulsar, Caveat para las notas a mano). La fuente de verdad es <code>ESTILO.md</code>, y el sistema de piezas, <code>disenos/sistema.html</code>: lo que una guía necesite y no esté allí, se añade allí primero.</p>
+          <p>Cada sección de la web tiene su color, y <strong>el de las guías es el cielo</strong>. Los demás colores no adornan: significan algo.</p>
+        </div>
+        <div className="agi-card">
+          <p><strong>Toda guía lleva marcas de estudio</strong> (decidido el 17-11-2026, referencia: la guía de Ethereum): tiene que parecer el cuaderno de alguien que la ha estudiado a fondo. Lo más importante de cada sección se marca con <code>Anotacion</code> y un código de colores fijo —amarillo rotulador la idea clave, naranja rodeado lo que no te puedes saltar, azul subrayado un concepto, coral un error o un riesgo, menta la conclusión, lila lo que entra en el quiz, corchete al margen un párrafo-resumen—, con símbolos dibujados (<code>SimboloEstudio</code>, <code>Llave</code>) y las cajas de nota o aviso como <code>Postit</code>. Como mucho dos o tres trazos animados por pantalla. <strong>Nunca se cambia una palabra del texto</strong>: se comprueba con el texto visible antes y después y con <code>check:seo</code>. Una guía nueva se escribe ya con sus marcas. El detalle, en <code>ESTILO.md</code>, «Las marcas de estudio».</p>
         </div>
         <div className="agi-palette agi-palette--4col">
-          <div className="agi-swatch agi-swatch--gold">
-            <span className="agi-swatch-name">Oro</span>
-            <span className="agi-swatch-var">--gold · #e6b455</span>
-            <span className="agi-swatch-use">Dominante: antetítulos, títulos en degradado, bordes de tarjeta, cifras, pastillas.</span>
+          <div className="agi-swatch" style={{ "--muestra": "var(--cielo)" } as React.CSSProperties}>
+            <span className="agi-swatch-name">Cielo</span>
+            <span className="agi-swatch-var">--cielo · -o · -s</span>
+            <span className="agi-swatch-use">El de la guía: antetítulos a mano, chips, rótulos de las piezas, cifras, cabeceras de tabla, avisos de dato y mazos de relacionadas.</span>
           </div>
-          <div className="agi-swatch agi-swatch--orange">
+          <div className="agi-swatch" style={{ "--muestra": "var(--naranja)" } as React.CSSProperties}>
             <span className="agi-swatch-name">Naranja</span>
-            <span className="agi-swatch-var">--accent-orange · #ff6b2b</span>
-            <span className="agi-swatch-use">Acción: botones, respuesta elegida, barra de progreso, botón de los anuncios.</span>
+            <span className="agi-swatch-var">--naranja · -o · -s</span>
+            <span className="agi-swatch-use">La acción principal: una sola tecla naranja por bloque (el botón del anuncio, «Siguiente pregunta»).</span>
           </div>
-          <div className="agi-swatch agi-swatch--navy">
-            <span className="agi-swatch-name">Navy</span>
-            <span className="agi-swatch-var">#060f1f · #0a1628 · #0f2040</span>
-            <span className="agi-swatch-use">Fondos. Secciones alternas entre los dos primeros para separar sin otro color.</span>
+          <div className="agi-swatch" style={{ "--muestra": "linear-gradient(90deg, var(--menta) 50%, var(--coral) 50%)" } as React.CSSProperties}>
+            <span className="agi-swatch-name">Menta · Coral</span>
+            <span className="agi-swatch-var">--menta · --coral</span>
+            <span className="agi-swatch-use">Acierto y fallo, «sí» y «no»: lo que está bien y lo que es un error o un riesgo serio.</span>
           </div>
-          <div className="agi-swatch agi-swatch--white">
-            <span className="agi-swatch-name">Blanco</span>
-            <span className="agi-swatch-var">#ffffff · #dce8f8</span>
-            <span className="agi-swatch-use">Títulos y cuerpo. Nunca gris neutro sobre navy.</span>
+          <div className="agi-swatch" style={{ "--muestra": "var(--amarillo)" } as React.CSSProperties}>
+            <span className="agi-swatch-name">Amarillo</span>
+            <span className="agi-swatch-var">--amarillo · -o · -s</span>
+            <span className="agi-swatch-use">El rotulador del titular, el logro del quiz, las citas (un pósit) y el descargo de riesgo.</span>
           </div>
         </div>
         <div className="agi-card">
           <ul className="agi-list">
-            <li><strong>Ancho</strong>: la guía ocupa toda la pantalla; el contenido, <code>max-width: 1100px</code>; el texto corrido, 800 px.</li>
-            <li><strong>Hero</strong>: fondo <code>#060f1f → #0a1628</code>, antetítulo en oro y la última línea del título en degradado oro.</li>
-            <li><strong>Tarjetas</strong>: degradado <code>#0f2040 → #0a1628</code>, borde <code>--gold-border</code>, radio de 18 a 20 px.</li>
-            <li><strong>Móvil primero</strong>: se comprueba a 375 px. Tablas y gráficas con su propio desplazamiento lateral; la página nunca se desborda.</li>
-            <li><strong>Movimiento</strong>: entradas suaves al hacer scroll y nada que parpadee. Se respeta <code>prefers-reduced-motion</code>.</li>
+            <li><strong>Base</strong>: todo cuelga de <code>.gbc-wrap</code> (fondo <code>--fondo</code>, texto <code>--tinta</code>, <code>color-scheme: light</code>). Las piezas comunes están en <code>src/app/guias/guias.css</code>; lo propio de cada guía, en su <code>[slug].css</code> con su prefijo. Las variables del diseño antiguo (<code>--gold</code>, <code>--text-primary</code>, <code>--bg-card</code>…) no se usan.</li>
+            <li><strong>Hero</strong>: la nota a mano (<code>gbc-hero-ey</code>), el H1 con su última línea en rotulador amarillo (<code>gbc-hero-gold</code>, nombre heredado), la respuesta escrita en una hoja de cuaderno rayada (<code>gbc-respuesta</code>), chips cielo (<code>gbc-pill</code>) y, si las hay, las cifras en fichas de papel (<code>GuideHeroStats</code>).</li>
+            <li><strong>Índice y secciones</strong>: el índice es una tira de chips en una hoja, <strong>no fija</strong>. Cada sección se separa con una raya discontinua; su antetítulo (<code>gbc-ey</code>) va a mano en cielo y su título (<code>gbc-title</code>), en Fraunces 800. Texto corrido a 18 px; enlaces subrayados a boli azul.</li>
+            <li><strong>Hojas de papel</strong>: una pieza interactiva, una tarjeta o una tabla es papel con radio de 22 a 28 px y canto sólido <code>0 6px 0 var(--gris-o)</code>, sin bordes finos. Su rótulo va arriba, como chip cielo en mayúsculas. Dentro, sub-tarjetas con canto de 4 px. Esquinas siempre redondeadas.</li>
+            <li><strong>Avisos</strong> (<code>gbc-box</code>): borde de 3 px y fondo suave de su color; cielo por defecto (un dato), <code>--red</code> en coral (riesgo o error) y <code>--green</code> en menta (lo que está bien). <code>--gold</code> es el nombre antiguo del de cielo. El descargo es siempre <code>DisclaimerRiesgo</code>, vestido de aviso amarillo.</li>
+            <li><strong>Tablas y gráficas</strong>: la tabla, en <code>gbc-tabla-caja</code> (cabecera cielo, filas separadas por 2 px de gris, desplazamiento lateral propio). Las gráficas, en <code>gbc-chart-wrap</code>, con los hex de la paleta (Recharts no entiende <code>var()</code> en todos sus props), ejes en gris y sin degradados brillantes.</li>
+            <li><strong>Botones</strong>: todos son <code>Tecla</code>. Un conmutador («Bitcoin | Monero») son teclas pequeñas: la elegida en cielo y las demás blancas, con <code>aria-pressed</code>. Campos y deslizadores como en el sistema: borde de 3 px, foco azul, pista gruesa y tirador cielo con canto.</li>
+            <li><strong>Cifras</strong>: grandes, en Fraunces 800 con números tabulares. Verde y rojo (<code>--sube</code>, <code>--baja</code>) <strong>solo en cifras con signo</strong>; un estado bueno o malo que no es una cifra va en menta o coral.</li>
+            <li><strong>Piezas comunes</strong>: <code>GuideFlipCards</code> (papel delante, cielo suave detrás), <code>GuideSpotlightCards</code> (fichas numeradas), el quiz (cada respuesta es una tecla con su letra, también con A-D e Intro; la correcta pasa a menta y la fallada a coral), <code>GuiasRelacionadas</code> (mazos cielo, como en la portada) y <code>GuiaAnuncio</code> (tarjeta de producto del color de su pieza, con su tecla naranja).</li>
+            <li><strong>Sonidos</strong> (<code>src/lib/sonidos.ts</code>): las teclas hacen su clic solas y las tarjetas suenan al girar. El quiz suena <code>acierto</code> o <code>fallo</code> al comprobar, y <code>logro</code> con el confeti al acertarlo entero; los minijuegos, igual. Un simulador por pasos suena <code>avance</code>, y una casilla, <code>interruptor</code>. Deslizadores, escribir y pasar el ratón no suenan, y nada suena sin que la persona haga algo.</li>
+            <li><strong>Nada anclado</strong>: sin barra de lectura, sin índice fijo y sin avisos pegados arriba al hacer scroll.</li>
+            <li><strong>Ancho</strong>: el contenido, <code>max-width: 1100px</code>; el texto corrido, 760 px.</li>
+            <li><strong>Móvil primero</strong>: se comprueba a 360 px. Tablas y gráficas con su propio desplazamiento lateral; la página nunca se desborda.</li>
+            <li><strong>Movimiento</strong>: con gracia y rebote, nada que parpadee y siempre con su <code>prefers-reduced-motion</code>. Las cifras que cuentan salen ya escritas en el HTML: la cuenta es un adorno, no el dato.</li>
+            <li><strong>Sin emojis</strong>, sin negro puro, sin dorados ni brillos.</li>
           </ul>
         </div>
         <div className="agi-card">
@@ -443,6 +452,8 @@ export default function GuiasInstruccionesPage() {
           <p className="agi-note">No hay panel para editar guías: se gestionan en el código. Las cifras de uso (me gusta, guardados, compartidos y notas del quiz) están en Supabase, por <code>guide_slug</code>.</p>
         </div>
       </Seccion>
+      </div>
+      </div>
     </div>
   );
 }

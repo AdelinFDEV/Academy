@@ -20,6 +20,22 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ---
 
+## Nuevo diseño «Cuaderno de estudio» (elegido el 17-11-2026)
+
+Todo el detalle del estilo está en [`ESTILO.md`](./ESTILO.md) y la referencia visual en `disenos/version-o-equilibrio.html`. **Regla de trabajo, por lo que pasó el 16-11-2026** (un rediseño entero hecho de golpe y rechazado al final): **se monta una sola sección, el admin la aprueba y solo entonces se extiende**.
+
+Estado (17-11-2026): **la web ENTERA está rehecha** en la rama local `diseno-cuaderno` (sin commit ni push; master intacto), con la base global clara y dos repasos completos (pulido general y móvil). Todo pasa `tsc`, `npm run check` y `check:glosario`, y las páginas públicas responden. **Nada se ha visto en un navegador**: lo revisa el admin.
+
+- [ ] **Marcas de estudio en las guías: faltan 11** (parado el 17-11-2026 a mitad). Llevan marcas 19 de 30, Ethereum incluida (la referencia). Faltan: aave, avalanche, bittensor, canton, ethena, hedera, quant, rain, sui, toncoin y uniswap. Cómo se hace, en `ESTILO.md` → «Las marcas de estudio». Comprobación obligatoria por guía: guardar el texto visible ANTES (`curl -s http://localhost:3000/guias/<slug> > a.html && node scripts/texto-visible.mjs a.html > antes.txt`), marcar, repetir DESPUÉS y `diff` vacío; y `npm run check:seo -- guias/<slug> "<kw>"` con los mismos resultados. Las 19 marcadas no se han revisado aún a ojo ni con un diff final contra el texto de antes del 17-11-2026: hacerlo comparando con la versión de `git log` anterior al commit del rediseño.
+- [ ] **Revisión final del admin a ojo**, en escritorio y en el móvil, con sesión Free, Premium y admin (el Diario, el Portfolio, el aula, el panel y el admin solo se ven con sesión). Al aprobarlo: commit en la rama y fusión a master cuando el admin lo diga.
+- [ ] **Textos de venta que nombran a Nova** mientras está oculta (`MOSTRAR_NOVA = false`): `/premium` (metadatos, entradilla, pieza 01, tabla, precio), la ficha `/herramientas/diario` (subtítulo, entradilla, pastillas, sección «Nova lee tu diario», paso, comparativa, precio y las preguntas «¿Usa inteligencia artificial?» y «¿Qué es Nova?»), la ficha del Portfolio, `PREGUNTAS_FRECUENTES` y `GuiaAnuncio`. Prometen algo que hoy no se ve (regla «No prometas lo que el producto no hace»). Además «¿Qué es Nova?» habla de una nota de 0 a 100 retirada el 10-11-2026: es falsa en cualquier caso. Decide el admin: reescribirlos sin Nova o volver a encenderla.
+- [ ] **La mascota que sustituye a Nova** (ver `ESTILO.md`, «La mascota sustituye a Nova»): decidir nombre y personaje con el admin, diseñarla y animarla en Rive, y cambiarla en todos los sitios del inventario.
+- [ ] **`/logros` pública no la ve nadie**: `src/proxy.ts` la tiene en `protectedRoutes` (sin sesión va a /login) y con sesión redirige a /dashboard/logros. Está rediseñada; decidir si se abre.
+- [ ] **Miniaturas de YouTube en la portada**: se cargan de `i.ytimg.com` (Google) sin pasar por el consentimiento. Ya era así antes; revisar con `PLATAFORMA.md` (analítica y consentimiento).
+- [ ] **Textos desfasados de `/guias`** (contenido SEO, no se tocaron en el rediseño): «6 guías» en título y descripción, «Las seis suman unas dos horas…» y «el progreso se guarda» en la FAQ, el chip «Quiz 0–10» (son de 5 preguntas), «acumula puntos». Y en guías: «haz clic» en xrp (`page.tsx:398`), «80%» sin espacio, «badge» en fiscalidad (`page.tsx:839`), el aviso legal hecho a mano con ⚖️ en fiscalidad (`page.tsx:217`, choca con «un solo descargo»).
+- [ ] **Historias de Instagram**: la skill `historia-instagram` sigue con el estilo aprobado el 15-11-2026. Decidir si se pasa al nuevo.
+- [ ] **Deuda de eslint `react-hooks`** que ya existía (no la rompió el rediseño): `CookieBanner.tsx:26`, `aula/AulaCuerpo.tsx:77`, `aula/Examen.tsx:86`, `aula/RitmoSelector.tsx:45`, `aula/bloques/CalculadoraTramos.tsx:48`, `aula/bloques/SimuladorFifo.tsx:44`.
+
 ## Funcionalidades pedidas
 
 ### 00h. Diario: capturas de antes y después de cada operación (13-11-2026)

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, type ReactNode } from "react";
 import {
-  TrendingUp, TrendingDown, Plus, Trash2, RefreshCw, Pencil, Check, X, Wallet, Crown,
-  ChevronDown, Scale,
+  Plus, Trash2, RefreshCw, Pencil, Check, X, Wallet, Crown, Coins, Layers, PiggyBank,
+  AlertTriangle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import CifraAnimada from "@/components/CifraAnimada";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import { formatoES } from "@/lib/formato";
 
 interface Position {
@@ -28,8 +30,11 @@ interface PriceEntry {
 interface Props {
   initialPositions: Position[];
   isAdmin: boolean;
+  /** El registro de «Últimos movimientos», que va junto al reparto. */
+  registro?: ReactNode;
 }
 
+/** El color de marca de cada moneda: su ficha y su tramo en el reparto. */
 const COIN_COLORS: Record<string, string> = {
   BTC: "#f7931a",
   ETH: "#627eea",
@@ -52,8 +57,12 @@ const COIN_COLORS: Record<string, string> = {
   NEAR: "#00ec97",
 };
 
-/** Colores de reserva para monedas sin color propio, para que no salgan todas iguales. */
-const RESERVA = ["#ff6b2b", "#22d3ee", "#a78bfa", "#34d399", "#f472b6", "#fbbf24", "#60a5fa"];
+/**
+ * Colores de reserva para monedas sin color propio, para que no salgan todas
+ * iguales: los de la paleta del cuaderno (ESTILO.md), sin el verde ni el rojo
+ * de las cifras.
+ */
+const RESERVA = ["#ff8a1f", "#2fbff5", "#8f7cff", "#2fc488", "#ff6b81", "#ffd23f", "#4f5dff"];
 
 function coinColor(symbol: string, i: number): string {
   return COIN_COLORS[symbol.toUpperCase()] ?? RESERVA[i % RESERVA.length];
@@ -70,7 +79,12 @@ function fmtCurrency(n: number): string {
   return `$${fmt(n, 4)}`;
 }
 
-/** Por qué se puede ordenar la tabla. */
+/** El porcentaje con su signo delante. Fuera del componente: `CifraAnimada` la necesita estable. */
+function pctSigno(n: number): string {
+  return `${n >= 0 ? "+" : ""}${fmt(n)} %`;
+}
+
+/** Por qué se pueden ordenar las posiciones. */
 type Orden = "peso" | "valor" | "pnl" | "d24";
 
 const COLUMNAS_ORDEN: { id: Orden; texto: string }[] = [
@@ -93,19 +107,30 @@ const EMPTY_FORM = {
   notes: "",
 };
 
+/** La ficha redonda de una moneda, en su color de marca. */
+function Moneda({ simbolo, color }: { simbolo: string; color: string }) {
+  return (
+    <span className="pv-moneda-icono" style={{ "--c": color } as React.CSSProperties} aria-hidden="true">
+      {simbolo.slice(0, 4)}
+    </span>
+  );
+}
+
 /**
  * La cartera spot del Portfolio Adelin.
  *
- * Rehecha el 04-11-2026: cabecera con el estado en vivo, una cifra principal
- * (valor actual con su P&L), la barra de reparto de la cartera por moneda y
- * la tabla de posiciones con su peso. La página solo la ve quien es Premium o
- * Admin (`/portfolio` redirige al resto a `/premium`), así que aquí ya no hay
- * vista bloqueada.
+ * Rehecha el 17-11-2026 con el estilo «Cuaderno de estudio»: la rentabilidad
+ * en grande con el color de su signo y las cifras en fichas de papel; la
+ * mejor, la peor y la que más pesa con su pegatina; el reparto como un anillo
+ * de colores (cada moneda en el suyo) junto al registro de movimientos; y las
+ * posiciones como filas de cuaderno, que en el móvil pasan a ser fichas. La
+ * página solo la ve quien es Premium o Admin (`/portfolio` redirige al resto a
+ * `/premium`), así que aquí no hay vista bloqueada.
  *
  * El formulario de admin y su lógica (la fusión de compras de la misma moneda
- * la decide el servidor) no han cambiado.
+ * la decide el servidor) no han cambiado: mismos campos, mismas llamadas.
  */
-export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
+export default function PortfolioClient({ initialPositions, isAdmin, registro }: Props) {
   const router = useRouter();
   const [positions, setPositions] = useState<Position[]>(initialPositions);
   const [prices, setPrices] = useState<Record<string, PriceEntry>>({});
@@ -119,6 +144,8 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
+  // Un borrado que falla lo dice (antes no pasaba nada y no se sabía por qué).
+  const [borrarError, setBorrarError] = useState("");
   const [orden, setOrden] = useState<Orden>("peso");
 
   const fetchPrices = useCallback(async (pos: Position[]) => {
@@ -174,8 +201,8 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
   const totalPnlPct = totalInvested > 0 ? (totalPnl / totalInvested) * 100 : 0;
   const totalPositive = totalPnl >= 0;
 
-  // Peso de cada moneda sobre el valor actual: la barra de reparto y la
-  // columna de peso. Ordenadas de más a menos, que es como se lee un reparto.
+  // Peso de cada moneda sobre el valor actual: el reparto y la columna de
+  // peso. Ordenadas de más a menos, que es como se lee un reparto.
   const pesos = filas
     .map((f) => ({ ...f, peso: totalCurrent > 0 ? ((f.currentValue ?? f.invested) / totalCurrent) * 100 : 0 }))
     .sort((a, b) => b.peso - a.peso);
@@ -190,7 +217,7 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
   const peor = conResultado.length ? conResultado.reduce((a, f) => ((f.pnlPct ?? 0) < (a.pnlPct ?? 0) ? f : a)) : null;
   const mayor = pesos[0] ?? null;
 
-  // La tabla, en el orden elegido. Sin dato (precio aún sin llegar) va al final.
+  // Las filas, en el orden elegido. Sin dato (precio aún sin llegar) va al final.
   const clave = (f: (typeof pesos)[number]): number | null =>
     orden === "peso" ? f.peso : orden === "valor" ? f.currentValue : orden === "pnl" ? f.pnlPct : f.change24h;
   const ordenadas = [...pesos].sort((a, b) => {
@@ -210,6 +237,7 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
 
   // ── admin CRUD ───────────────────────────────────────────────────
   function openAdd() {
+    sonar("abrir");
     setEditingId(null);
     setForm(EMPTY_FORM);
     setFormError("");
@@ -217,6 +245,7 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
   }
 
   function openEdit(pos: Position) {
+    if (!showForm) sonar("abrir");
     setEditingId(pos.id);
     setForm({
       coin_symbol: pos.coin_symbol,
@@ -232,7 +261,9 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
     setTimeout(() => document.getElementById("pv-form")?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
   }
 
-  function cancelForm() {
+  /** Cierra el formulario. Suena `cerrar` si lo cierra la persona; tras guardar ya sonó `guardado`. */
+  function cancelForm(sonido = true) {
+    if (sonido) sonar("cerrar");
     setShowForm(false);
     setEditingId(null);
     setForm(EMPTY_FORM);
@@ -242,12 +273,14 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
   async function savePosition() {
     setFormError("");
     if (!form.coin_symbol || !form.coin_name || !form.coingecko_id || !form.buy_price || !form.invested || !form.buy_date) {
+      sonar("error");
       setFormError("Completa todos los campos obligatorios.");
       return;
     }
     const buyPrice = parseFloat(form.buy_price);
     const invested = parseFloat(form.invested);
     if (isNaN(buyPrice) || buyPrice <= 0 || isNaN(invested) || invested <= 0) {
+      sonar("error");
       setFormError("Precio y dinero invertido deben ser positivos.");
       return;
     }
@@ -264,7 +297,7 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
         body: JSON.stringify({ ...form, quantity }),
       });
       const json = await res.json();
-      if (!res.ok) { setFormError(json.error ?? "Error al guardar"); return; }
+      if (!res.ok) { sonar("error"); setFormError(json.error ?? "Error al guardar"); return; }
 
       // Al crear, el servidor puede haber FUSIONADO la compra con una posición
       // que ya existía de esa misma moneda (ver POST en /api/portfolio): en ese
@@ -276,12 +309,14 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
         : [...positions, json];
 
       setPositions(siguientes);
-      cancelForm();
+      sonar("guardado");
+      cancelForm(false);
       fetchPrices(siguientes);
       // Vuelve a leer la página en el servidor para que «Últimos movimientos»
       // enseñe el que se acaba de apuntar.
       router.refresh();
     } catch {
+      sonar("error");
       setFormError("Error de red. Inténtalo de nuevo.");
     } finally {
       setSaving(false);
@@ -290,21 +325,26 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
 
   async function deletePosition(id: string) {
     if (!confirm("¿Eliminar esta posición?")) return;
-    const res = await fetch(`/api/portfolio/${id}`, { method: "DELETE" });
-    if (res.ok) {
+    setBorrarError("");
+    const res = await fetch(`/api/portfolio/${id}`, { method: "DELETE" }).catch(() => null);
+    if (res?.ok) {
       setPositions((prev) => prev.filter((p) => p.id !== id));
       router.refresh();
+    } else {
+      sonar("error");
+      setBorrarError(res ? "El servidor no dejó borrarla. Vuelve a intentarlo." : "Sin conexión. Vuelve a intentarlo.");
     }
   }
 
   const cargando = <span className="pv-cargando" aria-label="Cargando" />;
+  const tono = (n: number) => (n >= 0 ? "es-sube" : "es-baja");
 
   return (
     <div className="pv-spot">
       {/* ── Estado en vivo ── */}
       <div className="pv-estado">
         <span className="pv-vivo">
-          <span className="pv-vivo-punto" aria-hidden="true" />
+          <span className="pv-latido" aria-hidden="true" />
           En vivo
           {lastUpdated && (
             <span className="pv-vivo-hora">
@@ -312,267 +352,339 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
             </span>
           )}
         </span>
-        <button
-          className="pv-refrescar"
+        <Tecla
+          color="blanca"
+          tamano="peq"
           onClick={() => { setPricesLoading(true); fetchPrices(positions); }}
           disabled={pricesLoading}
           title="Actualizar precios"
         >
-          <RefreshCw size={14} className={pricesLoading ? "pv-gira" : ""} aria-hidden="true" />
+          <RefreshCw size={15} strokeWidth={2.6} className={pricesLoading ? "pv-gira" : ""} aria-hidden="true" />
           Actualizar
-        </button>
+        </Tecla>
       </div>
 
       {positions.length > 0 && (
         <>
-          {/* ── Las cifras ── */}
-          <div className="pv-kpis">
-            <div className={`pv-kpi-principal${pricesLoading ? "" : totalPositive ? " es-sube" : " es-baja"}`}>
-              <span className="pv-etiqueta">Valor actual de la cartera</span>
-              <span className="pv-kpi-grande">
-                {pricesLoading ? cargando : <CifraAnimada valor={totalCurrent} formato={fmtCurrency} />}
+          {/* ── El resumen: la rentabilidad en grande y tres fichas ── */}
+          <section className="pv-resumen" aria-label="Resumen de la cartera spot">
+            <div className={`pv-hoja${pricesLoading ? "" : totalPositive ? " es-sube" : " es-baja"}`}>
+              <span className="pv-hoja-cab">
+                <span className="pv-hoja-ic" aria-hidden="true"><Coins size={22} strokeWidth={2.3} /></span>
+                <span className="pv-etiqueta">Rentabilidad de la cartera</span>
               </span>
               {/* Mientras llegan los precios no se enseña el resultado: con el
                   precio de compra como reserva saldría un +0,00 % falso. */}
-              <span className="pv-kpi-fila">
+              <span className="pv-grande">
+                {pricesLoading ? cargando : <CifraAnimada valor={totalPnlPct} formato={pctSigno} />}
+              </span>
+              <span className="pv-grande-pie">
                 {pricesLoading ? cargando : (
                   <>
-                    <span className="pv-pill">
-                      {totalPositive ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
-                      {totalPositive ? "+" : ""}{fmt(totalPnlPct)} %
-                    </span>
-                    <span className="pv-kpi-pnl">
-                      {totalPositive ? "+" : ""}{fmtCurrency(totalPnl)} desde la compra
-                    </span>
+                    <b className={`pv-signo ${tono(totalPnl)}`}>
+                      {totalPositive ? "+" : ""}{fmtCurrency(totalPnl)}
+                    </b>{" "}
+                    desde la compra
                   </>
                 )}
               </span>
             </div>
 
-            <div className="pv-kpi">
-              <span className="pv-etiqueta">Invertido</span>
-              <span className="pv-kpi-valor">{fmtCurrency(totalInvested)}</span>
-              <span className="pv-kpi-pie">Coste de entrada total</span>
+            <div className="pv-datos">
+              <div className="pv-dato pv-dato--menta">
+                <span className="pv-dato-ic" aria-hidden="true"><Wallet size={17} strokeWidth={2.4} /></span>
+                <span className="pv-etiqueta">Valor actual</span>
+                <b>{pricesLoading ? cargando : <CifraAnimada valor={totalCurrent} formato={fmtCurrency} />}</b>
+                <small>Lo que vale hoy la cartera</small>
+              </div>
+              <div className="pv-dato pv-dato--lila">
+                <span className="pv-dato-ic" aria-hidden="true"><PiggyBank size={17} strokeWidth={2.4} /></span>
+                <span className="pv-etiqueta">Invertido</span>
+                <b>{fmtCurrency(totalInvested)}</b>
+                <small>Coste de entrada total</small>
+              </div>
+              <div className="pv-dato pv-dato--cielo">
+                <span className="pv-dato-ic" aria-hidden="true"><Layers size={17} strokeWidth={2.4} /></span>
+                <span className="pv-etiqueta">Posiciones</span>
+                <b>{positions.length}</b>
+                <small>
+                  {pricesLoading ? "Calculando…" : `${ganadoras} en ganancias · ${perdedoras} en pérdidas`}
+                </small>
+              </div>
             </div>
-            <div className="pv-kpi">
-              <span className="pv-etiqueta">Posiciones</span>
-              <span className="pv-kpi-valor">{positions.length}</span>
-              <span className="pv-kpi-pie">
-                {pricesLoading ? "Calculando…" : `${ganadoras} en ganancias · ${perdedoras} en pérdidas`}
-              </span>
-            </div>
-          </div>
+          </section>
 
-          {/* ── Destacadas: mejor, peor y la que más pesa ── */}
+          {/* ── Destacadas: mejor, peor y la que más pesa, con su pegatina ── */}
           {!pricesLoading && mejor && peor && mayor && (
-            <div className="pv-destacadas">
+            <ul className="pv-destacadas" aria-label="Posiciones destacadas">
               {[
-                { titulo: "Mejor posición", f: mejor, icono: <TrendingUp size={15} aria-hidden="true" />, tono: "es-sube" },
-                { titulo: "Peor posición", f: peor, icono: <TrendingDown size={15} aria-hidden="true" />, tono: (peor.pnlPct ?? 0) >= 0 ? "es-sube" : "es-baja" },
-                { titulo: "Mayor peso", f: mayor, icono: <Scale size={15} aria-hidden="true" />, tono: "" },
+                { titulo: "Mejor posición", pegatina: "La mejor", clase: "pv-destacada--menta", f: mejor },
+                { titulo: "Peor posición", pegatina: "La peor", clase: "pv-destacada--coral", f: peor },
+                { titulo: "Mayor peso", pegatina: "La que más pesa", clase: "pv-destacada--amarillo", f: mayor },
               ].map((d) => (
-                <div key={d.titulo} className="pv-destacada" style={{ "--c": d.f.color } as React.CSSProperties}>
-                  <span className="pv-destacada-cab">
-                    <span className={`pv-destacada-icono ${d.tono}`}>{d.icono}</span>
-                    <span className="pv-etiqueta">{d.titulo}</span>
+                <li key={d.titulo} className={`pv-destacada ${d.clase}`}>
+                  <span className="pv-pegatina-peq" aria-hidden="true">{d.pegatina}</span>
+                  <span className="pv-etiqueta">{d.titulo}</span>
+                  <span className="pv-destacada-moneda">
+                    <Moneda simbolo={d.f.pos.coin_symbol} color={d.f.color} />
+                    <b>{d.f.pos.coin_name}</b>
                   </span>
-                  <span className="pv-destacada-cuerpo">
-                    <span className="pv-moneda-icono">{d.f.pos.coin_symbol.slice(0, 4)}</span>
-                    <span className="pv-destacada-texto">
-                      <b>{d.f.pos.coin_name}</b>
-                      {d.titulo === "Mayor peso" ? (
-                        <small>{fmt(d.f.peso, 1)} % de la cartera</small>
-                      ) : (
-                        <small className={d.tono}>
-                          {(d.f.pnlPct ?? 0) >= 0 ? "+" : ""}{fmt(d.f.pnlPct ?? 0)} % · {(d.f.pnl ?? 0) >= 0 ? "+" : ""}{fmtCurrency(d.f.pnl ?? 0)}
-                        </small>
-                      )}
+                  {d.titulo === "Mayor peso" ? (
+                    <span className="pv-destacada-cifra">
+                      {fmt(d.f.peso, 1)} %<small>de la cartera</small>
                     </span>
-                  </span>
-                </div>
+                  ) : (
+                    <span className={`pv-destacada-cifra pv-signo ${tono(d.f.pnlPct ?? 0)}`}>
+                      {pctSigno(d.f.pnlPct ?? 0)}
+                      <small>{(d.f.pnl ?? 0) >= 0 ? "+" : ""}{fmtCurrency(d.f.pnl ?? 0)}</small>
+                    </span>
+                  )}
+                </li>
               ))}
-            </div>
+            </ul>
           )}
 
-          {/* ── El reparto: anillo y leyenda ── */}
-          <div className="pv-reparto">
-            <div className="pv-reparto-cab">
-              <span className="pv-etiqueta">Reparto de la cartera</span>
-              <span className="pv-reparto-nota">por valor actual</span>
-            </div>
-            <div className="pv-reparto-cuerpo">
-              <div className="pv-donut">
-                <svg viewBox="0 0 42 42" aria-hidden="true">
-                  <circle cx="21" cy="21" r={R_DONUT} className="pv-donut-fondo" />
-                  {tramos.map((t, i) => (
-                    <circle
-                      key={t.f.pos.id}
-                      cx="21"
-                      cy="21"
-                      r={R_DONUT}
-                      className="pv-donut-tramo"
-                      style={{
-                        "--c": t.f.color,
-                        "--i": i,
-                        strokeDasharray: `${t.largo} ${100 - t.largo}`,
-                        strokeDashoffset: t.desfase,
-                      } as React.CSSProperties}
-                    />
+          {/* ── El reparto, junto al registro de movimientos ── */}
+          <div className="pv-dos">
+            <section className="pv-reparto" aria-labelledby="pv-reparto-titulo">
+              <header className="pv-bloque-cab">
+                <div>
+                  <span className="pv-etiqueta">Por valor actual</span>
+                  <h2 id="pv-reparto-titulo" className="pv-h2">Reparto de la cartera</h2>
+                </div>
+              </header>
+              <div className="pv-reparto-cuerpo">
+                <div className="pv-donut">
+                  <svg viewBox="0 0 42 42" aria-hidden="true">
+                    <circle cx="21" cy="21" r={R_DONUT} className="pv-donut-fondo" />
+                    {tramos.map((t, i) => (
+                      <circle
+                        key={t.f.pos.id}
+                        cx="21"
+                        cy="21"
+                        r={R_DONUT}
+                        className="pv-donut-tramo"
+                        style={{
+                          "--c": t.f.color,
+                          "--i": i,
+                          strokeDasharray: `${t.largo} ${100 - t.largo}`,
+                          strokeDashoffset: t.desfase,
+                        } as React.CSSProperties}
+                      />
+                    ))}
+                  </svg>
+                  <span className="pv-donut-centro">
+                    <b>{pricesLoading ? "—" : fmtCurrency(totalCurrent)}</b>
+                    <small>{positions.length} {positions.length === 1 ? "moneda" : "monedas"}</small>
+                  </span>
+                </div>
+                <ul className="pv-leyenda">
+                  {pesos.map((f) => (
+                    <li key={f.pos.id} style={{ "--c": f.color } as React.CSSProperties}>
+                      <i aria-hidden="true" />
+                      <b>{f.pos.coin_symbol}</b>
+                      <span className="pv-leyenda-barra"><em style={{ width: `${Math.max(f.peso, 2)}%` }} /></span>
+                      <span className="pv-leyenda-pct">{fmt(f.peso, 1)} %</span>
+                    </li>
                   ))}
-                </svg>
-                <span className="pv-donut-centro">
-                  <b>{pricesLoading ? "—" : fmtCurrency(totalCurrent)}</b>
-                  <small>{positions.length} {positions.length === 1 ? "moneda" : "monedas"}</small>
-                </span>
+                </ul>
               </div>
-              <ul className="pv-reparto-leyenda">
-                {pesos.map((f) => (
-                  <li key={f.pos.id} style={{ "--c": f.color } as React.CSSProperties}>
-                    <i aria-hidden="true" />
-                    <b>{f.pos.coin_symbol}</b>
-                    <span className="pv-reparto-barrita"><em style={{ width: `${Math.max(f.peso, 2)}%` }} /></span>
-                    <span className="pv-reparto-valor">{f.currentValue !== null ? fmtCurrency(f.currentValue) : "—"}</span>
-                    <span className="pv-reparto-pct">{fmt(f.peso, 1)} %</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            </section>
+
+            {registro}
           </div>
         </>
       )}
 
       {/* ── Las posiciones ── */}
       {positions.length === 0 ? (
-        <div className="pv-vacio">
-          <Wallet size={30} strokeWidth={1.4} aria-hidden="true" />
-          <p>No hay posiciones todavía.</p>
-          {isAdmin && <button className="pv-btn" onClick={openAdd}><Plus size={15} /> Añadir primera posición</button>}
-        </div>
+        <>
+          {registro}
+          <div className="pv-vacio">
+            <span className="pv-vacio-ic" aria-hidden="true"><Wallet size={28} strokeWidth={2.2} /></span>
+            <p>No hay posiciones todavía.</p>
+            {isAdmin && (
+              <Tecla color="menta" onClick={openAdd}>
+                <Plus size={17} strokeWidth={2.8} aria-hidden="true" /> Añadir primera posición
+              </Tecla>
+            )}
+          </div>
+        </>
       ) : (
-        <div className="pv-tabla-wrap">
-          <table className="pv-tabla">
-            <thead>
-              <tr>
-                <th>Moneda</th>
-                <th className="es-num">Precio de compra</th>
-                <th className="es-num">Precio actual</th>
-                <th className="es-num">Invertido</th>
-                {/* Las cuatro últimas ordenan la tabla al pulsarlas. */}
-                {COLUMNAS_ORDEN.map((c) => (
-                  <th key={c.id} className="es-num" aria-sort={orden === c.id ? "descending" : "none"}>
-                    <button
-                      type="button"
-                      className={`pv-orden${orden === c.id ? " is-activo" : ""}`}
-                      onClick={() => setOrden(c.id)}
-                    >
-                      {c.texto}
-                      <ChevronDown size={12} strokeWidth={2.6} aria-hidden="true" />
-                    </button>
-                  </th>
-                ))}
-                {isAdmin && <th aria-label="Acciones" />}
-              </tr>
-            </thead>
-            <tbody>
+        <section className="pv-posiciones" aria-labelledby="pv-pos-titulo">
+          <header className="pv-bloque-cab">
+            <div>
+              <span className="pv-etiqueta">Cartera de altcoins</span>
+              <h2 id="pv-pos-titulo" className="pv-h2">Las posiciones</h2>
+            </div>
+            <div className="pv-orden" role="group" aria-label="Ordenar las posiciones">
+              <span className="pv-orden-rotulo">Ordenar por</span>
+              {COLUMNAS_ORDEN.map((c) => (
+                <Tecla
+                  key={c.id}
+                  tamano="peq"
+                  color={orden === c.id ? "menta" : "blanca"}
+                  className={orden === c.id ? "is-pulsada" : ""}
+                  aria-pressed={orden === c.id}
+                  onClick={() => setOrden(c.id)}
+                >
+                  {c.texto}
+                </Tecla>
+              ))}
+            </div>
+          </header>
+
+          <div className={`pv-libreta${isAdmin ? " con-admin" : ""}`}>
+            {/* La cabecera de columnas solo se ve en pantallas anchas; en cada
+                celda va su rótulo, que el lector de pantalla lee siempre. */}
+            <div className="pv-fila pv-fila--cab" aria-hidden="true">
+              <span>Moneda</span>
+              <span>Compra</span>
+              <span>Hoy</span>
+              <span>Invertido</span>
+              <span>Valor actual</span>
+              <span>P&amp;L</span>
+              <span>24 h</span>
+              <span>Peso</span>
+              {isAdmin && <span />}
+            </div>
+
+            <ul className="pv-filas">
               {ordenadas.map((f) => {
                 const positive = f.pnl !== null ? f.pnl >= 0 : null;
                 return (
-                  <tr key={f.pos.id} style={{ "--c": f.color } as React.CSSProperties}>
-                    <td>
-                      <span className="pv-moneda">
-                        <span className="pv-moneda-icono">{f.pos.coin_symbol.slice(0, 4)}</span>
-                        <span className="pv-moneda-texto">
-                          <b>{f.pos.coin_name}</b>
-                          <small>{fmt(f.pos.quantity, f.pos.quantity < 1 ? 6 : 4)} {f.pos.coin_symbol}</small>
-                        </span>
+                  <li key={f.pos.id} className="pv-fila" style={{ "--c": f.color } as React.CSSProperties}>
+                    <span className="pv-c pv-c-moneda">
+                      <Moneda simbolo={f.pos.coin_symbol} color={f.color} />
+                      <span className="pv-moneda-texto">
+                        <b>{f.pos.coin_name}</b>
+                        <small>{fmt(f.pos.quantity, f.pos.quantity < 1 ? 6 : 4)} {f.pos.coin_symbol}</small>
                       </span>
-                    </td>
-                    <td className="es-num es-tenue">{fmtCurrency(f.pos.buy_price)}</td>
-                    <td className="es-num">
-                      {pricesLoading ? cargando : f.currentPrice !== null ? fmtCurrency(f.currentPrice) : "—"}
-                    </td>
-                    <td className="es-num es-tenue">{fmtCurrency(f.invested)}</td>
-                    <td className="es-num es-fuerte">
-                      {pricesLoading ? cargando : f.currentValue !== null ? fmtCurrency(f.currentValue) : "—"}
-                    </td>
-                    <td className="es-num">
+                    </span>
+                    <span className="pv-c pv-c-compra">
+                      <small className="pv-c-etq">Precio de compra</small>
+                      <span className="es-tenue">{fmtCurrency(f.pos.buy_price)}</span>
+                    </span>
+                    <span className="pv-c pv-c-actual">
+                      <small className="pv-c-etq">Precio actual</small>
+                      <span>{pricesLoading ? cargando : f.currentPrice !== null ? fmtCurrency(f.currentPrice) : "—"}</span>
+                    </span>
+                    <span className="pv-c pv-c-invertido">
+                      <small className="pv-c-etq">Invertido</small>
+                      <span className="es-tenue">{fmtCurrency(f.invested)}</span>
+                    </span>
+                    <span className="pv-c pv-c-valor">
+                      <small className="pv-c-etq">Valor actual</small>
+                      <span className="es-fuerte">
+                        {pricesLoading ? cargando : f.currentValue !== null ? fmtCurrency(f.currentValue) : "—"}
+                      </span>
+                    </span>
+                    <span className="pv-c pv-c-pnl">
+                      <small className="pv-c-etq">P&amp;L</small>
                       {pricesLoading ? cargando : f.pnl !== null ? (
-                        <span className={`pv-pnl ${positive ? "es-sube" : "es-baja"}`}>
+                        <span className={`pv-pnl pv-signo ${positive ? "es-sube" : "es-baja"}`}>
                           <b>{positive ? "+" : ""}{fmt(f.pnlPct ?? 0)} %</b>
                           <small>{positive ? "+" : ""}{fmtCurrency(f.pnl)}</small>
                         </span>
-                      ) : "—"}
-                    </td>
-                    <td className="es-num">
+                      ) : <span>—</span>}
+                    </span>
+                    <span className="pv-c pv-c-24h">
+                      <small className="pv-c-etq">24 h</small>
                       {pricesLoading ? cargando : f.change24h !== null ? (
-                        <span className={`pv-chip ${f.change24h >= 0 ? "es-sube" : "es-baja"}`}>
+                        <span className={`pv-chip-signo ${f.change24h >= 0 ? "es-sube" : "es-baja"}`}>
                           {f.change24h >= 0 ? "+" : ""}{fmt(f.change24h)} %
                         </span>
-                      ) : "—"}
-                    </td>
-                    <td className="es-num">
+                      ) : <span>—</span>}
+                    </span>
+                    <span className="pv-c pv-c-peso">
+                      <small className="pv-c-etq">Peso</small>
                       <span className="pv-peso">
                         <span className="pv-peso-barra"><i style={{ width: `${Math.max(f.peso, 2)}%` }} /></span>
                         {fmt(f.peso, 1)} %
                       </span>
-                    </td>
+                    </span>
                     {isAdmin && (
-                      <td className="pv-acciones">
-                        <button onClick={() => openEdit(f.pos)} title="Editar" aria-label={`Editar ${f.pos.coin_symbol}`}>
-                          <Pencil size={14} />
-                        </button>
-                        <button className="es-borrar" onClick={() => deletePosition(f.pos.id)} title="Eliminar" aria-label={`Eliminar ${f.pos.coin_symbol}`}>
-                          <Trash2 size={14} />
-                        </button>
-                      </td>
+                      <span className="pv-c-acciones">
+                        <Tecla
+                          color="blanca"
+                          tamano="peq"
+                          icono
+                          onClick={() => openEdit(f.pos)}
+                          title="Editar"
+                          aria-label={`Editar ${f.pos.coin_symbol}`}
+                        >
+                          <Pencil size={16} strokeWidth={2.5} aria-hidden="true" />
+                        </Tecla>
+                        <Tecla
+                          color="coral"
+                          tamano="peq"
+                          icono
+                          onClick={() => deletePosition(f.pos.id)}
+                          title="Eliminar"
+                          aria-label={`Eliminar ${f.pos.coin_symbol}`}
+                        >
+                          <Trash2 size={16} strokeWidth={2.5} aria-hidden="true" />
+                        </Tecla>
+                      </span>
                     )}
-                  </tr>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+            </ul>
+          </div>
+        </section>
       )}
 
       {/* ── Panel de admin ── */}
       {isAdmin && (
-        <div className="pv-admin">
+        <section className="pv-admin" aria-label="Panel admin">
           <div className="pv-admin-cab">
             <span className="pv-admin-etiqueta">
-              <Crown size={13} aria-hidden="true" /> Panel admin
+              <Crown size={14} strokeWidth={2.5} aria-hidden="true" /> Panel admin
             </span>
             {!showForm && (
-              <button className="pv-btn" onClick={openAdd}>
-                <Plus size={15} /> Añadir posición
-              </button>
+              <Tecla color="menta" onClick={openAdd}>
+                <Plus size={17} strokeWidth={2.8} aria-hidden="true" /> Añadir posición
+              </Tecla>
             )}
           </div>
 
+          {borrarError && (
+            <div className="pv-aviso pv-aviso--coral" role="alert">
+              <span className="pv-aviso-ic" aria-hidden="true"><X size={18} strokeWidth={3} /></span>
+              <span><b>No se pudo eliminar</b>{borrarError}</span>
+            </div>
+          )}
+
           {showForm && (
             <div className="pv-form" id="pv-form">
-              <div className="pv-form-titulo">
+              <h3 className="pv-form-titulo">
                 {editingId ? "Editar posición" : "Nueva posición"}
-              </div>
+              </h3>
               {/* La fusión pasa en el servidor y no se ve venir desde el
                   formulario: se avisa en cuanto el id escrito coincide con una
                   moneda que ya está en cartera. */}
               {!editingId && yaEnCartera && (
-                <div className="pv-form-aviso">
-                  Ya tienes {yaEnCartera.coin_symbol} en cartera: esta compra se sumará a esa
-                  posición y el precio de compra pasará a ser la media ponderada de ambas.
+                <div className="pv-aviso pv-aviso--amarillo">
+                  <span className="pv-aviso-ic" aria-hidden="true"><AlertTriangle size={18} strokeWidth={2.6} /></span>
+                  <span>
+                    <b>Se sumará a la que ya hay</b>
+                    Ya tienes {yaEnCartera.coin_symbol} en cartera: esta compra se sumará a esa
+                    posición y el precio de compra pasará a ser la media ponderada de ambas.
+                  </span>
                 </div>
               )}
               <div className="pv-form-rejilla">
                 <label className="pv-campo">
-                  <span>Símbolo *</span>
+                  <span className="pv-campo-etq">Símbolo *</span>
                   <input
-                    placeholder="BTC"
+                    placeholder="BTC" autoCapitalize="characters" autoComplete="off" autoCorrect="off" spellCheck={false}
                     value={form.coin_symbol}
                     onChange={(e) => setForm((f) => ({ ...f, coin_symbol: e.target.value.toUpperCase() }))}
                   />
                 </label>
                 <label className="pv-campo">
-                  <span>Nombre *</span>
+                  <span className="pv-campo-etq">Nombre *</span>
                   <input
                     placeholder="Bitcoin"
                     value={form.coin_name}
@@ -580,17 +692,19 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
                   />
                 </label>
                 <label className="pv-campo pv-campo--ancho">
-                  <span>CoinGecko ID * <small>(ej: bitcoin, ethereum, solana)</small></span>
+                  <span className="pv-campo-etq">CoinGecko ID *</span>
                   <input
-                    placeholder="bitcoin"
+                    placeholder="bitcoin" autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false}
                     value={form.coingecko_id}
                     onChange={(e) => setForm((f) => ({ ...f, coingecko_id: e.target.value.toLowerCase() }))}
                   />
+                  <span className="pv-campo-ayuda">ej: bitcoin, ethereum, solana</span>
                 </label>
                 <label className="pv-campo">
-                  <span>Precio de compra (USD) *</span>
+                  <span className="pv-campo-etq">Precio de compra (USD) *</span>
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="any"
                     placeholder="65000"
                     value={form.buy_price}
@@ -598,9 +712,10 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
                   />
                 </label>
                 <label className="pv-campo">
-                  <span>Dinero invertido (USD) *</span>
+                  <span className="pv-campo-etq">Dinero invertido (USD) *</span>
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="any"
                     placeholder="1000"
                     value={form.invested}
@@ -608,7 +723,7 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
                   />
                 </label>
                 <label className="pv-campo">
-                  <span>Fecha de compra *</span>
+                  <span className="pv-campo-etq">Fecha de compra *</span>
                   <input
                     type="date"
                     value={form.buy_date}
@@ -616,7 +731,7 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
                   />
                 </label>
                 <label className="pv-campo pv-campo--ancho">
-                  <span>Notas <small>(opcional)</small></span>
+                  <span className="pv-campo-etq">Notas <small>(opcional)</small></span>
                   <input
                     placeholder="DCA mensual, acumulación..."
                     value={form.notes}
@@ -625,19 +740,28 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
                 </label>
               </div>
 
-              {formError && <p className="pv-form-error">{formError}</p>}
+              {formError && (
+                <div className="pv-aviso pv-aviso--coral" role="alert">
+                  <span className="pv-aviso-ic" aria-hidden="true"><X size={18} strokeWidth={3} /></span>
+                  <span><b>No se pudo guardar</b>{formError}</span>
+                </div>
+              )}
 
               <div className="pv-form-acciones">
-                <button className="pv-btn" onClick={savePosition} disabled={saving}>
-                  {saving ? "Guardando..." : <><Check size={15} /> {editingId ? "Guardar cambios" : "Añadir posición"}</>}
-                </button>
-                <button className="pv-btn pv-btn--ghost" onClick={cancelForm} disabled={saving}>
-                  <X size={15} /> Cancelar
-                </button>
+                <Tecla color="menta" onClick={savePosition} disabled={saving}>
+                  {saving ? "Guardando..." : (
+                    <>
+                      <Check size={17} strokeWidth={2.8} aria-hidden="true" /> {editingId ? "Guardar cambios" : "Añadir posición"}
+                    </>
+                  )}
+                </Tecla>
+                <Tecla color="blanca" onClick={() => cancelForm()} disabled={saving}>
+                  <X size={17} strokeWidth={2.8} aria-hidden="true" /> Cancelar
+                </Tecla>
               </div>
             </div>
           )}
-        </div>
+        </section>
       )}
     </div>
   );

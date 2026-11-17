@@ -3,15 +3,16 @@
    Solo clases propias de esta guía (simulador de consenso RPCA/UNL).
    Las clases estructurales compartidas (gbc-*, wq-*) viven en guias.css y se
    reutilizan tal cual. Ver AGENTS.md → "cada guía, su propio archivo CSS".
+   Estilo «Cuaderno de estudio» (ESTILO.md): guías en color cielo.
    ========================================================================== */
 
 .xrp-cs {
   margin-top: 28px;
-  border: 1px solid var(--gold-border);
-  border-radius: 18px;
-  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
-  padding: 22px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  padding: 26px;
+  border-radius: 28px;
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow: 0 6px 0 var(--gris-o);
 }
 
 .xrp-cs-head {
@@ -19,7 +20,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
@@ -27,173 +28,203 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gold);
 }
 
 .xrp-cs-round {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--tinta);
   font-variant-numeric: tabular-nums;
 }
 
 /* Validadores (nodos de la UNL) */
 .xrp-cs-nodes {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 8px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 26px;
 }
 
 .xrp-cs-node {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 10px 4px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  transition: border-color 0.3s, background 0.3s;
+  gap: 8px;
+  padding: 12px 4px 10px;
+  border-radius: 16px;
+  background: var(--fondo);
+  box-shadow: 0 4px 0 var(--gris-o);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.4s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 .xrp-cs-node.agreed {
-  border-color: rgba(74, 222, 128, 0.4);
-  background: rgba(74, 222, 128, 0.08);
+  background: var(--menta-s);
+  box-shadow: 0 4px 0 var(--menta);
+  transform: translateY(-3px);
 }
 
 .xrp-cs-node-dot {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: #64748b;
-  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.14);
-  transition: background 0.3s, box-shadow 0.3s;
+  background: var(--gris-o);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  transition: background-color 0.3s;
 }
 .xrp-cs-node.agreed .xrp-cs-node-dot {
-  background: #4ade80;
-  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.22);
+  background: var(--menta);
 }
 
 .xrp-cs-node-lbl {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--tinta-2);
   font-variant-numeric: tabular-nums;
+}
+.xrp-cs-node.agreed .xrp-cs-node-lbl {
+  color: var(--menta-o);
 }
 
 /* Medidor de acuerdo con umbral del 80% */
 .xrp-cs-meter {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  padding-top: 18px;
 }
 
 .xrp-cs-meter-track {
   position: relative;
-  height: 12px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
+  height: 18px;
+  border-radius: 999px;
+  background: var(--gris);
   overflow: visible;
 }
 
 .xrp-cs-meter-fill {
   height: 100%;
-  border-radius: 8px;
-  background: linear-gradient(90deg, var(--accent-orange), var(--gold));
-  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+  border-radius: 999px;
+  background: var(--naranja);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.35);
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s;
 }
 .xrp-cs-meter-fill.ok {
-  background: linear-gradient(90deg, #34d399, #4ade80);
+  background: var(--menta);
 }
 
 .xrp-cs-threshold {
   position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.55);
-  transform: translateX(-1px);
+  top: -5px;
+  bottom: -5px;
+  width: 4px;
+  border-radius: 4px;
+  background: var(--tinta);
+  transform: translateX(-2px);
 }
 .xrp-cs-threshold-lbl {
   position: absolute;
-  top: -20px;
+  top: -24px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.64rem;
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--tinta);
   white-space: nowrap;
 }
 
 .xrp-cs-meter-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
+  gap: 12px;
   margin-top: 14px;
   font-variant-numeric: tabular-nums;
 }
 .xrp-cs-meter-val {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tinta-2);
 }
 .xrp-cs-meter-pct {
-  font-size: 1.1rem;
+  font-family: var(--letra-titular);
+  font-size: 28px;
   font-weight: 800;
-  color: var(--text-primary);
+  line-height: 1;
+  color: var(--tinta);
 }
 
-/* Estado del consenso */
+/* Estado del consenso: un aviso del cuaderno */
 .xrp-cs-status {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  font-size: 0.84rem;
+  padding: 14px 18px;
+  border: 3px solid var(--cielo);
+  border-radius: 18px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 14.5px;
+  font-weight: 700;
   line-height: 1.5;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 .xrp-cs-status.ok {
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.08);
-  border-color: rgba(74, 222, 128, 0.28);
+  border-color: var(--menta);
+  background: var(--menta-s);
+  color: var(--menta-o);
+  animation: xrp-cs-aparecer 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-.xrp-cs-status.ok strong { color: #86efac; }
-.xrp-cs-status svg { flex-shrink: 0; margin-top: 1px; }
+.xrp-cs-status.ok strong { font-family: var(--letra-titular); font-weight: 800; }
+.xrp-cs-status svg { flex-shrink: 0; margin-top: 2px; }
 
 .xrp-cs-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 22px;
   flex-wrap: wrap;
 }
 
-.xrp-cs-reset {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  display: inline-flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-.xrp-cs-reset:hover { color: var(--accent-orange); }
+.xrp-cs-avanzar { white-space: normal; text-align: center; }
+.xrp-cs-actions .tecla--peq { min-height: 44px; }
 
 .xrp-cs-note {
-  margin-top: 16px;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  color: var(--text-muted);
+  margin: 14px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+@keyframes xrp-cs-aparecer {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 
 @media (max-width: 720px) {
-  .xrp-cs-nodes { grid-template-columns: repeat(4, 1fr); }
+  .xrp-cs { padding: 18px; border-radius: 24px; }
+  .xrp-cs-nodes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+@media (max-width: 420px) {
+  .xrp-cs { padding: 16px; }
+  .xrp-cs-nodes { gap: 8px; }
+  .xrp-cs-actions .tecla { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xrp-cs-node, .xrp-cs-node-dot, .xrp-cs-meter-fill { transition: none; }
+  .xrp-cs-node.agreed { transform: none; }
+  .xrp-cs-status.ok { animation: none; }
+}
+
+/* ══ Marcas de estudio (17-11-2026) ══
+   Lo común (margen de los pósits, estrella de la respuesta, símbolos al
+   margen) está en guias.css, «Marcas de estudio». Aquí solo el ancho de los
+   pósits que se quedan en su sitio: el del texto, no el de la página. */
+.xrp-nota { max-width: 760px; }

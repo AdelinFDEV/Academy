@@ -1,0 +1,438 @@
+/* Los cursos en la portada, estilo «Cuaderno de estudio» (CursosHome.tsx).
+   Referencia: «El camino de un curso» en disenos/sistema.html y el bloque de
+   cursos de disenos/version-o-equilibrio.html. Color de la sección: lila.
+   Prefijo: ch-. */
+
+.ch {
+  padding: clamp(1rem, 3vw, 2rem) clamp(0.6rem, 2vw, 1.25rem) clamp(2.5rem, 6vw, 4rem);
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+}
+
+/* La hoja blanca sobre el fondo lavanda, con su canto. */
+.ch-papel {
+  max-width: 1240px;
+  margin: 0 auto;
+  border-radius: 40px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris);
+}
+
+.ch-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.ch-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--lila-o);
+  transform: rotate(-2deg);
+}
+
+.ch-titulo {
+  margin: 0.3rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.1rem, 4.4vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.ch-lead {
+  max-width: 46ch;
+  margin: 1rem 0 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+/* ── Las fichas de los cursos ── */
+.ch-fichas {
+  display: grid;
+  gap: 14px;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ch-ficha {
+  --c: var(--lila);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--fondo);
+  box-shadow: 0 5px 0 var(--gris-o);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+/* Solo con ratón: en el móvil el «hover» se queda pegado tras tocar. */
+@media (hover: hover) {
+  .ch-ficha:hover {
+    transform: translateY(-3px) rotate(-0.6deg);
+    box-shadow: 0 8px 0 var(--gris-o);
+  }
+
+  .ch-ficha:hover .ch-ficha-flecha { transform: translateX(4px); color: var(--lila-o); }
+  a.ch-nodo:hover { transform: scale(1.08); }
+}
+
+.ch-ficha:active {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 var(--gris-o);
+  transition-duration: 0.06s;
+}
+
+.ch-ficha:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+}
+
+/* El icono, del color propio del curso (su paleta, CURSOS.md §4). Sobre él,
+   texto oscuro: hay cursos de tono claro. */
+.ch-ficha-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--c);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 62%, var(--tinta));
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.ch-ficha-cuerpo {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.ch-ficha-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.22rem;
+  font-weight: 800;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.ch-ficha-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.ch-nivel {
+  padding: 3px 9px;
+  border-radius: 9px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ch-nivel--basico { background: var(--cielo-s); color: var(--cielo-o); }
+.ch-nivel--intermedio { background: var(--naranja-s); color: var(--naranja-o); }
+.ch-nivel--avanzado { background: var(--lila-s); color: var(--lila-o); }
+
+.ch-ficha-flecha {
+  flex: none;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--tinta-3);
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), color 0.15s;
+}
+
+.ch-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 1.7rem;
+}
+
+/* ── El camino ── */
+.ch-camino-caja {
+  min-width: 0;
+}
+
+.ch-camino-nota {
+  margin: 0 0 0.2rem;
+  font-family: var(--letra-mano);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--tinta-2);
+  transform: rotate(-1.5deg);
+}
+
+.ch-camino {
+  --nodo: 72px;
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.ch-trazo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ch-trazo-camino {
+  fill: none;
+  stroke: var(--gris);
+  /* 16 px, como la vía de la ficha del curso y del aula. */
+  stroke-width: 16px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* El ramal al examen de cada módulo: a trazos, como el tramo del sistema. */
+.ch-trazo-examen {
+  stroke: var(--gris-o);
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-dasharray: 1 12;
+  vector-effect: non-scaling-stroke;
+}
+
+.ch-paradas {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Cada parada es una fila a lo ancho y de alto cero, a su altura: los nodos se
+   centran en ella con `translate`, y el `transform` queda libre para animar. */
+.ch-parada {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+}
+
+.ch-nodo {
+  position: absolute;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: var(--nodo);
+  height: var(--nodo);
+  border-radius: 50%;
+  translate: -50% -50%;
+  font-family: var(--letra-texto);
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+/* Empieza aquí: el naranja que late (el estado «actual» del sistema). */
+.ch-nodo--actual {
+  z-index: 2;
+  background: var(--naranja);
+  box-shadow: 0 7px 0 var(--naranja-o);
+}
+
+/* El aro que late, en su propia capa: se anima con `transform` y `opacity`
+   (el móvil no repinta la sombra en cada fotograma). */
+.ch-nodo--actual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 10px rgba(255, 138, 31, 0.2);
+  pointer-events: none;
+  animation: ch-latir 1.6s ease-in-out infinite;
+}
+
+.ch-nodo--actual:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 6px;
+}
+
+@keyframes ch-latir {
+  50% { transform: scale(1.2); opacity: 0.3; }
+}
+
+/* Lo que se abre después: bloqueado hasta aprobar el examen anterior. */
+.ch-nodo--bloq {
+  background: var(--gris);
+  color: var(--gris-o);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+.ch-nodo--examen {
+  --nodo: 48px;
+  font-size: 1.2rem;
+  background: var(--lila);
+  box-shadow: 0 5px 0 var(--lila-o);
+}
+
+.ch-nodo--final {
+  --nodo: 72px;
+  font-size: 1.6rem;
+  box-shadow: 0 7px 0 var(--lila-o);
+}
+
+.ch-etiqueta {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 14px);
+  translate: 0 -50%;
+  font-family: var(--letra-texto);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--lila-o);
+}
+
+/* En la mitad derecha del camino, la etiqueta va a la izquierda: cabe. */
+.ch-etiqueta--izq {
+  left: auto;
+  right: calc(100% + 14px);
+}
+
+/* La meta: el certificado, en amarillo. */
+.ch-nodo--meta {
+  --nodo: 96px;
+  border-radius: 28px;
+  background: var(--amarillo);
+  box-shadow: 0 7px 0 var(--amarillo-o);
+  font-size: 0.86rem;
+  text-align: center;
+  line-height: 1.1;
+  color: var(--tinta);
+  rotate: -3deg;
+}
+
+.ch-bocadillo {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: var(--tinta);
+  font-size: 0.85rem;
+  font-weight: 900;
+  white-space: nowrap;
+  color: #fff;
+  translate: -24px 0;
+  rotate: -2deg;
+  pointer-events: none;
+}
+
+.ch-bocadillo::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-top-color: var(--tinta);
+  border-bottom: 0;
+}
+
+/* La leyenda, bajo el camino. */
+.ch-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.ch-leyenda li { display: inline-flex; align-items: center; gap: 7px; }
+
+.ch-punto {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.ch-punto--actual { background: var(--naranja); box-shadow: 0 3px 0 var(--naranja-o); }
+.ch-punto--bloq { background: var(--gris); box-shadow: 0 3px 0 var(--gris-o); }
+.ch-punto--examen { background: var(--lila); box-shadow: 0 3px 0 var(--lila-o); }
+.ch-punto--meta { border-radius: 4px; background: var(--amarillo); box-shadow: 0 3px 0 var(--amarillo-o); }
+
+/* Los nodos aparecen con un saltito al entrar en pantalla, donde el navegador
+   sabe animar con el scroll. Donde no, salen quietos: no se pierde nada. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .ch-nodo {
+      animation: ch-saltar linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%;
+    }
+  }
+}
+
+@keyframes ch-saltar {
+  0% { opacity: 0; scale: 0.4; }
+  70% { opacity: 1; scale: 1.1; }
+  100% { opacity: 1; scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch-nodo--actual::after { animation: none; }
+  .ch-ficha, .ch-ficha-flecha, .ch-nodo { transition: none; }
+  .ch-ficha:hover, a.ch-nodo:hover { transform: none; }
+  .ch-ficha:hover .ch-ficha-flecha { transform: none; }
+}
+
+/* ── Tableta: el camino debajo ── */
+@media (max-width: 960px) {
+  .ch-inner { grid-template-columns: minmax(0, 1fr); }
+  .ch-papel { border-radius: 32px; }
+}
+
+@media (max-width: 560px) {
+  .ch-papel { border-radius: 26px; }
+  .ch-camino { --nodo: 60px; }
+  .ch-nodo { font-size: 1.35rem; }
+  .ch-nodo--examen { --nodo: 42px; font-size: 1.05rem; }
+  .ch-nodo--final { --nodo: 60px; font-size: 1.35rem; }
+  .ch-nodo--meta { --nodo: 84px; font-size: 0.8rem; }
+  .ch-etiqueta { font-size: 0.72rem; }
+  .ch-ficha { gap: 12px; padding: 14px; }
+  .ch-ficha-ic { width: 46px; height: 46px; font-size: 1.1rem; }
+  .ch-ficha-flecha { display: none; }
+  .ch-acciones .tecla { flex: 1 1 100%; }
+}

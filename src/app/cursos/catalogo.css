@@ -1,686 +1,732 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   CATÁLOGO DE CURSOS · solo /cursos (se importa en su page.tsx)
-   ══════════════════════════════════════════════════════════════════════════
-
-   Rehecho el 08-11-2026 a petición del admin: debajo de la cabecera, lo
-   primero es el listado de cursos con el progreso de cada uno. Después, lo
-   común: cómo funciona y el certificado. El color de cada curso entra por
-   --cx-c en su tarjeta; el dorado de la casa (--cx-oro) es el del botón.
-   ═════════════════════════════════════════════════════════════════════════ */
-
-.cx {
-  --cx-oro: #e6b455;
-  --cx-oro-2: #f5d48a;
-  --cx-texto: rgba(240, 244, 255, 0.96);
-  --cx-suave: rgba(240, 244, 255, 0.62);
-  --cx-tenue: rgba(240, 244, 255, 0.42);
-  --cx-linea: rgba(240, 244, 255, 0.09);
-  --cx-panel: rgba(13, 27, 52, 0.78);
-  overflow-x: clip;
-}
-
-.cx-main {
-  --cx-c: #e6b455; /* fuera de una tarjeta, el dorado de la casa */
-  position: relative;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 1.25rem 5rem;
-}
-
-/* ── Piezas comunes ─────────────────────────────────────────────────────── */
-
-.cx-h2 {
-  margin: 0;
-  font: 800 clamp(1.6rem, 3.4vw, 2.35rem)/1.12 var(--font-display);
-  letter-spacing: -0.025em;
-  color: var(--cx-texto);
-}
-.cx-h3 { margin: 0 0 1rem; font: 700 1.05rem var(--font-display); color: var(--cx-texto); }
-.cx-p { margin: 0.75rem 0 0; max-width: 64ch; font-size: 1rem; line-height: 1.7; color: var(--cx-suave); }
-.cx-p a { color: var(--cx-oro); }
-.cx-kicker {
-  display: inline-block;
-  margin-bottom: 0.55rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--cx-c);
-}
-
-.cx-pildora {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.38rem 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--cx-oro) 38%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--cx-oro) 10%, transparent);
-  color: var(--cx-oro-2);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.cx-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.9rem 1.45rem;
-  border: 1px solid transparent;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--cx-oro-2), var(--cx-oro) 55%, #d4952a);
-  color: #0a1628;
-  font-size: 0.96rem;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--cx-oro) 70%, transparent);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-}
-.cx-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 16px 40px -12px color-mix(in srgb, var(--cx-oro) 80%, transparent); }
-.cx-btn--ghost {
-  background: rgba(240, 244, 255, 0.04);
-  border-color: rgba(240, 244, 255, 0.16);
-  color: var(--cx-texto);
-  box-shadow: none;
-}
-.cx-btn--ghost:hover { border-color: rgba(240, 244, 255, 0.3); box-shadow: none; }
-.cx-btn--grande { padding: 1.05rem 1.8rem; font-size: 1.02rem; }
+   EL CATÁLOGO DE CURSOS (/cursos) — estilo «Cuaderno de estudio» (17-11-2026)
+   Solo lo propio del catálogo: la cabecera con los totales, la tarjeta de
+   cada curso (TarjetaCurso.tsx) con su camino en pequeño y el cierre de
+   Premium. Lo que comparte con la ficha (texto, chips,
+   barra, cinta, marco del certificado, «Cómo funciona», descargo) está en
+   cursos.css, que se carga antes. Prefijo: cu-. Color de la sección: LILA;
+   cada tarjeta, el color de su curso (`--c`).
+   Solo lo carga src/app/cursos/page.tsx.
+   ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Cabecera ───────────────────────────────────────────────────────────── */
 
-.cx-cabecera { position: relative; isolation: isolate; padding: 2.4rem 0 2.6rem; }
-/* Fondo a sangre, estático: una rejilla que se desvanece y un halo dorado.
-   Sin `filter: blur` (en iPhone iba a tirones): el halo es un degradado. */
-.cx-cabecera-fondo { position: absolute; inset: -6rem -50vw 0; z-index: -1; pointer-events: none; }
-.cx-rejilla {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 244, 255, 0.045) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 30%, #000 20%, transparent 75%);
-  mask-image: radial-gradient(ellipse 60% 70% at 50% 30%, #000 20%, transparent 75%);
-}
-.cx-halo {
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  width: 900px;
-  height: 520px;
-  transform: translateX(-75%);
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--cx-oro) 13%, transparent), transparent);
-}
-
-.cx-migas { display: flex; gap: 0.5rem; margin-bottom: 1.6rem; font-size: 0.8rem; color: var(--cx-tenue); }
-.cx-migas a { color: var(--cx-suave); text-decoration: none; }
-.cx-migas a:hover { color: var(--cx-texto); }
-
-.cx-cabecera-fila { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
-.cx-sobretitulo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--cx-oro-2);
-}
-.cx-titulo {
-  margin: 0.7rem 0 0;
-  font: 800 clamp(2.8rem, 6.5vw, 4.4rem)/0.95 var(--font-display);
-  letter-spacing: -0.045em;
-  color: #fff;
-}
-.cx-titulo-punto { color: var(--cx-oro); }
-.cx-lead { margin: 1rem 0 0; max-width: 56ch; font-size: 1.04rem; line-height: 1.65; color: var(--cx-suave); }
-
-/* Sin Premium: el precio y el botón, a la derecha del título. */
-.cx-oferta {
+.cu-cab-fila {
   display: grid;
-  justify-items: start;
-  gap: 0.45rem;
-  min-width: 270px;
-  padding: 1.1rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: 20px;
-  background:
-    linear-gradient(170deg, rgba(22, 42, 80, 0.95), rgba(12, 26, 52, 0.95)) padding-box,
-    linear-gradient(150deg, color-mix(in srgb, var(--cx-oro) 80%, transparent), rgba(240, 244, 255, 0.08) 50%, color-mix(in srgb, var(--cx-oro) 40%, transparent)) border-box;
-  box-shadow: 0 24px 50px -30px color-mix(in srgb, var(--cx-oro) 60%, transparent);
-}
-.cx-oferta-cab { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cx-oro-2); }
-.cx-oferta-precio { font-size: 0.85rem; color: var(--cx-suave); }
-.cx-oferta-precio strong { margin-right: 0.15rem; font: 800 1.5rem var(--font-display); letter-spacing: -0.02em; color: #fff; }
-.cx-oferta-btn { justify-content: center; width: 100%; margin-top: 0.25rem; padding: 0.8rem 1.1rem; font-size: 0.92rem; }
-.cx-oferta-enlace { justify-self: center; font-size: 0.8rem; font-weight: 600; color: var(--cx-suave); text-decoration: none; }
-.cx-oferta-enlace:hover { color: var(--cx-texto); text-decoration: underline; }
-
-/* Con Premium y un curso a medias: volver a él en un clic. */
-.cx-reanudar {
-  display: flex;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: clamp(1.6rem, 4vw, 3rem);
   align-items: center;
-  gap: 0.9rem;
-  max-width: 420px;
-  padding: 0.9rem 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--cx-c) 40%, transparent);
-  border-radius: 18px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--cx-c) 14%, rgba(13, 27, 52, 0.9)), rgba(13, 27, 52, 0.9));
-  color: var(--cx-texto);
-  text-decoration: none;
-  transition: transform 0.25s ease, border-color 0.25s ease;
 }
-.cx-reanudar:hover { transform: translateY(-2px); border-color: var(--cx-c); }
-.cx-reanudar > svg { flex-shrink: 0; color: var(--cx-c); }
-.cx-reanudar-anillo {
-  position: relative;
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: conic-gradient(var(--cx-c) calc(var(--pct) * 1%), rgba(240, 244, 255, 0.1) 0);
-  color: var(--cx-c);
-}
-.cx-reanudar-anillo::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: #0c1a35; }
-.cx-reanudar-anillo svg { position: relative; margin-left: 2px; }
-.cx-reanudar-texto { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
-.cx-reanudar-texto small { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cx-c); }
-.cx-reanudar-texto strong { font: 700 1rem var(--font-display); color: #fff; }
-.cx-reanudar-texto span { overflow: hidden; font-size: 0.78rem; color: var(--cx-tenue); text-overflow: ellipsis; white-space: nowrap; }
 
-/* Los totales de todos los cursos: una sola barra de cristal, con divisores. */
-.cx-cifras {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  margin: 2.2rem 0 0;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(20, 38, 72, 0.72), rgba(11, 24, 48, 0.72));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 24px 50px -30px rgba(0, 0, 0, 0.8);
-  overflow: hidden;
-}
-.cx-cifras div { display: flex; flex-direction: column-reverse; gap: 0.35rem; padding: 1.15rem 1.4rem; }
-.cx-cifras div + div { border-left: 1px solid var(--cx-linea); }
-.cx-cifras dt {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.7rem;
+.cu-cab-texto .cu-titulo .anotacion { white-space: nowrap; }
+
+.cu-lead {
+  max-width: 48ch;
+  margin: 1.1rem 0 0;
+  font-size: 1.15rem;
   font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+/* La oferta, sin Premium: una tarjeta de papel pegada con cinta. */
+.cu-oferta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 26px 22px 18px;
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+  text-align: center;
+  transform: rotate(1.2deg);
+}
+
+.cu-oferta-cinta {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 96px;
+  height: 28px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0 6px, transparent 6px 12px),
+    color-mix(in srgb, var(--naranja) 60%, transparent);
+  translate: -50% 0;
+  rotate: -4deg;
+}
+
+.cu-oferta-cab {
+  font-size: 12px;
+  font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--cx-tenue);
-}
-.cx-cifras dt svg { color: var(--cx-oro); flex-shrink: 0; }
-.cx-cifras dd { margin: 0; font: 800 1.75rem/1.05 var(--font-display); letter-spacing: -0.02em; color: #fff; font-variant-numeric: tabular-nums; }
-
-/* ── El escaparate: el fondo de detrás de las tarjetas ─────────────────── */
-
-/* Una aurora con los colores de todos los cursos (--cx-aurora lo arma la
-   página) y un grano fino encima, que quita el aspecto de plano digital. Todo
-   estático y sin `filter`: el grano es un SVG de ruido que el navegador pinta
-   una vez. Se desvanece arriba y abajo para fundirse con la página. */
-.cx-escaparate { position: relative; isolation: isolate; padding: 1.5rem 0 1rem; }
-.cx-escaparate-fondo {
-  position: absolute;
-  inset: -2rem -50vw -4rem;
-  z-index: -1;
-  pointer-events: none;
-  background: var(--cx-aurora, none);
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 75%, transparent);
-  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 75%, transparent);
-}
-.cx-escaparate-fondo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: var(--naranja-o);
 }
 
-/* ── Las tarjetas de los cursos ─────────────────────────────────────────── */
+.cu-oferta-precio {
+  font-weight: 800;
+  color: var(--tinta-2);
+}
 
-.cx-lista {
+.cu-oferta-precio strong {
+  font-family: var(--letra-titular);
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.cu-oferta-nota {
+  margin-bottom: 0.8rem;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.cu-oferta .tecla { white-space: normal; }
+.cu-oferta .cu-enlace { margin-top: 0.4rem; font-size: 0.92rem; }
+
+/* Con Premium y un curso a medias: volver a él. */
+.cu-reanudar {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
-  gap: 1.5rem;
-  margin: 0;
+  gap: 8px;
+  padding: 22px 22px 16px;
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o), inset 0 0 0 3px var(--c-s);
+}
+
+.cu-reanudar-nota {
+  font-family: var(--letra-mano);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--lila-o);
+  transform: rotate(-2deg);
+}
+
+.cu-reanudar-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.cu-reanudar-datos {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.cu-reanudar .tecla { margin-top: 6px; }
+
+/* Con Premium y nada a medias: una pegatina. */
+.cu-pegatina {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 150px;
+  padding: 18px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: var(--lila);
+  box-shadow: 0 8px 16px -8px rgba(29, 27, 51, 0.45);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  transform: rotate(10deg);
+}
+
+/* Los totales de todos los cursos: fichas de papel con su cifra. */
+.cu-cifras {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: clamp(2rem, 4vw, 2.8rem) 0 0;
+}
+
+.cu-cifras div {
+  padding: 14px 16px 16px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+
+.cu-cifras div:nth-child(4) { background: var(--lila-s); box-shadow: 0 5px 0 color-mix(in srgb, var(--lila) 45%, #fff); }
+
+.cu-cifras dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.cu-cifras dt svg { color: var(--lila-o); }
+
+.cu-cifras dd {
+  margin: 4px 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--tinta);
+}
+
+/* ── El listado ─────────────────────────────────────────────────────────── */
+
+.cu-lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 40px) clamp(20px, 3vw, 30px);
+  margin: clamp(3rem, 6vw, 4rem) 0 0;
   padding: 0;
   list-style: none;
 }
-.cx-curso {
+
+/* La tarjeta de un curso: papel con canto y, arriba, su foto pegada. */
+.cu-curso {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* Borde con degradado del color del curso: fondo en padding-box y el
-     degradado en border-box, detrás de un borde transparente. */
-  border: 1px solid transparent;
-  border-radius: 26px;
-  background:
-    linear-gradient(180deg, rgba(16, 32, 62, 0.97), rgba(10, 22, 44, 0.99)) padding-box,
-    linear-gradient(150deg, color-mix(in srgb, var(--cx-c) 75%, transparent), rgba(240, 244, 255, 0.07) 36%, rgba(240, 244, 255, 0.04) 64%, color-mix(in srgb, var(--cx-c) 40%, transparent)) border-box;
-  /* El foco: un resplandor de su color por debajo, como en un escaparate. */
-  box-shadow: 0 46px 70px -44px color-mix(in srgb, var(--cx-c) 60%, transparent), 0 30px 60px -36px rgba(0, 0, 0, 0.85);
-  overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.cx-curso:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 56px 80px -44px color-mix(in srgb, var(--cx-c) 80%, transparent), 0 30px 60px -36px rgba(0, 0, 0, 0.85);
+  padding: 14px 14px 0;
+  border-radius: 30px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+  transition: transform 0.3s var(--muelle), box-shadow 0.3s var(--muelle);
 }
 
-/* El brillo que sigue al ratón (TarjetaCurso.tsx escribe --mx / --my). */
-.cx-curso-brillo {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 30%), color-mix(in srgb, var(--cx-c) 14%, transparent), transparent 70%);
-  transition: opacity 0.3s ease;
-}
 @media (hover: hover) {
-  .cx-curso:hover .cx-curso-brillo { opacity: 1; }
+  .cu-curso:hover {
+    transform: translateY(-4px) rotate(-0.4deg);
+    box-shadow: 0 11px 0 var(--gris-o), 0 26px 40px -26px rgba(29, 27, 51, 0.45);
+  }
 }
 
-/* La portada: el color del curso, un punteado, su icono gigante y su número. */
-.cx-curso-portada {
+.cu-curso-foto {
   position: relative;
-  flex-shrink: 0;
-  height: 140px;
-  background:
-    radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.2px) 0 0 / 16px 16px,
-    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--cx-c) 42%, transparent), transparent 70%),
-    linear-gradient(135deg, color-mix(in srgb, var(--cx-c) 22%, #0c1a35), #0c1a35);
-  border-bottom: 1px solid color-mix(in srgb, var(--cx-c) 25%, transparent);
+  border-radius: 20px;
+}
+
+.cu-curso-portada {
+  position: relative;
+  aspect-ratio: 20 / 8;
   overflow: hidden;
+  border-radius: 20px;
+  background: var(--lila-s);
 }
-/* El arte de la portada (PortadaCurso.tsx): SVG en el color del curso o la
-   ilustración, si el curso tiene una. */
-.cx-portada-arte { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--cx-c); }
-.cx-portada-img { object-fit: cover; object-position: 70% 50%; }
 
-/* El certificado del alumno, asomando por abajo a la derecha. */
-.cx-curso-cert {
+.cu-curso-chips {
   position: absolute;
-  right: 1.3rem;
-  bottom: -84px;
-  z-index: 1;
-  width: 200px;
-  transform: rotate(-7deg);
-  transition: transform 0.4s ease;
-}
-.cx-curso-cert .dp { box-shadow: 0 18px 36px -14px rgba(0, 0, 0, 0.8); }
-.cx-curso:hover .cx-curso-cert { transform: rotate(-3deg) translateY(-14px); }
-
-.cx-curso-num {
-  position: absolute;
-  top: 0.9rem;
-  right: 1.3rem;
-  font: 800 2.6rem/1 var(--font-display);
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px color-mix(in srgb, var(--cx-c) 70%, transparent);
-  z-index: 1;
-}
-.cx-curso-chips { position: absolute; top: 1.1rem; left: 1.5rem; z-index: 1; display: flex; gap: 0.45rem; }
-.cx-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.28rem 0.7rem;
-  border: 1px solid rgba(240, 244, 255, 0.16);
-  border-radius: 999px;
-  background: rgba(6, 14, 30, 0.55);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: capitalize;
-  color: var(--cx-texto);
-}
-.cx-chip--ok { border-color: rgba(134, 239, 172, 0.35); color: #86efac; }
-.cx-chip--nuevo { border-color: color-mix(in srgb, var(--cx-oro) 50%, transparent); color: var(--cx-oro-2); }
-/* Sin Premium: el candado, arriba a la derecha de la portada. */
-.cx-curso-candado {
-  position: absolute;
-  top: 1.1rem;
-  right: 1.3rem;
   z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid color-mix(in srgb, var(--cx-oro) 45%, transparent);
-  border-radius: 999px;
-  background: rgba(6, 14, 30, 0.7);
-  color: var(--cx-oro-2);
-  font-size: 0.72rem;
-  font-weight: 700;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 60%;
 }
-.cx-chip--curso { border-color: color-mix(in srgb, var(--cx-c) 55%, transparent); color: var(--cx-c); }
 
-/* El sello monta entre la portada y el cuerpo (vive en el cuerpo, porque
-   la portada recorta su icono gigante). */
-.cx-curso-sello {
+.cu-curso-chips .cu-chip { padding: 5px 10px; font-size: 12px; }
+.cu-curso-chips .cu-chip--menta { box-shadow: 0 3px 0 var(--menta-o); background: var(--menta); color: var(--tinta); }
+.cu-curso-chips .cu-chip--naranja { box-shadow: 0 3px 0 var(--naranja-o); background: var(--naranja); color: #fff; }
+
+/* El pósit amarillo del curso más reciente. */
+.cu-postit {
   position: absolute;
-  left: 1.5rem;
-  top: -29px;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--cx-c) 55%, transparent);
-  background: linear-gradient(160deg, color-mix(in srgb, var(--cx-c) 20%, #10213f), #0b1730);
-  color: var(--cx-c);
-  box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--cx-c) 70%, transparent);
+  z-index: 3;
+  top: -12px;
+  right: -8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: var(--amarillo);
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--tinta);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.45);
+  transform: rotate(5deg);
 }
 
-.cx-curso-cuerpo { position: relative; display: flex; flex: 1; flex-direction: column; padding: 2.6rem 1.6rem 1.6rem; }
-.cx-curso-titulo { margin: 0; font: 800 1.55rem/1.12 var(--font-display); letter-spacing: -0.025em; }
-.cx-curso-titulo a { color: #fff; text-decoration: none; transition: color 0.2s ease; }
-.cx-curso-titulo a:hover { color: var(--cx-c); }
-.cx-curso-sub { margin: 0.55rem 0 0; font-size: 0.92rem; line-height: 1.55; color: var(--cx-suave); }
-
-.cx-curso-meta { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 1.1rem 0 0; padding: 0; list-style: none; }
-.cx-curso-meta li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.32rem 0.7rem;
+/* El certificado del alumno, asomando por la foto. */
+.cu-curso-cert {
+  position: absolute;
+  z-index: 2;
+  right: 14px;
+  bottom: -26px;
+  width: 44%;
   border-radius: 10px;
-  background: rgba(240, 244, 255, 0.05);
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--cx-suave);
+  transform: rotate(4deg);
+  transition: transform 0.3s var(--muelle);
 }
-.cx-curso-meta svg { color: var(--cx-c); flex-shrink: 0; }
 
-/* El progreso: anillo + texto + pista con un tramo por módulo. */
-.cx-progreso {
-  display: grid;
-  grid-template-columns: 68px minmax(0, 1fr);
-  gap: 1rem;
-  align-items: center;
-  margin-top: 1.3rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--cx-linea);
-  border-radius: 18px;
-  background: rgba(5, 12, 26, 0.5);
+@media (hover: hover) { .cu-curso-cert:hover { transform: rotate(1deg) translateY(-4px) scale(1.03); } }
+.cu-curso-cert:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+.cu-curso-cert .cq { box-shadow: 0 4px 0 var(--gris-o), 0 14px 24px -12px rgba(29, 27, 51, 0.6); }
+
+.cu-curso-cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 12px 18px;
 }
-.cx-anillo {
+
+/* El sello del logro, montado entre la foto y el cuerpo, y el número a mano. */
+.cu-curso-cab {
   position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: -30px;
+}
+
+.cu-curso-sello {
+  flex: none;
   display: grid;
   place-items: center;
-  width: 68px;
-  height: 68px;
+  width: 60px;
+  height: 60px;
+  border: 4px solid #fff;
   border-radius: 50%;
-  background: conic-gradient(var(--cx-c) calc(var(--pct) * 1%), rgba(240, 244, 255, 0.08) 0);
+  background: var(--c);
+  color: var(--tinta);
+  box-shadow: 0 6px 0 var(--c-o);
+  transform: rotate(-6deg);
 }
-.cx-anillo::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: #0a1730; }
-.cx-anillo strong { position: relative; font: 800 0.95rem var(--font-display); color: #fff; font-variant-numeric: tabular-nums; }
-.cx-curso--nuevo .cx-anillo strong { color: var(--cx-tenue); }
 
-.cx-progreso-texto { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
-.cx-progreso-texto > strong { font-size: 0.92rem; color: var(--cx-texto); }
-.cx-progreso-texto > span:not(.cx-tramos) {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  overflow: hidden;
-  font-size: 0.78rem;
-  color: var(--cx-tenue);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.cu-curso-num {
+  padding-bottom: 2px;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-o);
 }
-.cx-progreso-texto svg { color: var(--cx-c); flex-shrink: 0; }
-.cx-tramos { display: flex; gap: 4px; margin-top: 0.45rem; }
-.cx-tramos i { flex: 1; height: 5px; border-radius: 99px; background: rgba(240, 244, 255, 0.08); overflow: hidden; }
-.cx-tramos b { display: block; height: 100%; border-radius: inherit; background: var(--cx-c); }
 
-/* Sin empezar: los módulos en pequeño. */
-.cx-curso-temario {
-  display: grid;
-  gap: 0.4rem;
-  margin: 1.3rem 0 0;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--cx-linea);
-  border-radius: 18px;
-  background: rgba(5, 12, 26, 0.5);
+.cu-curso-titulo {
+  margin: 0.7rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.4rem, 2.6vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+.cu-curso-titulo a {
+  color: var(--tinta);
+  text-decoration: none;
+  background: linear-gradient(transparent 62%, var(--c-s) 62%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+@media (hover: hover) { .cu-curso-titulo a:hover { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--c) 45%, #fff) 58%); } }
+.cu-curso-titulo a:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 4px; }
+
+.cu-curso-sub {
+  margin: 0.45rem 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.cu-curso-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.9rem 0 0;
+  padding: 0;
   list-style: none;
 }
-.cx-curso-temario li {
-  display: flex;
-  gap: 0.7rem;
-  overflow: hidden;
-  font-size: 0.82rem;
-  line-height: 1.4;
-  color: var(--cx-suave);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+.cu-curso-datos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 9px;
+  background: var(--gris);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--tinta-2);
 }
-.cx-curso-temario span { flex-shrink: 0; font-weight: 800; color: var(--cx-c); font-variant-numeric: tabular-nums; }
 
-.cx-curso-acciones { display: flex; gap: 0.6rem; margin-top: auto; padding-top: 1.4rem; }
-.cx-curso-acciones .cx-btn { justify-content: center; padding: 0.82rem 1.2rem; font-size: 0.92rem; }
-.cx-curso-acciones .cx-btn:first-child { flex: 1; }
+/* Sin empezar: los módulos, en una lista de cuaderno. */
+.cu-curso-temario {
+  display: grid;
+  gap: 2px;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
 
-/* ── Secciones comunes ──────────────────────────────────────────────────── */
+.cu-curso-temario li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 2px dashed var(--gris);
+  font-size: 0.93rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
 
-.cx-seccion { margin-top: 5.5rem; }
-.cx-cab { margin-bottom: 2.2rem; }
+.cu-curso-temario li span {
+  flex: none;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: var(--c-o);
+}
 
-/* Cómo funciona: una línea de tiempo */
-.cx-pasos { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 0; padding: 0; list-style: none; }
-.cx-pasos::before {
+/* Empezado o aprobado: la barra y el siguiente paso. */
+.cu-curso-avance { margin-top: 1rem; }
+
+.cu-curso-avance-fila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.cu-curso-pct {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  color: var(--lila-o);
+}
+
+.cu-curso--aprobado .cu-barra i { background: var(--menta); }
+.cu-curso--aprobado .cu-curso-pct { color: var(--menta-o); }
+
+.cu-curso-siguiente {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  margin: 0.6rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.cu-curso-siguiente b { color: var(--tinta); }
+
+/* El camino en pequeño: nodo por módulo, su examen, el final y la meta. */
+.cu-mini {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 1.2rem 0 0;
+  padding: 6px 2px 10px;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.cu-mini::-webkit-scrollbar { display: none; }
+
+.cu-mini::before {
   content: "";
   position: absolute;
-  top: 27px;
-  left: 6%;
-  right: 6%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--cx-c) 60%, transparent), color-mix(in srgb, var(--cx-oro) 60%, transparent), transparent);
+  top: calc(50% - 2px);
+  left: 14px;
+  right: 14px;
+  height: 6px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, var(--gris-o) 0 8px, transparent 8px 14px);
 }
-.cx-paso { position: relative; display: flex; flex-direction: column; gap: 0.5rem; }
-.cx-paso-icono {
-  display: grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  margin-bottom: 0.6rem;
-  border-radius: 16px;
-  border: 1px solid color-mix(in srgb, var(--cx-c) 40%, transparent);
-  background: #0e2043;
-  color: var(--cx-c);
-  box-shadow: 0 10px 30px -14px color-mix(in srgb, var(--cx-c) 80%, transparent);
-}
-.cx-paso:last-child .cx-paso-icono { border-color: var(--cx-oro); color: var(--cx-oro); box-shadow: 0 10px 30px -14px var(--cx-oro); }
-.cx-paso-num { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cx-tenue); }
-.cx-paso-titulo { font: 700 1.02rem var(--font-display); color: var(--cx-texto); }
-.cx-paso-texto { font-size: 0.86rem; line-height: 1.6; color: var(--cx-suave); }
 
-/* El certificado */
-.cx-cert {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 3rem;
-  align-items: center;
-  padding: 3rem;
-  border: 1px solid var(--cx-linea);
-  border-radius: 28px;
-  background: radial-gradient(90% 120% at 100% 50%, color-mix(in srgb, var(--cx-oro) 10%, transparent), transparent 60%), var(--cx-panel);
-}
-.cx-cert-lista { display: grid; gap: 0.7rem; margin: 1.6rem 0 0; padding: 0; list-style: none; }
-.cx-cert-lista li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.92rem; color: var(--cx-suave); }
-.cx-cert-lista svg { color: var(--cx-oro); flex-shrink: 0; }
-.cx-cert-muestra { transform: rotate(-2.5deg); transition: transform 0.5s ease; }
-.cx-cert-muestra:hover { transform: rotate(0) scale(1.02); }
-
-/* Cierre de venta (sin Premium): a la izquierda qué incluye; a la derecha,
-   la tarjeta del precio con el botón y la confianza debajo. */
-.cx-final {
+.cu-mini-tramo {
   position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 3rem;
+  z-index: 1;
+  display: flex;
+  flex: none;
   align-items: center;
-  margin-top: 6rem;
-  padding: 3.4rem;
-  border: 1px solid color-mix(in srgb, var(--cx-oro) 25%, transparent);
-  border-radius: 32px;
-  overflow: hidden;
-  background: linear-gradient(180deg, rgba(14, 32, 67, 0.92), rgba(9, 20, 41, 0.96));
-}
-.cx-final-glow {
-  position: absolute;
-  inset: -40% -10% auto 35%;
-  z-index: -1;
-  height: 140%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--cx-oro) 18%, transparent), transparent);
-}
-.cx-final-titulo { margin: 0.9rem 0 0; max-width: 18ch; font: 800 clamp(1.9rem, 4vw, 2.8rem)/1.08 var(--font-display); letter-spacing: -0.03em; color: #fff; }
-.cx-final-lista { display: grid; gap: 0.7rem; margin: 1.6rem 0 0; padding: 0; list-style: none; }
-.cx-final-lista li { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 0.95rem; line-height: 1.5; color: var(--cx-texto); }
-.cx-check {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  margin-top: 0.05rem;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--cx-oro) 18%, transparent);
-  color: var(--cx-oro-2);
+  gap: 6px;
 }
 
-.cx-final-precio {
+.cu-mini-nodo {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.cu-mini-nodo.is-hecho { background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); color: var(--tinta); }
+.cu-mini-nodo.is-actual { background: var(--naranja); box-shadow: 0 3px 0 var(--naranja-o); color: #fff; }
+.cu-mini-nodo.is-abierto { background: var(--papel); box-shadow: inset 0 0 0 3px var(--gris), 0 3px 0 var(--gris-o); color: var(--tinta); }
+.cu-mini-nodo.is-bloq,
+.cu-mini-nodo.is-espera { background: var(--gris); box-shadow: 0 3px 0 var(--gris-o); color: var(--tinta-3); }
+
+.cu-mini-nodo--final.is-bloq,
+.cu-mini-nodo--final.is-abierto { background: var(--lila); box-shadow: 0 3px 0 var(--lila-o); color: #fff; }
+.cu-mini-nodo--final.is-espera { background: var(--coral); box-shadow: 0 3px 0 var(--coral-o); color: #fff; }
+
+.cu-mini-examen {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--lila);
+  box-shadow: 0 2px 0 var(--lila-o);
+}
+
+.cu-mini-examen.is-hecho { background: var(--menta); box-shadow: 0 2px 0 var(--menta-o); }
+.cu-mini-examen.is-actual { background: var(--naranja); box-shadow: 0 2px 0 var(--naranja-o); }
+.cu-mini-examen.is-espera { background: var(--coral); box-shadow: 0 2px 0 var(--coral-o); }
+
+.cu-mini-meta {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+  color: var(--tinta);
+  rotate: -4deg;
+}
+
+.cu-mini-meta.is-hecho { box-shadow: 0 3px 0 var(--amarillo-o), 0 0 0 4px rgba(255, 210, 63, 0.35); }
+
+.cu-curso-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 1.2rem;
+}
+
+/* ── Cierre: Premium, en un bloque de tinta (ESTILO.md) ─────────────────── */
+
+.cu-premium {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+  margin-top: clamp(3.5rem, 8vw, 5.5rem);
+  padding: clamp(2.4rem, 5vw, 3.6rem) clamp(1.25rem, 4vw, 3rem);
+  border-radius: 40px;
+  background: var(--tinta);
+  color: #fff;
+}
+
+.cu-premium-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--naranja);
+  transform: rotate(-2deg);
+}
+
+.cu-premium-titulo {
+  margin: 0.3rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 3.8vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.cu-premium-p {
+  max-width: 54ch;
+  margin: 0.9rem 0 0;
+  font-weight: 600;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cu-premium-lista {
+  display: grid;
+  gap: 12px;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cu-premium-lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.cu-premium-check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--menta);
+  box-shadow: 0 3px 0 var(--menta-o);
+  color: var(--tinta);
+}
+
+/* El precio, en una hoja blanca sobre la tinta. */
+.cu-premium-precio {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  padding: 2rem 1.8rem 1.6rem;
-  border: 1px solid transparent;
-  border-radius: 24px;
-  background:
-    linear-gradient(170deg, rgba(22, 42, 80, 0.98), rgba(12, 26, 52, 0.98)) padding-box,
-    linear-gradient(150deg, var(--cx-oro), rgba(240, 244, 255, 0.08) 45%, color-mix(in srgb, var(--cx-oro) 50%, transparent)) border-box;
-  box-shadow: 0 40px 80px -40px color-mix(in srgb, var(--cx-oro) 55%, transparent);
+  align-items: center;
+  padding: 30px 24px 22px;
+  border-radius: 30px;
+  background: var(--papel);
+  color: var(--tinta);
+  text-align: center;
+  transform: rotate(-1.5deg);
+}
+
+.cu-premium-sello {
+  position: absolute;
+  top: -16px;
+  right: -10px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--naranja);
+  box-shadow: 0 4px 0 var(--naranja-o);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  transform: rotate(8deg);
+}
+
+.cu-premium-importe {
+  font-family: var(--letra-titular);
+  font-size: clamp(2.8rem, 6vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cu-premium-importe small {
+  font-family: var(--letra-texto);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.cu-premium-dia {
+  margin: 0.5rem 0 1.3rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.cu-premium-precio .tecla { white-space: normal; }
+
+.cu-premium-confianza {
+  display: grid;
+  gap: 6px;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.cu-premium-confianza li { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.cu-premium-confianza svg { color: var(--menta-o); }
+
+.cu-premium-login {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.cu-premium-login a { font-weight: 900; color: var(--azul-o); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Sin cursos publicados ──────────────────────────────────────────────── */
+
+.cu-vacio {
+  max-width: 620px;
+  margin: clamp(2rem, 6vw, 4rem) auto;
+  padding: clamp(2rem, 5vw, 3rem);
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
   text-align: center;
 }
-.cx-final-sello {
-  position: absolute;
-  top: -0.8rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 0.3rem 0.9rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--cx-oro-2), var(--cx-oro));
-  color: #0a1628;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.cx-final-importe { font: 800 3.2rem/1 var(--font-display); letter-spacing: -0.04em; color: #fff; font-variant-numeric: tabular-nums; }
-.cx-final-importe small { margin-left: 0.2rem; font-size: 1rem; font-weight: 600; letter-spacing: 0; color: var(--cx-suave); }
-.cx-final-dia { margin: 0.5rem 0 1.4rem; font-size: 0.86rem; color: var(--cx-suave); }
-.cx-final-btn { justify-content: center; }
-.cx-confianza { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem; margin: 1.1rem 0 0; padding: 0; list-style: none; }
-.cx-confianza li { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem; color: var(--cx-tenue); }
-.cx-confianza svg { color: var(--cx-oro); }
-.cx-final-login { margin: 1rem 0 0; font-size: 0.82rem; color: var(--cx-tenue); }
-.cx-final-login a { color: var(--cx-oro-2); font-weight: 600; }
 
-/* La barra fija del móvil (sin Premium). En escritorio no existe. */
-.cx-barra-movil { display: none; }
-
-/* Sin cursos */
-.cx-vacio { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin: 4rem auto; max-width: 560px; text-align: center; }
-.cx-vacio-icono { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: rgba(230, 180, 85, 0.1); color: #e6b455; }
-
-.cx-cert-muestra .dp { box-shadow: 0 30px 50px -18px rgba(0, 0, 0, 0.7); }
-
-/* ── Responsive ─────────────────────────────────────────────────────────── */
-
-@media (max-width: 980px) {
-  .cx-final { grid-template-columns: 1fr; gap: 2.2rem; padding: 2.4rem 1.6rem; }
-  .cx-final-precio { max-width: 440px; width: 100%; justify-self: center; }
-  .cx-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .cx-cifras div:nth-child(4) { border-left: 0; }
-  .cx-cifras div:nth-child(n + 4) { border-top: 1px solid var(--cx-linea); }
-  .cx-cert { grid-template-columns: 1fr; padding: 2rem 1.4rem; gap: 2rem; }
-  .cx-pasos { grid-template-columns: 1fr 1fr; gap: 2rem 1.2rem; }
-  .cx-pasos::before { display: none; }
+.cu-vacio-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  background: var(--lila);
+  box-shadow: 0 6px 0 var(--lila-o);
+  color: #fff;
 }
 
-@media (max-width: 600px) {
-  .cx-main { padding: 0 1rem 4rem; }
-  .cx-cabecera { padding: 1.2rem 0 1.4rem; }
-  .cx-migas { margin-bottom: 0.8rem; font-size: 0.76rem; }
-  .cx-cabecera-fila { gap: 0.9rem; }
-  .cx-lead { font-size: 0.95rem; }
-  .cx-pildora { font-size: 0.72rem; padding: 0.32rem 0.75rem; }
-  .cx-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.5rem; border-radius: 16px; }
-  .cx-cifras div { padding: 0.85rem 1rem; border-top: 1px solid var(--cx-linea); }
-  .cx-cifras div + div { border-left: 0; }
-  .cx-cifras div:nth-child(-n + 2) { border-top: 0; }
-  .cx-cifras div:nth-child(even) { border-left: 1px solid var(--cx-linea); }
-  .cx-cifras div:last-child { grid-column: 1 / -1; }
-  .cx-cifras dd { font-size: 1.35rem; }
-  .cx-cifras dt { font-size: 0.64rem; }
+.cu-vacio .cu-p { margin-inline: auto; }
 
-  .cx-curso { border-radius: 22px; }
-  .cx-curso-portada { height: 118px; }
-  .cx-curso-chips { left: 1.2rem; }
-  .cx-curso-sello { left: 1.2rem; width: 52px; height: 52px; top: -26px; }
-  .cx-curso-cuerpo { padding: 2.3rem 1.2rem 1.2rem; }
-  .cx-curso-titulo { font-size: 1.32rem; }
-  .cx-progreso { grid-template-columns: 58px minmax(0, 1fr); gap: 0.8rem; padding: 0.85rem; }
-  .cx-anillo { width: 58px; height: 58px; }
-  .cx-curso-acciones { flex-direction: column; }
-  .cx-curso-acciones .cx-btn { width: 100%; }
-  .cx-curso:hover { transform: none; }
-  .cx-curso-cert { width: 160px; bottom: -66px; right: 1rem; }
-  .cx-curso:hover .cx-curso-cert { transform: rotate(-7deg); }
-  .cx-pasos { grid-template-columns: 1fr; gap: 1.4rem; }
-  .cx-h2 { font-size: 1.5rem; }
-  .cx-p { font-size: 0.94rem; }
-  .cx-seccion, .cx-final { margin-top: 3.6rem; }
-  .cx-cert { padding: 1.4rem 1.1rem; border-radius: 20px; }
-  .cx-final { padding: 2rem 1.1rem; border-radius: 24px; }
-  .cx-final-importe { font-size: 2.6rem; }
-  .cx-final-precio { padding: 1.8rem 1.2rem 1.4rem; }
-
-  .cx-cabecera-fila { align-items: stretch; }
-  .cx-oferta, .cx-reanudar { width: 100%; max-width: none; min-width: 0; }
-
-  /* La barra fija: el precio y el botón siempre a mano mientras se baja. */
-  .cx { padding-bottom: 4.6rem; }
-  .cx-barra-movil {
-    position: fixed;
-    inset: auto 0.75rem calc(0.75rem + env(safe-area-inset-bottom)) 0.75rem;
-    z-index: 60;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.8rem;
-    padding: 0.6rem 0.6rem 0.6rem 1rem;
-    border: 1px solid color-mix(in srgb, var(--cx-oro) 35%, transparent);
-    border-radius: 18px;
-    background: rgba(10, 22, 44, 0.96);
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8);
-    font-size: 0.8rem;
-    color: var(--cx-suave);
-  }
-  .cx-barra-movil strong { font: 800 1.05rem var(--font-display); color: #fff; }
-  .cx-barra-movil .cx-btn { flex-shrink: 0; padding: 0.7rem 1rem; font-size: 0.88rem; }
-}
+/* ── Movimiento ─────────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
-  .cx-btn, .cx-curso, .cx-cert-muestra, .cx-curso-cert, .cx-curso-brillo, .cx-reanudar { transition: none; }
+  .cu-curso,
+  .cu-curso-cert { transition: none; }
+  .cu-curso:hover { transform: none; }
+  .cu-curso-cert:hover { transform: rotate(4deg); }
+}
+
+/* ── Tableta ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  .cu-cab-fila,
+  .cu-premium { grid-template-columns: minmax(0, 1fr); }
+  .cu-oferta,
+  .cu-reanudar { max-width: 420px; }
+  .cu-pegatina { justify-self: start; width: 130px; height: 130px; font-size: 13px; }
+  .cu-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cu-premium-precio { max-width: 420px; }
+}
+
+@media (max-width: 860px) {
+  .cu-lista { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Móvil ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .cu-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .cu-cifras div:last-child { grid-column: 1 / -1; }
+  .cu-cab-texto .cu-titulo .anotacion { white-space: normal; }
+  .cu-curso { padding: 10px 10px 0; border-radius: 26px; }
+  .cu-curso-cuerpo { padding: 0 6px 16px; }
+  .cu-curso-portada { aspect-ratio: 20 / 9; }
+  .cu-curso-acciones .tecla { flex: 1 1 100%; white-space: normal; }
+  .cu-curso-chips { max-width: 75%; }
+  .cu-mini { gap: 4px; }
+  .cu-mini-tramo { gap: 4px; }
+  .cu-mini-nodo { width: 26px; height: 26px; font-size: 0.74rem; }
+  .cu-mini-examen { width: 11px; height: 11px; }
+  .cu-mini-meta { width: 30px; height: 30px; }
+  .cu-premium { border-radius: 28px; }
+  .cu-premium-precio { transform: none; }
 }

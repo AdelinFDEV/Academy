@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import { HERRAMIENTAS } from "@/lib/herramientas";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 
@@ -144,6 +144,23 @@ function Figura({ imagen }: { imagen: Imagen }) {
   );
 }
 
+/**
+ * El color de cada pieza (ESTILO.md, «Cada sección, su color»): el Diario es
+ * azul, el Portfolio menta, los cursos lila y Premium el naranja de la marca.
+ * Lo llevan el icono, el círculo suave de detrás y la etiqueta; el botón es
+ * siempre la tecla naranja, la acción principal del bloque.
+ */
+// Sobre menta, cielo y amarillo el texto va en tinta; sobre los demás, en blanco.
+const TINTA_ENCIMA = new Set(["menta", "cielo", "amarillo"]);
+
+const COLOR: Record<ProductoAnuncio, { color: string; inicial: string }> = {
+  diario: { color: "azul", inicial: "D" },
+  portfolio: { color: "menta", inicial: "P" },
+  cursos: { color: "lila", inicial: "C" },
+  "curso-fiscalidad": { color: "lila", inicial: "F" },
+  premium: { color: "naranja", inicial: "A" },
+};
+
 export default function GuiaAnuncio({
   producto,
   estado,
@@ -165,23 +182,36 @@ export default function GuiaAnuncio({
   const nota = esPremium ? "Incluido en tu Premium" : `Con Premium · ${precioEur(PREMIUM_PRICE_EUR)}/mes · sin permanencia`;
   const compacto = variante === "compacto";
 
+  // Tarjeta de producto del sistema (disenos/sistema.html, «Tarjetas de
+  // producto»): papel con canto, un círculo suave de su color detrás, el
+  // icono-tecla y, aquí, la ilustración pegada como una foto en el cuaderno.
+  const { color, inicial } = COLOR[producto];
   return (
-    <aside className={`gan gan--${producto}${compacto ? " gan--compacto" : ""}`} aria-label={f.etiqueta}>
+    <aside
+      className={`gan gan--${producto}${compacto ? " gan--compacto" : ""}`}
+      aria-label={f.etiqueta}
+      style={{ "--c": `var(--${color})`, "--o": `var(--${color}-o)`, "--s": `var(--${color}-s)`, "--t": TINTA_ENCIMA.has(color) ? "var(--tinta)" : "#fff" } as React.CSSProperties}
+    >
       <div className="gan-tarjeta">
         <Figura imagen={f.imagen} />
         <div className="gan-cuerpo">
-          <span className="gan-etiqueta">{f.etiqueta}</span>
+          <div className="gan-cabeza">
+            <span className="gan-ic" aria-hidden="true">{inicial}</span>
+            <span className="gan-etiqueta">{f.etiqueta}</span>
+          </div>
           <p className="gan-titulo">{f.titulo}</p>
           <p className="gan-texto">{f.texto}</p>
           {!compacto && (
             <ul className="gan-puntos">
               {f.puntos.map((p) => (
-                <li key={p}><Check size={16} strokeWidth={2.8} aria-hidden="true" />{p}</li>
+                <li key={p}><span className="gan-check" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span>{p}</li>
               ))}
             </ul>
           )}
           <div className="gan-accion">
-            <Link href={href} className="gan-boton">{boton} <ArrowRight size={18} aria-hidden="true" /></Link>
+            <Tecla href={href} color="naranja" tamano={compacto ? "normal" : "grande"} className="gan-boton">
+              {boton} <ArrowRight size={18} strokeWidth={2.8} aria-hidden="true" />
+            </Tecla>
             <span className="gan-nota">{nota}</span>
           </div>
         </div>

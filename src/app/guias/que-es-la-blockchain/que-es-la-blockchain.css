@@ -1,179 +1,314 @@
 /* Solo la guía /guias/que-es-la-blockchain. Lo compartido por todas las guías vive en
-   ../guias.css, que carga el layout ANTES que este archivo. */
+   ../guias.css, que carga el layout ANTES que este archivo.
+   Estilo «Cuaderno de estudio» (ESTILO.md): guías en color cielo, piezas de papel con canto. */
 
+/* ── Línea del tiempo (page.tsx) ── */
 .gbc-tl-item { display: flex; gap: 14px; margin-bottom: 20px; }
 
-.gbc-tl-yr { flex-shrink: 0; width: 48px; text-align: right; font-size: 12px; font-weight: 700; color: var(--gold); padding-top: 2px; }
+.gbc-tl-yr { flex-shrink: 0; width: 52px; text-align: right; font-family: var(--letra-texto); font-size: 13px; font-weight: 900; color: var(--cielo-o); padding-top: 2px; font-variant-numeric: tabular-nums; }
 
 .gbc-tl-col { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
 
-.gbc-tl-cnt { flex: 1; padding-bottom: 12px; }
+.gbc-tl-cnt { flex: 1; min-width: 0; padding-bottom: 12px; }
 
-.gbc-tl-ev { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.gbc-tl-ev { font-size: 15px; font-weight: 800; color: var(--tinta); margin-bottom: 3px; }
 
-.gbc-tl-desc { font-size: 13px; color: #8fa3b8; line-height: 1.55; }
+.gbc-tl-desc { font-size: 15px; font-weight: 600; color: var(--tinta-2); line-height: 1.6; }
 
-.gbc-fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; margin-top: 20px; }
+/* ── Tarjetas de estudio que giran (GuideFlashcards.tsx) ── */
+.gbc-fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; margin-top: 22px; }
 
-.gbc-fc-outer { perspective: 900px; }
+.gbc-fc-outer { perspective: 1000px; }
 
-.gbc-fc { display: grid; width: 100%; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.4,0.2,0.2,1); cursor: pointer; border: none; background: transparent; padding: 0; user-select: none; }
+.gbc-wrap .gbc-fc { display: grid; width: 100%; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1); cursor: pointer; border: none; background: transparent; padding: 0 0 6px; user-select: none; font: inherit; text-align: left; color: inherit; -webkit-tap-highlight-color: transparent; }
 
-.gbc-fc-front, .gbc-fc-back { grid-area: 1/1; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; backface-visibility: hidden; -webkit-backface-visibility: hidden; min-height: 130px; box-sizing: border-box; }
+/* El giro vive aquí (antes dependía de una regla de globals.css). */
+.gbc-wrap .gbc-fc.flipped { transform: rotateY(180deg); }
 
-.gbc-fc-front { background: linear-gradient(135deg,#0f2040,#0a1628); border: 1px solid var(--gold-border); }
+.gbc-wrap .gbc-fc:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; border-radius: 22px; }
 
-.gbc-fc-front:hover { border-color: rgba(230,180,85,0.55); }
+.gbc-fc-front, .gbc-fc-back { grid-area: 1/1; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; backface-visibility: hidden; -webkit-backface-visibility: hidden; min-height: 150px; box-sizing: border-box; }
 
-.gbc-fc-back { background: linear-gradient(135deg,rgba(255,107,43,0.1),#0a1628); border: 1px solid rgba(255,107,43,0.4); transform: rotateY(180deg); }
+.gbc-fc-front { background: var(--papel); box-shadow: 0 6px 0 var(--gris-o); }
 
-.gbc-fc-term { font-size: 14px; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+/* El dorso en cielo suave: la definición es un párrafo y en blanco sobre cielo no se leería. */
+.gbc-fc-back { background: var(--cielo-s); box-shadow: 0 6px 0 var(--cielo); transform: rotateY(180deg); }
 
-.gbc-fc-def { font-size: 13px; color: #dce8f8; line-height: 1.6; flex: 1; margin-top: 4px; }
+.gbc-fc-term { font-family: var(--letra-titular); font-size: 22px; font-weight: 800; line-height: 1.15; letter-spacing: -0.01em; color: var(--tinta); flex-shrink: 0; }
 
-.gbc-fc-hint { font-size: 11px; color: #4a6080; margin-top: 8px; flex-shrink: 0; }
+.gbc-fc-def { font-size: 14px; font-weight: 700; color: var(--tinta); line-height: 1.55; flex: 1; }
 
-.gbc-badge-icon { font-size: 60px; margin-bottom: 14px; }
+.gbc-fc-hint { font-family: var(--letra-mano); font-size: 20px; font-weight: 600; line-height: 1.1; color: var(--cielo-o); flex-shrink: 0; }
+
+@media (hover: hover) {
+  .gbc-wrap .gbc-fc:not(.flipped):hover { transform: translateY(-4px) rotate(-1deg); }
+}
 
 @media (max-width: 768px) {
-  .gbc-tl-yr { width: 40px; font-size: 11px; }
-  .gbc-badge-icon { font-size: 48px; }
+  .gbc-tl-yr { width: 42px; font-size: 12px; }
 }
 
 @media (max-width: 640px) {
-  .gbc-fc-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .gbc-fc-front, .gbc-fc-back { padding: 14px; min-height: 0; }
-  .gbc-fc-term { font-size: 13px; }
-  .gbc-fc-def { font-size: 12px; line-height: 1.55; }
-  .gbc-fc-hint { font-size: 10px; }
+  .gbc-fc-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gbc-fc-front, .gbc-fc-back { padding: 14px; min-height: 0; border-radius: 18px; }
+  .gbc-fc-term { font-size: 17px; }
+  .gbc-fc-def { font-size: 13.5px; line-height: 1.5; }
+  .gbc-fc-hint { font-size: 17px; }
   .gbc-tl-item { gap: 10px; }
 }
 
-.gbc-mine-wrap { background: linear-gradient(135deg,#0a1628,#060f1f); border: 1px solid rgba(230,180,85,0.22); border-radius: 20px; padding: 28px; margin-top: 32px; }
+/* En el móvil, una tarjeta por fila: a dos columnas la definición quedaba en
+   letra de 12 px y en renglones de tres palabras. */
+@media (max-width: 480px) {
+  .gbc-fc-grid { grid-template-columns: 1fr; }
+  .gbc-fc-front, .gbc-fc-back { padding: 16px 18px; }
+  .gbc-fc-term { font-size: 19px; }
+  .gbc-fc-def { font-size: 15px; line-height: 1.55; }
+}
 
-.gbc-mine-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+/* ── Gráficas SVG (GuideCharts.tsx, GuideDefiChart.tsx). El marco es el común .gbc-chart-wrap ── */
+.bc-svg text { font-family: var(--letra-texto); font-weight: 700; }
 
-.gbc-mine-title { font-size: 17px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
+.bc-svg .bc-svg-cifra { font-family: var(--letra-titular); font-weight: 800; }
 
-.gbc-mine-sub { font-size: 13px; color: #8fa3b8; }
+.bc-svg--ancha { display: block; width: 100%; height: auto; }
 
-.gbc-mine-code { background: rgba(230,180,85,0.1); color: var(--gold); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+/* La curva de adopción tiene once años en el eje: en el móvil el dibujo no
+   baja de 500 px y se desliza dentro de su caja. La sombra del borde avisa de
+   que queda dibujo por ver (las capas «local» la tapan al llegar al final). */
+@media (max-width: 640px) {
+  .bc-svg-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    margin-inline: -4px;
+    padding: 0 4px 6px;
+    background:
+      linear-gradient(to right, var(--papel) 30%, rgba(255, 255, 255, 0)) left center / 36px 100% no-repeat local,
+      linear-gradient(to left, var(--papel) 30%, rgba(255, 255, 255, 0)) right center / 36px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, rgba(29, 27, 51, 0.16), rgba(29, 27, 51, 0)) left center / 14px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, rgba(29, 27, 51, 0.16), rgba(29, 27, 51, 0)) right center / 14px 100% no-repeat scroll,
+      var(--papel);
+  }
+  .bc-svg--ancha { min-width: 500px; }
+}
 
-.gbc-mine-diff { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* El donut: tamaño fijo y centrado; la leyenda, debajo en HTML. */
+.bc-donut { display: block; width: 100%; max-width: 230px; height: auto; margin: 0 auto; }
 
-.gbc-mine-diff-lbl { font-size: 12px; color: #8fa3b8; font-weight: 600; }
+.bc-leyenda { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; max-width: 400px; margin: 18px auto 0; padding: 14px 0 0; border-top: 2px solid var(--gris); list-style: none; }
 
-.gbc-diff-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 14px; font-size: 12px; font-family: monospace; color: #8fa3b8; cursor: pointer; transition: all 0.2s; }
+.bc-leyenda-item { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; font-weight: 700; color: var(--tinta); }
 
-.gbc-diff-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+.bc-leyenda-muestra { flex: none; width: 14px; height: 14px; border-radius: 5px; }
 
-.gbc-mine-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.bc-leyenda-nombre { min-width: 0; overflow-wrap: anywhere; }
 
-.gbc-mine-block { background: rgba(6,15,31,0.7); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 18px; }
+.bc-leyenda-pct { margin-left: auto; font-weight: 900; color: var(--tinta-2); font-variant-numeric: tabular-nums; }
 
-.gbc-mine-block-hd { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
+/* Barras del TVL por categoría (GuideDefiChart.tsx), en HTML. */
+.bc-defi { display: flex; flex-direction: column; gap: 12px; }
 
-.gbc-mine-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.bc-defi-fila { display: grid; grid-template-columns: 112px minmax(0, 1fr) 64px; align-items: center; gap: 12px; }
 
-.gbc-mine-k { font-size: 11px; font-weight: 700; color: #4a6080; text-transform: uppercase; letter-spacing: 1px; }
+.bc-defi-nombre { font-size: 14px; font-weight: 700; color: var(--tinta-2); }
 
-.gbc-mine-v { font-size: 12px; color: #8fa3b8; }
+.bc-defi-pista { display: block; height: 16px; border-radius: 999px; background: var(--gris); overflow: hidden; }
 
-.gbc-mine-v--hash { font-family: monospace; font-size: 11px; word-break: break-all; }
+.bc-defi-barra { display: block; height: 100%; border-radius: 999px; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.35); transform: scaleX(0); transform-origin: left center; transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) var(--retraso, 0ms); }
 
-.gbc-mine-txs { display: flex; flex-direction: column; gap: 4px; }
+.bc-defi.is-visible .bc-defi-barra { transform: scaleX(1); }
 
-.gbc-mine-tx { font-size: 12px; color: #dce8f8; background: rgba(255,255,255,0.04); border-radius: 6px; padding: 5px 8px; }
+.bc-defi-valor { font-size: 14px; font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
 
-.gbc-mine-nonce-inp { background: rgba(230,180,85,0.08); border: 1px solid var(--gold-border); border-radius: 8px; padding: 8px 12px; font-size: 15px; font-weight: 700; color: var(--gold); font-family: monospace; width: 100%; box-sizing: border-box; outline: none; transition: all 0.3s ease; }
+/* En el móvil la etiqueta sube encima de su barra: la barra gana todo el ancho. */
+@media (max-width: 480px) {
+  .bc-defi { gap: 14px; }
+  .bc-defi-fila { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
+  .bc-defi-pista { grid-column: 1 / -1; grid-row: 2; }
+  .bc-defi-valor { grid-column: 2; grid-row: 1; }
+  .bc-leyenda { gap: 10px 14px; }
+}
 
-.gbc-mine-nonce-inp:focus { border-color: var(--gold); }
+/* ── Simulador: mina tu propio bloque (GuideMineBlock.tsx) ── */
+.bc-mine { position: relative; margin-top: 32px; padding: 26px; border-radius: 28px; background: var(--papel); color: var(--tinta); box-shadow: 0 6px 0 var(--gris-o); transition: box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-.gbc-mine-nonce-inp:disabled { opacity: 0.5; cursor: not-allowed; }
+.bc-mine.is-mined { box-shadow: 0 0 0 3px var(--menta), 0 6px 0 3px var(--menta-o); }
 
-.gbc-mine-nonce-inp.is-mining { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; }
+.bc-mine-cab { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 18px; margin-bottom: 22px; }
 
-.gbc-mine-result { display: flex; flex-direction: column; gap: 12px; }
+.bc-mine-cab > div:first-child { flex: 1 1 320px; min-width: 0; }
 
-.gbc-mine-hash-lbl { font-size: 11px; font-weight: 700; color: #4a6080; text-transform: uppercase; letter-spacing: 1px; }
+.bc-mine-titulo { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-family: var(--letra-titular); font-size: 22px; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; color: var(--tinta); }
 
-.gbc-mine-hash { font-family: monospace; font-size: 12px; word-break: break-all; background: rgba(6,15,31,0.8); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; line-height: 1.6; transition: border-color 0.3s; }
+.bc-mine-titulo-ic { display: inline-grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 12px; background: var(--cielo-s); color: var(--cielo-o); }
 
-.gbc-mine-hash--ok { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.05); }
+.bc-mine-sub { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
-.gbc-hash-zeros { color: #4ade80; font-weight: 800; }
+.bc-mine-code { padding: 2px 8px; border-radius: 10px; background: var(--cielo-s); color: var(--cielo-o); font-family: ui-monospace, Consolas, monospace; font-size: 13px; font-weight: 700; }
 
-.gbc-hash-rest { color: #4a6080; }
+.bc-mine-dif { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-.gbc-mine-status { font-size: 13px; font-weight: 700; padding: 8px 12px; border-radius: 8px; }
+.bc-mine-dif-lbl { width: 100%; font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta-2); }
 
-.gbc-mine-stat-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+.bc-mine-dif .tecla { min-height: 44px; font-family: ui-monospace, Consolas, monospace; letter-spacing: 0.02em; }
 
-.gbc-mine-found { font-size: 13px; color: #dce8f8; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 10px; padding: 12px; line-height: 1.55; }
+.bc-mine-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
 
-.gbc-mine-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.bc-mine-bloque { padding: 20px; border-radius: 20px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
 
-.gbc-mine-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent-orange); color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+.bc-mine-bloque-cab { display: inline-block; margin-bottom: 16px; padding: 6px 12px; border-radius: 10px; background: var(--cielo-s); color: var(--cielo-o); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 
-.gbc-mine-btn:hover { opacity: 0.85; }
+.bc-mine-fila { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 
-.gbc-mine-btn--stop { background: #ef4444; }
+.bc-mine-fila:last-child { margin-bottom: 0; }
 
-.gbc-mine-btn--ghost { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #8fa3b8; }
+.bc-mine-k { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
 
-.gbc-mine-btn--ghost:hover { border-color: rgba(255,255,255,0.3); color: #dce8f8; opacity: 1; }
+.bc-mine-k--nonce { color: var(--naranja-o); }
 
-.spin-anim { animation: spin 1s linear infinite; }
+.bc-mine-v { font-size: 13px; font-weight: 600; color: var(--tinta-2); }
 
-.gbc-mine-wrap.is-mined { box-shadow: 0 0 30px rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); }
+.bc-mine-v--hash { font-family: ui-monospace, Consolas, monospace; font-size: 12px; word-break: break-all; }
+
+.bc-mine-txs { display: flex; flex-direction: column; gap: 6px; }
+
+.bc-mine-tx { padding: 8px 12px; border-radius: 12px; background: var(--papel); box-shadow: 0 3px 0 var(--gris-o); font-size: 13px; font-weight: 700; color: var(--tinta); overflow-wrap: anywhere; }
+
+.bc-mine-nonce { width: 100%; box-sizing: border-box; padding: 13px 16px; border: 3px solid var(--gris); border-radius: 14px; background: var(--papel); color: var(--tinta); font-family: ui-monospace, Consolas, monospace; font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; outline: none; box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05); transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s; }
+
+.bc-mine-nonce:focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
+
+.bc-mine-nonce:disabled { cursor: not-allowed; }
+
+.bc-mine-nonce.is-mining { border-color: var(--naranja); background: var(--naranja-s); color: var(--naranja-o); }
+
+.bc-mine-resultado { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.bc-mine-hash-lbl { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta-2); }
+
+.bc-mine-hash { padding: 14px; border: 3px solid var(--gris); border-radius: 16px; background: var(--fondo); font-family: ui-monospace, Consolas, monospace; font-size: 13px; line-height: 1.6; word-break: break-all; transition: border-color 0.3s, background-color 0.3s; }
+
+.bc-mine-hash--ok { border-color: var(--menta); background: var(--menta-s); }
+
+.bc-mine-ceros { font-weight: 900; color: var(--menta-o); }
+
+.bc-mine-hash:not(.bc-mine-hash--ok) .bc-mine-ceros { color: var(--coral-o); }
+
+.bc-mine-resto { color: var(--tinta-2); }
+
+.bc-mine-estado { display: flex; align-items: flex-start; gap: 8px; padding: 12px 14px; border: 3px solid; border-radius: 18px; font-size: 14px; font-weight: 800; line-height: 1.45; }
+
+.bc-mine-estado svg { flex: none; margin-top: 1px; }
+
+.bc-mine-estado.ok { border-color: var(--menta); background: var(--menta-s); color: var(--menta-o); }
+
+.bc-mine-estado.ko { border-color: var(--coral); background: var(--coral-s); color: var(--coral-o); }
+
+.bc-mine-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+
+.bc-mine-stat { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 16px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); min-width: 0; }
+
+.bc-mine-stat-lbl { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+
+.bc-mine-stat-val { display: flex; align-items: center; gap: 6px; font-family: var(--letra-titular); font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--tinta); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+.bc-mine-stat-val svg { flex: none; color: var(--naranja); }
+
+.bc-mine-hallado { padding: 14px 16px; border: 3px solid var(--menta); border-radius: 18px; background: var(--menta-s); color: var(--menta-o); font-size: 14px; font-weight: 700; line-height: 1.55; animation: bc-aparecer 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+.bc-mine-hallado strong { font-family: var(--letra-titular); font-size: 17px; font-weight: 800; }
+
+.bc-mine-acciones { display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto; padding-top: 16px; }
+
+.bc-girar { animation: bc-girar 1s linear infinite; }
+
+@keyframes bc-girar { to { transform: rotate(360deg); } }
+
+@keyframes bc-aparecer {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
 
 @media (max-width: 720px) {
-  .gbc-mine-body { grid-template-columns: 1fr; }
-  .gbc-mine-wrap { padding: 18px; }
-  .gbc-mine-header { flex-direction: column; }
-}
-
-.gbc-confetti { position: absolute; left: 0; top: 0; right: 0; bottom: 0; pointer-events: none; overflow: visible; z-index: 3; }
-
-.gbc-confetti-piece {
-  position: absolute; left: 50%; top: 50%;
-  width: 9px; height: 9px; border-radius: 2px;
-  opacity: 0;
-  animation: gbc-confetti-fly 1s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-  animation-delay: var(--delay, 0ms);
-}
-
-.gbc-correct-check {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: 38px; height: 38px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 900; color: #052e16;
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  border-radius: 50%;
-  box-shadow: 0 0 0 6px rgba(34,197,94,0.18), 0 8px 22px -6px rgba(34,197,94,0.6);
-  animation: gbc-check-pop 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  .bc-mine-cuerpo { grid-template-columns: 1fr; }
+  .bc-mine { padding: 18px; border-radius: 24px; }
+  .bc-mine-cab { flex-direction: column; }
 }
 
 @media (max-width: 480px) {
-  .gbc-mine-stats-grid { grid-template-columns: 1fr !important; }
-  .gbc-mine-wrap { padding: 16px; border-radius: 16px; }
-  .gbc-mine-title { font-size: 15px; }
-  .gbc-mine-btn { width: 100%; justify-content: center; }
-  .gbc-mine-actions { flex-direction: column; width: 100%; }
-  .gbc-mine-nonce-inp { font-size: 13px; padding: 6px 10px; }
+  .bc-mine { padding: 16px; }
+  .bc-mine-titulo { font-size: 19px; }
+  .bc-mine-stats { grid-template-columns: 1fr; }
+  .bc-mine-acciones { flex-direction: column; }
+  .bc-mine-acciones .tecla { width: 100%; }
+  /* 16px como mínimo: con menos, iOS hace zoom al tocar el campo. */
+  .bc-mine-nonce { font-size: 16px; padding: 11px 13px; }
 }
 
-@keyframes gbc-confetti-fly {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(0deg); }
-  15%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot)); }
+/* ── Simulador: ataque a ECDSA-256 (src/components/GuideQuantumGame.tsx, solo esta guía) ── */
+.bcq { margin-top: 28px; padding: 26px; border-radius: 28px; background: var(--papel); color: var(--tinta); box-shadow: 0 6px 0 var(--gris-o); }
+
+.bcq-titulo { margin: 0; font-family: var(--letra-titular); font-size: 22px; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; color: var(--tinta); }
+
+.bcq-sub { margin: 8px 0 0; font-size: 14px; font-weight: 600; line-height: 1.55; color: var(--tinta-2); }
+
+.bcq-pantalla { position: relative; display: flex; flex-direction: column; align-items: center; margin: 22px 0; padding: 30px 18px 26px; border-radius: 22px; background: var(--fondo); box-shadow: inset 0 4px 0 rgba(29, 27, 51, 0.05); overflow: hidden; }
+
+.bcq-candado { position: relative; z-index: 2; display: grid; place-items: center; width: 92px; height: 92px; margin-bottom: 22px; border-radius: 50%; background: var(--cielo-s); color: var(--cielo-o); box-shadow: 0 5px 0 var(--cielo); transition: transform 0.45s cubic-bezier(0.34, 1.8, 0.5, 1), background-color 0.3s, color 0.3s, box-shadow 0.3s; }
+
+.bcq-candado.cracked { background: var(--coral-s); color: var(--coral-o); box-shadow: 0 5px 0 var(--coral); transform: scale(1.12) rotate(-6deg); }
+
+.bcq-temblando { animation: bcq-temblar 0.32s ease-in-out infinite; }
+
+@keyframes bcq-temblar {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-7deg); }
+  75% { transform: rotate(7deg); }
 }
 
-@keyframes gbc-check-pop {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-  35%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
-  60%  { transform: translate(-50%, -50%) scale(1); }
-  80%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+.bcq-progreso { position: relative; z-index: 2; width: 100%; max-width: 420px; }
+
+.bcq-barra { height: 18px; margin-bottom: 12px; border-radius: 999px; background: var(--gris); overflow: hidden; }
+
+.bcq-relleno { height: 100%; border-radius: 999px; background: var(--cielo); box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.35); transition: width 0.1s linear; }
+
+.bcq-relleno.quantum { background: var(--naranja); }
+
+.bcq-relleno.cracked { background: var(--coral); }
+
+.bcq-estado { min-height: 22px; font-size: 14px; font-weight: 700; line-height: 1.5; text-align: center; color: var(--tinta-2); }
+
+.bcq-roto { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; background: var(--coral-s); color: var(--coral-o); font-weight: 900; }
+
+.bcq-matriz { position: absolute; inset: 0; z-index: 1; display: flex; justify-content: space-around; opacity: 0.35; pointer-events: none; }
+
+.bcq-linea { font-family: ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 700; color: var(--lila-o); writing-mode: vertical-rl; text-orientation: upright; animation: bcq-caer 1.6s linear infinite; }
+
+@keyframes bcq-caer {
+  0% { transform: translateY(-100%); opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+.bcq-controles { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.bcq-controles .tecla { flex: 1 1 200px; white-space: normal; text-align: center; }
+
+@media (max-width: 480px) {
+  .bcq { padding: 16px; border-radius: 24px; }
+  .bcq-titulo { font-size: 19px; }
+  .bcq-pantalla { padding: 24px 10px 20px; }
+  .bcq-controles { flex-direction: column; }
+  .bcq-controles .tecla { flex: none; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gbc-wrap .gbc-fc { transition-duration: 0.01s; }
+  .gbc-wrap .gbc-fc:not(.flipped):hover { transform: none; }
+  .bc-defi-barra { transition: none; }
+  .bc-mine, .bc-mine-hash, .bc-mine-nonce { transition: none; }
+  .bc-mine-hallado { animation: none; }
+  .bc-girar { animation-duration: 3s; }
+  .bcq-candado, .bcq-relleno { transition: none; }
+  .bcq-temblando { animation: none; }
+  .bcq-matriz { display: none; }
 }

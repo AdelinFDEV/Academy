@@ -1,336 +1,594 @@
-/* Diccionario Cripto — listado.
-   El marco (fondo técnico, hero, marca de agua, cifras) sale de
-   `herramientas/detalle.css`, que esta página importa. Aquí van solo el
-   buscador, las tarjetas de término y la paginación. */
+/* ══════════════════════════════════════════════════════════════════════════
+   /glosario — el índice del diccionario (page.tsx + GlosarioClient.tsx)
 
-.gl-main {
-  max-width: 940px;
-}
+   Estilo «Cuaderno de estudio» (17-11-2026; ESTILO.md, disenos/sistema.html).
+   El diccionario es AMARILLO. La página es un fichero de vocabulario: la caja
+   con sus pestañas y una ficha que se gira arriba; el buscador, las categorías
+   y un abecedario de teclas; y cada término, una ficha de cartulina con su
+   pestaña de letra.
 
-/* ── Buscador y categorías ──────────────────────────────────────────────── */
+   Se ve bien por sí sola sin depender de la base de globals.css: fondo,
+   tinta y `color-scheme: light` propios.
+   ══════════════════════════════════════════════════════════════════════════ */
 
-.gl-filtros {
+.glx {
   position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  margin-bottom: 1.5rem;
+  /* `svh`: en el móvil, `vh` cuenta la barra del navegador escondida. */
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
 }
 
-.gl-buscador {
-  display: flex;
+.glx,
+.glx * { color-scheme: light; }
+
+.glx-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5.5rem);
+}
+
+/* ── Cabecera ─────────────────────────────────────────────────────────────── */
+
+.glx-cab {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
-  gap: 0.6rem;
-  padding: 0 0.95rem;
-  min-height: 46px;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 13px;
-  background: rgba(9, 13, 24, 0.6);
-  color: rgba(240, 244, 255, 0.45);
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  margin-bottom: clamp(2rem, 5vw, 3.25rem);
 }
 
-.gl-buscador:focus-within {
-  border-color: color-mix(in srgb, var(--det-accent) 45%, transparent);
-  background: rgba(9, 13, 24, 0.85);
+.glx-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  color: var(--amarillo-o);
+  transform: rotate(-2deg);
 }
 
-.gl-buscador input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  font-size: 0.94rem;
-  color: rgba(240, 244, 255, 0.94);
+.glx-titulo {
+  margin: 0.35rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.5rem, 5.6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
 }
 
-.gl-buscador input::placeholder {
-  color: rgba(240, 244, 255, 0.35);
+.glx-titulo-sub {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.62em;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
-/* Quita la X nativa del type=search, que en cada navegador se ve distinta. */
-.gl-buscador input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  appearance: none;
+.glx-lead {
+  max-width: 46ch;
+  margin: 1.2rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
 }
 
-.gl-cats {
+/* Las cifras, como pegatinas de cartulina. */
+.glx-cifras {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 12px;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.gl-cat {
-  padding: 0.42rem 0.85rem;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.03);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(240, 244, 255, 0.6);
-  cursor: pointer;
-  text-transform: capitalize;
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+.glx-cifras li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
 }
 
-.gl-cat:hover {
-  color: rgba(240, 244, 255, 0.92);
-  border-color: rgba(240, 244, 255, 0.22);
+.glx-cifras li:first-child {
+  background: var(--amarillo);
+  box-shadow: 0 5px 0 var(--amarillo-o);
 }
 
-.gl-cat.is-activa {
-  color: #06222a;
-  border-color: transparent;
-  background: linear-gradient(135deg, var(--det-accent-2) 0%, var(--det-accent) 100%);
+.glx-cifra {
+  font-family: var(--letra-titular);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.gl-conteo {
-  position: relative;
-  z-index: 1;
-  margin: 0 0 1rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+.glx-cifra-txt {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.4);
+  color: var(--tinta-2);
 }
 
-.gl-conteo-pag {
-  text-transform: none;
-  letter-spacing: 0;
-  font-weight: 500;
+.glx-cifras li:first-child .glx-cifra-txt { color: var(--tinta); }
+
+.glx-sesion {
+  margin: 1.3rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--tinta-2);
 }
 
-/* ── Tarjetas de término ────────────────────────────────────────────────── */
+.glx-sesion a {
+  font-weight: 900;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-decoration-color: var(--azul);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
 
-.gl-lista {
+/* ── El fichero de la cabecera ──
+   La caja amarilla con sus pestañas, dos fichas que asoman y, delante, la
+   ficha que se saca para estudiarla (una TarjetaEstudio). */
+.glx-fichero {
   position: relative;
-  z-index: 1;
+  height: 440px;
+}
+
+.glx-caja {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 2;
+  width: min(370px, 96%);
+  height: 150px;
+  transform: translateX(-50%);
+  border-radius: 28px;
+  background: var(--amarillo);
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.45),
+    0 9px 0 var(--amarillo-o),
+    0 30px 40px -24px rgba(29, 27, 51, 0.45);
+}
+
+/* Las pestañas de los separadores, asomando por encima del borde de la caja. */
+.glx-caja i {
+  position: absolute;
+  top: -24px;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.7rem;
-  margin-bottom: 2rem;
+  place-items: center;
+  width: 34px;
+  height: 30px;
+  border-radius: 10px 10px 0 0;
+  background: var(--papel);
+  box-shadow: inset 0 -3px 0 var(--gris);
+  font-family: var(--letra-titular);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 800;
+  color: var(--tinta-2);
 }
 
-@media (min-width: 780px) {
-  .gl-lista { grid-template-columns: 1fr 1fr; }
-}
+.glx-caja i:nth-child(1) { left: 8%; }
+.glx-caja i:nth-child(2) { left: 22%; }
+.glx-caja i:nth-child(3) { left: 36%; }
+.glx-caja i:nth-child(4) { left: 52%; }
+.glx-caja i:nth-child(5) { left: 67%; }
+.glx-caja i:nth-child(6) { left: 82%; }
 
-.gl-termino {
+.glx-asoma {
+  position: absolute;
+  bottom: 70px;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  padding: 1.15rem 1.2rem;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 15px;
-  background: rgba(9, 13, 24, 0.55);
-  transition: border-color 0.22s ease, transform 0.22s ease;
+  gap: 8px;
+  width: 200px;
+  height: 250px;
+  padding: 18px 18px 18px 30px;
+  border-radius: 20px;
+  background:
+    linear-gradient(90deg, transparent 18px, var(--coral-s) 18px 20px, transparent 20px),
+    var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
 }
 
-/* Los términos fuera de la página actual llevan el atributo `hidden`, pero la
-   regla de arriba les da `display: flex` y una declaración de autor gana al
-   `display: none` del navegador. Sin esto se veían los 49 a la vez. */
-.gl-termino[hidden] {
-  display: none;
+.glx-asoma--1 { left: 4%; transform: rotate(-10deg); }
+.glx-asoma--2 { right: 4%; transform: rotate(9deg); }
+
+.glx-asoma-cat {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
 }
 
-.gl-termino:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--det-accent) 28%, transparent);
+.glx-asoma-palabra {
+  font-family: var(--letra-titular);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--tinta-3);
 }
 
-.gl-termino-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.7rem;
-  margin-bottom: 0.5rem;
+.glx-fichero .te.glx-frente {
+  position: absolute;
+  left: 50%;
+  bottom: 56px;
+  z-index: 3;
+  width: 250px;
+  height: 320px;
+  transform: translateX(-50%) rotate(-3deg);
 }
 
-/* Es un <h2>: hay que anular el margen del navegador. */
-.gl-termino-nombre {
+.glx-frente .te-frente { border-top: 14px solid var(--amarillo); }
+
+.glx-frente .te-pregunta { font-size: 30px; }
+
+.glx-frente .te-respuesta {
+  font-family: var(--letra-texto);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.glx-frente .te-detalle {
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.glx-fichero-nota {
+  position: absolute;
+  right: 2%;
+  bottom: -14px;
+  z-index: 3;
   margin: 0;
-  font-size: 1.02rem;
-  font-weight: 650;
-  letter-spacing: -0.014em;
-  color: rgba(240, 244, 255, 0.96);
-  text-decoration: none;
+  font-family: var(--letra-mano);
+  font-size: 23px;
+  color: var(--tinta-2);
+  transform: rotate(-4deg);
 }
 
-.gl-termino-link {
+/* ── El cajón de búsqueda ─────────────────────────────────────────────────── */
+
+.glx-filtros {
+  display: grid;
+  gap: 18px;
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+  border-radius: 30px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+.glx-buscador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border: 3px solid var(--gris);
+  border-radius: 16px;
+  background: var(--papel);
+  color: var(--tinta-3);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.glx-buscador:focus-within {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px var(--azul-s);
+  color: var(--azul);
+}
+
+.glx-buscador input {
+  flex: 1;
+  min-width: 0;
+  padding: 15px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--tinta);
+  font: 700 17px var(--letra-texto);
+}
+
+.glx-buscador input::placeholder { color: var(--tinta-3); }
+
+.glx-cats,
+.glx-abc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+/* El abecedario: teclas cuadradas y pequeñas, como las de un teclado. */
+.glx-abc { gap: 2px 7px; }
+
+.glx-abc .tecla.glx-abc-letra {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-family: var(--letra-titular);
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.glx-abc .tecla.glx-abc-todas {
+  height: 40px;
+  padding: 0 14px;
+}
+
+.glx-conteo {
+  /* Al cambiar de página se vuelve aquí: que no quede bajo la barra. */
+  scroll-margin-top: 110px;
+  margin: 1.6rem 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--tinta);
+}
+
+.glx-conteo-pag { font-weight: 700; color: var(--tinta-2); }
+
+/* ── Las fichas ───────────────────────────────────────────────────────────── */
+
+.glx-lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px 26px;
+  padding-top: 14px;
+}
+
+/* `hidden` tiene que ganar al `display` de la ficha: si no, la paginación
+   enseñaría las doscientas a la vez. */
+.glx-ficha[hidden] { display: none; }
+
+.glx-ficha {
+  --c: var(--amarillo);
+  --co: var(--amarillo-o);
+  --cs: var(--amarillo-s);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 22px 20px;
+  border-radius: 24px;
+  border-top: 12px solid var(--amarillo);
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 24px 36px -30px rgba(29, 27, 51, 0.45);
+  transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.5, 1), box-shadow 0.3s;
+}
+
+@media (hover: hover) {
+  .glx-ficha:hover {
+    transform: translateY(-4px) rotate(-0.6deg);
+    box-shadow: 0 10px 0 var(--gris-o), 0 30px 40px -28px rgba(29, 27, 51, 0.5);
+  }
+}
+
+/* Cada categoría, el color de su chip (y nada más: la ficha sigue amarilla). */
+.glx-ficha--trading { --c: var(--naranja); --co: var(--naranja-o); --cs: var(--naranja-s); }
+.glx-ficha--defi { --c: var(--lila); --co: var(--lila-o); --cs: var(--lila-s); }
+.glx-ficha--seguridad { --c: var(--menta); --co: var(--menta-o); --cs: var(--menta-s); }
+.glx-ficha--básicos { --c: var(--cielo); --co: var(--cielo-o); --cs: var(--cielo-s); }
+
+/* La pestaña de la letra, como en los separadores del fichero. */
+.glx-ficha-pestana {
+  position: absolute;
+  top: -42px;
+  right: 26px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 30px;
+  border-radius: 12px 12px 0 0;
+  background: var(--amarillo);
+  font-family: var(--letra-titular);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+/* El renglón rojo de las fichas de cartulina, bajo la cabecera. */
+.glx-ficha-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--coral-s);
+}
+
+.glx-ficha-cat {
+  display: inline-flex;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--cs);
+  color: var(--co);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.glx-guardar.tecla { margin-bottom: 8px; }
+
+.glx-ficha-nombre {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.4rem, 2.6vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+}
+
+.glx-ficha-link {
   color: inherit;
   text-decoration: none;
+  background: linear-gradient(transparent 62%, var(--amarillo-s) 62%);
+  transition: background-size 0.2s;
 }
 
-.gl-termino-link:hover {
-  color: var(--det-accent);
+.glx-ficha-link:hover { background: linear-gradient(transparent 58%, var(--amarillo) 58%); }
+
+.glx-ficha-link:focus-visible,
+.glx-ficha-mas:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
-.gl-termino-acciones {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  flex-shrink: 0;
+.glx-ficha-def {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
 }
 
-.gl-termino-cat {
-  font-size: 0.63rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.5rem;
-  border-radius: 999px;
-  border: 1px solid currentColor;
+/* La nota al pulsar «Guardar»: sin sesión, el aviso cielo con el enlace;
+   si falla, el error en coral (sistema.html §12). */
+.glx-ficha-aviso {
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  border: 3px solid var(--cielo);
+  border-radius: 14px;
+  background: var(--cielo-s);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--cielo-o);
 }
 
-/* Un color por categoría: se distingue de un vistazo sin leer la etiqueta. */
-.gl-termino-cat--básicos { color: #7ea6ff; }
-.gl-termino-cat--trading { color: #ff9a4d; }
-.gl-termino-cat--defi { color: #34d399; }
-.gl-termino-cat--seguridad { color: #f472b6; }
+.glx-ficha-aviso a {
+  color: var(--tinta);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
 
-.gl-guardar {
+.glx-ficha-aviso.es-error {
+  border-color: var(--coral);
+  background: var(--coral-s);
+  color: var(--coral-o);
+}
+
+.glx-ficha-mas {
   display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 44 px de alto: se pulsa con el dedo sin apuntar. */
+  min-height: 44px;
+  align-self: flex-start;
+  margin-top: auto;
+  font-weight: 900;
+  color: var(--azul-o);
+  text-decoration: underline;
+  text-decoration-color: var(--azul);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.glx-ficha-mas svg { transition: transform 0.25s cubic-bezier(0.34, 1.8, 0.5, 1); }
+
+@media (hover: hover) {
+  .glx-ficha-mas:hover svg { transform: translateX(4px); }
+}
+
+.glx-vacio {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 2rem;
+  border-radius: 24px;
+  border: 3px dashed var(--gris-o);
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  text-align: center;
+  color: var(--tinta-2);
+}
+
+/* ── Paginación ───────────────────────────────────────────────────────────── */
+
+.glx-paginacion {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  background: transparent;
-  color: rgba(240, 244, 255, 0.4);
-  cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2.4rem;
 }
 
-.gl-guardar:hover:not(:disabled) {
-  color: rgba(240, 244, 255, 0.85);
-  border-color: rgba(240, 244, 255, 0.25);
-}
-
-.gl-guardar.is-guardado {
-  color: var(--det-accent);
-  border-color: color-mix(in srgb, var(--det-accent) 40%, transparent);
-}
-
-.gl-guardar:disabled { opacity: 0.5; cursor: default; }
-
-.gl-termino-def {
-  margin: 0;
-  font-size: 0.89rem;
-  line-height: 1.62;
-  color: rgba(240, 244, 255, 0.6);
-}
-
-/* Al pie, para que las tarjetas de una fila terminen alineadas. */
-.gl-termino-mas {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: auto;
-  padding-top: 0.8rem;
-  font-size: 0.79rem;
-  font-weight: 600;
-  color: color-mix(in srgb, var(--det-accent) 85%, #ffffff);
-  text-decoration: none;
-  transition: gap 0.2s ease;
-}
-
-.gl-termino-mas:hover { gap: 0.45rem; }
-
-.gl-vacio {
-  grid-column: 1 / -1;
-  padding: 2.2rem 0;
-  text-align: center;
-  font-size: 0.94rem;
-  color: rgba(240, 244, 255, 0.5);
-}
-
-/* ── Paginación ─────────────────────────────────────────────────────────── */
-
-.gl-paginacion {
-  position: relative;
-  z-index: 1;
+.glx-pag-numeros {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  padding-top: 1.4rem;
-  border-top: 1px solid rgba(240, 244, 255, 0.08);
+  gap: 8px;
 }
 
-.gl-pag-flecha {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  min-height: 40px;
-  padding: 0 0.9rem;
-  border: 1px solid rgba(240, 244, 255, 0.12);
-  border-radius: 10px;
-  background: rgba(240, 244, 255, 0.04);
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: rgba(240, 244, 255, 0.82);
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+.glx-paginacion .tecla.glx-pag-num {
+  min-width: 42px;
+  height: 42px;
+  padding: 0 10px;
+  font-size: 15px;
 }
 
-.gl-pag-flecha:hover:not(:disabled) {
-  background: rgba(240, 244, 255, 0.09);
-  border-color: rgba(240, 244, 255, 0.24);
+.glx-pag-elipsis {
+  align-self: flex-start;
+  padding-top: 8px;
+  font-weight: 900;
+  color: var(--tinta-3);
 }
 
-.gl-pag-flecha:disabled {
-  opacity: 0.35;
-  cursor: default;
+/* ── Tableta y móvil ──────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .glx-cab { grid-template-columns: minmax(0, 1fr); }
+  .glx-fichero { height: 420px; max-width: 460px; width: 100%; margin: 0 auto; }
+  .glx-lista { grid-template-columns: minmax(0, 1fr); }
 }
 
-.gl-pag-numeros {
-  display: flex;
-  align-items: center;
-  gap: 0.28rem;
-}
+@media (max-width: 520px) {
+  .glx-fichero { height: 400px; }
+  .glx-asoma { width: 170px; height: 220px; }
+  .glx-asoma--1 { left: 0; }
+  .glx-asoma--2 { right: 0; }
+  .glx-fichero .te.glx-frente { width: 230px; height: 300px; }
+  /* El abecedario en el móvil: una rejilla que reparte el ancho entre las
+     teclas, y teclas de 42 px. Antes eran de 36 y caían sueltas, con la
+     última fila a medias. */
+  .glx-abc {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 2px 6px;
+  }
 
-.gl-pag-num {
-  min-width: 36px;
-  height: 36px;
-  padding: 0 0.4rem;
-  border: 1px solid transparent;
-  border-radius: 9px;
-  background: transparent;
-  font-size: 0.85rem;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  color: rgba(240, 244, 255, 0.6);
-  cursor: pointer;
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
+  .glx-abc .tecla.glx-abc-letra,
+  .glx-abc .tecla.glx-abc-todas {
+    width: 100%;
+    height: 42px;
+    padding: 0;
+    font-size: 15px;
+    letter-spacing: 0;
+  }
 
-.gl-pag-num:hover {
-  color: rgba(240, 244, 255, 0.95);
-  background: rgba(240, 244, 255, 0.06);
-}
+  .glx-pag-texto { display: none; }
 
-.gl-pag-num.is-activa {
-  color: #06222a;
-  background: linear-gradient(135deg, var(--det-accent-2) 0%, var(--det-accent) 100%);
-}
-
-.gl-pag-elipsis {
-  padding: 0 0.15rem;
-  color: rgba(240, 244, 255, 0.3);
-}
-
-/* En móvil el texto de las flechas sobra: los iconos ya lo dicen, y así los
-   números caben sin apretarse. */
-@media (max-width: 560px) {
-  .gl-pag-flecha-texto { display: none; }
-  .gl-pag-flecha { padding: 0 0.7rem; }
-  .gl-pag-num { min-width: 32px; height: 32px; }
-  .gl-paginacion { gap: 0.4rem; }
+  /* La paginación: los números en su fila, entera, y debajo «anterior» y
+     «siguiente». En una sola fila no caben a 360 px. */
+  .glx-paginacion { gap: 8px 12px; }
+  .glx-pag-numeros { order: -1; flex-basis: 100%; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .glx-paginacion .tecla.glx-pag-num { min-width: 40px; }
+  .glx-ficha { padding: 16px 18px 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gl-termino:hover { transform: none; }
+  .glx-ficha,
+  .glx-ficha-mas svg { transition: none; }
+  .glx-ficha:hover { transform: none; }
 }

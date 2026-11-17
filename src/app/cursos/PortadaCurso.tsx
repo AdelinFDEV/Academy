@@ -1,7 +1,9 @@
 import Image from "next/image";
 
 /**
- * La portada de cada tarjeta del catálogo de cursos (08-11-2026).
+ * La portada de cada curso (08-11-2026): la «foto» que va pegada con cinta en
+ * su tarjeta del catálogo y en su ficha (estilo «Cuaderno de estudio»,
+ * 17-11-2026). El marco, la cinta y el fondo los pone quien la usa.
  *
  * Dos capas, y la primera que exista manda:
  *
@@ -13,7 +15,8 @@ import Image from "next/image";
  *    motivo por tema (`MOTIVO`) y, sin entrada, uno genérico que varía con el
  *    slug. Así un curso nuevo nunca sale con la portada vacía.
  *
- * Todo es estático: nada se anima, para no castigar al móvil.
+ * Todo es estático: nada se anima, para no castigar al móvil. El arte en SVG
+ * se pinta del color del curso oscurecido, sobre su tono suave (cursos.css).
  */
 
 /** Ilustración de cada curso. Sin entrada, el arte en SVG. */
@@ -226,7 +229,7 @@ function ArteGenerico({ slug }: { slug: string }) {
   );
 }
 
-export default function PortadaCurso({ slug, titulo }: { slug: string; titulo: string }) {
+export default function PortadaCurso({ slug, titulo, sizes = "(max-width: 860px) 100vw, 560px" }: { slug: string; titulo: string; sizes?: string }) {
   const imagen = PORTADA_IMAGEN[slug];
   if (imagen) {
     return (
@@ -234,15 +237,15 @@ export default function PortadaCurso({ slug, titulo }: { slug: string; titulo: s
         src={imagen}
         alt={`Ilustración del curso ${titulo}`}
         fill
-        sizes="(max-width: 600px) 100vw, 560px"
-        className="cx-portada-img"
+        sizes={sizes}
+        className="cu-portada-img"
       />
     );
   }
   const motivo = MOTIVO[slug] ?? "generico";
   const id = `pc-${slug}`;
   return (
-    <svg className="cx-portada-arte" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <svg className="cu-portada-arte" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       {motivo === "pulso" && <ArtePulso />}
       {motivo === "escudo" && <ArteEscudo id={id} />}
       {motivo === "datos" && <ArteDatos />}

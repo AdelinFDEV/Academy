@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Cuánto cuestan N operaciones en Hedera. Las tarifas están fijadas en dólares
@@ -69,19 +70,19 @@ export default function GuideHederaComisiones() {
 
         <div className="hbar-calc-campo">
           <label htmlFor="hbar-cantidad">Cuántas veces</label>
-          <input id="hbar-cantidad" inputMode="numeric" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
+          <input id="hbar-cantidad" inputMode="numeric" autoComplete="off" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
           <div className="hbar-calc-atajos" role="group" aria-label="Cantidades rápidas">
             {CANTIDADES.map((c) => (
-              <button key={c} type="button" aria-pressed={n === c} className={n === c ? "is-activa" : ""} onClick={() => setCantidad(String(c))}>
+              <Tecla key={c} tamano="peq" color={n === c ? "cielo" : "blanca"} aria-pressed={n === c} onClick={() => setCantidad(String(c))}>
                 {c.toLocaleString("es-ES")}
-              </button>
+              </Tecla>
             ))}
           </div>
         </div>
 
         <label className="hbar-calc-campo">
           <span>Precio del HBAR, en dólares</span>
-          <input inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
           <small>El 14-11-2026 estaba en 0,0582 $. Cámbialo y mira qué se mueve.</small>
         </label>
       </div>

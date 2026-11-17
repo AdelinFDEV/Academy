@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Network, RotateCcw, Check } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 const VALIDATORS = 8;
 // Nº de validadores que coinciden en cada ronda de consenso (didáctico).
@@ -16,20 +18,25 @@ export default function GuideXrpConsensus() {
   const pct = Math.round((agree / VALIDATORS) * 100);
   const validated = pct >= THRESHOLD;
 
-  const nextRound = () => setRound((r) => Math.min(r + 1, LAST_ROUND));
+  // Cada ronda que la persona avanza es un paso del recorrido: suena «avance».
+  const nextRound = () => {
+    if (round >= LAST_ROUND) return;
+    setRound(round + 1);
+    sonar("avance");
+  };
   const reset = () => setRound(0);
 
   return (
     <div className="xrp-cs">
       <div className="xrp-cs-head">
         <span className="xrp-cs-eyebrow">
-          <Network size={14} /> Consenso del XRP Ledger · RPCA
+          <Network size={14} aria-hidden="true" /> Consenso del XRP Ledger · RPCA
         </span>
         <span className="xrp-cs-round">Ronda {round}</span>
       </div>
 
       {/* Validadores (UNL) */}
-      <div className="xrp-cs-nodes">
+      <div className="xrp-cs-nodes" aria-hidden="true">
         {Array.from({ length: VALIDATORS }).map((_, i) => {
           const agreed = i < agree;
           return (
@@ -43,7 +50,7 @@ export default function GuideXrpConsensus() {
 
       {/* Medidor de acuerdo con el umbral del 80% */}
       <div className="xrp-cs-meter">
-        <div className="xrp-cs-meter-track">
+        <div className="xrp-cs-meter-track" aria-hidden="true">
           <div
             className={`xrp-cs-meter-fill${validated ? " ok" : ""}`}
             style={{ width: `${pct}%` }}
@@ -59,10 +66,10 @@ export default function GuideXrpConsensus() {
       </div>
 
       {/* Estado */}
-      <div className={`xrp-cs-status${validated ? " ok" : ""}`}>
+      <div className={`xrp-cs-status${validated ? " ok" : ""}`} role="status">
         {validated ? (
           <>
-            <Check size={16} />
+            <Check size={16} aria-hidden="true" />
             <span><strong>Ledger cerrado.</strong> Se superó el ~80% de acuerdo: la transacción queda validada de forma irreversible.</span>
           </>
         ) : (
@@ -72,20 +79,19 @@ export default function GuideXrpConsensus() {
 
       {/* Controles */}
       <div className="xrp-cs-actions">
-        <button
-          type="button"
-          className="gbc-quiz-btn"
+        <Tecla
+          color="naranja"
+          className="xrp-cs-avanzar"
           onClick={nextRound}
           disabled={validated}
-          style={{ margin: 0 }}
         >
           {validated ? "Consenso alcanzado" : "Siguiente ronda de consenso"}
-        </button>
+        </Tecla>
         {round > 0 && (
-          <button type="button" className="xrp-cs-reset" onClick={reset}>
-            <RotateCcw size={14} style={{ marginRight: 5, verticalAlign: -2 }} />
+          <Tecla color="blanca" tamano="peq" onClick={reset}>
+            <RotateCcw size={14} aria-hidden="true" />
             Reiniciar
-          </button>
+          </Tecla>
         )}
       </div>
 

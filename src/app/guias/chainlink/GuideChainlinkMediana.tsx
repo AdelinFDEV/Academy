@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * «Intenta engañar a la red»: siete nodos dan el precio del ether y el lector
@@ -24,7 +26,13 @@ export default function GuideChainlinkMediana() {
   const cuantos = mienten.filter(Boolean).length;
   const falseado = mediana === MENTIRA;
 
-  const alternar = (i: number) => setMienten((m) => m.map((x, j) => (j === i ? !x : x)));
+  // Reto conseguido: con el cuarto mentiroso la mediana cae. Suena «logro»
+  // solo en ese paso, cuando lo provoca la persona (la Tecla ya hace su clic).
+  const alternar = (i: number) => {
+    const nuevo = mienten.map((x, j) => (j === i ? !x : x));
+    if (cuantos < 4 && nuevo.filter(Boolean).length >= 4) sonar("logro");
+    setMienten(nuevo);
+  };
 
   return (
     <div className="link-sim">
@@ -33,9 +41,10 @@ export default function GuideChainlinkMediana() {
 
       <div className="link-sim-nodos">
         {valores.map((v, i) => (
-          <button
+          <Tecla
             key={i}
-            type="button"
+            tamano="peq"
+            color={mienten[i] ? "coral" : "blanca"}
             aria-pressed={mienten[i]}
             className={`link-nodo${mienten[i] ? " is-miente" : ""}`}
             onClick={() => alternar(i)}
@@ -43,7 +52,7 @@ export default function GuideChainlinkMediana() {
             <span>Nodo {i + 1}</span>
             <strong>{num(v)} $</strong>
             <small>{mienten[i] ? "miente" : "honesto"}</small>
-          </button>
+          </Tecla>
         ))}
       </div>
 
@@ -67,9 +76,9 @@ export default function GuideChainlinkMediana() {
       </p>
 
       {cuantos > 0 && (
-        <button type="button" className="link-sim-reiniciar" onClick={() => setMienten(HONESTOS.map(() => false))}>
+        <Tecla tamano="peq" color="blanca" className="link-sim-reiniciar" onClick={() => setMienten(HONESTOS.map(() => false))}>
           Volver a empezar
-        </button>
+        </Tecla>
       )}
     </div>
   );

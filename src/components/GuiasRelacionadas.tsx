@@ -30,6 +30,8 @@ export default async function GuiasRelacionadas({ slug }: { slug: string }) {
   const elegidas = [...resto.filter(comparte), ...resto.filter((g) => !comparte(g))].slice(0, CUANTAS);
   if (elegidas.length === 0) return null;
 
+  // Cada guía, un mazo pequeño de color cielo, como en la portada
+  // (estilo «Cuaderno de estudio»; CSS en guias.css, bloque «Relacionadas»).
   return (
     <nav className="gbc-section gbc-rel" aria-label="Guías relacionadas">
       <div className="gbc-gc">
@@ -39,12 +41,16 @@ export default async function GuiasRelacionadas({ slug }: { slug: string }) {
           {elegidas.map((g) => (
             <li key={g.slug}>
               <Link href={`/guias/${g.slug}`} className="gbc-rel-card">
-                <span className="gbc-rel-meta">
-                  {g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1)} · {g.readTime}
+                <span className="gbc-rel-hoja gbc-rel-hoja--1" aria-hidden="true" />
+                <span className="gbc-rel-hoja gbc-rel-hoja--2" aria-hidden="true" />
+                <span className="gbc-rel-top">
+                  <span className="gbc-rel-meta">
+                    {g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1)} · {g.readTime}
+                  </span>
+                  <span className="gbc-rel-name">{g.title}</span>
+                  <span className="gbc-rel-desc">{g.description}</span>
+                  <span className="gbc-rel-cta">Leer la guía →</span>
                 </span>
-                <span className="gbc-rel-name">{g.title}</span>
-                <span className="gbc-rel-desc">{g.description}</span>
-                <span className="gbc-rel-cta">Leer la guía →</span>
               </Link>
             </li>
           ))}

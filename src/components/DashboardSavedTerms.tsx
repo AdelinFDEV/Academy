@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Tecla from "@/components/cuaderno/Tecla";
 import { X } from "lucide-react";
 import Icon from "@/components/Icon";
+import { sonar } from "@/lib/sonidos";
 
 type SavedTerm = {
   term: string;
@@ -18,51 +19,66 @@ export default function DashboardSavedTerms({
 }) {
   const [terms, setTerms] = useState(initialTerms);
   const [removing, setRemoving] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
+  /** Se quita al instante; si el servidor no lo confirma, vuelve a su sitio y se avisa. */
   async function unsave(t: SavedTerm) {
     if (removing) return;
+    const antes = terms;
     setRemoving(t.term);
+    setError("");
     setTerms((prev) => prev.filter((x) => x.term !== t.term));
-    await fetch("/api/terms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ term: t.term, definition: t.definition, category: t.category }),
-    });
+    try {
+      const r = await fetch("/api/terms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ term: t.term, definition: t.definition, category: t.category }),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+    } catch {
+      setTerms(antes);
+      setError("No se pudo quitar el término. Inténtalo de nuevo.");
+      sonar("error");
+    }
     setRemoving(null);
   }
 
   if (terms.length === 0) {
     return (
-      <div className="dash-empty">
-        <div className="dash-empty-icon"><Icon name="book" size={22} /></div>
+      <div className="pn-vacio">
+        <span className="pn-vacio-icono tono-amarillo" aria-hidden="true"><Icon name="book" size={22} /></span>
         <p>No tienes términos guardados aún.</p>
-        <Link href="/glosario" className="dash-link-orange">Explorar el diccionario →</Link>
+        <Tecla href="/glosario" color="amarillo" tamano="peq">Explorar el diccionario</Tecla>
       </div>
     );
   }
 
   return (
-    <div className="dash-terms-grid">
-      {terms.map((t) => (
-        <div key={t.term} className="dash-term-card">
-          <div className="dash-term-head">
-            <span className="dash-term-name">{t.term}</span>
-            <div className="dash-term-head-right">
-              <span className={`glosario-term-cat glosario-term-cat--${t.category}`}>{t.category}</span>
-              <button
-                className="dash-unsave-btn"
+    <>
+      {error && <p className="pn-error" role="alert">{error}</p>}
+      <ul className="dash-terminos">
+        {terms.map((t, i) => (
+          <li key={t.term} className={`dash-termino dash-termino--${i % 3}`}>
+            <div className="dash-termino-cab">
+              <span className="dash-termino-nombre">{t.term}</span>
+              <Tecla
+                color="blanca"
+                tamano="peq"
+                icono
+                className="dash-quitar"
                 onClick={() => unsave(t)}
                 disabled={removing === t.term}
-                aria-label="Quitar término de guardados"
+                aria-label={`Quitar «${t.term}» de guardados`}
                 title="Quitar de guardados"
               >
-                <X size={13} aria-hidden="true" />
-              </button>
+                <X size={14} strokeWidth={2.6} aria-hidden="true" />
+              </Tecla>
             </div>
-          </div>
-          <p className="dash-term-def">{t.definition}</p>
-        </div>
-      ))}
-    </div>
+            <span className="pn-chip tono-amarillo">{t.category}</span>
+            <p className="dash-termino-def">{t.definition}</p>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import Tecla from "@/components/cuaderno/Tecla";
 import { createClient } from "@/lib/supabase/client";
 import { ShieldAlert, X } from "lucide-react";
 
@@ -43,17 +43,20 @@ export default function TwoFactorNudge() {
   if (!visible) return null;
 
   return (
-    <div className="dash-2fa-nudge" role="status">
-      <ShieldAlert size={18} className="dash-2fa-nudge-icon" />
-      <p className="dash-2fa-nudge-text">
+    <div className="pn-aviso tono-amarillo dash-2fa" role="status">
+      <span className="pn-aviso-ic" aria-hidden="true"><ShieldAlert size={18} strokeWidth={2.4} /></span>
+      <p className="pn-aviso-texto">
+        <b>Protege tu cuenta</b>
         Tu cuenta no tiene verificación en dos pasos. Actívala para protegerla mejor.
       </p>
-      <Link href="/dashboard/perfil#seguridad" className="dash-2fa-nudge-cta">
-        Activar 2FA
-      </Link>
-      <button className="dash-2fa-nudge-dismiss" onClick={dismiss} aria-label="Recordar más tarde">
-        <X size={15} />
-      </button>
+      <span className="dash-2fa-acciones">
+        <Tecla href="/dashboard/perfil#seguridad" color="amarillo" tamano="peq">
+          Activar 2FA
+        </Tecla>
+        <Tecla color="blanca" tamano="peq" icono onClick={dismiss} aria-label="Recordar más tarde">
+          <X size={16} strokeWidth={2.6} aria-hidden="true" />
+        </Tecla>
+      </span>
     </div>
   );
 }

@@ -2,8 +2,13 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, Plus, Filter, X, Check, NotebookPen } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { AlertTriangle, Plus, SlidersHorizontal, X } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
+import { useSonidoVentana } from "@/components/trading/useSonidoVentana";
+import { bloquearScroll } from "@/components/trading/useVentanaMovil";
+import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import { TjSegmented, TjSelect } from "@/components/trading/TjControls";
 import { TjEquityCard } from "@/components/trading/TjCharts";
 import TjSummary from "@/components/trading/TjSummary";
@@ -19,7 +24,7 @@ import TjBalance from "@/components/trading/TjBalance";
 import TjBot, { reiniciarNova } from "@/components/trading/TjBot";
 import { NOVA_FIRMA, NOVA_RESUMEN, buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
 import TjEmotions from "@/components/trading/TjEmotions";
-import { toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
+import { rachaDias, toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
 import {
   MILESTONES, NO_FILTERS, NO_STRATEGY, accountContext, applyFilters, buildMilestones, byChronology,
   computeStats, distinctByUse, equitySeries, isFiltered, maxDrawdown, parseStoredLevels,
@@ -106,7 +111,7 @@ export default function TradingJournal({
    *   vista vieja ya no está y la nueva aún no. Esa medida obliga al navegador
    *   a calcular la página sin vista: se queda corta, el scroll ya no cabe y
    *   Chrome lo recorta hacia arriba (y su anclaje de scroll lo remataba
-   *   mandándolo a 0; por eso el anclaje está apagado en trading.css).
+   *   mandándolo a 0; por eso el anclaje está apagado en diario.css).
    *   Ningún código nuestro movía el scroll.
    *
    * Arreglo: la vista va dentro de un contenedor que NO se desmonta
@@ -169,13 +174,15 @@ export default function TradingJournal({
       if (!canAdd || (e.key !== "n" && e.key !== "N")) return;
       if (e.ctrlKey || e.metaKey || e.altKey || el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
       e.preventDefault();
+      if (capital == null || capital <= 0) return;
+      sonar("abrir");
       setEditing(null);
       setNewDate(null);
       setFormOpen(true);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [canAdd]);
+  }, [canAdd, capital]);
 
   function goTo(v: View) {
     // Salir del Resumen descarta una operación nueva a medias (las ediciones siguen).
@@ -253,19 +260,18 @@ export default function TradingJournal({
   useEffect(() => {
     if (!resetOpen) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape" && !resetting) setResetOpen(false); };
-    const antes = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const soltar = bloquearScroll();
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = antes;
+      soltar();
       window.removeEventListener("keydown", onKey);
     };
   }, [resetOpen, resetting]);
 
   /**
    * Sin capital inicial el Diario no empieza (pedido por el admin el 13-11-2026):
-   * no hay pestañas, ni calendario, ni formulario de operación. Solo Nova
-   * pidiéndolo y el campo para escribirlo. Un capital de 0 cuenta como sin definir.
+   * no hay pestañas, ni calendario, ni formulario de operación. Solo el
+   * primer paso que lo pide y el campo para escribirlo. Un capital de 0 cuenta como sin definir.
    */
   const sinCapital = !(capital != null && capital > 0);
 
@@ -278,12 +284,21 @@ export default function TradingJournal({
 
   function openNew(date: Date | null = null) {
     if (sinCapital) { pedirCapital(); return; }
+    sonar("abrir");
     setEditing(null);
     setNewDate(date);
     setFormOpen(true);
   }
 
-  function closeForm() {
+  function openEdit(t: Trade) {
+    sonar("abrir");
+    setEditing(t);
+    setFormOpen(true);
+  }
+
+  /** Cierra la ventana de la operación. Suena `cerrar` si la cierra la persona; tras guardar ya sonó `guardado`. */
+  function closeForm(sonido = true) {
+    if (sonido && formOpen) sonar("cerrar");
     setFormOpen(false);
     setEditing(null);
   }
@@ -298,24 +313,42 @@ export default function TradingJournal({
       (prev.some(t => t.id === saved.id) ? prev.map(t => (t.id === saved.id ? saved : t)) : [...prev, saved]).sort(byChronology)
     );
     if (!cerrar) return;
-    closeForm();
+    sonar("guardado");
+    closeForm(false);
     void syncLogros();
   }
 
-  /** Guarda el ánimo y la nota de un día. Lanza si falla, para que el panel lo diga. */
+  /**
+   * Guarda el ánimo y la nota de un día. Lanza si falla, para que el panel lo diga.
+   * Suena `guardado`, o `racha` si con este día la racha de días apuntados crece.
+   */
   async function saveDia(d: DiaDiario) {
-    const res = await fetch("/api/diario-dias", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(d),
-    });
+    let res: Response;
+    try {
+      res = await fetch("/api/diario-dias", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(d),
+      });
+    } catch {
+      sonar("error");
+      throw new Error("Sin conexión: no se pudo guardar");
+    }
     const data = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(data?.error ?? "No se pudo guardar");
+    if (!res.ok) {
+      sonar("error");
+      throw new Error(data?.error ?? "No se pudo guardar");
+    }
+    const next = { ...dias };
+    if (d.animo == null && !d.nota) delete next[d.fecha];
+    else next[d.fecha] = { fecha: d.fecha, animo: d.animo, nota: d.nota };
+    const hoy = new Date();
+    sonar(rachaDias(next, hoy) > rachaDias(dias, hoy) ? "racha" : "guardado");
     setDias(prev => {
-      const next = { ...prev };
-      if (d.animo == null && !d.nota) delete next[d.fecha];
-      else next[d.fecha] = { fecha: d.fecha, animo: d.animo, nota: d.nota };
-      return next;
+      const siguiente = { ...prev };
+      if (d.animo == null && !d.nota) delete siguiente[d.fecha];
+      else siguiente[d.fecha] = { fecha: d.fecha, animo: d.animo, nota: d.nota };
+      return siguiente;
     });
   }
 
@@ -327,7 +360,7 @@ export default function TradingJournal({
     });
     if (!res.ok) throw new Error("No se pudo borrar la operación");
     setTrades(prev => prev.filter(t => t.id !== id));
-    if (editing?.id === id) closeForm();
+    if (editing?.id === id) closeForm(false);
   }
 
   async function handleReset() {
@@ -342,9 +375,10 @@ export default function TradingJournal({
       setLogros([]);
       setFilters(NO_FILTERS);
       reiniciarNova();
-      closeForm();
+      closeForm(false);
       setResetOpen(false);
     } catch (err) {
+      sonar("error");
       setResetError(errorMessage(err));
     } finally {
       setResetting(false);
@@ -353,12 +387,13 @@ export default function TradingJournal({
 
   const setFilter = <K extends keyof Filters>(k: K, v: Filters[K]) => setFilters(f => ({ ...f, [k]: v }));
   const openReset = () => { setResetOpen(true); setResetError(""); };
+  useSonidoVentana(resetOpen);
   const diasApuntados = Object.keys(dias).length;
 
   const calendar = (
     <TjCalendar
       trades={trades}
-      onEdit={t => { setEditing(t); setFormOpen(true); }}
+      onEdit={openEdit}
       onAdd={d => openNew(d)}
       dias={dias}
     />
@@ -409,7 +444,7 @@ export default function TradingJournal({
       series={account.series}
       editing={editingCapital}
       onEditingChange={setEditingCapital}
-      onCapitalSaved={v => { if (sinCapital) closeForm(); setCapital(v); void syncLogros(); }}
+      onCapitalSaved={v => { if (sinCapital) closeForm(false); setCapital(v); void syncLogros(); }}
       onReset={openReset}
       obligatorio={sinCapital}
     />
@@ -419,106 +454,121 @@ export default function TradingJournal({
   const limpiarFiltros = () => setFilters(f => ({ ...NO_FILTERS, range: f.range }));
 
   const filterBar = (
-    <div className="tj-card tj-filters">
-      <span className="tj-filters-title">
-        <Filter size={14} /> Filtros
-        <small>{view === "analisis" ? "Todo lo de abajo los obedece" : "Afectan a la lista"}</small>
-      </span>
+    <div className="dj-hoja djp-filtros">
+      <div className="djp-filtros-cab">
+        <span className="dj-etq"><SlidersHorizontal size={14} strokeWidth={2.6} aria-hidden="true" /> Filtros</span>
+        <span className="dj-nota">{view === "analisis" ? "todo lo de abajo los obedece" : "afectan a la lista"}</span>
+      </div>
       <TjSegmented label="Periodo" value={filters.range} onChange={v => setFilter("range", v)} options={RANGES} />
-      <TjSelect compact value={filters.pair} onChange={v => setFilter("pair", v)}
-        options={[{ value: "", label: "Todos los pares" }, ...pairs.map(p => ({ value: p, label: p }))]} />
-      {strategies.length > 0 && (
-        <TjSelect compact value={filters.strategy} onChange={v => setFilter("strategy", v)}
-          options={[
-            { value: "", label: "Todas las estrategias" },
-            ...strategies.map(s => ({ value: s, label: s })),
-            ...(hasUntagged ? [{ value: NO_STRATEGY, label: NO_STRATEGY }] : []),
-          ]} />
-      )}
-      <TjSelect compact value={filters.direction} onChange={v => setFilter("direction", v as Filters["direction"])}
-        options={[{ value: "", label: "Long y short" }, { value: "long", label: "Solo long" }, { value: "short", label: "Solo short" }]} />
-      {filtering && (
-        <div className="tj-actions is-end">
-          <span className="tj-count">{filtered.length} de {trades.length}</span>
-          <button type="button" className="tj-btn" onClick={limpiarFiltros}><X size={13} /> Limpiar</button>
-        </div>
-      )}
+      <div className="djp-filtros-selects">
+        <TjSelect compact value={filters.pair} onChange={v => setFilter("pair", v)}
+          options={[{ value: "", label: "Todos los pares" }, ...pairs.map(p => ({ value: p, label: p }))]} />
+        {strategies.length > 0 && (
+          <TjSelect compact value={filters.strategy} onChange={v => setFilter("strategy", v)}
+            options={[
+              { value: "", label: "Todas las estrategias" },
+              ...strategies.map(s => ({ value: s, label: s })),
+              ...(hasUntagged ? [{ value: NO_STRATEGY, label: NO_STRATEGY }] : []),
+            ]} />
+        )}
+        <TjSelect compact value={filters.direction} onChange={v => setFilter("direction", v as Filters["direction"])}
+          options={[{ value: "", label: "Long y short" }, { value: "long", label: "Solo long" }, { value: "short", label: "Solo short" }]} />
+        {filtering && (
+          <span className="djp-filtros-limpiar">
+            <span className="dj-chip dj-chip--azul">{filtered.length} de {trades.length}</span>
+            <Tecla color="blanca" tamano="peq" onClick={limpiarFiltros}><X size={14} strokeWidth={2.6} aria-hidden="true" /> Limpiar</Tecla>
+          </span>
+        )}
+      </div>
     </div>
   );
 
   // Lo vacío se explica por lo que lo causa: un filtro de verdad o, si no lo hay, el periodo elegido.
   const noMatch = filtering ? (
-    <div className="tj-card tj-empty">
+    <div className="dj-hoja dj-vacio">
+      <h3>Nada por aquí</h3>
       <p>Ninguna operación coincide con estos filtros.</p>
-      <button type="button" className="tj-btn" onClick={limpiarFiltros}><X size={13} /> Quitar filtros</button>
+      <Tecla color="azul" onClick={limpiarFiltros}><X size={15} strokeWidth={2.6} aria-hidden="true" /> Quitar filtros</Tecla>
     </div>
   ) : (
-    <div className="tj-card tj-empty">
+    <div className="dj-hoja dj-vacio">
+      <h3>Nada por aquí</h3>
       <p>No hay operaciones en este periodo.</p>
-      <button type="button" className="tj-btn" onClick={() => setFilter("range", "all")}>Ver todas</button>
+      <Tecla color="azul" onClick={() => setFilter("range", "all")}>Ver todas</Tecla>
     </div>
   );
 
   return (
-    <div className="trading-journal imm">
-      <div className="imm-backdrop" aria-hidden="true">
-        <span className="imm-grid" />
-        <span className="imm-orb imm-orb--1" />
-        <span className="imm-orb imm-orb--2" />
-        <span className="imm-orb imm-orb--3" />
-      </div>
-
-      {/* La cabecera (saludo, Nova y el balance) se queda en TODAS las vistas
-          (pedido por el admin el 10-11-2026): así la página no cambia de alto al
-          cambiar de pestaña, la barra no se solapa con la primera tarjeta y Nova
-          sigue en su habitación sin volver a aterrizar. */}
-      <TjWelcome name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
-      <div ref={anclaRef} className="tj-scroll-anchor tj-ancla-vista" aria-hidden="true" />
-      <div className="tj-topbar" ref={tabsRef}>
-        {!sinCapital && trades.length > 0 && (
-          <div className="tj-tabs">
-            <TjSegmented label="Vista del diario" value={view} onChange={goTo} options={VIEWS} />
-            {(view === "analisis" || view === "operaciones") && filtering && (
-              <span className="tj-count">Filtros activos · {filtered.length} de {trades.length}</span>
-            )}
-          </div>
-        )}
-        {!sinCapital && canAdd && <button type="button" className="btn-primary btn-small tj-new" onClick={() => openNew()} title="Nueva operación (atajo: tecla N)" aria-label="Nueva operación" aria-keyshortcuts="N">
-          <Plus size={16} /> <span className="tj-hide-sm">Nueva operación</span>
-        </button>}
-      </div>
+    // «Reducir movimiento» del sistema también para framer-motion (el
+    // formulario, los desplegables de la lista): sin él, sus muelles no lo miran.
+    <MotionConfig reducedMotion="user">
+    <div className="trading-journal">
+      {/* La portada (saludo y balance) se queda en TODAS las vistas (pedido por
+          el admin el 10-11-2026): así la página no cambia de alto al cambiar de
+          pestaña. Nova, oculta mientras llega la mascota (nova-visible.ts). */}
+      <TjWelcome
+        name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance}
+        bot={MOSTRAR_NOVA ? <TjBot report={botReport} onAction={onBotAction} /> : null}
+      />
+      <div ref={anclaRef} className="djp-ancla" aria-hidden="true" />
+      {/* Las pestañas del cuaderno y la acción principal. NO se quedan fijas al
+          hacer scroll (el admin no quiere nada anclado). Con el diario vacío no
+          sale: la acción ya está en «Empieza tu diario», y dos teclas naranjas
+          seguidas para lo mismo confunden. */}
+      {!sinCapital && trades.length > 0 && (
+        <nav className="djp-barra" ref={tabsRef} aria-label="El diario">
+          <TjSegmented className="djp-pestanas" label="Vista del diario" value={view} onChange={goTo} options={VIEWS} />
+          {(view === "analisis" || view === "operaciones") && filtering && (
+            <span className="dj-chip dj-chip--azul">Filtros activos · {filtered.length} de {trades.length}</span>
+          )}
+          {canAdd && (
+            <Tecla
+              className="djp-nueva" onClick={() => openNew()} title="Nueva operación (atajo: tecla N)"
+              aria-label="Nueva operación" aria-keyshortcuts="N"
+            >
+              <Plus size={18} strokeWidth={3} aria-hidden="true" /> <span className="djp-nueva-texto">Nueva operación</span>
+              <kbd className="dj-kbd" aria-hidden="true">N</kbd>
+            </Tecla>
+          )}
+        </nav>
+      )}
 
       {/* Reiniciar el diario: un aviso en mitad de la pantalla, en rojo, que hay que
           contestar (pedido por el admin el 13-11-2026). El foco empieza en
           «Cancelar»: lo que se pulsa sin pensar no puede ser lo que lo borra todo. */}
       {resetOpen && createPortal(
-        <div className="tj-reset-velo" onClick={() => { if (!resetting) setResetOpen(false); }}>
+        <div className="trading-journal dj-velo" onClick={() => { if (!resetting) setResetOpen(false); }}>
           <div
-            className="tj-reset" role="alertdialog" aria-modal="true"
+            className="dj-ventana djp-reinicio" role="alertdialog" aria-modal="true"
             aria-labelledby="tj-reset-titulo" aria-describedby="tj-reset-texto"
             onClick={e => e.stopPropagation()}
           >
-            <span className="tj-reset-icono" aria-hidden="true"><AlertTriangle size={30} strokeWidth={2.2} /></span>
+            <span className="djp-reinicio-icono" aria-hidden="true"><AlertTriangle size={32} strokeWidth={2.4} /></span>
             <h2 id="tj-reset-titulo">¿Reiniciar tu diario?</h2>
-            <p className="tj-reset-aviso">Este proceso es irreversible. Se eliminan todos tus datos.</p>
-            <div id="tj-reset-texto">
+            <p className="djp-reinicio-aviso">Este proceso es irreversible. Se eliminan todos tus datos.</p>
+            <div id="tj-reset-texto" className="djp-reinicio-lista">
               <p>Se borrará para siempre:</p>
               <ul>
                 <li>{trades.length === 1 ? "Tu operación" : `Tus ${trades.length} operaciones`}, con sus capturas</li>
                 <li>Tu capital inicial</li>
                 <li>{diasApuntados === 1 ? "El día con emociones y notas" : `Los ${diasApuntados} días con emociones y notas`}</li>
                 <li>Los hitos del diario que hayas conseguido</li>
-                <li>Todo lo que Nova sabía de ti</li>
+                {MOSTRAR_NOVA && <li>Todo lo que Nova sabía de ti</li>}
               </ul>
             </div>
-            {resetError && <p className="auth-error">{resetError}</p>}
-            <div className="tj-reset-acciones">
-              <button type="button" className="tj-reset-cancelar" onClick={() => setResetOpen(false)} disabled={resetting} autoFocus>
+            {resetError && (
+              <div className="dj-aviso dj-aviso--error dj-aviso--peq" role="alert">
+                <span className="ic" aria-hidden="true">×</span>
+                <span><b>No se pudo reiniciar</b>{resetError}</span>
+              </div>
+            )}
+            <div className="djp-reinicio-acciones">
+              <Tecla color="blanca" onClick={() => setResetOpen(false)} disabled={resetting} autoFocus>
                 Cancelar
-              </button>
-              <button type="button" className="tj-reset-borrar" onClick={handleReset} disabled={resetting}>
+              </Tecla>
+              <Tecla color="coral" onClick={handleReset} disabled={resetting}>
                 {resetting ? "Borrando…" : "Sí, borrar todo"}
-              </button>
+              </Tecla>
             </div>
           </div>
         </div>,
@@ -537,7 +587,7 @@ export default function TradingJournal({
               strategyOptions={strategies}
               equity={capital != null ? capital + account.stats.totalPnl : null}
               onSaved={onSaved}
-              onClose={closeForm}
+              onClose={() => closeForm()}
               dias={dias}
               onSaveDia={saveDia}
             />
@@ -560,49 +610,54 @@ export default function TradingJournal({
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       >
       {sinCapital ? (
-        <section className="tj-card tj-onboarding tj-capital-paso">
-          <span className="tj-label"><NotebookPen size={15} /> Primer paso: tu capital inicial</span>
-          <p className="tj-capital-texto">
-            El diario empieza por saber con cuánto dinero operas. Con ese dato se calculan tu balance, tu
-            rentabilidad en % y cuánto arriesgas en cada operación. Hasta que lo pongas no se puede apuntar nada.
-          </p>
-          <ol>
-            <li><span>1</span> Escribe arriba el capital con el que empiezas, en dólares.</li>
-            <li><span>2</span> Guárdalo. Podrás cambiarlo después con el lápiz del balance.</li>
-            <li><span>3</span> Apunta tu primera operación.</li>
+        <section className="dj-hoja djp-pasos">
+          <div className="djp-pasos-texto">
+            <span className="dj-nota">primer paso</span>
+            <h2>Tu capital inicial</h2>
+            <p>
+              El diario empieza por saber con cuánto dinero operas. Con ese dato se calculan tu balance, tu
+              rentabilidad en % y cuánto arriesgas en cada operación. Hasta que lo pongas no se puede apuntar nada.
+            </p>
+            <Tecla color="azul" onClick={pedirCapital}>Poner mi capital inicial</Tecla>
+          </div>
+          <ol className="djp-camino" aria-label="Cómo empieza tu diario">
+            <li className="is-actual"><span className="djp-nodo">1</span><span>Escribe arriba el capital con el que empiezas, en dólares.</span></li>
+            <li><span className="djp-nodo">2</span><span>Guárdalo. Podrás cambiarlo después con el lápiz del balance.</span></li>
+            <li className="is-meta"><span className="djp-nodo">3</span><span>Apunta tu primera operación.</span></li>
           </ol>
-          <button type="button" className="tj-btn is-primary" onClick={pedirCapital}>Poner mi capital inicial</button>
         </section>
       ) : trades.length === 0 ? (
         <>
+          <section className="dj-hoja djp-pasos">
+            <div className="djp-pasos-texto">
+              <span className="dj-nota">tu cuaderno está listo</span>
+              <h2>Empieza tu diario</h2>
+              <p>Apunta cada operación con su riesgo, su objetivo y el porqué. Aquí abajo irás viendo tu calendario y tus números.</p>
+              <Tecla onClick={() => openNew()}><Plus size={17} strokeWidth={3} aria-hidden="true" /> Registrar mi primera operación</Tecla>
+            </div>
+            <ol className="djp-camino" aria-label="Cómo empieza tu diario">
+              <li className={capital != null ? "is-hecho" : "is-actual"}>
+                <span className="djp-nodo">{capital != null ? "✓" : 1}</span>
+                <span>Define tu capital inicial para medir rentabilidad y riesgo en %.</span>
+              </li>
+              <li className={capital != null ? "is-actual" : undefined}><span className="djp-nodo">2</span><span>Apunta cada operación con su riesgo, su objetivo y el porqué.</span></li>
+              <li className="is-meta"><span className="djp-nodo">3</span><span>A partir de 30 operaciones, tus números empiezan a decir la verdad.</span></li>
+            </ol>
+          </section>
           {calendar}
           {summary}
-          <section className="tj-card tj-onboarding">
-            <span className="tj-label"><NotebookPen size={15} /> Empieza tu diario</span>
-            <ol>
-              <li className={capital != null ? "on" : undefined}>
-                <span>{capital != null ? <Check size={13} /> : 1}</span>
-                Define tu capital inicial para medir rentabilidad y riesgo en %.
-              </li>
-              <li><span>2</span> Apunta cada operación con su riesgo, su objetivo y el porqué.</li>
-              <li><span>3</span> A partir de 30 operaciones, tus números empiezan a decir la verdad.</li>
-            </ol>
-            <button type="button" className="tj-btn is-primary" onClick={() => openNew()}><Plus size={15} /> Registrar mi primera operación</button>
-          </section>
         </>
       ) : (
         <>
           {view === "resumen" && (
             <>
               {/* El calendario, a todo el ancho y lo primero; la cuenta, en franja debajo. */}
-              <div className="tjr-top">
-                {calendar}
-                {summary}
-              </div>
+              {calendar}
+              {summary}
               <TjEquityCard series={account.series} capital={capital} drawdown={account.drawdown} />
               {/* Últimas operaciones y próximo hito, a la misma altura. Las lecturas automáticas
                   que iban aquí («Lo que dicen tus números») serán frases del bot. */}
-              <div className="tjr-duo">
+              <div className="djp-duo">
                 <TjRecentTrades trades={trades} onSeeAll={() => goTo("operaciones")} />
                 <TjMilestoneTeaser milestones={account.milestones} onOpen={() => goTo("hitos")} />
               </div>
@@ -628,7 +683,7 @@ export default function TradingJournal({
                   trades={filtered}
                   ctx={ctx}
                   dias={dias}
-                  onEdit={t => { setEditing(t); setFormOpen(true); }}
+                  onEdit={openEdit}
                   onDelete={onDelete}
                 />
               ) : noMatch}
@@ -648,5 +703,6 @@ export default function TradingJournal({
       </motion.div>
       </div>
     </div>
+    </MotionConfig>
   );
 }

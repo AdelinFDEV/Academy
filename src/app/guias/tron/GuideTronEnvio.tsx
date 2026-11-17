@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * Lo que cuesta un envío de USDT por TRON cuando no se tienen recursos y la red
@@ -34,7 +35,7 @@ export default function GuideTronEnvio() {
       <div className="tron-calc-campos">
         <label htmlFor="tron-precio">
           <span>Precio de 1 TRX, en euros</span>
-          <input id="tron-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="tron-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
         <label htmlFor="tron-envios">
           <span>Envíos al mes <strong>{envios}</strong></span>
@@ -43,7 +44,14 @@ export default function GuideTronEnvio() {
       </div>
 
       <label className="tron-calc-casilla">
-        <input type="checkbox" checked={nuevo} onChange={(e) => setNuevo(e.target.checked)} />
+        <input
+          type="checkbox"
+          checked={nuevo}
+          onChange={(e) => {
+            setNuevo(e.target.checked);
+            sonar("interruptor");
+          }}
+        />
         <span>La dirección de destino nunca ha tenido USDT</span>
       </label>
 

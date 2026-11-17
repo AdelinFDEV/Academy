@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema de diseño · Cuaderno de estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Caveat:wght@600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Neutros */
+    --tinta: #1d1b33; --tinta-2: #5f5c7d; --tinta-3: #a3a7c0;
+    --fondo: #f3f5ff; --papel: #ffffff; --gris: #e2e5f4; --gris-o: #c1c6dc;
+    /* Siete colores, cada uno en tres tonos: base, lateral (oscuro, el canto de la tecla) y suave (fondos) */
+    --naranja: #ff8a1f; --naranja-o: #a65000; --naranja-s: #ffead6;
+    --azul: #4f5dff;    --azul-o: #2f3cc9;    --azul-s: #e4e7ff;
+    --menta: #2fc488;   --menta-o: #137a52;   --menta-s: #d9f5e9;
+    --lila: #8f7cff;    --lila-o: #6450e0;    --lila-s: #ece8ff;
+    --amarillo: #ffd23f; --amarillo-o: #866500; --amarillo-s: #fff3c4;
+    --coral: #ff6b81;   --coral-o: #bb3550;   --coral-s: #ffe2e7;
+    --cielo: #2fbff5;   --cielo-o: #0e709b;   --cielo-s: #d9f3fd;
+    /* Solo cifras con signo */
+    --sube: #12a36b; --baja: #e5484d;
+    --serif: "Fraunces", Georgia, serif; --mano: "Caveat", cursive; --f: "Nunito", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: var(--f); }
+  .ancho { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+  section { padding: 56px 0; border-bottom: 2px dashed var(--gris); }
+  .num { font-family: var(--mano); font-size: 26px; color: var(--naranja-o); }
+  h1 { font-family: var(--serif); font-weight: 800; font-size: 60px; margin: 0; letter-spacing: -0.02em; }
+  h2 { font-family: var(--serif); font-weight: 800; font-size: 38px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .expl { color: var(--tinta-2); font-weight: 600; font-size: 16px; margin: 0 0 28px; max-width: 70ch; line-height: 1.55; }
+  .rejilla { display: grid; gap: 20px; }
+  .fluor { background: linear-gradient(transparent 58%, var(--amarillo) 58%); padding: 0 4px; }
+
+  /* ── Botón-tecla ── */
+  .tecla { --c: var(--naranja); --o: var(--naranja-o); --t: #fff; --h: 9px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 28px; border: 0; border-radius: 16px; cursor: pointer;
+    font: 900 15px var(--f); text-transform: uppercase; letter-spacing: .04em; color: var(--t); background: var(--c); user-select: none; text-decoration: none;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.08), 0 var(--h) 0 var(--o), 0 calc(var(--h) + 8px) 18px -6px rgba(29,27,51,.4);
+    transition: transform .26s cubic-bezier(.34,1.8,.5,1), box-shadow .26s cubic-bezier(.34,1.8,.5,1), filter .15s; -webkit-tap-highlight-color: transparent; margin-bottom: var(--h); }
+  .tecla:hover { transform: translateY(2px); filter: brightness(1.04); box-shadow: inset 0 2px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.08), 0 calc(var(--h) - 2px) 0 var(--o), 0 calc(var(--h) + 5px) 14px -6px rgba(29,27,51,.38); }
+  .tecla:active, .tecla.pulsada { transform: translateY(var(--h)); filter: brightness(.93); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 5px 10px rgba(0,0,0,.22), 0 0 0 var(--o), 0 1px 2px rgba(29,27,51,.35); transition-duration: .06s; transition-timing-function: ease-out; }
+  .tecla:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+  .t-azul { --c: var(--azul); --o: var(--azul-o); } .t-menta { --c: var(--menta); --o: var(--menta-o); --t: var(--tinta); } .t-lila { --c: var(--lila); --o: var(--lila-o); }
+  .t-amarillo { --c: var(--amarillo); --o: var(--amarillo-o); --t: var(--tinta); } .t-coral { --c: var(--coral); --o: var(--coral-o); } .t-cielo { --c: var(--cielo); --o: var(--cielo-o); --t: var(--tinta); }
+  .t-blanca { --c: #fff; --o: var(--gris-o); --t: var(--tinta); } .t-tinta { --c: var(--tinta); --o: #08070f; }
+  .t-peq { --h: 6px; padding: 10px 16px; font-size: 13px; border-radius: 12px; } .t-grande { --h: 12px; padding: 20px 36px; font-size: 17px; border-radius: 20px; }
+  .t-icono { --h: 8px; width: 56px; height: 56px; padding: 0; font-size: 22px; }
+  .tecla[disabled] { --c: var(--gris); --o: var(--gris-o); --t: var(--tinta-3); cursor: not-allowed; }
+  .tecla[disabled]:hover, .tecla[disabled]:active { transform: none; filter: none; box-shadow: 0 var(--h) 0 var(--o); }
+  .fila { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 22px; }
+  .rotulo { width: 150px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-2); }
+
+  /* ── Paleta ── */
+  .paleta { grid-template-columns: repeat(7, 1fr); }
+  .color { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 0 var(--gris-o); }
+  .muestra { height: 110px; position: relative; }
+  .muestra i { position: absolute; left: 0; right: 0; bottom: 0; height: 16px; }
+  .suave { height: 34px; }
+  .color div.info { padding: 12px 14px 14px; }
+  .color b { font-family: var(--serif); font-size: 19px; display: block; }
+  .color small { display: block; font-size: 12px; color: var(--tinta-2); font-weight: 700; line-height: 1.5; }
+  .color em { display: inline-block; margin-top: 8px; font-style: normal; font-size: 12px; font-weight: 900; padding: 4px 9px; border-radius: 8px; }
+  .neutros { grid-template-columns: repeat(8, 1fr); margin-top: 20px; }
+  .neutro { border-radius: 16px; height: 86px; padding: 10px; display: flex; flex-direction: column; justify-content: flex-end; font-size: 12px; font-weight: 800; box-shadow: 0 4px 0 var(--gris-o); }
+
+  /* ── Mapa de color por sección ── */
+  .mapa { grid-template-columns: repeat(7, 1fr); }
+  .seccion { border-radius: 20px; padding: 18px; color: #fff; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; }
+  .seccion b { font-family: var(--serif); font-size: 22px; }
+  .seccion small { font-weight: 800; opacity: .9; }
+
+  /* ── Tipografía ── */
+  .tipos { grid-template-columns: 1.3fr 1fr; align-items: start; }
+  .tipo-muestra { background: #fff; border-radius: 24px; padding: 28px; box-shadow: 0 5px 0 var(--gris-o); }
+  .escala p { margin: 0 0 14px; }
+  .etq-tipo { font-size: 12px; font-weight: 900; color: var(--tinta-3); text-transform: uppercase; letter-spacing: .08em; display: block; margin-bottom: 4px; }
+
+  /* ── Gestos de rotulador ── */
+  .gestos { grid-template-columns: repeat(3, 1fr); }
+  .gesto { background: #fff; border-radius: 22px; padding: 26px; box-shadow: 0 5px 0 var(--gris-o); font-family: var(--serif); font-weight: 800; font-size: 28px; line-height: 1.3; }
+  .gesto small { display: block; font-family: var(--f); font-size: 13px; color: var(--tinta-2); margin-top: 12px; font-weight: 700; }
+
+  /* ── Insignias, chips, etiquetas ── */
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; font-size: 13px; font-weight: 900; }
+  .postit { display: inline-block; padding: 8px 14px; font-family: var(--mano); font-size: 24px; transform: rotate(-3deg); box-shadow: 0 8px 12px -8px rgba(0,0,0,.4); }
+  .pegatina { width: 96px; height: 96px; border-radius: 50%; display: grid; place-items: center; text-align: center; color: #fff; font-weight: 900; font-size: 13px; line-height: 1.1; border: 4px solid #fff; box-shadow: 0 6px 14px -6px rgba(0,0,0,.35); transform: rotate(10deg); }
+
+  /* ── Progreso y racha ── */
+  .barra { height: 18px; background: var(--gris); border-radius: 999px; overflow: hidden; flex: 1; min-width: 200px; }
+  .barra i { display: block; height: 100%; border-radius: 999px; box-shadow: inset 0 -5px 0 rgba(0,0,0,.1), inset 0 4px 0 rgba(255,255,255,.35); animation: llenar 1.6s cubic-bezier(.3,1.3,.5,1) both; }
+  @keyframes llenar { from { width: 0; } }
+  .racha { display: flex; gap: 6px; }
+  .racha span { width: 38px; height: 46px; border-radius: 12px; background: #fff; box-shadow: 0 4px 0 var(--gris-o); display: grid; place-items: center; font-weight: 900; font-size: 13px; color: var(--tinta-3); }
+  .racha span.on { background: var(--naranja); color: #fff; box-shadow: 0 4px 0 var(--naranja-o); }
+
+  /* ── Tarjeta que gira ── */
+  .mesa { display: flex; gap: 26px; perspective: 1200px; flex-wrap: wrap; }
+  .tarjeta { width: 240px; height: 300px; position: relative; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,1.4,.5,1); cursor: pointer; }
+  .tarjeta:hover { transform: rotateY(180deg); }
+  .cara { position: absolute; inset: 0; border-radius: 24px; padding: 22px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 7px 0 rgba(29,27,51,.12), 0 30px 50px -30px rgba(29,27,51,.5); background: #fff; }
+  .dorso { transform: rotateY(180deg); color: #fff; }
+  .cara small { font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-2); }
+  .dorso small { color: rgba(255,255,255,.85); }
+  .pregunta { font-family: var(--serif); font-size: 25px; font-weight: 800; line-height: 1.15; }
+  .respuesta { font-family: var(--serif); font-size: 36px; font-weight: 800; line-height: 1; }
+  .gira { font-family: var(--mano); font-size: 22px; color: var(--tinta-2); }
+
+  /* ── Mazo ── */
+  .mazo { position: relative; width: 220px; height: 240px; }
+  .mazo > span { position: absolute; inset: 0; border-radius: 22px; box-shadow: 0 5px 0 var(--gris-o); }
+  .mazo > span:nth-child(1) { transform: rotate(-5deg); background: var(--gris); }
+  .mazo > span:nth-child(2) { transform: rotate(3deg); background: #eceffc; }
+  .mazo .top { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .25s; }
+  .mazo:hover .top { transform: translateY(-10px) rotate(-2deg); }
+  .top b { font-family: var(--serif); font-size: 62px; line-height: 1; }
+  .top h3 { font-family: var(--serif); font-size: 22px; margin: 0; }
+  .top em { font-style: normal; font-weight: 800; color: var(--tinta-2); font-size: 14px; }
+
+  /* ── Camino ── */
+  .camino { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .nodo { width: 78px; height: 78px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 26px; position: relative; }
+  .nodo small { position: absolute; top: 86px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: var(--mano); font-size: 22px; color: var(--tinta); font-weight: 600; }
+  .tramo { width: 60px; height: 10px; background: repeating-linear-gradient(90deg, var(--gris-o) 0 10px, transparent 10px 18px); }
+  .tramo.on { background: var(--menta); border-radius: 5px; }
+  .n-hecho { background: var(--menta); box-shadow: 0 7px 0 var(--menta-o); }
+  .n-actual { background: var(--naranja); box-shadow: 0 7px 0 var(--naranja-o), 0 0 0 10px rgba(255,138,31,.2); animation: latir 1.6s ease-in-out infinite; }
+  @keyframes latir { 50% { box-shadow: 0 7px 0 var(--naranja-o), 0 0 0 18px rgba(255,138,31,.06); } }
+  .n-examen { background: var(--lila); box-shadow: 0 7px 0 var(--lila-o); }
+  .n-bloq { background: var(--gris); color: var(--gris-o); box-shadow: 0 7px 0 var(--gris-o); }
+  .n-meta { width: 100px; height: 100px; border-radius: 28px; background: var(--amarillo); color: var(--tinta); box-shadow: 0 7px 0 var(--amarillo-o); font-size: 13px; text-align: center; line-height: 1.1; }
+
+  /* ── Quiz ── */
+  .quiz { background: #fff; border-radius: 26px; padding: 28px; box-shadow: 0 6px 0 var(--gris-o); max-width: 620px; }
+  .quiz h3 { font-family: var(--serif); font-size: 26px; margin: 0 0 18px; }
+  .opcion { display: flex; width: 100%; justify-content: flex-start; text-transform: none; font-size: 16px; font-weight: 800; letter-spacing: 0; margin-bottom: 18px; }
+  .opcion kbd { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; background: var(--fondo); color: var(--tinta-2); font: 900 14px var(--f); box-shadow: 0 3px 0 var(--gris-o); }
+  .opcion.ok { --c: var(--menta-s); --o: var(--menta); --t: var(--menta-o); }
+  .opcion.mal { --c: var(--coral-s); --o: var(--coral); --t: var(--coral-o); }
+
+  /* ── Formularios ── */
+  .campo { display: grid; gap: 8px; max-width: 380px; }
+  .campo label { font-weight: 900; font-size: 14px; }
+  .campo input { font: 700 16px var(--f); padding: 15px 16px; border-radius: 14px; border: 3px solid var(--gris); background: #fff; color: var(--tinta); outline: none; box-shadow: inset 0 3px 0 rgba(29,27,51,.05); transition: border-color .15s, box-shadow .15s; }
+  .campo input:focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
+  .campo .ayuda { font-family: var(--mano); font-size: 20px; color: var(--tinta-2); }
+  .campo.error input { border-color: var(--coral); }
+  .campo.error .ayuda { color: var(--coral-o); font-family: var(--f); font-size: 14px; font-weight: 800; }
+  .interruptor { width: 62px; height: 36px; border-radius: 999px; background: var(--gris); position: relative; cursor: pointer; box-shadow: inset 0 3px 0 rgba(0,0,0,.06); transition: background .2s; }
+  .interruptor::after { content: ""; position: absolute; left: 4px; top: 3px; width: 28px; height: 26px; border-radius: 10px; background: #fff; box-shadow: 0 4px 0 var(--gris-o); transition: left .25s cubic-bezier(.34,1.8,.5,1); }
+  .interruptor.on { background: var(--menta); } .interruptor.on::after { left: 30px; box-shadow: 0 4px 0 var(--menta-o); }
+
+  /* ── Avisos ── */
+  .aviso { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; border-radius: 18px; font-weight: 700; line-height: 1.5; max-width: 560px; border: 3px solid; }
+  .aviso b { font-family: var(--serif); font-size: 18px; display: block; }
+  .aviso .ic { width: 38px; height: 38px; flex: none; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 900; }
+
+  /* ── Tarjeta de producto ── */
+  .producto { background: #fff; border-radius: 28px; padding: 26px; box-shadow: 0 7px 0 var(--gris-o); width: 330px; position: relative; overflow: hidden; }
+  .producto::before { content: ""; position: absolute; right: -40px; top: -40px; width: 150px; height: 150px; border-radius: 50%; background: var(--s); }
+  .producto .ic { position: relative; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; color: #fff; font-family: var(--serif); font-weight: 800; font-size: 26px; }
+  .producto h3 { font-family: var(--serif); font-size: 26px; margin: 16px 0 4px; position: relative; }
+  .producto p { color: var(--tinta-2); font-weight: 600; margin: 0 0 18px; line-height: 1.5; position: relative; }
+  .cifra { font-family: var(--serif); font-weight: 800; font-size: 40px; }
+
+  /* ── Marcas de estudio (14) ── */
+  .marcas { grid-template-columns: repeat(3, 1fr); }
+  .marca { background: #fff; border-radius: 22px; padding: 24px 26px; box-shadow: 0 5px 0 var(--gris-o); font-weight: 700; font-size: 18px; line-height: 1.6; }
+  .marca small { display: block; font-size: 13px; color: var(--tinta-2); margin-top: 12px; font-weight: 700; line-height: 1.45; }
+  .marca small b { color: var(--tinta); }
+  .simbolos { display: flex; flex-wrap: wrap; gap: 18px; }
+  .simbolo { width: 118px; background: #fff; border-radius: 20px; padding: 18px 10px 12px; box-shadow: 0 5px 0 var(--gris-o); text-align: center; font-size: 12px; font-weight: 800; color: var(--tinta-2); }
+  .simbolo svg { display: block; width: 44px; height: 44px; margin: 0 auto 10px; overflow: visible; }
+  .con-llave { position: relative; padding: 20px 64px 20px 26px; background: #fff; border-radius: 22px; box-shadow: 0 5px 0 var(--gris-o); max-width: 420px; }
+  .con-llave ul { margin: 0; padding-left: 20px; font-weight: 700; line-height: 1.9; }
+  .con-llave svg { position: absolute; top: 14px; right: 18px; width: 24px; height: calc(100% - 28px); overflow: visible; }
+  .nota-pegada { --f-p: color-mix(in srgb, var(--amarillo) 42%, #fff); --o-p: var(--amarillo-o); position: relative; max-width: 460px; margin: 22px 0; padding: 26px 22px 20px; border-radius: 4px 4px 26px 4px; background: linear-gradient(168deg, transparent 72%, rgba(29,27,51,.045)), var(--f-p); box-shadow: 0 1px 0 rgba(29,27,51,.06), 0 16px 18px -14px rgba(29,27,51,.5); transform: rotate(-1.5deg); transition: transform .4s cubic-bezier(.34,1.8,.5,1); font-weight: 600; line-height: 1.65; }
+  .nota-pegada:hover { transform: rotate(0) translateY(-2px); }
+  .nota-pegada::before { content: ""; position: absolute; top: -13px; left: 50%; width: 96px; height: 26px; margin-left: -48px; border-radius: 3px; background: rgba(255,255,255,.62); box-shadow: 0 1px 2px rgba(29,27,51,.12); transform: rotate(3deg); }
+  .nota-pegada .titulo { display: block; margin-bottom: 6px; font-family: var(--mano); font-size: 28px; line-height: 1.1; color: var(--o-p); }
+  .nota-pegada .esquina { position: absolute; top: -18px; right: -10px; width: 34px; height: 34px; overflow: visible; }
+  .nota-coral { --f-p: var(--coral-s); --o-p: var(--coral-o); transform: rotate(1.5deg); }
+  .nota-menta { --f-p: var(--menta-s); --o-p: var(--menta-o); transform: rotate(-.8deg); }
+  @media (max-width: 860px) { .marcas { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .nota-pegada { transition: none; } }
+
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--tinta); color: #fff; font-weight: 900; font-size: 13px; padding: 10px 16px; border-radius: 14px; z-index: 9; }
+</style>
+</head>
+<body>
+
+<section style="border:0;padding-top:50px;padding-bottom:20px"><div class="ancho">
+  <span class="num">Sistema de diseño</span>
+  <h1>Cuaderno de estudio: <span class="fluor">colores y piezas</span></h1>
+  <p class="expl" style="margin-top:12px">Todo lo que se reutiliza en la web. Si una pantalla necesita algo que no está aquí, primero se añade aquí y luego se usa.</p>
+</div></section>
+
+<!-- 1 · PALETA -->
+<section><div class="ancho">
+  <span class="num">01</span><h2>La paleta</h2>
+  <p class="expl">Siete colores vivos, cada uno en tres tonos: el <b>base</b>, el <b>lateral</b> (más oscuro: el canto de las teclas y el texto sobre su tono suave) y el <b>suave</b> (fondos de tarjetas, avisos y chips). Sobre la base va texto blanco, salvo en menta, cielo y amarillo, que llevan tinta (contraste).</p>
+  <div class="rejilla paleta">
+    <div class="color"><div class="muestra" style="background:var(--naranja)"><i style="background:var(--naranja-o)"></i></div><div class="suave" style="background:var(--naranja-s)"></div><div class="info"><b>Naranja</b><small>#ff8a1f · #a65000 · #ffead6</small><em style="background:var(--naranja-s);color:var(--naranja-o)">Marca y acción principal</em></div></div>
+    <div class="color"><div class="muestra" style="background:var(--azul)"><i style="background:var(--azul-o)"></i></div><div class="suave" style="background:var(--azul-s)"></div><div class="info"><b>Azul</b><small>#4f5dff · #2f3cc9 · #e4e7ff</small><em style="background:var(--azul-s);color:var(--azul-o)">Enlaces, foco, Diario</em></div></div>
+    <div class="color"><div class="muestra" style="background:var(--menta)"><i style="background:var(--menta-o)"></i></div><div class="suave" style="background:var(--menta-s)"></div><div class="info"><b>Menta</b><small>#2fc488 · #137a52 · #d9f5e9</small><em style="background:var(--menta-s);color:var(--menta-o)">Hecho, acierto, Portfolio</em></div></div>
+    <div class="color"><div class="muestra" style="background:var(--lila)"><i style="background:var(--lila-o)"></i></div><div class="suave" style="background:var(--lila-s)"></div><div class="info"><b>Lila</b><small>#8f7cff · #6450e0 · #ece8ff</small><em style="background:var(--lila-s);color:var(--lila-o)">Cursos y exámenes</em></div></div>
+    <div class="color"><div class="muestra" style="background:var(--amarillo)"><i style="background:var(--amarillo-o)"></i></div><div class="suave" style="background:var(--amarillo-s)"></div><div class="info"><b>Amarillo</b><small>#ffd23f · #866500 · #fff3c4</small><em style="background:var(--amarillo-s);color:var(--amarillo-o)">Rotulador, logros, Diccionario</em></div></div>
+    <div class="color"><div class="muestra" style="background:var(--coral)"><i style="background:var(--coral-o)"></i></div><div class="suave" style="background:var(--coral-s)"></div><div class="info"><b>Coral</b><small>#ff6b81 · #bb3550 · #ffe2e7</small><em style="background:var(--coral-s);color:var(--coral-o)">Fallo y avisos, Foro</em></div></div>
+    <div class="color"><div class="muestra" style="background:var(--cielo)"><i style="background:var(--cielo-o)"></i></div><div class="suave" style="background:var(--cielo-s)"></div><div class="info"><b>Cielo</b><small>#2fbff5 · #0e709b · #d9f3fd</small><em style="background:var(--cielo-s);color:var(--cielo-o)">Información, Guías</em></div></div>
+  </div>
+  <div class="rejilla neutros">
+    <div class="neutro" style="background:var(--tinta);color:#fff">Tinta<br>#1d1b33</div>
+    <div class="neutro" style="background:var(--tinta-2);color:#fff">Tinta 2<br>#5f5c7d</div>
+    <div class="neutro" style="background:var(--tinta-3);color:#fff">Tinta 3<br>#a3a7c0</div>
+    <div class="neutro" style="background:var(--gris-o)">Gris lateral<br>#c1c6dc</div>
+    <div class="neutro" style="background:var(--gris)">Gris<br>#e2e5f4</div>
+    <div class="neutro" style="background:var(--fondo)">Fondo<br>#f3f5ff</div>
+    <div class="neutro" style="background:#fff">Papel<br>#ffffff</div>
+    <div class="neutro" style="background:#fff"><span style="color:var(--sube)">▲ +12,4 %</span><span style="color:var(--baja)">▼ −3,1 %</span>Solo cifras con signo</div>
+  </div>
+</div></section>
+
+<!-- 2 · MAPA -->
+<section><div class="ancho">
+  <span class="num">02</span><h2>Cada sección, su color</h2>
+  <p class="expl">La web es colorida, pero no al azar: cada parte tiene su color y lo lleva en su icono, su tarjeta y su botón principal dentro de ella. Así quien navega sabe dónde está sin leer. El naranja de marca manda en la portada, la barra y Premium.</p>
+  <div class="rejilla mapa">
+    <div class="seccion" style="background:var(--cielo);box-shadow:0 6px 0 var(--cielo-o)"><small>01</small><b>Guías</b></div>
+    <div class="seccion" style="background:var(--lila);box-shadow:0 6px 0 var(--lila-o)"><small>02</small><b>Cursos</b></div>
+    <div class="seccion" style="background:var(--azul);box-shadow:0 6px 0 var(--azul-o)"><small>03</small><b>Diario</b></div>
+    <div class="seccion" style="background:var(--menta);box-shadow:0 6px 0 var(--menta-o)"><small>04</small><b>Portfolio</b></div>
+    <div class="seccion" style="background:var(--amarillo);color:var(--tinta);box-shadow:0 6px 0 var(--amarillo-o)"><small>05</small><b>Diccionario y logros</b></div>
+    <div class="seccion" style="background:var(--coral);box-shadow:0 6px 0 var(--coral-o)"><small>06</small><b>Foro</b></div>
+    <div class="seccion" style="background:var(--naranja);box-shadow:0 6px 0 var(--naranja-o)"><small>07</small><b>Marca y Premium</b></div>
+  </div>
+</div></section>
+
+<!-- 3 · TIPOGRAFÍA -->
+<section><div class="ancho">
+  <span class="num">03</span><h2>Tipografía</h2>
+  <p class="expl">Tres letras con un papel cada una. Fraunces para titulares y cifras, Nunito para todo lo que se lee y se pulsa, y Caveat para las notas a mano (una o dos por sección: si hay muchas, deja de parecer una nota).</p>
+  <div class="rejilla tipos">
+    <div class="tipo-muestra escala">
+      <span class="etq-tipo">Fraunces 800 · titular de página · 64px</span><p style="font-family:var(--serif);font-weight:800;font-size:64px;line-height:1">Aprende <span class="fluor">paso a paso</span></p>
+      <span class="etq-tipo">Fraunces 800 · titular de sección · 40px</span><p style="font-family:var(--serif);font-weight:800;font-size:40px;line-height:1.05">Guías para estudiar</p>
+      <span class="etq-tipo">Fraunces 800 · tarjeta · 24px</span><p style="font-family:var(--serif);font-weight:800;font-size:24px">Hyperliquid: qué es y cómo funciona</p>
+      <span class="etq-tipo">Nunito 600 · texto · 18px</span><p style="font-size:18px;font-weight:600;line-height:1.6;color:var(--tinta-2)">Qué es cada proyecto, cómo funciona por dentro y qué riesgos tiene, con ejercicios y un quiz final.</p>
+      <span class="etq-tipo">Nunito 900 · etiqueta · 12px mayúsculas</span><p style="font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--tinta-2)">Intermedio · 14 min</p>
+      <span class="etq-tipo">Caveat 600 · nota a mano · 26px</span><p style="font-family:var(--mano);font-size:26px;color:var(--naranja-o)">← empieza por aquí, es gratis</p>
+    </div>
+    <div class="tipo-muestra">
+      <span class="etq-tipo">Cifras grandes · Fraunces 800</span>
+      <p style="font-family:var(--serif);font-weight:800;font-size:72px;margin:0;color:var(--sube)">+24,6 %</p>
+      <p style="font-family:var(--serif);font-weight:800;font-size:72px;margin:0">19,99 €</p>
+      <span class="etq-tipo" style="margin-top:20px">Énfasis dentro de un titular</span>
+      <p style="font-family:var(--serif);font-weight:800;font-size:34px;margin:0">Con <em style="font-weight:500;color:var(--naranja-o)">cursiva</em>, con <span class="fluor">rotulador</span> o <span class="rn" data-tipo="circle" data-color="#ff8a1f">rodeado</span></p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 4 · BOTONES -->
+<section><div class="ancho">
+  <span class="num">04</span><h2>Botones-tecla</h2>
+  <p class="expl">Todos los botones de la web, sin excepción. El naranja, uno por bloque: es «lo que tienes que hacer aquí». Dentro de una sección, su botón principal puede llevar el color de la sección.</p>
+  <div class="fila"><span class="rotulo">Colores</span><button class="tecla">Empezar</button><button class="tecla t-azul">Diario</button><button class="tecla t-menta">Comprobar</button><button class="tecla t-lila">Seguir curso</button><button class="tecla t-amarillo">Ver logro</button><button class="tecla t-coral">Preguntar</button><button class="tecla t-cielo">Leer guía</button></div>
+  <div class="fila"><span class="rotulo">Secundarios</span><button class="tecla t-blanca">Ver más</button><button class="tecla t-tinta">Hazte Premium</button><button class="tecla" disabled>Bloqueado</button></div>
+  <div class="fila"><span class="rotulo">Tamaños</span><button class="tecla t-peq">Pequeño</button><button class="tecla">Normal</button><button class="tecla t-grande">Grande</button><button class="tecla t-icono t-blanca" aria-label="Anterior">←</button><button class="tecla t-icono" aria-label="Siguiente">→</button></div>
+</div></section>
+
+<!-- 5 · GESTOS -->
+<section><div class="ancho">
+  <span class="num">05</span><h2>Gestos de rotulador y boli</h2>
+  <p class="expl">Con Rough Notation, y se dibujan solos al aparecer en pantalla. Uno por titular como mucho: si todo está subrayado, nada destaca.</p>
+  <div class="rejilla gestos">
+    <div class="gesto"><span class="rn" data-tipo="highlight" data-color="#ffd23f">Marcador amarillo</span><small>La idea clave de un titular</small></div>
+    <div class="gesto">Una palabra <span class="rn" data-tipo="circle" data-color="#ff8a1f">rodeada</span><small>Lo que no te puedes saltar</small></div>
+    <div class="gesto"><span class="rn" data-tipo="underline" data-color="#4f5dff">Subrayado a boli</span><small>Enlaces destacados y conceptos</small></div>
+    <div class="gesto"><span class="rn" data-tipo="strike-through" data-color="#ff6b81">Comprar en el pico</span><small>Errores típicos que se corrigen</small></div>
+    <div class="gesto"><span class="rn" data-tipo="box" data-color="#8f7cff">21 millones</span><small>Cifras que hay que recordar</small></div>
+    <div class="gesto"><span class="rn" data-tipo="bracket" data-color="#2fc488">Resumen de la lección</span><small>Lo que entra en el examen</small></div>
+  </div>
+</div></section>
+
+<!-- 6 · INSIGNIAS -->
+<section><div class="ancho">
+  <span class="num">06</span><h2>Etiquetas, notas y pegatinas</h2>
+  <p class="expl">Chips para datos (nivel, tiempo, estado), pósits para lo nuevo o lo importante y pegatinas para los logros.</p>
+  <div class="fila">
+    <span class="chip" style="background:var(--cielo-s);color:var(--cielo-o)">Básico</span><span class="chip" style="background:var(--naranja-s);color:var(--naranja-o)">Intermedio</span><span class="chip" style="background:var(--lila-s);color:var(--lila-o)">Avanzado</span><span class="chip" style="background:var(--menta-s);color:var(--menta-o)">✓ Completada</span><span class="chip" style="background:var(--gris);color:var(--tinta-2)">14 min</span><span class="chip" style="background:var(--coral-s);color:var(--coral-o)">Pendiente</span>
+  </div>
+  <div class="fila" style="gap:34px">
+    <span class="postit" style="background:var(--amarillo)">¡Nueva!</span><span class="postit" style="background:var(--coral-s);transform:rotate(2deg)">Repasa esto</span><span class="postit" style="background:var(--menta-s);transform:rotate(-1deg)">Gratis</span>
+    <span class="pegatina" style="background:var(--lila)">LOGRO<br>Primeros<br>pasos</span><span class="pegatina" style="background:var(--naranja);transform:rotate(-8deg)">5 DÍAS<br>de racha</span><span class="pegatina" style="background:var(--menta);transform:rotate(4deg)">CURSO<br>aprobado</span>
+  </div>
+</div></section>
+
+<!-- 7 · PROGRESO -->
+<section><div class="ancho">
+  <span class="num">07</span><h2>Progreso y racha</h2>
+  <p class="expl">La barra se llena con un pequeño rebote al aparecer y lleva el color de su sección.</p>
+  <div class="fila"><span class="rotulo">Guía</span><div class="barra"><i style="width:62%;background:var(--cielo)"></i></div><b>62 %</b></div>
+  <div class="fila"><span class="rotulo">Curso</span><div class="barra"><i style="width:40%;background:var(--lila)"></i></div><b>2 de 5</b></div>
+  <div class="fila"><span class="rotulo">Objetivo del mes</span><div class="barra"><i style="width:80%;background:var(--azul)"></i></div><b>4/5</b></div>
+  <div class="fila"><span class="rotulo">Racha</span><div class="racha"><span class="on">L</span><span class="on">M</span><span class="on">X</span><span class="on">J</span><span class="on">V</span><span>S</span><span>D</span></div></div>
+</div></section>
+
+<!-- 8 · TARJETAS -->
+<section><div class="ancho">
+  <span class="num">08</span><h2>Tarjetas que giran y mazos</h2>
+  <p class="expl">La tarjeta de estudio: pregunta delante, respuesta detrás, del color de su sección. El mazo es una guía o un tema: tres tarjetas apiladas que se levantan.</p>
+  <div class="mesa">
+    <div class="tarjeta"><div class="cara"><small>Bitcoin</small><span class="pregunta">¿Cuántos bitcoin habrá como máximo?</span><span class="gira">↻ gírame</span></div><div class="cara dorso" style="background:var(--cielo)"><small>Respuesta</small><span class="respuesta">21 millones</span><span>Lo fija el código.</span></div></div>
+    <div class="tarjeta"><div class="cara"><small>Conceptos</small><span class="pregunta">¿Qué es el halving?</span><span class="gira">↻ gírame</span></div><div class="cara dorso" style="background:var(--naranja)"><small>Respuesta</small><span class="respuesta">Recompensa ÷ 2</span><span>Cada unos 4 años.</span></div></div>
+    <a class="mazo"><span></span><span></span><span class="top" style="background:var(--cielo-s)"><b style="color:var(--cielo-o)">H</b><span><h3>Hyperliquid</h3><em>Intermedio · 14 min</em></span></span></a>
+    <a class="mazo"><span></span><span></span><span class="top" style="background:var(--lila-s)"><b style="color:var(--lila-o)">F</b><span><h3>Fiscalidad cripto</h3><em>Curso · 5 módulos</em></span></span></a>
+  </div>
+</div></section>
+
+<!-- 9 · CAMINO -->
+<section><div class="ancho">
+  <span class="num">09</span><h2>El camino de un curso</h2>
+  <p class="expl">Cinco estados: hecho (menta), actual (naranja que late), examen (lila), bloqueado (gris) y la meta (amarillo, el certificado).</p>
+  <div class="camino" style="padding-bottom:40px">
+    <span class="nodo n-hecho">✓<small>Módulo 1</small></span><span class="tramo on"></span>
+    <span class="nodo n-hecho">✓<small>Módulo 2</small></span><span class="tramo on"></span>
+    <span class="nodo n-actual">3<small>Módulo 3</small></span><span class="tramo"></span>
+    <span class="nodo n-examen">?<small>Examen</small></span><span class="tramo"></span>
+    <span class="nodo n-bloq">4<small>Módulo 4</small></span><span class="tramo"></span>
+    <span class="nodo n-meta">Certi-<br>ficado</span>
+  </div>
+</div></section>
+
+<!-- 10 · QUIZ -->
+<section><div class="ancho">
+  <span class="num">10</span><h2>Quiz</h2>
+  <p class="expl">Cada respuesta es una tecla, con su letra para el teclado físico. Al responder, la correcta pasa a menta y la fallada a coral.</p>
+  <div class="quiz"><h3>¿Qué hace el halving?</h3>
+    <button class="tecla t-blanca opcion"><kbd>A</kbd>Duplica la recompensa de los mineros</button>
+    <button class="tecla t-blanca opcion ok"><kbd>B</kbd>Reduce a la mitad la recompensa por bloque</button>
+    <button class="tecla t-blanca opcion mal"><kbd>C</kbd>Crea nuevos bitcoin de golpe</button>
+    <button class="tecla t-menta" style="width:100%">Comprobar</button>
+  </div>
+</div></section>
+
+<!-- 11 · FORMULARIOS -->
+<section><div class="ancho">
+  <span class="num">11</span><h2>Formularios</h2>
+  <p class="expl">Campos con borde grueso que se enciende en azul al escribir. La ayuda va a mano; el error, en coral y con letra normal, que se lee mejor.</p>
+  <div class="fila" style="align-items:flex-start;gap:40px">
+    <div class="campo"><label>Tu correo</label><input value="" placeholder="tu@correo.com"><span class="ayuda">sin spam, prometido</span></div>
+    <div class="campo error"><label>Contraseña</label><input type="password" value="1234"><span class="ayuda">Necesita al menos 8 caracteres</span></div>
+    <div class="campo"><label>Avisos por correo</label><span class="interruptor on" onclick="this.classList.toggle('on')"></span></div>
+  </div>
+</div></section>
+
+<!-- 12 · AVISOS -->
+<section><div class="ancho">
+  <span class="num">12</span><h2>Avisos</h2>
+  <p class="expl">Cuatro tipos con su color. El de riesgo (el descargo de responsabilidad) siempre en amarillo y siempre el mismo componente.</p>
+  <div class="rejilla" style="grid-template-columns:1fr 1fr">
+    <div class="aviso" style="background:var(--cielo-s);border-color:var(--cielo);color:var(--cielo-o)"><span class="ic" style="background:var(--cielo)">i</span><span><b>Dato</b>El halving de 2024 fue en abril.</span></div>
+    <div class="aviso" style="background:var(--menta-s);border-color:var(--menta);color:var(--menta-o)"><span class="ic" style="background:var(--menta)">✓</span><span><b>Guardado</b>Tu operación está en el diario.</span></div>
+    <div class="aviso" style="background:var(--amarillo-s);border-color:var(--amarillo);color:#7a5d00"><span class="ic" style="background:var(--amarillo-o)">!</span><span><b>Ojo con el riesgo</b>Esto no es asesoramiento financiero.</span></div>
+    <div class="aviso" style="background:var(--coral-s);border-color:var(--coral);color:var(--coral-o)"><span class="ic" style="background:var(--coral)">×</span><span><b>No se pudo guardar</b>Revisa tu conexión y vuelve a intentarlo.</span></div>
+  </div>
+</div></section>
+
+<!-- 13 · PRODUCTO -->
+<section><div class="ancho">
+  <span class="num">13</span><h2>Tarjetas de producto</h2>
+  <p class="expl">Para presentar las piezas: icono en su color, un círculo suave detrás y una cifra o un botón.</p>
+  <div class="fila" style="align-items:stretch">
+    <div class="producto" style="--s:var(--azul-s)"><span class="ic" style="background:var(--azul);box-shadow:0 5px 0 var(--azul-o)">D</span><h3>Diario de Trading</h3><p>Apunta cada operación y descubre tus patrones.</p><button class="tecla t-azul t-peq">Abrir el diario</button></div>
+    <div class="producto" style="--s:var(--menta-s)"><span class="ic" style="background:var(--menta);box-shadow:0 5px 0 var(--menta-o)">P</span><h3>Portfolio Adelin</h3><p>La cartera real, en directo.</p><span class="cifra" style="color:var(--sube)">+24,6 %</span></div>
+    <div class="producto" style="--s:var(--lila-s)"><span class="ic" style="background:var(--lila);box-shadow:0 5px 0 var(--lila-o)">C</span><h3>Cursos</h3><p>Módulo a módulo, con examen y certificado.</p><button class="tecla t-lila t-peq">Ver cursos</button></div>
+  </div>
+</div></section>
+
+<!-- 14 · MARCAS DE ESTUDIO -->
+<section style="border:0"><div class="ancho">
+  <span class="num">14</span><h2>Marcas de estudio</h2>
+  <p class="expl">En TODOS los textos que explican algo (guías, fichas del diccionario, lecciones y fichas de los cursos): el cuaderno de alguien que lo ha estudiado a fondo. Solo lo más importante de cada sección, siempre con el mismo significado. Nunca cambian una palabra: son trazos SVG y símbolos <code>aria-hidden</code> encima del texto. Dos o tres trazos animados por pantalla; el resto, ya dibujados. Piezas: <code>Anotacion</code>, <code>SimboloEstudio</code> + <code>Llave</code> y <code>Postit</code> (src/components/cuaderno/); en los textos que llegan como HTML (diccionario, lecciones), <code>MarcasEstudio</code> las pone por estructura.</p>
+
+  <p class="rotulo" style="width:auto;margin:0 0 14px">El código de colores</p>
+  <div class="rejilla marcas">
+    <div class="marca">El halving <span class="rn2" data-tipo="highlight" data-color="#ffd23f">parte la recompensa por la mitad</span>.<small><b>Rotulador amarillo</b> · la idea clave (la primera negrita de cada apartado)</small></div>
+    <div class="marca">Antes de enviar, <span class="rn2" data-tipo="circle" data-color="#ff8a1f">comprueba la red</span>.<small><b>Rodear en naranja</b> · lo que no te puedes saltar</small></div>
+    <div class="marca">Funciona con <span class="rn2" data-tipo="underline" data-color="#4f5dff">contratos inteligentes</span>.<small><b>Subrayado azul</b> · un concepto</small></div>
+    <div class="marca"><span class="rn2" data-tipo="underline" data-color="#ff6b81">Comprar porque todo el mundo compra</span>.<small><b>Subrayado o tachado coral</b> · un error típico o un riesgo</small></div>
+    <div class="marca"><span class="rn2" data-tipo="bracket" data-color="#2fc488">Si no lo entiendes, ya tienes la respuesta.</span><small><b>Corchete, subrayado o check menta</b> · lo que está bien, la conclusión</small></div>
+    <div class="marca">Enviar ETH gasta <span class="rn2" data-tipo="box" data-color="#8f7cff">21.000 unidades</span> de gas.<small><b>Recuadro lila</b> · lo que entra en el quiz o el examen (las cifras de <code>prose-dato</code>)</small></div>
+  </div>
+
+  <p class="rotulo" style="width:auto;margin:34px 0 14px">Los símbolos (<code>SimboloEstudio</code>): al margen en escritorio, junto a la primera palabra en el móvil</p>
+  <div class="simbolos">
+    <div class="simbolo"><svg data-simbolo="estrella" style="color:var(--naranja)"></svg>Estrella · lo importante</div>
+    <div class="simbolo"><svg data-simbolo="flecha" style="color:var(--cielo)"></svg>Flecha · mira aquí</div>
+    <div class="simbolo"><svg data-simbolo="exclamacion" style="color:var(--coral)"></svg>«!» · ojo, riesgo</div>
+    <div class="simbolo"><svg data-simbolo="check" style="color:var(--menta)"></svg>Check · así sí</div>
+    <div class="simbolo"><svg data-simbolo="asterisco" style="color:var(--cielo)"></svg>Asterisco · una nota</div>
+    <div class="simbolo"><svg data-simbolo="nb" style="color:var(--naranja)"></svg>NB · fíjate bien</div>
+    <div class="simbolo"><svg data-simbolo="aro" style="color:var(--naranja)"></svg>Aro · el número de un paso</div>
+  </div>
+
+  <div class="rejilla" style="grid-template-columns:1fr 1fr;margin-top:34px;align-items:start">
+    <div>
+      <p class="rotulo" style="width:auto;margin:0 0 14px">La llave (<code>Llave</code>): «todo esto va junto»</p>
+      <div class="con-llave" style="color:var(--azul)">
+        <ul style="color:var(--tinta)"><li>Las comisiones de compra</li><li>El margen del cambio</li><li>Lo que cuesta retirar</li></ul>
+        <svg data-simbolo="llave" viewBox="0 0 24 200" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+    <div>
+      <p class="rotulo" style="width:auto;margin:0 0 14px">El pósit grande (<code>Postit</code>): las cajas de nota, aviso o dato</p>
+      <div class="nota-pegada"><svg class="esquina" data-simbolo="nb" style="color:var(--naranja)"></svg><span class="titulo">En veinte segundos</span>El resumen y la información, en amarillo.</div>
+      <div class="nota-pegada nota-coral"><svg class="esquina" data-simbolo="exclamacion" style="color:var(--coral)"></svg>Los avisos de riesgo, en coral, con su «!».</div>
+      <div class="nota-pegada nota-menta"><svg class="esquina" data-simbolo="check" style="color:var(--menta)"></svg><b>Quédate con esto:</b> lo que está bien, en menta, con su check.</div>
+    </div>
+  </div>
+</div></section>
+
+<span class="etiqueta-maqueta">Sistema de diseño (maqueta)</span>
+
+<script src="https://unpkg.com/rough-notation@0.5.1/lib/rough-notation.iife.js"></script>
+<script>
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const obs = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      RoughNotation.annotate(el, { type: el.dataset.tipo, color: el.dataset.color, strokeWidth: 3, padding: 6, iterations: 2, multiline: true, brackets: ["left", "right"], animate: !quieto }).show();
+      obs.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll(".rn").forEach((el) => obs.observe(el));
+</script>
+<script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
+<script>
+  // Las marcas de estudio (14): cada trazo con su forma, una pasada, y solo
+  // los dos primeros animados (la moderación de ESTILO.md).
+  let animados = 0;
+  const obs2 = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const tipo = el.dataset.tipo;
+      RoughNotation.annotate(el, {
+        type: tipo, color: el.dataset.color,
+        strokeWidth: tipo === "highlight" ? 2 : 2.5,
+        padding: tipo === "circle" ? [6, 12] : tipo === "bracket" ? [2, 8] : 3,
+        iterations: tipo === "circle" || tipo === "box" ? 2 : 1,
+        multiline: tipo !== "bracket", brackets: ["right"],
+        animate: !quieto && animados++ < 2,
+      }).show();
+      obs2.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll(".rn2").forEach((el) => obs2.observe(el));
+
+  // Los símbolos, con las mismas formas que SimboloEstudio.tsx (caja de 40 × 40).
+  const g = rough.generator();
+  const base = { roughness: 1.1, strokeWidth: 2.6, bowing: 1.2, seed: 3 };
+  const formas = {
+    estrella: () => [g.polygon([[20, 3], [24.6, 14.6], [37, 15.4], [27.2, 23.2], [30.8, 36], [20, 28.6], [9.2, 36], [12.8, 23.2], [3, 15.4], [15.4, 14.6]], base)],
+    flecha: () => [g.curve([[3, 9], [14, 5], [26, 10], [34, 25]], base), g.linearPath([[26, 21], [34.5, 26], [36, 16]], { ...base, roughness: 0.8 })],
+    exclamacion: () => [g.line(20, 4, 19, 25, { ...base, strokeWidth: 3.4 }), g.ellipse(19.4, 33.5, 5.5, 5.5, { ...base, roughness: 0.4, fill: "currentColor", fillStyle: "solid", strokeWidth: 1 })],
+    check: () => [g.linearPath([[5, 21], [15, 32], [36, 6]], { ...base, strokeWidth: 3.2 })],
+    asterisco: () => [g.line(20, 5, 20, 35, base), g.line(7, 12, 33, 28, base), g.line(7, 28, 33, 12, base)],
+    nb: () => [g.path("M4 31 L5 10 L15 31 L16 9 M22 31 L22 9 C31 8 32 19 22 19 C34 18 34 32 22 31", { ...base, roughness: 0.7 })],
+    aro: () => [g.ellipse(20, 20, 38, 34, { ...base, roughness: 1.3, strokeWidth: 2.2 })],
+    llave: () => [g.path("M3 2 C13 2 11 12 11 30 L11 82 C11 95 14 100 21 100 C14 100 11 105 11 118 L11 170 C11 188 13 198 3 198", { ...base, roughness: 0.9, seed: 5 })],
+  };
+  document.querySelectorAll("svg[data-simbolo]").forEach((svg) => {
+    const tipo = svg.dataset.simbolo;
+    if (!svg.getAttribute("viewBox")) svg.setAttribute("viewBox", "0 0 40 40");
+    for (const forma of formas[tipo]()) {
+      for (const p of g.toPaths(forma)) {
+        const camino = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const relleno = p.fill && p.fill !== "none";
+        camino.setAttribute("d", p.d);
+        camino.setAttribute("fill", relleno ? "currentColor" : "none");
+        camino.setAttribute("stroke", relleno ? "none" : "currentColor");
+        camino.setAttribute("stroke-width", tipo === "llave" ? "2.4" : "2.6");
+        camino.setAttribute("stroke-linecap", "round");
+        camino.setAttribute("stroke-linejoin", "round");
+        if (tipo === "llave") camino.setAttribute("vector-effect", "non-scaling-stroke");
+        svg.append(camino);
+      }
+    }
+  });
+</script>
+</body>
+</html>

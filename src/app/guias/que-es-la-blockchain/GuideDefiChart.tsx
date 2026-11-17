@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 const DEFI = [
   { label: "Lending", v: 28.4 },
@@ -9,7 +9,9 @@ const DEFI = [
   { label: "Otros", v: 3.2 },
 ];
 
-const COLORS = ["#e6b455", "#ff6b2b", "#3a6090", "#2a4870", "#1e3558"];
+// Paleta del cuaderno (ESTILO.md): la base para la barra y su tono oscuro para la cifra.
+const COLORS = ["#2fbff5", "#ff8a1f", "#8f7cff", "#2fc488", "#ffd23f"];
+const COLORS_TEXTO = ["#0e709b", "#a65000", "#6450e0", "#137a52", "#866500"];
 
 export default function GuideDefiChart() {
   const max = Math.max(...DEFI.map((d) => d.v));
@@ -27,33 +29,26 @@ export default function GuideDefiChart() {
     return () => obs.disconnect();
   }, []);
 
+  // Barras en HTML, no en un SVG: así la etiqueta y la cifra conservan su
+  // tamaño en el móvil en vez de encoger con el dibujo. El relleno crece con
+  // transform (scaleX), que no obliga a recalcular la página.
   return (
     <div ref={ref} className="gbc-chart-wrap">
       <div className="gbc-chart-lbl">TVL por categoría DeFi — Miles de millones USD (Jun 2026)</div>
-      <svg viewBox="0 0 480 140" style={{ width: "100%", display: "block" }} aria-label="Gráfica TVL DeFi por categoría">
-        {DEFI.map((d, i) => {
-          const fullW = (d.v / max) * 340;
-          const barW = triggered ? fullW : 0;
-          const y = 14 + i * 24;
-          return (
-            <g key={i}>
-              <text x={0} y={y + 11} fontSize={11} fill="#8fa3b8">{d.label}</text>
-              <rect
-                x={96} y={y} width={barW} height={15} rx={4}
-                fill={COLORS[i]} opacity={0.9}
-                style={{ transition: `width 0.9s cubic-bezier(0.4,0,0.2,1) ${i * 120}ms` }}
+      <div className={`bc-defi${triggered ? " is-visible" : ""}`} role="img" aria-label="Gráfica TVL DeFi por categoría">
+        {DEFI.map((d, i) => (
+          <div key={d.label} className="bc-defi-fila" style={{ "--retraso": `${i * 120}ms` } as CSSProperties}>
+            <span className="bc-defi-nombre">{d.label}</span>
+            <span className="bc-defi-pista">
+              <span
+                className="bc-defi-barra"
+                style={{ width: `${(d.v / max) * 100}%`, background: COLORS[i] }}
               />
-              <text
-                x={96 + (triggered ? fullW : 0) + 6} y={y + 11}
-                fontSize={10} fill={COLORS[i]} fontWeight="700"
-                style={{ transition: `x 0.9s cubic-bezier(0.4,0,0.2,1) ${i * 120}ms` }}
-              >
-                ${d.v}B
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+            </span>
+            <span className="bc-defi-valor" style={{ color: COLORS_TEXTO[i] }}>${d.v}B</span>
+          </div>
+        ))}
+      </div>
       <div className="gbc-chart-src">Fuente: DeFiLlama, Junio 2026 — TVL total: $71.77B</div>
     </div>
   );

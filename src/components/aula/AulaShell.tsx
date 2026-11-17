@@ -1,13 +1,20 @@
 import Link from "next/link";
-import { ArrowLeft, Check, Lock, Circle, ClipboardCheck, Award, Hourglass, PlayCircle } from "lucide-react";
+import { ArrowLeft, Check, Lock, ClipboardCheck, Award, Hourglass, Play } from "lucide-react";
 import AulaCuerpo from "@/components/aula/AulaCuerpo";
+import Tecla from "@/components/cuaderno/Tecla";
+import InterruptorSonido from "@/components/cuaderno/InterruptorSonido";
 import type { ContextoAula } from "@/lib/cursos";
 import { formatoNota, type EstadoExamen } from "@/lib/cursos-progreso";
 
 /**
- * El esqueleto de todas las pantallas del aula: barra superior con el curso y
- * el avance módulo a módulo, y el temario a la izquierda, que se puede plegar
- * (en móvil, en un panel). Cómo se enseña lo decide AulaCuerpo.
+ * El esqueleto de todas las pantallas del aula, estilo «Cuaderno de estudio»
+ * (17-11-2026): una tira de papel arriba con el curso, su avance módulo a
+ * módulo y el altavoz, y el temario a la izquierda, que se puede plegar (en
+ * móvil, en un panel). Cómo se enseña lo decide AulaCuerpo.
+ *
+ * El color de la sección es el lila (Cursos); el `color` propio de cada curso
+ * entra por `--aula-acento` y marca lo que es de ESE curso: su ficha, el trazo
+ * de los apartados de la lección.
  *
  * El temario dice en cada fila si está hecha, abierta o cerrada, y es el
  * mismo cálculo que decide si se puede entrar (`estadoCurso`): lo que se ve
@@ -42,118 +49,120 @@ function piezasTemario(ctx: ContextoAula, activo: Activo) {
   const { curso, datos, estado } = ctx;
   const slug = curso.curso.slug;
   const final = etiquetaExamen(estado.final);
+  const s = estado.siguiente;
 
   const cabecera = (
-      <Link href={`/aula/${slug}`} className={`aula-temario-inicio${"inicio" in activo ? " is-activo" : ""}`}>
-        <span className="aula-temario-curso">{curso.curso.titulo}</span>
-        <span className="aula-temario-pct">
-          <b>{estado.porcentaje} %</b> · {estado.leccionesHechas} de {estado.leccionesTotales} lecciones
-        </span>
-        <span className="aula-barra"><i style={{ width: `${estado.porcentaje}%` }} /></span>
-      </Link>
+    <Link href={`/aula/${slug}`} className={`aula-temario-inicio${"inicio" in activo ? " is-activo" : ""}`}>
+      <span className="aula-temario-curso">{curso.curso.titulo}</span>
+      <span className="aula-temario-pct">
+        <b>{estado.porcentaje} %</b> · {estado.leccionesHechas} de {estado.leccionesTotales} lecciones
+      </span>
+      <span className="aula-barra"><i style={{ width: `${estado.porcentaje}%` }} /></span>
+    </Link>
   );
 
   const lista = (
-      <ol className="aula-temario-modulos">
-        {estado.modulos.map(({ modulo, desbloqueado, hechas, examen }) => {
-          const ex = etiquetaExamen(examen);
-          const contieneActivo =
-            ("leccion" in activo && modulo.lecciones.some((l) => l.slug === activo.leccion)) ||
-            ("examen" in activo && activo.examen === modulo.orden);
-          return (
-            <li key={modulo.id} className={`aula-temario-modulo${examen.tipo === "aprobado" ? " is-hecho" : desbloqueado ? "" : " is-bloqueado"}`}>
-              <details open={contieneActivo || (desbloqueado && examen.tipo !== "aprobado")}>
-                <summary>
-                  <span className="aula-temario-modnum">
-                    {examen.tipo === "aprobado" ? <Check size={14} strokeWidth={3} aria-label="Aprobado" /> : desbloqueado ? modulo.orden : <Lock size={12} aria-label="Bloqueado" />}
+    <ol className="aula-temario-modulos">
+      {estado.modulos.map(({ modulo, desbloqueado, hechas, examen }) => {
+        const ex = etiquetaExamen(examen);
+        const contieneActivo =
+          ("leccion" in activo && modulo.lecciones.some((l) => l.slug === activo.leccion)) ||
+          ("examen" in activo && activo.examen === modulo.orden);
+        return (
+          <li key={modulo.id} className={`aula-temario-modulo${examen.tipo === "aprobado" ? " is-hecho" : desbloqueado ? "" : " is-bloqueado"}`}>
+            <details open={contieneActivo || (desbloqueado && examen.tipo !== "aprobado")}>
+              <summary>
+                <span className="aula-temario-modnum">
+                  {examen.tipo === "aprobado" ? <Check size={14} strokeWidth={3} aria-label="Aprobado" /> : desbloqueado ? modulo.orden : <Lock size={12} aria-label="Bloqueado" />}
+                </span>
+                <span className="aula-temario-modtit">{modulo.titulo}</span>
+                {desbloqueado && (
+                  <span className="aula-temario-modcuenta">
+                    {examen.tipo === "aprobado" ? formatoNota(examen.nota) : `${hechas}/${modulo.lecciones.length}`}
                   </span>
-                  <span className="aula-temario-modtit">{modulo.titulo}</span>
-                  {desbloqueado && (
-                    <span className="aula-temario-modcuenta">
-                      {examen.tipo === "aprobado" ? formatoNota(examen.nota) : `${hechas}/${modulo.lecciones.length}`}
+                )}
+              </summary>
+              <ul>
+                {modulo.lecciones.map((l) => {
+                  const hecha = datos.completadas.has(l.id);
+                  const es = "leccion" in activo && activo.leccion === l.slug;
+                  const siguiente = !hecha && s?.tipo === "leccion" && s.slug === l.slug;
+                  const clase = `aula-temario-item${hecha ? " is-hecho" : ""}${siguiente ? " is-siguiente" : ""}${es ? " is-activo" : ""}${desbloqueado ? "" : " is-bloqueado"}`;
+                  const icono = hecha ? <Check size={12} strokeWidth={3.2} /> : desbloqueado ? null : <Lock size={11} strokeWidth={2.6} />;
+                  return (
+                    <li key={l.id}>
+                      {desbloqueado ? (
+                        <Link href={`/aula/${slug}/${l.slug}`} className={clase} aria-current={es ? "page" : undefined}>
+                          <span className="aula-temario-icono" aria-hidden="true">{icono}</span>
+                          <span className="aula-temario-texto">{l.titulo}</span>
+                          <span className="aula-temario-min">{l.minutos}′</span>
+                        </Link>
+                      ) : (
+                        <span className={clase}>
+                          <span className="aula-temario-icono" aria-hidden="true">{icono}</span>
+                          <span className="aula-temario-texto">{l.titulo}</span>
+                          <span className="aula-temario-min">{l.minutos}′</span>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+                <li>
+                  {examen.tipo === "bloqueado" ? (
+                    <span className={`aula-temario-item aula-temario-examen ${ex.clase}`}>
+                      <span className="aula-temario-icono" aria-hidden="true"><IconoExamen e={examen} /></span>
+                      <span className="aula-temario-texto">Examen del módulo</span>
+                      <span className="aula-temario-estado">{ex.texto}</span>
                     </span>
+                  ) : (
+                    <Link
+                      href={`/aula/${slug}/examen/${modulo.orden}`}
+                      className={`aula-temario-item aula-temario-examen ${ex.clase}${"examen" in activo && activo.examen === modulo.orden ? " is-activo" : ""}`}
+                    >
+                      <span className="aula-temario-icono" aria-hidden="true"><IconoExamen e={examen} /></span>
+                      <span className="aula-temario-texto">Examen del módulo</span>
+                      <span className="aula-temario-estado">{ex.texto}</span>
+                    </Link>
                   )}
-                </summary>
-                <ul>
-                  {modulo.lecciones.map((l) => {
-                    const hecha = datos.completadas.has(l.id);
-                    const es = "leccion" in activo && activo.leccion === l.slug;
-                    const clase = `aula-temario-item${hecha ? " is-hecho" : ""}${es ? " is-activo" : ""}${desbloqueado ? "" : " is-bloqueado"}`;
-                    const icono = hecha ? <Check size={12} strokeWidth={3} /> : desbloqueado ? <Circle size={10} strokeWidth={2.4} /> : <Lock size={11} strokeWidth={2.6} />;
-                    return (
-                      <li key={l.id}>
-                        {desbloqueado ? (
-                          <Link href={`/aula/${slug}/${l.slug}`} className={clase} aria-current={es ? "page" : undefined}>
-                            <span className="aula-temario-icono" aria-hidden="true">{icono}</span>
-                            <span className="aula-temario-texto">{l.titulo}</span>
-                            <span className="aula-temario-min">{l.minutos}′</span>
-                          </Link>
-                        ) : (
-                          <span className={clase}>
-                            <span className="aula-temario-icono" aria-hidden="true">{icono}</span>
-                            <span className="aula-temario-texto">{l.titulo}</span>
-                            <span className="aula-temario-min">{l.minutos}′</span>
-                          </span>
-                        )}
-                      </li>
-                    );
-                  })}
-                  <li>
-                    {examen.tipo === "bloqueado" ? (
-                      <span className={`aula-temario-item aula-temario-examen ${ex.clase}`}>
-                        <span className="aula-temario-icono" aria-hidden="true"><IconoExamen e={examen} /></span>
-                        <span className="aula-temario-texto">Examen del módulo</span>
-                        <span className="aula-temario-estado">{ex.texto}</span>
-                      </span>
-                    ) : (
-                      <Link
-                        href={`/aula/${slug}/examen/${modulo.orden}`}
-                        className={`aula-temario-item aula-temario-examen ${ex.clase}${"examen" in activo && activo.examen === modulo.orden ? " is-activo" : ""}`}
-                      >
-                        <span className="aula-temario-icono" aria-hidden="true"><IconoExamen e={examen} /></span>
-                        <span className="aula-temario-texto">Examen del módulo</span>
-                        <span className="aula-temario-estado">{ex.texto}</span>
-                      </Link>
-                    )}
-                  </li>
-                </ul>
-              </details>
-            </li>
-          );
-        })}
-      </ol>
+                </li>
+              </ul>
+            </details>
+          </li>
+        );
+      })}
+    </ol>
   );
 
   const cierre = (
-      <div className="aula-temario-cierre">
-        {estado.final.tipo === "bloqueado" ? (
-          <span className={`aula-temario-item aula-temario-examen ${final.clase}`}>
-            <span className="aula-temario-icono" aria-hidden="true"><Lock size={12} strokeWidth={2.6} /></span>
-            <span className="aula-temario-texto">Examen final</span>
-            <span className="aula-temario-estado">Aprueba los {estado.modulos.length} módulos</span>
-          </span>
-        ) : (
-          <Link
-            href={`/aula/${slug}/examen/final`}
-            className={`aula-temario-item aula-temario-examen ${final.clase}${"examen" in activo && activo.examen === "final" ? " is-activo" : ""}`}
-          >
-            <span className="aula-temario-icono" aria-hidden="true"><IconoExamen e={estado.final} /></span>
-            <span className="aula-temario-texto">Examen final</span>
-            <span className="aula-temario-estado">{final.texto}</span>
-          </Link>
-        )}
-        {datos.certificado ? (
-          <Link href={`/aula/${slug}/certificado`} className={`aula-temario-item aula-temario-cert${"certificado" in activo ? " is-activo" : ""}`}>
-            <span className="aula-temario-icono" aria-hidden="true"><Award size={13} strokeWidth={2.4} /></span>
-            <span className="aula-temario-texto">Tu certificado</span>
-          </Link>
-        ) : (
-          <span className="aula-temario-item aula-temario-cert is-bloqueado">
-            <span className="aula-temario-icono" aria-hidden="true"><Award size={13} strokeWidth={2.4} /></span>
-            <span className="aula-temario-texto">Certificado y logro</span>
-          </span>
-        )}
-      </div>
+    <div className="aula-temario-cierre">
+      {estado.final.tipo === "bloqueado" ? (
+        <span className={`aula-temario-item aula-temario-examen ${final.clase}`}>
+          <span className="aula-temario-icono" aria-hidden="true"><Lock size={12} strokeWidth={2.6} /></span>
+          <span className="aula-temario-texto">Examen final</span>
+          <span className="aula-temario-estado">Aprueba los {estado.modulos.length} módulos</span>
+        </span>
+      ) : (
+        <Link
+          href={`/aula/${slug}/examen/final`}
+          className={`aula-temario-item aula-temario-examen ${final.clase}${"examen" in activo && activo.examen === "final" ? " is-activo" : ""}`}
+        >
+          <span className="aula-temario-icono" aria-hidden="true"><IconoExamen e={estado.final} /></span>
+          <span className="aula-temario-texto">Examen final</span>
+          <span className="aula-temario-estado">{final.texto}</span>
+        </Link>
+      )}
+      {datos.certificado ? (
+        <Link href={`/aula/${slug}/certificado`} className={`aula-temario-item aula-temario-cert${"certificado" in activo ? " is-activo" : ""}`}>
+          <span className="aula-temario-icono" aria-hidden="true"><Award size={13} strokeWidth={2.4} /></span>
+          <span className="aula-temario-texto">Tu certificado</span>
+        </Link>
+      ) : (
+        <span className="aula-temario-item aula-temario-cert is-bloqueado">
+          <span className="aula-temario-icono" aria-hidden="true"><Award size={13} strokeWidth={2.4} /></span>
+          <span className="aula-temario-texto">Certificado y logro</span>
+        </span>
+      )}
+    </div>
   );
 
   return { cabecera, lista, cierre };
@@ -170,13 +179,16 @@ export default function AulaShell({ ctx, activo, children }: { ctx: ContextoAula
   return (
     <div className="aula" style={{ "--aula-acento": curso.curso.color } as React.CSSProperties}>
       <header className="aula-barra-sup">
-        <Link href={`/cursos/${curso.curso.slug}`} className="aula-volver">
-          <ArrowLeft size={16} aria-hidden="true" />
-          <span>Salir</span>
-        </Link>
+        <Tecla href={`/cursos/${curso.curso.slug}`} color="blanca" tamano="peq" className="aula-salir" aria-label="Salir del aula">
+          <ArrowLeft size={16} strokeWidth={2.6} aria-hidden="true" />
+          <span className="aula-salir-texto">Salir</span>
+        </Tecla>
         <Link href={`/aula/${curso.curso.slug}`} className="aula-barra-curso" title="Ir a la portada del curso">
-          <span className="aula-barra-curso-rotulo">Curso</span>
-          <span className="aula-barra-curso-nombre">{curso.curso.titulo}</span>
+          <span className="aula-barra-curso-ficha" aria-hidden="true">{curso.curso.titulo.trim().charAt(0)}</span>
+          <span className="aula-barra-curso-textos">
+            <span className="aula-barra-curso-rotulo">Curso</span>
+            <span className="aula-barra-curso-nombre">{curso.curso.titulo}</span>
+          </span>
         </Link>
         {/* Un tramo por módulo: aprobado, a medias (por sus lecciones) o sin empezar. */}
         <div className="aula-barra-progreso" role="img" aria-label={`${estado.porcentaje} % del curso completado`}>
@@ -195,11 +207,12 @@ export default function AulaShell({ ctx, activo, children }: { ctx: ContextoAula
           <span className="aula-barra-pct">{estado.porcentaje} %</span>
         </div>
         {hrefSiguiente && !("inicio" in activo) && (
-          <Link href={hrefSiguiente} className="aula-barra-seguir">
-            <PlayCircle size={15} aria-hidden="true" /> <span>Seguir donde lo dejé</span>
-          </Link>
+          <Tecla href={hrefSiguiente} tamano="peq" className="aula-barra-seguir" aria-label="Seguir donde lo dejé">
+            <Play size={14} strokeWidth={2.8} aria-hidden="true" /> <span className="aula-barra-seguir-texto">Seguir donde lo dejé</span>
+          </Tecla>
         )}
         {ctx.sesion.esAdmin && <span className="aula-admin-chip" title="Ves todo abierto y sin esperas para revisar el curso">Modo admin</span>}
+        <span className="aula-barra-sonido"><InterruptorSonido /></span>
       </header>
 
       <AulaCuerpo {...piezasTemario(ctx, activo)} porcentaje={estado.porcentaje}>

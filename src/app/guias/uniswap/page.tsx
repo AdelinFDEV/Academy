@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideUniswapLiquidez from "./GuideUniswapLiquidez";
 import GuideUniswapQuiz from "./GuideUniswapQuiz";
@@ -78,7 +80,6 @@ export default async function UniswapPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -91,17 +92,17 @@ export default async function UniswapPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Uniswap (UNI)<br />
           <span className="gbc-hero-gold">y cómo funciona por dentro</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Uniswap es el mayor <Termino slug="dex">exchange descentralizado</Termino>: un conjunto de{" "}
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Uniswap es el mayor <Termino slug="dex">exchange descentralizado</Termino>: un conjunto de{" "}
           <Termino slug="smart-contract">contratos</Termino> en Ethereum y otras redes que cambia un token por otro desde tu propia cartera, sin registro
-          ni intermediario.</strong> El precio no sale de un <Termino slug="libro-de-ordenes">libro de órdenes</Termino>, sino de una fórmula aplicada a
-          fondos que aportan otros usuarios, que cobran una comisión por cada cambio. UNI es su{" "}
+          ni intermediario.</Anotacion></strong> El precio no sale de un <Termino slug="libro-de-ordenes">libro de órdenes</Termino>, sino de <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>una fórmula aplicada a
+          fondos que aportan otros usuarios</Anotacion>, que cobran una comisión por cada cambio. UNI es su{" "}
           <Termino slug="token-de-gobernanza">token de gobernanza</Termino>: sirve para votar y, desde diciembre
           de 2025, parte de las comisiones se usa para <Termino slug="quema-de-tokens">quemarlo</Termino>.
         </p>
@@ -125,11 +126,13 @@ export default async function UniswapPage() {
               No hay cuenta que abrir, ni DNI que enviar, ni nadie que custodie tu dinero entre medias.
             </p>
             <p>
-              Conviene separar tres cosas que comparten nombre. El <strong>protocolo Uniswap</strong> son los
-              contratos: están publicados en la cadena y cualquiera puede usarlos, también desde otras webs.{" "}
-              <strong>Uniswap Labs</strong> es la empresa de Nueva York, fundada por Hayden Adams, que los escribió
-              y que hace la web y la cartera más conocidas. Y <strong>UNI</strong> es el token con el que se vota
-              qué cambia en el protocolo.
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                Conviene separar tres cosas que comparten nombre. El <strong>protocolo Uniswap</strong> son los
+                contratos: están publicados en la cadena y cualquiera puede usarlos, también desde otras webs.{" "}
+                <strong>Uniswap Labs</strong> es la empresa de Nueva York, fundada por Hayden Adams, que los escribió
+                y que hace la web y la cartera más conocidas. Y <strong>UNI</strong> es el token con el que se vota
+                qué cambia en el protocolo.
+              </Anotacion>
             </p>
             <p>
               Es grande. Según DefiLlama, a 14 de noviembre de 2026 pasaron por Uniswap unos 63.000 millones de
@@ -141,8 +144,8 @@ export default async function UniswapPage() {
               Su diferencia con un <Termino slug="exchange">exchange</Termino> como los que conoces está en cómo
               se fija el precio. Un exchange centralizado, y también algunos descentralizados como{" "}
               <Link href="/guias/hyperliquid">Hyperliquid</Link>, casan órdenes de compra y de venta en un{" "}
-              libro de órdenes. Uniswap no tiene libro: tiene fondos y
-              una fórmula.
+              libro de órdenes. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Uniswap no tiene libro: tiene fondos y
+              una fórmula.</Anotacion>
             </p>
           </div>
         </div>
@@ -162,8 +165,7 @@ export default async function UniswapPage() {
             </p>
             <p>
               La regla que decide cuánto te llevas cabe en una línea. Si x es la cantidad de un token e y la del
-              otro, su producto tiene que valer lo mismo antes y después de cada cambio: <strong>x · y = k</strong>.
-              El precio es la proporción entre los dos montones.
+              otro, su producto tiene que valer lo mismo antes y después de cada cambio: <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta>x · y = k</Anotacion></strong>. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>El precio es la proporción entre los dos montones.</Anotacion>
             </p>
             <p>
               Con números se ve mejor. Imagina un fondo con <strong>100 ETH y 300.000 USDC</strong>. Su k es
@@ -187,14 +189,15 @@ export default async function UniswapPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              <strong>Tu propia compra mueve el precio.</strong> Con el 1 % del fondo pagas un 1 % de más; con la
+              <SimboloEstudio tipo="estrella" margen semilla={7} animar={false} />
+              <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Tu propia compra mueve el precio.</Anotacion></strong> Con el 1 % del fondo pagas un 1 % de más; con la
               mitad, un 50 %. Eso es el <Termino slug="impacto-en-el-precio">impacto en el precio</Termino>, y
               explica por qué comprar en un fondo pequeño sale caro aunque la comisión sea baja.
             </p>
             <p>
               ¿Y quién devuelve el precio a su sitio? Los <Termino slug="arbitraje">arbitrajistas</Termino>. Si en el fondo el ETH vale 3.630 USDC y en
               el resto del mercado 3.000, alguien le vende ETH al fondo hasta igualarlos y se queda la diferencia.
-              Nadie fija el precio de Uniswap: lo arrastra el resto del mercado.
+              {" "}<Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Nadie fija el precio de Uniswap: lo arrastra el resto del mercado.</Anotacion>
             </p>
             <p>
               Cada cambio paga además una comisión, que se queda en el fondo para quien lo financió. En la versión
@@ -207,11 +210,11 @@ export default async function UniswapPage() {
 
       {/* ── 3 ── */}
       <section id="intercambio" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Paso a paso</div>
           <h2 className="gbc-title">Cómo usar Uniswap para cambiar un token por otro</h2>
           <div className="gbc-body">
-            <p>Un intercambio son seis pasos. Los tres que más dinero cuestan cuando se hacen deprisa son el 2, el 4 y el 5.</p>
+            <p>Un intercambio son seis pasos. Los tres que más dinero cuestan cuando se hacen deprisa son <Anotacion tipo="circle" junta>el 2, el 4 y el 5</Anotacion>.</p>
           </div>
           <ol className="uni-pasos">
             <li>
@@ -220,7 +223,7 @@ export default async function UniswapPage() {
             </li>
             <li>
               <strong>Entra escribiendo tú la dirección.</strong>
-              <p>La web de Uniswap Labs es app.uniswap.org. Nunca desde un anuncio del buscador ni desde un enlace que te manden: las copias falsas son el robo más común.</p>
+              <p>La web de Uniswap Labs es app.uniswap.org. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Nunca desde un anuncio del buscador ni desde un enlace que te manden</Anotacion>: las copias falsas son el robo más común.</p>
             </li>
             <li>
               <strong>Elige la red y los dos tokens.</strong>
@@ -236,7 +239,7 @@ export default async function UniswapPage() {
             </li>
             <li>
               <strong>Firma y espera la confirmación.</strong>
-              <p>Si el precio ha empeorado más de tu tolerancia, el contrato rechaza el cambio. Pierdes el gas consumido, pero no el dinero del intercambio.</p>
+              <p><Anotacion tipo="underline" color="var(--lila)" retraso={300}>Si el precio ha empeorado más de tu tolerancia, el contrato rechaza el cambio.</Anotacion> Pierdes el gas consumido, pero no el dinero del intercambio.</p>
             </li>
           </ol>
           <div className="gbc-body" style={{ marginTop: 24 }}>
@@ -254,15 +257,16 @@ export default async function UniswapPage() {
             </p>
           </div>
           {/* EXPERIENCIA DEL ADMIN: un intercambio real hecho en Uniswap — red elegida, cuánto costó el gas en euros, qué tolerancia puso y si alguna vez una operación le falló o le salió peor de lo previsto. Una captura de la pantalla de revisión antes de firmar encajaría aquí. */}
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El error típico</div>
-            <div className="gbc-box-body">
-              <p>Subir la tolerancia «porque la operación no entra». Si un cambio falla con un 0,5 %, casi siempre
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error típico</div>
+            <div className="postit-cuerpo">
+              <p><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} animar={false}>Subir la tolerancia «porque la operación no entra».</Anotacion> Si un cambio falla con un 0,5 %, casi siempre
               es porque el fondo es pequeño o el token es raro, y subirla al 10 % solo hace que salga caro. Antes de
               tocarla, mira el impacto en el precio: si pasa del 1 %, el problema es el tamaño de tu orden frente
               al fondo.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -284,14 +288,14 @@ export default async function UniswapPage() {
             </p>
             <p>
               El coste no se ve en ningún recibo. Se llama{" "}
-              <Termino slug="perdida-impermanente">pérdida impermanente</Termino>, y sale de la fórmula. Cuando
+              <Anotacion tipo="circle" junta><Termino slug="perdida-impermanente">pérdida impermanente</Termino></Anotacion>, y sale de la fórmula. Cuando
               el ETH sube, los arbitrajistas compran ETH al fondo hasta igualar el precio. Tu parte del fondo
-              acaba con menos ETH y más USDC: has ido vendiendo lo que subía. Cuando baja, al revés.
+              acaba con menos ETH y más USDC: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={400}>has ido vendiendo lo que subía</Anotacion>. Cuando baja, al revés.
             </p>
             <p>
               La cuenta es fija para un fondo como el del ejemplo. Si r es el precio final dividido entre el
               inicial, frente a haberlos guardado tienes 2√r / (1 + r) − 1. No depende del tamaño del fondo ni de
-              cuánto aportes: solo de cuánto se ha movido el precio.
+              cuánto aportes: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>solo de cuánto se ha movido el precio</Anotacion>.
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -315,13 +319,13 @@ export default async function UniswapPage() {
             <p>
               Con los valores de partida de la calculadora se ve el caso más habitual. Aportas 1.000 €, el token{" "}
               <Termino slug="volatilidad">volátil</Termino> se duplica y cobras un 3 % en comisiones. Guardados, tendrías 1.500 €. En el fondo tienes
-              1.414 €, más 30 € de comisiones. Has ganado dinero, pero 56 € menos que sin hacer nada.
+              1.414 €, más 30 € de comisiones. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Has ganado dinero, pero 56 € menos que sin hacer nada.</Anotacion>
             </p>
             <p>
               La versión 3 añadió la <Termino slug="liquidez-concentrada">liquidez concentrada</Termino>: eliges
               un tramo de precios, por ejemplo entre 2.500 y 3.500 USDC por ETH. Mientras el precio está dentro,
-              tu dinero trabaja mucho más y cobras más comisiones. Si sale, dejas de cobrar y te quedas con todo
-              en el token que peor ha ido. La pérdida impermanente, además, es mayor que la de la tabla.
+              tu dinero trabaja mucho más y cobras más comisiones. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Si sale, dejas de cobrar y te quedas con todo
+              en el token que peor ha ido.</Anotacion> La pérdida impermanente, además, es mayor que la de la tabla.
             </p>
             <p>
               Y desde diciembre de 2025 hay un detalle más: en muchos fondos, una parte de la comisión ya no es
@@ -340,7 +344,7 @@ export default async function UniswapPage() {
           <h2 className="gbc-title">De Uniswap v1 a v4: qué cambió y qué es Unichain</h2>
           <div className="gbc-body">
             <p>
-              Uniswap no se actualiza: se publica una versión nueva y las anteriores siguen funcionando. Por eso
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Uniswap no se actualiza: se publica una versión nueva y las anteriores siguen funcionando.</Anotacion> Por eso
               en la web conviven fondos de v2, v3 y v4, y la propia web elige la ruta más barata entre ellos.
             </p>
           </div>
@@ -362,8 +366,8 @@ export default async function UniswapPage() {
               quien crea el fondo engancha a él, y que se ejecuta antes o después de cada cambio. Sirven para
               comisiones que suben cuando el mercado se agita, para{" "}
               <Termino slug="orden-limitada">órdenes limitadas</Termino> o para fondos con reglas
-              propias. Su cruz es evidente: es código de terceros, y un hook mal escrito o malicioso afecta a
-              quien use ese fondo.
+              propias. Su cruz es evidente: es código de terceros, y <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>un hook mal escrito o malicioso afecta a
+              quien use ese fondo</Anotacion>.
             </p>
             <p>
               Unichain es una capa 2 construida por Uniswap Labs con la tecnología de Optimism. Es un{" "}
@@ -388,7 +392,7 @@ export default async function UniswapPage() {
               protocolo antes del 1 de septiembre, incluidas unas 12.000 que solo tenían operaciones fallidas.
             </p>
             <p>
-              Se crearon 1.000 millones de UNI. El 60 % fue para la comunidad y el resto para el equipo, los
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>Se crearon 1.000 millones de UNI.</Anotacion> El 60 % fue para la comunidad y el resto para el equipo, los
               inversores y los asesores, con cuatro años de <Termino slug="vesting">vesting</Termino>. La{" "}
               <Termino slug="gobernanza">gobernanza</Termino> puede crear hasta un 2 % más al año desde
               septiembre de 2024, pero no lo ha hecho nunca: el contrato de UNI sigue registrando exactamente
@@ -427,21 +431,22 @@ export default async function UniswapPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Lo que recoge el protocolo no se reparte. Se acumula en un contrato del que solo se puede sacar
-              quemando UNI en otro. Es decir, quien quiera esas comisiones tiene que destruir UNI a cambio. La
+              Lo que recoge el protocolo no se reparte. <Anotacion tipo="underline" color="var(--lila)" retraso={300}>Se acumula en un contrato del que solo se puede sacar
+              quemando UNI en otro.</Anotacion> Es decir, quien quiera esas comisiones tiene que destruir UNI a cambio. La
               misma propuesta quemó de golpe 100 millones de UNI de la tesorería, una estimación de lo que se
               habría quemado si el interruptor hubiera estado encendido desde el principio.
             </p>
             <p>
               El efecto se puede comprobar en la cadena. Los UNI quemados no se borran: se envían a una dirección
               de la que nadie puede sacarlos. A 14 de noviembre de 2026 esa dirección guardaba unos 114 millones
-              de UNI, más del 11 % de los 1.000 millones emitidos. No hay que confundirlo con la{" "}
+              de UNI, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>más del 11 % de los 1.000 millones emitidos</Anotacion>. No hay que confundirlo con la{" "}
               <Termino slug="oferta-circulante">oferta circulante</Termino>, que tampoco cuenta los UNI que siguen
               en la tesorería. A cambio, la propuesta reservó 20 millones de UNI al año para financiar el
               desarrollo, desde enero de 2026.
             </p>
             <p>
-              Lo que UNI no es: no es una acción ni paga dividendos. La quema reduce cuántos UNI hay, y que eso se traduzca en
+              <SimboloEstudio tipo="exclamacion" color="coral" margen animar={false} />
+              Lo que UNI no es: <Anotacion tipo="underline" color="var(--coral)" retraso={300}>no es una acción ni paga dividendos</Anotacion>. La quema reduce cuántos UNI hay, y que eso se traduzca en
               precio depende del uso de Uniswap y del mercado. Tampoco es necesario para usar Uniswap: puedes
               cambiar tokens toda la vida sin tener ni uno.
             </p>
@@ -451,35 +456,36 @@ export default async function UniswapPage() {
 
       {/* ── 7 ── */}
       <section id="hacienda" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Desde España</div>
           <h2 className="gbc-title">Uniswap y Hacienda: cada cambio es una venta</h2>
           <div className="gbc-body">
             <p>
               Que no haya registro no cambia nada en tu declaración. Para Hacienda, cambiar un token por otro en
-              Uniswap es una <strong>permuta</strong>: calculas la ganancia o la pérdida en ese momento, con el
+              Uniswap es una <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta>permuta</Anotacion></strong>: calculas la ganancia o la pérdida en ese momento, con el
               valor de mercado en euros de la operación, aunque no hayas tocado un euro.
             </p>
             <p>
               Un ejemplo. Compraste 1 ETH por 2.000 € y hoy lo cambias por USDC cuando vale 3.000 €. Tienes
               una ganancia de 1.000 €, que va a la base del ahorro. Si después cambias esos USDC por otro token,
-              es otra permuta. Las comisiones de red que pagas en cada cambio cuentan en el cálculo: lo dice la
+              es otra permuta. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Las comisiones de red que pagas en cada cambio cuentan en el cálculo</Anotacion>: lo dice la
               Dirección General de Tributos en su consulta vinculante V0648-24, de 11 de abril de 2024.
             </p>
             <p>
               Aportar liquidez tiene su propio criterio. En esa misma consulta, el contribuyente cobraba
               rendimientos de fondos de liquidez de creadores de mercado automáticos, a través de una plataforma
-              que gestionaba su posición. Hacienda los calificó como rendimiento del capital mobiliario: se
+              que gestionaba su posición. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>Hacienda los calificó como rendimiento del capital mobiliario</Anotacion>: se
               valoran en euros el día que los recibes y también van a la base del ahorro.
             </p>
             <p>
               Lo que dejó fuera, de forma expresa, es la entrada y la salida del fondo: recibir y devolver el
-              token LP. Así que no está aclarado si depositar tus dos tokens es, en sí, una permuta.
+              token LP. Así que <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>no está aclarado si depositar tus dos tokens es, en sí, una permuta</Anotacion>.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Lo que conviene guardar desde el primer cambio</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="asterisco" color="cielo" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Lo que conviene guardar desde el primer cambio</div>
+            <div className="postit-cuerpo">
               <p>El identificador de cada operación, que encuentras en el{" "}
               <Termino slug="explorador-de-bloques">explorador de bloques</Termino>, con su fecha y el valor en
               euros de lo que diste y recibiste. En liquidez, además, lo que aportaste, lo que retiraste y las
@@ -489,13 +495,13 @@ export default async function UniswapPage() {
               <Link href="/guias/fiscalidad-cripto-espana">fiscalidad de las criptomonedas en España</Link>. Si
               aportas liquidez con cantidades importantes, consulta a un asesor.</p>
             </div>
-          </div>
+          </Postit>
           <div className="gbc-body" style={{ marginTop: 20 }}>
             <p>
               Una nota sobre la regulación. El reglamento europeo <Termino slug="mica">MiCA</Termino> deja fuera,
               en su considerando 22, los servicios que se prestan de forma totalmente descentralizada, sin
               intermediarios. Por eso el protocolo Uniswap no está autorizado por la CNMV, y eso tiene una cara b:
-              nadie responde si te equivocas de token o firmas lo que no debías.
+              {" "}<Anotacion tipo="underline" color="var(--coral)" retraso={300}>nadie responde si te equivocas de token o firmas lo que no debías</Anotacion>.
             </p>
           </div>
         </div>
@@ -508,13 +514,13 @@ export default async function UniswapPage() {
           <h2 className="gbc-title">Los riesgos de Uniswap: tokens falsos, firmas y bots</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Tokens falsos.</strong> Crear un token y un fondo en Uniswap no exige permiso a nadie. Hay copias de casi todo, con el mismo nombre y el mismo logotipo. El UNI auténtico en Ethereum tiene el contrato 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984: compruébalo siempre en un explorador.</li>
-              <li><strong>Webs y firmas trampa.</strong> El <Termino slug="phishing">phishing</Termino> ya no pide tu <Termino slug="seed-phrase">frase semilla</Termino>: te pide una aprobación o una firma. Una firma de permiso no cuesta gas y parece inofensiva, pero puede autorizar a otro a llevarse ese token. Lee qué firmas y revoca los permisos que ya no uses.</li>
+              <li><strong>Tokens falsos.</strong> Crear un token y un fondo en Uniswap no exige permiso a nadie. Hay copias de casi todo, con el mismo nombre y el mismo logotipo. El UNI auténtico en Ethereum tiene el contrato 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>compruébalo siempre en un explorador</Anotacion>.</li>
+              <li><strong>Webs y firmas trampa.</strong> El <Termino slug="phishing">phishing</Termino> ya no pide tu <Termino slug="seed-phrase">frase semilla</Termino>: te pide una aprobación o una firma. <Anotacion tipo="underline" color="var(--coral)" retraso={200}>Una firma de permiso no cuesta gas y parece inofensiva, pero puede autorizar a otro a llevarse ese token.</Anotacion> Lee qué firmas y revoca los permisos que ya no uses.</li>
               <li><strong>Los bots del sándwich.</strong> Es una forma de <Termino slug="mev">MEV</Termino>. Un bot ve tu cambio en espera, compra justo antes y vende justo después. Tú pagas más, hasta el límite de tu tolerancia. Hay carteras que envían las operaciones por un canal privado: reducen el riesgo, no lo eliminan.</li>
               <li><strong>La pérdida impermanente.</strong> Si aportas liquidez, una subida fuerte te deja por detrás de quien se quedó quieto. Las comisiones pueden no compensarlo.</li>
               <li><strong>El código.</strong> Los contratos principales llevan años en uso y han sido auditados, pero un <Termino slug="exploit">exploit</Termino> nunca es imposible. Y los hooks de v4 los escribe cualquiera.</li>
               <li><strong>Nadie al otro lado.</strong> Si te equivocas de red, de token o de dirección, no hay servicio de atención que lo deshaga.</li>
-              <li><strong>El precio de UNI.</strong> Su volatilidad es la de cualquier criptomoneda. La quema no garantiza que suba.</li>
+              <li><strong>El precio de UNI.</strong> Su volatilidad es la de cualquier criptomoneda. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>La quema no garantiza que suba.</Anotacion></li>
             </ul>
           </div>
           <DisclaimerRiesgo variante="general" />
@@ -530,7 +536,7 @@ export default async function UniswapPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Uniswap</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Producto Constante</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Producto Constante</strong>.</p>
           </div>
           {d.isRegistered ? <GuideUniswapQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

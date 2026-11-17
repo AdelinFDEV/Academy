@@ -1,54 +1,173 @@
-/* Guía «Qué es BNB». Prefijo: bnb-. Lo común está en ../guias.css. */
+/* Guía «Qué es BNB». Prefijo: bnb-. Lo común está en ../guias.css.
+   Estilo «Cuaderno de estudio» (ESTILO.md): papel sobre lavanda, color cielo de Guías. */
 
 /* ── Las dos vidas, lado a lado ── */
-.bnb-vidas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
-.bnb-vida { padding: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; background: rgba(15,32,64,0.45); }
-.bnb-vida--red { border-color: var(--gold-border); background: linear-gradient(160deg, rgba(230,180,85,0.1), rgba(15,32,64,0.45)); }
-.bnb-vida-rotulo { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #9db2d3; }
-.bnb-vida--red .bnb-vida-rotulo { color: var(--gold); }
-.bnb-vida-titulo { margin: 8px 0 14px; font-size: 21px; font-weight: 800; color: #fff; }
-.bnb-vida ul { margin: 0; padding-left: 20px; display: grid; gap: 9px; font-size: 15.5px; line-height: 1.55; color: #dce8f8; }
-.bnb-vida ul a { color: var(--gold); }
-.bnb-vida-pie { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.09); font-size: 14px; color: #b0c4d8; }
+.bnb-vidas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 26px; }
+.bnb-vida {
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+.bnb-vida--red { background: var(--cielo-s); box-shadow: 0 6px 0 var(--cielo); }
+.bnb-vida-rotulo {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--gris);
+  color: var(--tinta-2);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bnb-vida--red .bnb-vida-rotulo { background: var(--papel); color: var(--cielo-o); }
+.bnb-vida-titulo {
+  margin: 12px 0 14px;
+  font-family: var(--letra-titular);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+.bnb-vida ul { margin: 0; padding-left: 20px; display: grid; gap: 9px; font-size: 15.5px; font-weight: 600; line-height: 1.55; color: var(--tinta-2); }
+.bnb-vida li::marker { color: var(--tinta-3); }
+.bnb-vida--red li::marker { color: var(--cielo-o); }
+.bnb-vida-pie {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 2px dashed var(--gris-o);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+.bnb-vida--red .bnb-vida-pie { color: var(--cielo-o); }
 
-/* ── Calculadora de quemas ── */
-.bnb-quema { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.bnb-quema-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
-.bnb-quema-barra { height: 16px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
-.bnb-quema-barra span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent-orange), var(--gold)); }
-.bnb-quema-escala { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; font-size: 12.5px; color: #b0c4d8; }
-.bnb-quema-escala span:nth-child(2) { font-weight: 700; color: #fff; }
-.bnb-quema-campo { display: grid; gap: 8px; margin-top: 22px; }
-.bnb-quema-campo > span { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; font-size: 14.5px; color: #dce8f8; }
-.bnb-quema-campo strong { color: var(--gold); font-variant-numeric: tabular-nums; }
-.bnb-quema-campo input { width: 100%; height: 44px; accent-color: var(--accent-orange); }
-.bnb-quema-campo input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
-.bnb-quema-resultados { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; margin-top: 14px; }
-.bnb-quema-resultados > div { display: grid; gap: 5px; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.03); }
-.bnb-quema-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
-.bnb-quema-resultados span { font-size: 13px; color: #b0c4d8; }
-.bnb-quema-resultados strong { font-size: 22px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
-.bnb-quema-resultados .es-principal strong { font-size: 30px; color: var(--gold); }
-.bnb-quema-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+/* ── Calculadora de quemas: una hoja de papel ── */
+.bnb-quema {
+  margin-top: 24px;
+  padding: 26px;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+.bnb-quema-titulo {
+  display: inline-block;
+  margin: 0 0 20px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bnb-quema-barra { height: 18px; border-radius: 999px; background: var(--gris); overflow: hidden; }
+.bnb-quema-barra span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--cielo);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.35);
+  transform-origin: left center;
+  animation: bnb-llenar 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+/* Crece con transform, no con width: no obliga a recalcular la página. */
+@keyframes bnb-llenar { from { transform: scaleX(0); } }
+.bnb-quema-escala { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 12.5px; font-weight: 800; color: var(--tinta-2); }
+.bnb-quema-escala span { line-height: 1.3; }
+.bnb-quema-escala span:nth-child(2) { font-weight: 900; text-align: center; color: var(--cielo-o); }
+.bnb-quema-escala span:last-child { text-align: right; }
+.bnb-quema-campo { display: grid; gap: 4px; margin-top: 24px; }
+.bnb-quema-campo > span { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 12px; font-size: 15px; font-weight: 700; color: var(--tinta); }
+.bnb-quema-campo strong { font-family: var(--letra-titular); font-size: 20px; font-weight: 800; color: var(--cielo-o); font-variant-numeric: tabular-nums; }
+
+/* El deslizador es el común de guias.css (.gbc-wrap input[type="range"]). */
+.bnb-quema-campo input[type="range"] { margin-top: 6px; }
+
+.bnb-quema-resultados { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px; margin-top: 10px; }
+.bnb-quema-resultados > div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: 0 4px 0 var(--gris-o);
+}
+.bnb-quema-resultados .es-principal { background: var(--cielo-s); box-shadow: 0 4px 0 var(--cielo); }
+.bnb-quema-resultados span { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.bnb-quema-resultados strong { font-family: var(--letra-titular); font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--tinta); font-variant-numeric: tabular-nums; }
+.bnb-quema-resultados .es-principal span { color: var(--cielo-o); }
+.bnb-quema-resultados .es-principal strong { font-size: 32px; color: var(--cielo-o); }
+.bnb-quema-nota { margin: 16px 0 0; font-size: 13.5px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 /* ── Tres cifras de la red ── */
-.bnb-cifras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
-.bnb-cifras > div { display: grid; gap: 8px; align-content: start; padding: 20px; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; background: rgba(15,32,64,0.45); }
-.bnb-cifras strong { font-size: 28px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
-.bnb-cifras span { font-size: 14px; line-height: 1.55; color: #dce8f8; }
+.bnb-cifras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.bnb-cifras > div {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+.bnb-cifras strong { font-family: var(--letra-titular); font-size: 30px; font-weight: 800; line-height: 1.05; color: var(--cielo-o); font-variant-numeric: tabular-nums; }
+.bnb-cifras span { font-size: 14.5px; font-weight: 600; line-height: 1.55; color: var(--tinta-2); }
 
-/* ── Historia en seis fechas ── */
-.bnb-historial { list-style: none; display: grid; gap: 0; margin: 26px 0 0; padding: 0; border-left: 2px solid var(--gold-border); }
-.bnb-historial li { position: relative; display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 18px; padding: 0 0 24px 24px; }
+/* ── Historia en seis fechas: una línea de tiempo con puntos de canto ── */
+.bnb-historial { position: relative; list-style: none; display: grid; gap: 0; margin: 26px 0 0; padding: 0 0 0 4px; }
+.bnb-historial::before { content: ""; position: absolute; top: 10px; bottom: 10px; left: 10px; width: 4px; border-radius: 999px; background: var(--gris); }
+.bnb-historial li { position: relative; display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 18px; padding: 0 0 26px 34px; }
 .bnb-historial li:last-child { padding-bottom: 0; }
-.bnb-historial li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px #060e1c; }
-.bnb-historial-fecha { font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--gold); padding-top: 3px; }
-.bnb-historial strong { display: block; font-size: 17px; color: #fff; }
-.bnb-historial p { margin: 5px 0 0; font-size: 15.5px; line-height: 1.65; color: #dce8f8; }
+.bnb-historial li::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--fondo);
+  border-radius: 50%;
+  background: var(--cielo);
+  box-shadow: 0 3px 0 var(--cielo-o);
+}
+.bnb-historial-fecha {
+  justify-self: start;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: var(--cielo-s);
+  color: var(--cielo-o);
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.bnb-historial strong { display: block; font-family: var(--letra-titular); font-size: 19px; font-weight: 800; line-height: 1.25; color: var(--tinta); }
+.bnb-historial p { margin: 6px 0 0; font-size: 15.5px; font-weight: 600; line-height: 1.65; color: var(--tinta-2); }
+
+/* ══ El cuaderno de quien la ha estudiado (marcas de estudio, 17-11-2026) ══
+   Las piezas en src/components/cuaderno/; lo común en ../guias.css. Aquí solo
+   la colocación propia de esta guía. */
+
+/* Julio de 2026, la fecha que cambia BNB en España, con su «¡ojo!». */
+.bnb-hito-ojo { --se-tam: 26px; position: absolute; top: -12px; left: 190px; }
+
+/* Delante del remedio, su check. */
+.bnb-check { --se-tam: 1.15em; margin-right: 0.25em; vertical-align: -0.22em; }
 
 @media (max-width: 760px) {
   .bnb-vidas, .bnb-cifras, .bnb-quema-resultados { grid-template-columns: 1fr; }
-  .bnb-quema { padding: 18px 16px; }
-  .bnb-quema-escala { font-size: 11.5px; }
-  .bnb-historial li { grid-template-columns: 1fr; gap: 4px; }
+  .bnb-quema { padding: 18px 16px; border-radius: 24px; }
+  .bnb-vida { padding: 20px 18px; }
+  .bnb-quema-escala { gap: 8px; font-size: 12px; }
+  .bnb-historial li { grid-template-columns: 1fr; gap: 8px; padding-left: 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bnb-quema-barra span { animation: none; }
 }

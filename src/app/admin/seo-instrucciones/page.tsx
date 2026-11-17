@@ -1,4 +1,6 @@
 import Link from "next/link";
+import IndiceApuntes from "../IndiceApuntes";
+import "../apuntes.css";
 
 /**
  * /admin/seo-instrucciones · Cómo se hace SEO en la academia, para cualquier
@@ -83,7 +85,7 @@ export default function SeoInstruccionesPage() {
     <div className="admin-guide-instructions agi--seo">
       <div className="agi-hero">
         <div className="agi-hero-label">Referencia interna · revisado el {REVISADO}</div>
-        <h1 className="agi-hero-title">Cómo se hace SEO aquí</h1>
+        <h1 className="agi-hero-title">Cómo se hace <span className="fluor">SEO</span> aquí</h1>
         <p className="agi-hero-sub">
           El método para que cualquier página de la academia aparezca en Google: una guía, un término del diccionario,
           la ficha de un curso o de una herramienta, un hilo del foro. No son trucos. Es entender qué premia Google
@@ -91,11 +93,9 @@ export default function SeoInstruccionesPage() {
         </p>
       </div>
 
-      <nav className="agi-indice" aria-label="Índice">
-        {INDICE.map(([id, texto], i) => (
-          <a key={id} href={`#${id}`}><span>{String(i + 1).padStart(2, "0")}</span>{texto}</a>
-        ))}
-      </nav>
+      <div className="agi-cuaderno">
+      <IndiceApuntes items={INDICE} />
+      <div className="agi-hojas">
 
       <Seccion id="google" n="01" titulo="Cómo decide Google hoy">
         <div className="agi-card">
@@ -417,6 +417,8 @@ export default function SeoInstruccionesPage() {
           </ul>
         </div>
       </Seccion>
+      </div>
+      </div>
     </div>
   );
 }

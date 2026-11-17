@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { ArrowLeft, BarChart3 } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import "./estadisticas.css";
 
 export const metadata: Metadata = {
   title: "Mis Estadísticas",
@@ -54,14 +57,14 @@ export default async function EstadisticasPage() {
   const worstTrade = total > 0 ? all.reduce((worst, t) => t.pnl < worst.pnl ? t : worst, all[0]) : null;
   const avgPnl = total > 0 ? totalPnl / total : 0;
 
-  // Best current win streak
+  // La racha de wins más larga
   let maxStreak = 0, curStreak = 0;
   for (const t of all) {
     if (t.result === "win") { curStreak++; maxStreak = Math.max(maxStreak, curStreak); }
     else curStreak = 0;
   }
 
-  // Pair breakdown
+  // Desglose por par
   const pairMap: Record<string, { count: number; pnl: number }> = {};
   for (const t of all) {
     if (!pairMap[t.pair]) pairMap[t.pair] = { count: 0, pnl: 0 };
@@ -77,129 +80,120 @@ export default async function EstadisticasPage() {
   const shorts = all.filter((t) => t.direction === "short").length;
 
   const fmtPnl = (n: number) =>
-    `${n >= 0 ? "+" : ""}${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    `${n >= 0 ? "+" : ""}${n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  const signo = (n: number) => (n > 0 ? "is-sube" : n < 0 ? "is-baja" : "");
 
   return (
-    <main className="dashboard-main">
-      <div className="dashboard-header">
-        <h1>Mis Estadísticas</h1>
-        <p>Basado en {total} operación{total !== 1 ? "es" : ""} registradas en tu diario de trading.</p>
-      </div>
+    <main className="dashboard-main es">
+      <header className="pn-cab tono-azul">
+        <Tecla href="/dashboard" color="blanca" tamano="peq" className="pn-volver">
+          <ArrowLeft size={14} strokeWidth={2.6} aria-hidden="true" /> Mi panel
+        </Tecla>
+        <p className="pn-mano">de tu Diario de Trading</p>
+        <h1 className="pn-titulo">Mis <span className="fluor">estadísticas</span></h1>
+        <p className="pn-lead">
+          {total === 1 ? "Basado en la única operación" : `Basado en las ${total} operaciones`} de tu Diario de Trading.
+        </p>
+      </header>
 
       {total === 0 ? (
-        <div className="stats-empty">
-          <svg width="40" height="40" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <rect x="2" y="9" width="3" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.2"/>
-            <rect x="6.5" y="5" width="3" height="9" rx="0.5" stroke="currentColor" strokeWidth="1.2"/>
-            <rect x="11" y="2" width="3" height="12" rx="0.5" stroke="currentColor" strokeWidth="1.2"/>
-          </svg>
+        <div className="pn-vacio">
+          <span className="pn-vacio-icono tono-azul" aria-hidden="true"><BarChart3 size={22} /></span>
           <p>Aún no tienes operaciones registradas.</p>
-          <a href="/dashboard/trading" className="btn-primary btn-small">Ir al Diario de Trading →</a>
+          <Tecla href="/dashboard/trading" color="azul">Ir al Diario de Trading</Tecla>
         </div>
       ) : (
         <>
-          {/* KPI grid */}
-          <div className="stats-grid">
-            <div className="stat-card">
-              <span className="stat-value">{total}</span>
-              <span className="stat-label">Operaciones</span>
+          {/* Las cuatro cifras */}
+          <div className="es-cifras">
+            <div className="es-cifra">
+              <span className="es-cifra-valor">{total}</span>
+              <span className="pn-etiqueta">Operaciones</span>
             </div>
-            <div className="stat-card">
-              <span className="stat-value" style={{ color: winRate >= 50 ? "var(--accent-orange)" : "#ef4444" }}>
-                {winRate}%
-              </span>
-              <span className="stat-label">Win rate</span>
+            <div className="es-cifra">
+              <span className="es-cifra-valor">{winRate} %</span>
+              <span className="pn-etiqueta">Win rate</span>
             </div>
-            <div className="stat-card">
-              <span className="stat-value" style={{ color: totalPnl >= 0 ? "var(--accent-orange)" : "#ef4444" }}>
-                {fmtPnl(totalPnl)}
-              </span>
-              <span className="stat-label">PnL total</span>
+            <div className="es-cifra">
+              <span className={`es-cifra-valor ${signo(totalPnl)}`}>{fmtPnl(totalPnl)}</span>
+              <span className="pn-etiqueta">PnL total</span>
             </div>
-            <div className="stat-card">
-              <span className="stat-value">{maxStreak}</span>
-              <span className="stat-label">Racha de wins</span>
+            <div className="es-cifra">
+              <span className="es-cifra-valor">{maxStreak}</span>
+              <span className="pn-etiqueta">Racha de wins</span>
             </div>
           </div>
 
-          {/* Secondary stats */}
-          <div className="estads-secondary">
-            <div className="estads-row">
-              <div className="estads-item">
-                <span className="estads-label">Wins / Losses / BE</span>
-                <div className="estads-bar-wrap">
-                  <div className="estads-bar">
-                    <div className="estads-bar-win" style={{ width: `${pct(wins, total)}%` }} title={`${wins} wins`} />
-                    <div className="estads-bar-loss" style={{ width: `${pct(losses, total)}%` }} title={`${losses} losses`} />
-                    <div className="estads-bar-be" style={{ width: `${pct(breakevens, total)}%` }} title={`${breakevens} BE`} />
-                  </div>
-                  <div className="estads-bar-legend">
-                    <span className="win">{wins} W</span>
-                    <span className="loss">{losses} L</span>
-                    {breakevens > 0 && <span className="be">{breakevens} BE</span>}
-                  </div>
-                </div>
+          {/* Repartos y extremos */}
+          <div className="es-rejilla">
+            <section className="pn-hoja es-bloque">
+              <h2 className="pn-etiqueta">Wins / Losses / BE</h2>
+              <div className="es-reparto" role="img" aria-label={`${wins} ganadas, ${losses} perdidas y ${breakevens} sin resultado`}>
+                <i className="es-reparto-a" style={{ width: `${pct(wins, total)}%` }} title={`${wins} wins`} />
+                <i className="es-reparto-b" style={{ width: `${pct(losses, total)}%` }} title={`${losses} losses`} />
+                <i className="es-reparto-c" style={{ width: `${pct(breakevens, total)}%` }} title={`${breakevens} BE`} />
               </div>
+              <p className="es-leyenda">
+                <span className="es-leyenda-a">{wins} W</span>
+                <span className="es-leyenda-b">{losses} L</span>
+                {breakevens > 0 && <span className="es-leyenda-c">{breakevens} BE</span>}
+              </p>
+            </section>
 
-              <div className="estads-item">
-                <span className="estads-label">Long vs Short</span>
-                <div className="estads-bar-wrap">
-                  <div className="estads-bar">
-                    <div className="estads-bar-win" style={{ width: `${pct(longs, total)}%` }} />
-                    <div className="estads-bar-loss" style={{ width: `${pct(shorts, total)}%` }} />
-                  </div>
-                  <div className="estads-bar-legend">
-                    <span className="win">{longs} Long</span>
-                    <span className="loss">{shorts} Short</span>
-                  </div>
-                </div>
+            <section className="pn-hoja es-bloque">
+              <h2 className="pn-etiqueta">Long vs Short</h2>
+              <div className="es-reparto" role="img" aria-label={`${longs} en largo y ${shorts} en corto`}>
+                <i className="es-reparto-long" style={{ width: `${pct(longs, total)}%` }} />
+                <i className="es-reparto-short" style={{ width: `${pct(shorts, total)}%` }} />
               </div>
-            </div>
+              <p className="es-leyenda">
+                <span className="es-leyenda-long">{longs} Long</span>
+                <span className="es-leyenda-short">{shorts} Short</span>
+              </p>
+            </section>
 
-            <div className="estads-row">
-              <div className="estads-item">
-                <span className="estads-label">Mejor operación</span>
-                {bestTrade && (
-                  <div className="estads-highlight positive">
-                    <span className="estads-pair">{bestTrade.pair}</span>
-                    <span className="estads-pnl">{fmtPnl(bestTrade.pnl)}</span>
-                  </div>
-                )}
-              </div>
-              <div className="estads-item">
-                <span className="estads-label">Peor operación</span>
-                {worstTrade && (
-                  <div className="estads-highlight negative">
-                    <span className="estads-pair">{worstTrade.pair}</span>
-                    <span className="estads-pnl">{fmtPnl(worstTrade.pnl)}</span>
-                  </div>
-                )}
-              </div>
-              <div className="estads-item">
-                <span className="estads-label">PnL promedio</span>
-                <div className={`estads-highlight ${avgPnl >= 0 ? "positive" : "negative"}`}>
-                  <span className="estads-pnl">{fmtPnl(avgPnl)} por op.</span>
-                </div>
-              </div>
-            </div>
+            <section className="pn-hoja es-bloque">
+              <h2 className="pn-etiqueta">Mejor operación</h2>
+              {bestTrade && (
+                <p className="es-destacada">
+                  <span className="es-par">{bestTrade.pair}</span>
+                  <span className={`es-pnl ${signo(bestTrade.pnl)}`}>{fmtPnl(bestTrade.pnl)}</span>
+                </p>
+              )}
+            </section>
+            <section className="pn-hoja es-bloque">
+              <h2 className="pn-etiqueta">Peor operación</h2>
+              {worstTrade && (
+                <p className="es-destacada">
+                  <span className="es-par">{worstTrade.pair}</span>
+                  <span className={`es-pnl ${signo(worstTrade.pnl)}`}>{fmtPnl(worstTrade.pnl)}</span>
+                </p>
+              )}
+            </section>
+            <section className="pn-hoja es-bloque">
+              <h2 className="pn-etiqueta">PnL promedio</h2>
+              <p className="es-destacada">
+                <span className={`es-pnl ${signo(avgPnl)}`}>{fmtPnl(avgPnl)}</span>
+                <span className="es-par">por op.</span>
+              </p>
+            </section>
           </div>
 
-          {/* Pair breakdown */}
+          {/* Desglose por par */}
           {pairStats.length > 0 && (
-            <div className="section">
-              <h2 className="section-title">Desglose por par</h2>
-              <div className="estads-pairs">
-                {pairStats.map(([pair, s]) => (
-                  <div key={pair} className="estads-pair-row">
-                    <span className="estads-pair-name">{pair}</span>
-                    <span className="estads-pair-count">{s.count} op.</span>
-                    <span className={`estads-pair-pnl ${s.pnl >= 0 ? "positive" : "negative"}`}>
-                      {fmtPnl(s.pnl)}
-                    </span>
-                  </div>
+            <section className="pn-hoja">
+              <h2 className="pn-h2">Desglose por par</h2>
+              <ul className="es-pares">
+                {pairStats.map(([pair, st]) => (
+                  <li key={pair} className="es-par-fila">
+                    <span className="es-par">{pair}</span>
+                    <span className="pn-chip tono-gris">{st.count} op.</span>
+                    <span className={`es-pnl ${signo(st.pnl)}`}>{fmtPnl(st.pnl)}</span>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </section>
           )}
         </>
       )}

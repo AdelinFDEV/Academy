@@ -16,6 +16,8 @@ const OPTIONS: { value: Granularity; label: string }[] = [
 /** Cuántos periodos caben en el gráfico sin que las barras se vuelvan hilos. */
 const VISIBLE: Record<Granularity, number> = { month: 12, quarter: 8, year: 10 };
 
+const TICK = { fill: TJ_COLORS.axis, fontSize: 11.5, fontWeight: 700 };
+
 interface Row extends GroupStats {
   returnPct: number | null;
 }
@@ -29,10 +31,10 @@ function PeriodTooltip({ active, payload }: BarTooltipProps) {
   if (!active || !payload?.length) return null;
   const p = payload[0].payload;
   return (
-    <div className="tj-tip">
-      <span className="tj-tip-head">{p.label}</span>
+    <div className="dja-tip">
+      <span className="dja-tip-cab cap">{p.label}</span>
       <strong className={`tone-${toneOf(p.pnl)}`}>{pnlStr(p.pnl)}</strong>
-      <span className="muted">{p.count} op. · {Math.round(p.winRate)} % acierto</span>
+      <span className="dja-tip-pie">{p.count} op. · {Math.round(p.winRate)} % acierto</span>
     </div>
   );
 }
@@ -55,6 +57,7 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
   const worst = rows.reduce<Row | null>((w, r) => (!w || r.pnl < w.pnl ? r : w), null);
   const maxAbs = Math.max(...rows.map(r => Math.abs(r.pnl)), 1);
   const unit = granularity === "month" ? "meses" : granularity === "quarter" ? "trimestres" : "años";
+  const total = rows.reduce((s, r) => s + r.pnl, 0);
 
   // Acierto del periodo más reciente con operaciones, frente al anterior: cambia
   // con la vista (mes, trimestre o año) y con los filtros de arriba.
@@ -63,26 +66,26 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
   const hitDelta = last && prev ? Math.round(last.winRate) - Math.round(prev.winRate) : null;
 
   return (
-    <section className="tj-card tjn-period">
-      <header className="tjr-head">
+    <section className="dj-hoja">
+      <header className="dj-cabeza">
         <div>
           <h3>Rendimiento por periodo</h3>
-          <span className="tj-count">Cómo se reparte tu resultado en el tiempo</span>
+          <p>Cómo se reparte tu resultado en el tiempo</p>
         </div>
         <TjSegmented label="Periodo" value={granularity} onChange={setGranularity} options={OPTIONS} />
       </header>
 
-      <dl className="tjn-band">
-        <div className="tj-metric">
-          <dt>{unit} en verde</dt>
-          <dd>{green}/{rows.length}</dd>
-          <dd className="tj-metric-sub">{rows.length ? Math.round((green / rows.length) * 100) : 0} % de los {unit}</dd>
+      <dl className="dja-fichas">
+        <div className="dj-ficha dja-dato">
+          <dt className="dj-etq">{unit} en verde</dt>
+          <dd className="dj-cifra dja-dato-cifra">{green}<small>/{rows.length}</small></dd>
+          <dd className="dja-dato-pie">{rows.length ? Math.round((green / rows.length) * 100) : 0} % de los {unit}</dd>
         </div>
         {last && (
-          <div className={`tj-metric${hitDelta ? ` tone-${toneOf(hitDelta)}` : ""}`}>
-            <dt>Acierto · {last.label}</dt>
-            <dd>{Math.round(last.winRate)} %</dd>
-            <dd className="tj-metric-sub">
+          <div className="dj-ficha dja-dato">
+            <dt className="dj-etq">Acierto · <span className="cap">{last.label}</span></dt>
+            <dd className="dj-cifra dja-dato-cifra">{Math.round(last.winRate)} %</dd>
+            <dd className={`dja-dato-pie${hitDelta ? ` tone-${toneOf(hitDelta)}` : ""}`}>
               {hitDelta == null
                 ? `ganadas: ${last.wins} de ${last.count}`
                 : `${hitDelta === 0 ? "igual que" : `${hitDelta > 0 ? "+" : "−"}${Math.abs(hitDelta)} pts frente a`} ${prev.label}`}
@@ -90,81 +93,70 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
           </div>
         )}
         {best && best.pnl > 0 && (
-          <div className="tj-metric tone-win">
-            <dt>Mejor</dt>
-            <dd>{pnlStr(best.pnl)}</dd>
-            <dd className="tj-metric-sub cap">{best.label}</dd>
+          <div className="dj-ficha dja-dato">
+            <dt className="dj-etq">Mejor</dt>
+            <dd className="dj-cifra dja-dato-cifra tone-win">{pnlStr(best.pnl)}</dd>
+            <dd className="dja-dato-pie cap">{best.label}</dd>
           </div>
         )}
         {worst && worst.pnl < 0 && (
-          <div className="tj-metric tone-loss">
-            <dt>Peor</dt>
-            <dd>{pnlStr(worst.pnl)}</dd>
-            <dd className="tj-metric-sub cap">{worst.label}</dd>
+          <div className="dj-ficha dja-dato">
+            <dt className="dj-etq">Peor</dt>
+            <dd className="dj-cifra dja-dato-cifra tone-loss">{pnlStr(worst.pnl)}</dd>
+            <dd className="dja-dato-pie cap">{worst.label}</dd>
           </div>
         )}
-        <div className={`tj-metric tone-${toneOf(rows.reduce((s, r) => s + r.pnl, 0))}`}>
-          <dt>Media por periodo</dt>
-          <dd>{pnlStr(rows.length ? rows.reduce((s, r) => s + r.pnl, 0) / rows.length : 0)}</dd>
+        <div className="dj-ficha dja-dato">
+          <dt className="dj-etq">Media por periodo</dt>
+          <dd className={`dj-cifra dja-dato-cifra tone-${toneOf(total)}`}>{pnlStr(rows.length ? total / rows.length : 0)}</dd>
         </div>
       </dl>
 
-      <div className="tj-chart tjn-period-chart">
+      <div className="dja-grafica dja-grafica--barras">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-            {/* Barras con luz: claras arriba y apagándose hacia la base (v3, 15-11-2026). */}
-            <defs>
-              {(["win", "loss", "be"] as const).map(k => (
-                <linearGradient key={k} id={`tjn-barra-${k}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={TJ_COLORS[k]} stopOpacity={1} />
-                  <stop offset="100%" stopColor={TJ_COLORS[k]} stopOpacity={0.35} />
-                </linearGradient>
-              ))}
-            </defs>
-            <CartesianGrid stroke={TJ_COLORS.grid} vertical={false} />
+          <BarChart data={chart} margin={{ top: 10, right: 6, left: 0, bottom: 0 }}>
+            <CartesianGrid stroke={TJ_COLORS.grid} strokeDasharray="4 6" vertical={false} />
             <XAxis
-              dataKey="label" axisLine={false} tickLine={false} interval={0}
-              tick={{ fill: TJ_COLORS.axis, fontSize: 11, fontWeight: 600 }}
+              dataKey="label" axisLine={false} tickLine={false} interval={0} tickMargin={8}
+              tick={TICK}
               tickFormatter={(l: string) => (granularity === "month" ? l.slice(0, 3) : l)}
             />
-            <YAxis axisLine={false} tickLine={false} width={56} tick={{ fill: TJ_COLORS.axis, fontSize: 11 }} tickFormatter={(v: number) => `${Math.round(v)}$`} />
-            <Tooltip content={<PeriodTooltip />} cursor={{ fill: "rgba(240,244,255,0.04)" }} />
-            <ReferenceLine y={0} stroke="rgba(240,244,255,0.2)" />
-            <Bar dataKey="pnl" radius={[5, 5, 5, 5]} maxBarSize={42} animationDuration={600}>
-              {chart.map(r => <Cell key={r.key} fill={`url(#tjn-barra-${toneOf(r.pnl)})`} />)}
+            <YAxis axisLine={false} tickLine={false} width={54} tick={TICK} tickFormatter={(v: number) => `${Math.round(v)}$`} />
+            <Tooltip content={<PeriodTooltip />} cursor={{ fill: TJ_COLORS.azulSuave, fillOpacity: 0.6, radius: 10 }} />
+            <ReferenceLine y={0} stroke={TJ_COLORS.be} strokeWidth={1.5} />
+            <Bar dataKey="pnl" radius={[8, 8, 8, 8]} maxBarSize={44} animationDuration={700}>
+              {chart.map(r => <Cell key={r.key} fill={TJ_COLORS[toneOf(r.pnl)]} />)}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="tj-table-wrap">
-        <table className="tj-table tjn-table">
-          <thead>
-            <tr>
-              <th>Periodo</th>
-              <th className="num">Ops.</th>
-              <th className="num">Acierto</th>
-              <th className="num tj-hide-sm">P. factor</th>
-              <th className="num tj-hide-sm">Retorno</th>
-              <th className="num">P&L</th>
+      <table className="dja-tabla">
+        <thead>
+          <tr>
+            <th scope="col">Periodo</th>
+            <th scope="col" className="num">Ops.</th>
+            <th scope="col" className="num">Acierto</th>
+            <th scope="col" className="num">P. factor</th>
+            <th scope="col" className="num">Retorno</th>
+            <th scope="col" className="dja-tabla-pnl">P&L</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[...rows].reverse().map(r => (
+            <tr key={r.key}>
+              <th scope="row" className="cap">{r.label}</th>
+              <td className="num" data-et="Ops.">{r.count}</td>
+              <td className="num" data-et="Acierto">{Math.round(r.winRate)} %</td>
+              <td className="num" data-et="P. factor">{factorStr(r.profitFactor)}</td>
+              <td className={`num tone-${toneOf(r.returnPct ?? 0)}`} data-et="Retorno">{r.returnPct != null ? pctStr(r.returnPct) : "—"}</td>
+              <td className="dja-tabla-pnl">
+                <DivergingBar value={r.pnl} max={maxAbs} />
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {[...rows].reverse().map(r => (
-              <tr key={r.key}>
-                <td className="cap strong">{r.label}</td>
-                <td className="num">{r.count}</td>
-                <td className="num">{Math.round(r.winRate)} %</td>
-                <td className="num tj-hide-sm">{factorStr(r.profitFactor)}</td>
-                <td className={`num tj-hide-sm tone-${toneOf(r.returnPct ?? 0)}`}>{r.returnPct != null ? pctStr(r.returnPct) : "—"}</td>
-                <td className={`num tone-${toneOf(r.pnl)}`}>
-                  <DivergingBar value={r.pnl} max={maxAbs} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 }

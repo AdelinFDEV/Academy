@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión M · Cómic en viñetas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --papel: #fff6e0; --negro: #111; --amarillo: #ffd400; --rojo: #ff3d3d; --azul: #2b7bff; --naranja: #ff8a00; --verde: #19c37d; --titulo: "Bangers", cursive; --texto: "Comic Neue", cursive; --f: "Nunito", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papel); color: var(--negro); font-family: var(--texto); }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .puntos { background-image: radial-gradient(rgba(0,0,0,.18) 1.5px, transparent 1.5px); background-size: 10px 10px; }
+
+  .boton { display: inline-flex; align-items: center; justify-content: center; padding: 14px 24px; border: 4px solid var(--negro); border-radius: 12px; font-family: var(--f); font-weight: 900; font-size: 16px; text-transform: uppercase; background: var(--amarillo); box-shadow: 5px 6px 0 var(--negro); transition: transform .08s, box-shadow .08s; }
+  .boton:hover { transform: translate(4px, 5px); box-shadow: 1px 1px 0 var(--negro); }
+  .boton--rojo { background: var(--rojo); color: #fff; }
+  .boton--blanco { background: #fff; }
+
+  .nav .ancho { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; padding-bottom: 18px; }
+  .marca { font-family: var(--titulo); font-size: 40px; letter-spacing: .03em; transform: rotate(-2deg); display: inline-block; }
+  .marca span { color: var(--naranja); -webkit-text-stroke: 2px var(--negro); }
+  .enlaces { display: flex; gap: 18px; font-family: var(--f); font-weight: 900; text-transform: uppercase; }
+
+  .pagina { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(150px, auto); gap: 14px; padding-bottom: 50px; }
+  .vineta { border: 5px solid var(--negro); background: #fff; position: relative; padding: 22px; overflow: hidden; transition: transform .15s; }
+  .vineta:hover { transform: rotate(-.6deg) scale(1.01); z-index: 2; }
+  .v-titulo { grid-column: span 4; grid-row: span 2; background: var(--amarillo); display: flex; flex-direction: column; justify-content: center; }
+  .v-titulo h1 { font-family: var(--titulo); font-weight: 400; font-size: 92px; line-height: .92; letter-spacing: .01em; margin: 0; text-shadow: 4px 4px 0 #fff; }
+  .v-titulo h1 em { font-style: normal; color: var(--rojo); }
+  .v-titulo p { font-size: 22px; font-weight: 700; margin: 18px 0 0; max-width: 34ch; }
+  .acciones { display: flex; gap: 16px; margin-top: 26px; flex-wrap: wrap; }
+  .cartela { position: absolute; top: 0; left: 0; background: #fff; border-right: 4px solid var(--negro); border-bottom: 4px solid var(--negro); padding: 6px 12px; font-family: var(--f); font-weight: 900; font-size: 13px; text-transform: uppercase; }
+
+  .v-personaje { grid-column: span 2; grid-row: span 2; background: var(--azul); display: flex; align-items: flex-end; justify-content: center; }
+  .rayos { position: absolute; inset: -50%; background: repeating-conic-gradient(rgba(255,255,255,.18) 0 10deg, transparent 10deg 20deg); animation: girar 30s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  .cara { position: relative; width: 170px; height: 170px; border-radius: 50%; background: var(--naranja); border: 5px solid var(--negro); margin-bottom: 30px; }
+  .cara::before, .cara::after { content: ""; position: absolute; top: 56px; width: 22px; height: 30px; border-radius: 50%; background: var(--negro); }
+  .cara::before { left: 44px; } .cara::after { right: 44px; }
+  .cara i { position: absolute; left: 50px; bottom: 34px; width: 60px; height: 26px; border-radius: 0 0 30px 30px; background: var(--negro); }
+  .bocadillo { position: absolute; top: 20px; left: 16px; right: 16px; background: #fff; border: 4px solid var(--negro); border-radius: 50% / 40%; padding: 18px; font-weight: 700; font-size: 18px; text-align: center; }
+  .bocadillo::after { content: ""; position: absolute; bottom: -24px; left: 50%; border: 14px solid transparent; border-top: 18px solid var(--negro); }
+
+  .v-dato { grid-column: span 2; display: flex; flex-direction: column; justify-content: flex-end; }
+  .onomatopeya { font-family: var(--titulo); font-size: 64px; line-height: 1; transform: rotate(-6deg); display: inline-block; -webkit-text-stroke: 2px var(--negro); }
+  .v-dato h3 { font-family: var(--titulo); font-weight: 400; font-size: 34px; margin: 6px 0 0; letter-spacing: .02em; }
+  .v-dato p { margin: 4px 0 0; font-size: 17px; font-weight: 700; }
+
+  .seccion { grid-column: span 6; background: var(--negro); color: var(--amarillo); border: 5px solid var(--negro); padding: 14px 22px; font-family: var(--titulo); font-size: 44px; letter-spacing: .03em; display: flex; justify-content: space-between; align-items: center; }
+  .v-guia { grid-column: span 2; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between; }
+  .v-guia .letra { font-family: var(--titulo); font-size: 120px; line-height: .8; -webkit-text-stroke: 3px var(--negro); }
+  .v-guia h3 { font-family: var(--titulo); font-weight: 400; font-size: 36px; margin: 0; letter-spacing: .02em; }
+  .v-guia small { font-weight: 700; font-size: 16px; }
+  .estallido { position: absolute; top: 14px; right: 14px; width: 92px; height: 92px; background: var(--rojo); color: #fff; display: grid; place-items: center; font-family: var(--titulo); font-size: 22px; clip-path: polygon(50% 0, 61% 30%, 95% 20%, 72% 47%, 100% 70%, 65% 70%, 60% 100%, 45% 74%, 15% 95%, 28% 62%, 0 45%, 32% 38%, 18% 8%); }
+
+  .v-premium { grid-column: span 6; background: var(--rojo); color: #fff; display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; align-items: center; padding: 34px; }
+  .v-premium h2 { font-family: var(--titulo); font-weight: 400; font-size: 72px; line-height: .92; margin: 0; letter-spacing: .02em; text-shadow: 4px 4px 0 var(--negro); }
+  .v-premium p { font-size: 20px; font-weight: 700; }
+  .precio { background: #fff; color: var(--negro); border: 5px solid var(--negro); padding: 22px; text-align: center; transform: rotate(2deg); box-shadow: 8px 8px 0 var(--negro); }
+  .precio strong { display: block; font-family: var(--titulo); font-size: 76px; line-height: 1; }
+  .pie { text-align: center; padding: 0 24px 40px; font-weight: 700; }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--amarillo); border: 4px solid var(--negro); font-family: var(--f); font-weight: 900; font-size: 13px; padding: 8px 14px; box-shadow: 4px 4px 0 var(--negro); }
+</style>
+</head>
+<body>
+<header class="nav"><div class="ancho">
+  <span class="marca">ADELIN<span>BTC</span></span>
+  <nav class="enlaces"><a href="#">Guías</a><a href="#">Diccionario</a><a href="#">Cursos</a><a href="#">Foro</a></nav>
+  <a class="boton boton--blanco" href="#">Entrar</a>
+</div></header>
+
+<main class="ancho"><div class="pagina">
+  <div class="vineta v-titulo puntos"><span class="cartela">Capítulo 1</span>
+    <h1>Cripto sin miedo: <em>la historia</em> que nadie te contó bien</h1>
+    <p>Guías gratuitas que te lo explican viñeta a viñeta, con ejercicios y un quiz al final.</p>
+    <div class="acciones"><a class="boton boton--rojo" href="#">Empezar a leer</a><a class="boton boton--blanco" href="#">Ver Premium</a></div>
+  </div>
+  <div class="vineta v-personaje"><span class="rayos"></span><span class="bocadillo">¡Solo habrá 21 millones de bitcoin!</span><span class="cara"><i></i></span></div>
+
+  <a class="vineta v-dato" href="#" style="background:#e6f7ff"><span class="cartela">Diario de Trading</span><span class="onomatopeya" style="color:var(--azul)">¡ZAS!</span><h3>Nova te pilla el fallo</h3><p>Cierras pronto las ganadoras. Lo ves en tus datos.</p></a>
+  <a class="vineta v-dato puntos" href="#" style="background:#e9fbef"><span class="cartela">Portfolio Adelin</span><span class="onomatopeya" style="color:var(--verde)">+24,6 %</span><h3>Cartera real</h3><p>Ejemplo · también las que pierden.</p></a>
+  <a class="vineta v-dato" href="#" style="background:#fff0e0"><span class="cartela">Cursos</span><span class="onomatopeya" style="color:var(--naranja)">¡APROBADO!</span><h3>Con certificado</h3><p>Examen por módulo y diploma al final.</p></a>
+
+  <div class="seccion"><span>Elige tu episodio</span><a class="boton" href="#" style="font-size:14px;padding:10px 16px">Todos</a></div>
+  <a class="vineta v-guia puntos" href="#" style="background:#fff7cc"><span class="estallido">NUEVO</span><span class="letra" style="color:var(--azul)">H</span><span><h3>Hyperliquid</h3><small>Intermedio · 14 min</small></span></a>
+  <a class="vineta v-guia" href="#"><span class="letra" style="color:var(--rojo)">X</span><span><h3>XRP y Ripple</h3><small>Básico · 11 min</small></span></a>
+  <a class="vineta v-guia puntos" href="#" style="background:#e6f7ff"><span class="letra" style="color:var(--verde)">R</span><span><h3>Render</h3><small>Intermedio · 12 min</small></span></a>
+
+  <div class="vineta v-premium"><div><h2>Próximo número: Premium</h2><p>Para cuando pases de aprender a operar: diario con Nova, cartera real y cursos con certificado.</p><a class="boton" href="#">Hazte Premium</a></div><div class="precio"><strong>19,99 €</strong>al mes · sin permanencia</div></div>
+</div></main>
+<footer class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No es asesoramiento financiero</footer>
+<span class="etiqueta-maqueta">Versión M · Cómic (maqueta)</span>
+</body>
+</html>

@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { AlertTriangle } from "lucide-react";
+import "./aviso-riesgo.css";
 
 /**
  * Descargo de responsabilidad de las herramientas de la academia.
+ *
+ * Se ve como el aviso amarillo de riesgo del sistema de diseño
+ * (disenos/sistema.html, «Avisos»; estilo «Cuaderno de estudio» desde el
+ * 17-11-2026): su CSS vive en `aviso-riesgo.css`. Conserva las clases
+ * `disclaimer-*` porque algunas páginas las usan para colocarlo (márgenes).
  *
  * **Fuente única a propósito.** Un aviso legal repartido a mano por varias
  * páginas acaba diciendo cosas distintas en cada una, y entonces no protege:
@@ -211,11 +216,9 @@ export default function DisclaimerRiesgo({ variante }: { variante: Variante }) {
   const { titulo, cuerpo } = TEXTO[variante] ?? TEXTO.general;
 
   return (
-    <aside className="disclaimer" role="note" aria-label="Aviso legal y de riesgo">
+    <aside className="disclaimer aviso-riesgo" role="note" aria-label="Aviso legal y de riesgo">
       <div className="disclaimer-head">
-        <span className="disclaimer-icon" aria-hidden="true">
-          <AlertTriangle size={17} strokeWidth={2.1} />
-        </span>
+        <span className="disclaimer-icon" aria-hidden="true">!</span>
         <h2 className="disclaimer-title">{titulo}</h2>
       </div>
 

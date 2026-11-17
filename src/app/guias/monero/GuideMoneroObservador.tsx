@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * La misma operación (Ana paga a Luis) vista por un tercero en Bitcoin y en
@@ -29,11 +30,11 @@ export default function GuideMoneroObservador() {
       <p className="xmr-obs-titulo">Lo que ve cualquiera en el explorador</p>
 
       <div className="xmr-obs-redes" role="group" aria-label="Elige la red">
-        <button type="button" aria-pressed={red === "btc"} className={red === "btc" ? "is-activa" : ""} onClick={() => setRed("btc")}>Bitcoin</button>
-        <button type="button" aria-pressed={red === "xmr"} className={red === "xmr" ? "is-activa" : ""} onClick={() => setRed("xmr")}>Monero</button>
+        <Tecla tamano="peq" color={red === "btc" ? "cielo" : "blanca"} aria-pressed={red === "btc"} onClick={() => setRed("btc")}>Bitcoin</Tecla>
+        <Tecla tamano="peq" color={red === "xmr" ? "cielo" : "blanca"} aria-pressed={red === "xmr"} onClick={() => setRed("xmr")}>Monero</Tecla>
       </div>
 
-      <ul className="xmr-obs-filas" aria-live="polite">
+      <ul className="xmr-obs-filas">
         {FILAS.map((f) => {
           const tapado = red === "xmr" && f.oculto;
           return (
@@ -46,7 +47,7 @@ export default function GuideMoneroObservador() {
         })}
       </ul>
 
-      <p className="xmr-obs-resumen">
+      <p className="xmr-obs-resumen" aria-live="polite">
         {red === "btc"
           ? `Se leen los ${visibles} datos. Con saber de quién es una sola dirección, se reconstruye el resto.`
           : `Se leen ${visibles} de 7: que hubo una operación, cuándo y cuánto pagó de comisión. Nada más.`}

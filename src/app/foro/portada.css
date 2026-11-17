@@ -1,57 +1,27 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   EL FORO — sus dos últimas preguntas en la portada de la web
+   EL FORO — sus últimas preguntas en la portada de la web
    ══════════════════════════════════════════════════════════════════════════
-   Lo importa `src/components/foro/ForoEnPortada.tsx`, que sale en `/` debajo
-   de las guías. Prefijo: fpo-. Rehecho el 12-11-2026, con el foro.
+   Lo importa `src/components/foro/ForoEnPortada.tsx`, y solo él. Prefijo:
+   fpo-. Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md,
+   disenos/sistema.html), en el coral del foro.
 
-   Vive aquí y no en home.css porque es del foro: si el foro cambia, cambia
-   esto. La tarjeta, la etiqueta de categoría, la firma y el sello (`fo-`)
-   salen de `foro.css`, que el componente importa también: una sola
-   definición, no dos copias. La sección lleva `fo-pagina` para tener sus
-   variables.
+   Vive aquí y no en home.css porque es del foro. De `foro.css` solo se usa la
+   firma (`Firma`, clases `fo-firma*` y `fo-sello`), tal cual la pinta el foro:
+   así la misma persona firma igual en la portada que dentro.
 
-   Dos tarjetas a lo ancho, cada una con el lomo del color de su categoría.
-   Van justo después de las guías, que son las que mandan en la portada. */
+   Preguntas a la izquierda, cada una en su tarjeta con la pestaña del color de
+   su categoría, y a la derecha la invitación a preguntar. */
 
-/* El fondo es de esta sección y de ninguna otra: índigo, con una trama de
-   puntos que se apaga hacia abajo. Arriba, el separador: una línea de luz que
-   se desvanece hacia los lados y un resplandor corto debajo, como si la
-   sección anterior dejara pasar la luz por una rendija. */
 .fpo {
-  position: relative;
-  isolation: isolate;
-  padding: 4.2rem 1.25rem 4.4rem;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse 55% 240px at 50% 0%, rgba(139, 108, 242, 0.2), transparent 70%),
-    linear-gradient(180deg, #0d1130 0%, #0b0f2a 55%, #0a0d24 100%);
-}
-
-.fpo::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: min(880px, 86%);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.9) 35%, rgba(255, 150, 100, 0.9) 65%, transparent);
-  transform: translateX(-50%);
-}
-
-.fpo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: radial-gradient(rgba(167, 139, 250, 0.22) 1px, transparent 1.4px);
-  background-size: 26px 26px;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
-  mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
-  pointer-events: none;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2rem);
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
 }
 
 .fpo-inner {
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
@@ -61,329 +31,98 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.8rem 1.5rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.8rem;
+}
+
+.fpo-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--coral-o);
+  transform: rotate(-2deg);
 }
 
 .fpo-titulo {
-  margin-top: 0.9rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  margin: 0.3rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 4.2vw, 2.8rem);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
-  color: #fff;
-}
-
-.fpo-titulo em {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-style: italic;
-  font-weight: 600;
+  line-height: 1.06;
   letter-spacing: -0.02em;
-  background: linear-gradient(100deg, var(--accent-orange-soft) 0%, var(--accent-orange) 55%, #ffd4a8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* «Ver el foro»: un botón de verdad, no un enlace suelto. Pastilla de
-   cristal con borde naranja (la misma familia que el botón del foro en la
-   barra) y la flecha en un círculo lleno que avanza con el ratón encima. En
-   móvil ocupa el ancho: es la salida del bloque. */
-.fpo-todas {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.85rem;
-  height: 46px;
-  padding: 0 0.35rem 0 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--accent-orange) 42%, transparent);
-  border-radius: 999px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-orange) 14%, transparent) 0%, color-mix(in srgb, var(--accent-orange) 5%, transparent) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  color: #fff;
-  text-decoration: none;
-  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.fpo-todas-flecha {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--accent-orange);
-  color: #1a0a02;
-  box-shadow: 0 6px 16px -8px var(--accent-orange);
-}
-
-.fpo-todas-flecha svg { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
-
-.fpo-todas:hover,
-.fpo-todas:focus-visible {
-  border-color: var(--accent-orange-soft);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-orange) 24%, transparent) 0%, color-mix(in srgb, var(--accent-orange) 10%, transparent) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 12px 28px -16px var(--accent-orange);
-  transform: translateY(-1px);
-}
-
-.fpo-todas:hover .fpo-todas-flecha svg,
-.fpo-todas:focus-visible .fpo-todas-flecha svg { transform: translateX(2px); }
-
-.fpo-todas:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 3px; }
-
-@media (max-width: 640px) {
-  .fpo-todas { width: 100%; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fpo-todas, .fpo-todas-flecha svg { transition: none; }
-  .fpo-todas:hover, .fpo-todas:focus-visible { transform: none; }
-  .fpo-todas:hover .fpo-todas-flecha svg { transform: none; }
+  color: var(--tinta);
 }
 
 /* Preguntas a la izquierda, invitación a la derecha. */
 .fpo-cuerpo {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: 1.1rem;
+  gap: 22px;
   align-items: stretch;
 }
 
 .fpo-lista {
   display: grid;
-  gap: 0.9rem;
+  gap: 18px;
   align-content: start;
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
 /* Con una sola pregunta, su tarjeta crece hasta la altura de la invitación. */
 .fpo-lista--una { align-content: stretch; }
-.fpo-lista--una .fpo-pregunta { font-size: 1.5rem; }
-.fpo-lista--una .fpo-extracto { -webkit-line-clamp: 4; line-clamp: 4; font-size: 0.98rem; }
+.fpo-lista--una .fpo-pregunta { font-size: 1.6rem; }
+.fpo-lista--una .fpo-extracto { -webkit-line-clamp: 4; line-clamp: 4; font-size: 1rem; }
 
-/* ── La invitación ──
-   Violeta y naranja, con el borde girando despacio y una conversación
-   dibujada que no para: es lo único que se mueve en la sección. */
-@property --fpo-giro {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
-.fpo-invita {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  min-height: 400px;
-  padding: 1.5rem 1.6rem 1.6rem;
-  overflow: hidden;
-  border-radius: 24px;
-  background:
-    radial-gradient(360px 240px at 105% -5%, rgba(255, 122, 61, 0.5), transparent 68%),
-    radial-gradient(300px 260px at -10% 105%, rgba(96, 165, 250, 0.3), transparent 70%),
-    linear-gradient(155deg, #4a34a8 0%, #2c1f73 42%, #171246 100%);
-  box-shadow:
-    0 40px 80px -40px rgba(124, 92, 246, 0.9),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 1px 0 rgba(255, 255, 255, 0.22) inset;
-}
-
-/* El borde: un haz de luz que da la vuelta a la tarjeta. */
-.fpo-invita-borde {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  padding: 1.5px;
-  border-radius: inherit;
-  background: conic-gradient(from var(--fpo-giro), transparent 0deg, rgba(255, 190, 150, 0.95) 40deg, rgba(196, 170, 255, 0.9) 90deg, transparent 150deg, transparent 360deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-  animation: fpo-giro 9s linear infinite;
-}
-
-/* Una luz que respira detrás de la conversación. */
-.fpo-invita-orbe {
-  position: absolute;
-  z-index: -1;
-  top: -60px;
-  right: -40px;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 160, 110, 0.55), transparent 65%);
-  animation: fpo-respira 7s ease-in-out infinite;
-}
-
-/* ── La conversación ── */
-.fpo-chat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  flex: 1;
-  justify-content: center;
-  min-height: 150px;
-  margin-bottom: 0.4rem;
-}
-
-.fpo-burbuja {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.5rem;
-  max-width: 78%;
-  opacity: 0;
-  animation: fpo-llega 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-.fpo-burbuja--b { align-self: flex-end; animation-name: fpo-llega-b; }
-.fpo-burbuja--c { animation-name: fpo-llega-c; }
-
-.fpo-burbuja > span {
-  display: grid;
-  gap: 6px;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 16px 16px 16px 5px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(6px);
-}
-.fpo-burbuja--b > span {
-  border-color: rgba(255, 190, 150, 0.5);
-  border-radius: 16px 16px 5px 16px;
-  background: linear-gradient(135deg, rgba(255, 138, 76, 0.85), rgba(255, 107, 43, 0.7));
-}
-
-/* Las rayas que hacen de texto. */
-.fpo-burbuja b { display: block; height: 7px; border-radius: 99px; background: rgba(255, 255, 255, 0.7); }
-.fpo-burbuja--a b:nth-child(1) { width: 132px; }
-.fpo-burbuja--a b:nth-child(2) { width: 84px; }
-.fpo-burbuja--b b:nth-child(1) { width: 150px; }
-.fpo-burbuja--b b:nth-child(2) { width: 118px; }
-.fpo-burbuja--b b:nth-child(3) { width: 64px; }
-
-.fpo-chat-cara { flex: none; width: 26px; height: 26px; border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: linear-gradient(135deg, #8fb8ff, #5a7cf0); }
-.fpo-chat-cara--b { background: linear-gradient(135deg, #ffc38f, #ff7a3d); }
-.fpo-chat-cara--c { background: linear-gradient(135deg, #b7f5cf, #34d399); }
-
-/* «Está escribiendo»: tres puntos que no paran. */
-.fpo-escribiendo { display: flex !important; align-items: center; gap: 5px !important; height: 36px; padding: 0 0.95rem !important; }
-.fpo-escribiendo em { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: fpo-punto 1.2s ease-in-out infinite; }
-.fpo-escribiendo em:nth-child(2) { animation-delay: 0.16s; }
-.fpo-escribiendo em:nth-child(3) { animation-delay: 0.32s; }
-
-@keyframes fpo-giro { to { --fpo-giro: 360deg; } }
-@keyframes fpo-respira { 0%, 100% { transform: scale(1); opacity: 0.75; } 50% { transform: scale(1.18); opacity: 1; } }
-@keyframes fpo-punto { 0%, 60%, 100% { transform: translateY(0); opacity: 0.45; } 30% { transform: translateY(-5px); opacity: 1; } }
-/* Diez segundos: pregunta, respuesta, alguien escribe, y vuelta a empezar. */
-@keyframes fpo-llega {
-  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
-  6%, 88% { opacity: 1; transform: none; }
-  96%, 100% { opacity: 0; transform: translateY(-8px); }
-}
-@keyframes fpo-llega-b {
-  0%, 22% { opacity: 0; transform: translateY(12px) scale(0.96); }
-  28%, 88% { opacity: 1; transform: none; }
-  96%, 100% { opacity: 0; transform: translateY(-8px); }
-}
-@keyframes fpo-llega-c {
-  0%, 46% { opacity: 0; transform: translateY(12px) scale(0.96); }
-  52%, 88% { opacity: 1; transform: none; }
-  96%, 100% { opacity: 0; transform: translateY(-8px); }
-}
-
-.fpo-invita-vivo { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25); }
-
-.fpo-invita-sello {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  align-self: flex-start;
-  padding: 4px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #e9e2ff;
-}
-
-.fpo-invita-titulo {
-  position: relative;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-  color: #fff;
-}
-.fpo-invita-titulo em {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-style: italic;
-  font-weight: 600;
-  color: #ffc49c;
-}
-
-.fpo-invita-texto { position: relative; margin: 0; font-size: 0.93rem; line-height: 1.6; color: rgba(233, 226, 255, 0.82); }
-
-.fpo-invita-acciones { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 1.1rem; margin-top: 0.5rem; }
-
-.fpo-invita-boton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 46px;
-  padding: 0 1.25rem;
-  border-radius: 13px;
-  background: #fff;
-  font-size: 0.92rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #241a5c;
-  text-decoration: none;
-  box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.7);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.fpo-invita-boton:hover { transform: translateY(-2px); box-shadow: 0 18px 32px -14px rgba(0, 0, 0, 0.8); }
-
-.fpo-invita-enlace { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; font-weight: 700; color: #e9e2ff; text-decoration: none; }
-.fpo-invita-enlace:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
-.fpo-invita-boton:focus-visible, .fpo-invita-enlace:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-
+/* ── La tarjeta de una pregunta ──
+   Papel con su canto, y arriba una pestaña del color de la categoría. */
 .fpo-hilo {
+  --cat-fallback: var(--coral);
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.65rem;
   height: 100%;
-  padding: 1.4rem 1.5rem 1.3rem 1.7rem;
-  overflow: hidden;
+  padding: 1.35rem 1.5rem 1.2rem;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+  color: var(--tinta);
   text-decoration: none;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-/* El lomo: el color de la categoría, de arriba abajo. */
 .fpo-hilo::before {
   content: "";
   position: absolute;
   top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--cat), color-mix(in srgb, var(--cat) 20%, transparent));
+  left: 1.5rem;
+  width: 56px;
+  height: 6px;
+  border-radius: 0 0 6px 6px;
+  background: var(--cat, var(--cat-fallback));
 }
 
-.fpo-hilo:hover { border-color: color-mix(in srgb, var(--cat) 50%, transparent); transform: translateY(-3px); }
-.fpo-hilo:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
+/* Solo con ratón: en el móvil el «hover» se queda pegado tras tocar. */
+@media (hover: hover) {
+  .fpo-hilo:hover {
+    transform: translateY(-3px) rotate(-0.4deg);
+    box-shadow: 0 8px 0 var(--gris-o);
+  }
+}
+
+.fpo-hilo:active {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 var(--gris-o);
+  transition-duration: 0.06s;
+}
+
+.fpo-hilo:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+}
 
 .fpo-meta {
   display: flex;
@@ -392,13 +131,43 @@
   gap: 0.5rem;
 }
 
+/* La categoría, como chip del sistema en el color de la categoría. */
+.fpo-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--cat, var(--cat-fallback)) 16%, var(--papel));
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: color-mix(in srgb, var(--cat, var(--cat-fallback)) 55%, var(--tinta));
+  white-space: nowrap;
+}
+
+.fpo-cat svg { flex: none; }
+
+/* Resuelta: el menta de «hecho». */
+.fpo-resuelta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: var(--menta-s);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--menta-o);
+  white-space: nowrap;
+}
+
 .fpo-pregunta {
-  font-family: var(--font-display);
-  font-size: 1.18rem;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-  color: #fff;
+  font-family: var(--letra-titular);
+  font-size: 1.28rem;
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
   overflow-wrap: anywhere;
 }
 
@@ -406,9 +175,10 @@
   flex: 1;
   display: -webkit-box;
   overflow: hidden;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   line-height: 1.55;
-  color: var(--text-muted);
+  color: var(--tinta-2);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -420,30 +190,233 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem 1rem;
-  margin-top: 0.3rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--fo-borde);
+  margin-top: 0.2rem;
+  padding-top: 0.85rem;
+  border-top: 2px dashed var(--gris);
 }
 
 .fpo-respuestas {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--tinta-2);
   font-variant-numeric: tabular-nums;
 }
 
-.fpo-respuestas b { font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: #fff; }
-.fpo-hilo.is-resuelto .fpo-respuestas b { color: var(--fo-verde); }
+.fpo-respuestas b {
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.fpo-hilo.is-resuelto .fpo-respuestas b { color: var(--menta-o); }
+
+/* ── La invitación ──
+   Un bloque coral suave, con la conversación dibujada que no para: es lo
+   único que se mueve en la sección. */
+.fpo-invita {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 400px;
+  padding: 1.6rem 1.6rem 1.4rem;
+  overflow: hidden;
+  border-radius: 32px;
+  background: var(--coral-s);
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+}
+
+/* Un círculo de su color asomando por la esquina, como en las tarjetas de
+   producto del sistema. */
+.fpo-invita::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--coral) 28%, var(--coral-s));
+}
+
+/* ── La conversación ── */
+.fpo-chat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-height: 160px;
+  margin-bottom: 0.3rem;
+}
+
+.fpo-burbuja {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.55rem;
+  max-width: 80%;
+  opacity: 0;
+  animation: fpo-llega 10s cubic-bezier(0.34, 1.56, 0.5, 1) infinite;
+}
+
+.fpo-burbuja--b { align-self: flex-end; animation-name: fpo-llega-b; }
+.fpo-burbuja--c { animation-name: fpo-llega-c; }
+
+.fpo-burbuja > span {
+  display: grid;
+  gap: 7px;
+  padding: 0.75rem 0.9rem;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--coral) 35%, var(--coral-s));
+}
+
+.fpo-burbuja--b > span {
+  border-radius: 18px 18px 6px 18px;
+  background: var(--coral);
+  box-shadow: 0 4px 0 var(--coral-o);
+}
+
+/* Las rayas que hacen de texto. */
+.fpo-burbuja b { display: block; height: 8px; border-radius: 99px; background: var(--gris); }
+.fpo-burbuja--b b { background: rgba(255, 255, 255, 0.75); }
+.fpo-burbuja--a b:nth-child(1) { width: 132px; }
+.fpo-burbuja--a b:nth-child(2) { width: 84px; }
+.fpo-burbuja--b b:nth-child(1) { width: 150px; }
+.fpo-burbuja--b b:nth-child(2) { width: 118px; }
+.fpo-burbuja--b b:nth-child(3) { width: 64px; }
+
+.fpo-chat-cara {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--papel);
+  border-radius: 50%;
+  background: var(--azul);
+  box-shadow: 0 3px 0 var(--azul-o);
+}
+
+.fpo-chat-cara--b { background: var(--naranja); box-shadow: 0 3px 0 var(--naranja-o); }
+.fpo-chat-cara--c { background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); }
+
+/* «Está escribiendo»: tres puntos que no paran. */
+.fpo-burbuja > .fpo-escribiendo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 38px;
+  padding: 0 1rem;
+}
+
+.fpo-escribiendo em {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tinta-3);
+  animation: fpo-punto 1.2s ease-in-out infinite;
+}
+
+.fpo-escribiendo em:nth-child(2) { animation-delay: 0.16s; }
+.fpo-escribiendo em:nth-child(3) { animation-delay: 0.32s; }
+
+@keyframes fpo-punto {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Diez segundos: pregunta, respuesta, alguien escribe, y vuelta a empezar.
+   Cada burbuja llega con un pequeño rebote. */
+@keyframes fpo-llega {
+  0% { opacity: 0; transform: translateY(14px) scale(0.9); }
+  6%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes fpo-llega-b {
+  0%, 22% { opacity: 0; transform: translateY(14px) scale(0.9); }
+  28%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes fpo-llega-c {
+  0%, 46% { opacity: 0; transform: translateY(14px) scale(0.9); }
+  52%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+
+.fpo-invita-titulo {
+  position: relative;
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.fpo-invita-texto {
+  position: relative;
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.fpo-invita-acciones {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.fpo-invita-enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  /* A la altura de la cara de la tecla, no de su recorrido. 44 px de alto:
+     se pulsa con el dedo. */
+  min-height: 44px;
+  margin-bottom: 9px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--coral-o);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.fpo-invita-enlace:hover { color: var(--tinta); }
+
+.fpo-invita-enlace:focus-visible {
+  border-radius: 6px;
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+}
 
 @media (max-width: 760px) {
-  .fpo { padding: 3.2rem 1.1rem 3.2rem; }
-  .fpo-cuerpo { grid-template-columns: 1fr; }
-  .fpo-invita { min-height: 0; }
-  .fpo-lista--una .fpo-pregunta { font-size: 1.25rem; }
+  .fpo-cuerpo { grid-template-columns: minmax(0, 1fr); }
+  .fpo-invita { min-height: 0; border-radius: 26px; }
+  .fpo-lista--una .fpo-pregunta { font-size: 1.3rem; }
+}
+
+@media (max-width: 560px) {
+  .fpo-cabecera .tecla { flex: 1 1 100%; }
+  .fpo-hilo { padding: 1.2rem 1.15rem 1.05rem; }
+  .fpo-hilo::before { left: 1.15rem; }
+  .fpo-invita { padding: 1.3rem 1.15rem 1.1rem; }
+  .fpo-invita-acciones .tecla { flex: 1 1 100%; }
+  .fpo-burbuja--a b:nth-child(1), .fpo-burbuja--b b:nth-child(1) { width: 112px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fpo-invita-borde, .fpo-invita-orbe, .fpo-escribiendo em { animation: none; }
+  .fpo-escribiendo em { animation: none; }
   .fpo-burbuja { animation: none; opacity: 1; }
-  .fpo-hilo, .fpo-invita-boton { transition: none; }
-  .fpo-hilo:hover, .fpo-invita-boton:hover { transform: none; }
+  .fpo-hilo { transition: none; }
+  .fpo-hilo:hover, .fpo-hilo:active { transform: none; }
 }

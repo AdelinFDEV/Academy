@@ -1,0 +1,743 @@
+/*
+ * Diario de Trading — la BASE (17-11-2026, estilo «Cuaderno de estudio»).
+ *
+ * Solo lo usa /dashboard/trading (se importa en su page.tsx). Aquí va lo que
+ * comparten todos los bloques del Diario; cada bloque tiene su archivo:
+ *   diario-portada.css      cabecera, balance, pestañas, primeros pasos, Resumen, cuenta, reinicio
+ *   diario-calendario.css   el calendario de papel y el ánimo del día
+ *   diario-formulario.css   la ventana de la operación y sus capturas
+ *   diario-operaciones.css  la lista de operaciones, las últimas y los hitos
+ *   diario-analisis.css     gráficas, análisis, desgloses y emociones
+ *   nova-oculta.css         Nova, apartada mientras llega la mascota
+ *
+ * Fuente de verdad del aspecto: ESTILO.md y disenos/sistema.html. Las fichas
+ * (--tinta, --azul, --sube…) viven en globals.css. El color de la sección es
+ * el AZUL; el verde y el rojo (--sube/--baja) SOLO en cifras con signo.
+ *
+ * Los portales (la ventana de la operación, el detalle de un día, el aviso de
+ * reinicio) se pintan en <body>: su envoltorio lleva también la clase
+ * `trading-journal` para heredar todo esto.
+ */
+
+/* ── La página ──
+   El fondo lavanda y el ancho (1180px) los pone ya el armazón del panel
+   (dashboard.css, claro desde el 17-11-2026): aquí no hay que taparlo. */
+html:has(.trading-journal) {
+  /* Sin anclaje de scroll: al cambiar de pestaña la vista se sustituye entera y
+     Chrome corregía el scroll cientos de píxeles (medido el 15-11-2026). */
+  overflow-anchor: none;
+}
+
+/* ── La raíz ── */
+.trading-journal {
+  --sec: var(--azul);
+  --sec-o: var(--azul-o);
+  --sec-s: var(--azul-s);
+
+  /* El ánimo NO es un resultado: no usa verde ni rojo de cifras. */
+  --mood-4: var(--menta);     --mood-4-o: var(--menta-o);     --mood-4-s: var(--menta-s);
+  --mood-3: var(--cielo);     --mood-3-o: var(--cielo-o);     --mood-3-s: var(--cielo-s);
+  --mood-2: var(--amarillo);  --mood-2-o: var(--amarillo-o);  --mood-2-s: var(--amarillo-s);
+  --mood-1: var(--coral);     --mood-1-o: var(--coral-o);     --mood-1-s: var(--coral-s);
+
+  /* El muelle del estilo: rebota un poco al llegar. */
+  --muelle: cubic-bezier(0.34, 1.8, 0.5, 1);
+  --llegar: cubic-bezier(0.3, 1.3, 0.5, 1);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  font-variant-numeric: tabular-nums;
+  color-scheme: light;
+}
+
+.trading-journal :where(h1, h2, h3, h4) {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+
+.trading-journal :where(p, ul, ol, dl, dd, figure) { margin: 0; }
+.trading-journal :where(ul, ol) { padding: 0; list-style: none; }
+.trading-journal :where(a) { color: var(--azul-o); }
+
+.trading-journal .mood-4 { --mood: var(--mood-4); --mood-o: var(--mood-4-o); --mood-s: var(--mood-4-s); }
+.trading-journal .mood-3 { --mood: var(--mood-3); --mood-o: var(--mood-3-o); --mood-s: var(--mood-3-s); }
+.trading-journal .mood-2 { --mood: var(--mood-2); --mood-o: var(--mood-2-o); --mood-s: var(--mood-2-s); }
+.trading-journal .mood-1 { --mood: var(--mood-1); --mood-o: var(--mood-1-o); --mood-s: var(--mood-1-s); }
+
+/* La cara dibujada del ánimo (Cara, TjDayJournal) metida en un texto o en un
+   circulito: del tamaño de la letra que la rodea. Sustituye a los emojis. */
+.trading-journal .djc-cara.djc-cara--peq { width: 1.2em; height: 1.2em; vertical-align: -0.22em; }
+
+/* ── Cifras con signo: lo único verde o rojo de todo el Diario ── */
+:where(.trading-journal) .tone-win { --tone: var(--sube); color: var(--tone); }
+:where(.trading-journal) .tone-loss { --tone: var(--baja); color: var(--tone); }
+:where(.trading-journal) .tone-be { --tone: var(--tinta-2); color: var(--tone); }
+
+.trading-journal .muted { color: var(--tinta-2); }
+.trading-journal .strong { font-weight: 800; }
+.trading-journal .cap { text-transform: capitalize; }
+.trading-journal .nowrap { white-space: nowrap; }
+.trading-journal .num { text-align: right; }
+
+/* ── La vista abierta ── */
+.tj-suelo { min-width: 0; }
+
+.tj-vista {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+  min-height: 60svh;
+}
+
+.tj-vista > * { animation: dj-subir 0.45s var(--llegar) backwards; }
+.tj-vista > :nth-child(2) { animation-delay: 50ms; }
+.tj-vista > :nth-child(3) { animation-delay: 100ms; }
+.tj-vista > :nth-child(n + 4) { animation-delay: 150ms; }
+
+@keyframes dj-subir { from { opacity: 0; transform: translateY(14px); } }
+
+/* ══ PIEZAS ════════════════════════════════════════════════════════════════ */
+
+/* La hoja: el papel de cada bloque. Esquinas generosas y canto sólido. */
+.dj-hoja {
+  position: relative;
+  min-width: 0;
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: 28px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+
+/* Papel de cuaderno: renglones azules muy suaves. Solo donde se escribe. */
+.dj-hoja--rayada {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 33px, var(--azul-s) 33px 35px) 0 18px / 100% auto,
+    var(--papel);
+}
+
+/* Una hoja de su tono suave, sin canto: para lo que va DENTRO de otra hoja. */
+.dj-ficha {
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: var(--fondo);
+}
+
+/* Cabecera de bloque: título, una línea y, a la derecha, su acción. */
+.dj-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 20px;
+}
+
+.dj-cabeza > div { min-width: 0; }
+.dj-cabeza h2,
+.dj-cabeza h3 { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+.dj-cabeza p { margin-top: 4px; font-size: 0.95rem; font-weight: 600; line-height: 1.5; color: var(--tinta-2); }
+
+/* La etiqueta: mayúsculas pequeñas, como un rótulo de ficha. */
+.dj-etq {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+/* La nota a mano (Caveat). Una o dos por bloque, no más. */
+.dj-nota {
+  display: inline-block;
+  font-family: var(--letra-mano);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--azul-o);
+  transform: rotate(-2deg);
+}
+
+/* Cifra grande: Fraunces 800. */
+.dj-cifra {
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+/* ── Chips ── */
+.dj-chip {
+  --c-s: var(--gris);
+  --c-o: var(--tinta-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: var(--c-s);
+  color: var(--c-o);
+  font-size: 12.5px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.dj-chip--azul { --c-s: var(--azul-s); --c-o: var(--azul-o); }
+.dj-chip--menta { --c-s: var(--menta-s); --c-o: var(--menta-o); }
+.dj-chip--lila { --c-s: var(--lila-s); --c-o: var(--lila-o); }
+.dj-chip--amarillo { --c-s: var(--amarillo-s); --c-o: #7a5d00; }
+.dj-chip--coral { --c-s: var(--coral-s); --c-o: var(--coral-o); }
+.dj-chip--cielo { --c-s: var(--cielo-s); --c-o: var(--cielo-o); }
+.dj-chip--naranja { --c-s: var(--naranja-s); --c-o: var(--naranja-o); }
+/* Un chip con una cifra con signo: su tono suave. */
+.dj-chip.tone-win { --c-s: color-mix(in srgb, var(--sube) 13%, #fff); --c-o: var(--sube); }
+.dj-chip.tone-loss { --c-s: color-mix(in srgb, var(--baja) 12%, #fff); --c-o: var(--baja); }
+.dj-chip.tone-be { --c-s: var(--gris); --c-o: var(--tinta-2); }
+
+/* Long / short: la dirección no es un resultado, va en azul y lila. */
+.dj-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.dj-dir.is-long { background: var(--azul-s); color: var(--azul-o); }
+.dj-dir.is-short { background: var(--lila-s); color: var(--lila-o); }
+
+/* Pósit: lo nuevo o lo importante. */
+.dj-posit {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--amarillo);
+  color: var(--tinta);
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.1;
+  transform: rotate(-3deg);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* Pegatina: los logros. --c el color, --g el giro. */
+.dj-pegatina {
+  --c: var(--amarillo);
+  --t: var(--tinta);
+  --g: 8deg;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  flex: none;
+  padding: 8px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--t);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.35);
+  transform: rotate(var(--g));
+}
+
+.dj-pegatina.is-apagada {
+  --c: var(--gris);
+  --t: var(--tinta-3);
+  box-shadow: none;
+  border-style: dashed;
+  border-color: var(--gris-o);
+}
+
+/* ── Barra de progreso: gruesa, con relieve, se llena con rebote ── */
+.dj-barra {
+  --c: var(--azul);
+  position: relative;
+  height: 18px;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--gris);
+}
+
+.dj-barra > i {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
+  animation: dj-llenar 1.4s var(--llegar) both;
+}
+
+.dj-barra--fina { height: 10px; }
+.dj-barra--fina > i { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1); }
+
+@keyframes dj-llenar { from { width: 0; } }
+
+/* ── Campos de formulario (sistema.html, «Formularios») ── */
+.dj-campo {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dj-campo > label,
+.dj-campo > .dj-campo-tit {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--tinta);
+}
+
+.dj-campo .ayuda {
+  font-family: var(--letra-mano);
+  font-size: 19px;
+  line-height: 1.15;
+  color: var(--tinta-2);
+}
+
+.dj-campo.error .ayuda {
+  font-family: var(--letra-texto);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--coral-o);
+}
+
+.dj-input,
+.trading-journal :is(input[type="text"], input[type="number"], input[type="search"], input[type="email"], input:not([type]), textarea) {
+  width: 100%;
+  min-width: 0;
+  padding: 13px 15px;
+  border: 3px solid var(--gris);
+  border-radius: 14px;
+  outline: none;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 700 16px var(--letra-texto);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.trading-journal textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+.trading-journal :is(input, textarea)::placeholder { color: var(--tinta-3); font-weight: 600; }
+
+.dj-input:focus,
+.trading-journal :is(input[type="text"], input[type="number"], input[type="search"], input[type="email"], input:not([type]), textarea):focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px var(--azul-s);
+}
+
+.dj-campo.error :is(input, textarea) { border-color: var(--coral); }
+
+/* Sin flechitas en los números: estorban y no se leen. */
+.trading-journal input[type="number"]::-webkit-inner-spin-button,
+.trading-journal input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.trading-journal input[type="number"] { -moz-appearance: textfield; }
+
+/* El buscador: la lupa dentro del campo. */
+.dj-buscar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.dj-buscar > svg {
+  position: absolute;
+  left: 14px;
+  color: var(--tinta-3);
+  pointer-events: none;
+}
+
+.trading-journal .dj-buscar input { padding: 10px 14px 10px 38px; font-size: 16px; }
+
+/* ── Avisos (sistema.html, «Avisos») ── */
+.dj-aviso {
+  --c: var(--cielo);
+  --c-o: var(--cielo-o);
+  --c-s: var(--cielo-s);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 3px solid var(--c);
+  border-radius: 18px;
+  background: var(--c-s);
+  color: var(--c-o);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.dj-aviso .ic {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 12px;
+  background: var(--c);
+  color: #fff;
+  font-weight: 900;
+}
+
+.dj-aviso b {
+  display: block;
+  font-family: var(--letra-titular);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.dj-aviso--ok { --c: var(--menta); --c-o: var(--menta-o); --c-s: var(--menta-s); }
+.dj-aviso--riesgo { --c: var(--amarillo); --c-o: #7a5d00; --c-s: var(--amarillo-s); }
+.dj-aviso--riesgo .ic { background: var(--amarillo-o); }
+.dj-aviso--error { --c: var(--coral); --c-o: var(--coral-o); --c-s: var(--coral-s); }
+.dj-aviso--peq { gap: 10px; padding: 10px 14px; border-width: 2px; border-radius: 14px; font-size: 14px; }
+.dj-aviso--peq .ic { width: 26px; height: 26px; border-radius: 9px; font-size: 13px; }
+
+/* El error suelto de un formulario (la clase de toda la web), en coral. */
+.trading-journal .auth-error {
+  margin: 0;
+  padding: 10px 14px;
+  border: 2px solid var(--coral);
+  border-radius: 14px;
+  background: var(--coral-s);
+  color: var(--coral-o);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: left;
+}
+
+/* ── Vacío: un bloque sin datos que explica qué falta ── */
+.dj-vacio {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: clamp(28px, 5vw, 44px) 20px;
+  text-align: center;
+}
+
+.dj-vacio h3 { font-size: clamp(1.3rem, 2.6vw, 1.6rem); }
+.dj-vacio p { max-width: 52ch; font-weight: 600; line-height: 1.55; color: var(--tinta-2); }
+
+/* ── Teclas del Diario ──
+   Todas son <Tecla>; esto solo ajusta tamaños que el sistema no trae. */
+
+/* Mini: cabe en una línea de texto (ⓘ, días del selector de fecha). */
+.trading-journal .tecla.dj-mini,
+.dj-mini.tecla {
+  --h: 4px;
+  --r: 10px;
+  padding: 6px 9px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* Tecla que no grita: minúsculas, para opciones dentro de un bloque. */
+.trading-journal .tecla.dj-llana,
+.dj-llana.tecla { text-transform: none; letter-spacing: 0; }
+
+/* La tecla del atajo de teclado, dentro de un botón. */
+.dj-kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 5px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.28);
+  font: 900 12px var(--letra-texto);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+}
+
+/* ── Selector de opciones (TjSegmented): una fila de teclas ── */
+.dj-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 8px;
+  min-width: 0;
+}
+
+.dj-seg .tecla { text-transform: none; letter-spacing: 0; font-size: 14px; }
+
+/* ── Desplegables (TjSelect, TjCombobox, TjDateTimePicker) ── */
+.dj-select {
+  position: relative;
+  min-width: 0;
+}
+
+.dj-select > .tecla { justify-content: space-between; max-width: 100%; text-transform: none; letter-spacing: 0; font-size: 14px; }
+.dj-select > .tecla > span { overflow: hidden; text-overflow: ellipsis; }
+.dj-select-flecha { transition: transform 0.25s var(--muelle); }
+.dj-select-flecha.is-abierta { transform: rotate(180deg); }
+
+/* El menú: una hoja de papel que cae con un rebote. */
+.dj-menu {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: max(100%, 200px);
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 0 0 2px var(--gris), 0 6px 0 var(--gris-o), 0 24px 40px -18px rgba(29, 27, 51, 0.45);
+  animation: dj-caer 0.28s var(--muelle);
+  transform-origin: top left;
+}
+
+@keyframes dj-caer { from { opacity: 0; transform: translateY(-6px) scale(0.97); } }
+
+.dj-menu-op {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tinta);
+  cursor: pointer;
+  user-select: none;
+}
+
+.dj-menu-op:hover { background: var(--fondo); }
+.dj-menu-op:focus { outline: none; }
+.dj-menu-op:focus-visible { outline: 3px solid var(--azul); outline-offset: -3px; background: var(--fondo); }
+.dj-menu-op.is-activa { background: var(--azul-s); color: var(--azul-o); font-weight: 900; }
+.dj-menu-op.is-nueva { flex-wrap: wrap; background: var(--amarillo-s); color: var(--tinta); }
+.dj-menu-op.is-nueva small { width: 100%; font-family: var(--letra-mano); font-size: 17px; color: var(--tinta-2); }
+
+/* El selector de fecha: un calendarito de papel. */
+.dj-fecha-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 300px;
+  max-width: calc(100vw - 40px);
+  padding: 14px;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 0 0 2px var(--gris), 0 6px 0 var(--gris-o), 0 24px 40px -18px rgba(29, 27, 51, 0.45);
+  animation: dj-caer 0.28s var(--muelle);
+}
+
+.dj-fecha-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dj-fecha-cab > span {
+  font-family: var(--letra-titular);
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.dj-fecha-semana,
+.dj-fecha-dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.dj-fecha-semana span {
+  padding-bottom: 4px;
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+  color: var(--tinta-3);
+}
+
+.dj-fecha-dias .tecla { width: 100%; padding: 6px 0; margin-bottom: 4px; }
+.dj-fecha-dias .dj-fecha-hueco { aspect-ratio: 1; }
+
+.dj-fecha-hora {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 2px dashed var(--gris);
+}
+
+.dj-fecha-hora label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--tinta-2);
+}
+
+.trading-journal .dj-fecha-hora input { width: 68px; padding: 8px 10px; font-size: 16px; text-align: center; }
+.dj-fecha-hora > label + .tecla { margin-left: auto; }
+
+/* ── La ayuda de una métrica (TjInfo): una tecla mini y un papelito ── */
+.dj-info {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.trading-journal .dj-info > .tecla {
+  --h: 3px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin-bottom: 3px;
+  border-radius: 8px;
+}
+
+.dj-info-pop {
+  position: absolute;
+  z-index: 70;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  width: 250px;
+  max-width: 70vw;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--tinta);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 6px);
+  transition: opacity 0.18s, transform 0.25s var(--muelle), visibility 0.18s;
+}
+
+.dj-info-pop::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - var(--dx, 0px));
+  margin-left: -7px;
+  border: 7px solid transparent;
+  border-top-color: var(--tinta);
+}
+
+/* --dx: lo que se corre para no salirse de la pantalla (TjInfo lo mide al abrir). */
+.dj-info.is-abierta .dj-info-pop { opacity: 1; visibility: visible; transform: translate(calc(-50% + var(--dx, 0px)), 0); }
+
+/* La tecla ⓘ es pequeña a la vista, pero se pulsa en un área de 44 × 44. */
+.trading-journal .dj-info > .tecla::after {
+  content: "";
+  position: absolute;
+  inset: -11px;
+}
+
+@media (hover: hover) {
+  .dj-info:hover .dj-info-pop { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+}
+
+/* ── Ventana modal: lo único que se queda fijo en pantalla ── */
+.dj-velo {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  /* Con el teclado del móvil abierto, el velo ocupa solo lo que se ve
+     (useAjusteTeclado, useVentanaMovil.ts); sin esas variables, toda la pantalla. */
+  top: var(--vv-arriba, 0px);
+  bottom: auto;
+  height: var(--vv-alto, 100%);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  overflow-y: auto;
+  background: rgba(29, 27, 51, 0.42);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: dj-velo 0.2s ease-out;
+}
+
+@keyframes dj-velo { from { opacity: 0; } }
+
+.dj-ventana {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(var(--vv-alto, 100svh) - 32px);
+  overflow-y: auto;
+  padding: clamp(20px, 4vw, 30px);
+  border-radius: 32px;
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow: 0 8px 0 var(--gris-o), 0 40px 80px -30px rgba(29, 27, 51, 0.6);
+  animation: dj-ventana 0.42s var(--muelle);
+  overscroll-behavior: contain;
+}
+
+@keyframes dj-ventana { from { opacity: 0; transform: translateY(24px) scale(0.96); } }
+
+/* La tecla de cerrar, arriba a la derecha. */
+.dj-ventana-cerrar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+/* ── Movimiento reducido ── */
+@media (prefers-reduced-motion: reduce) {
+  .tj-vista > *,
+  .dj-barra > i,
+  .dj-menu,
+  .dj-fecha-panel,
+  .dj-velo,
+  .dj-ventana { animation: none; }
+  .dj-info-pop,
+  .dj-select-flecha { transition: none; }
+}
+
+/* En táctil no hay teclado físico: fuera los atajos («N»). */
+@media (hover: none) {
+  .dj-kbd { display: none; }
+}
+
+@media (max-width: 560px) {
+  /* El calendarito de la fecha, del ancho del campo y con días más grandes para el dedo. */
+  .dj-fecha-panel { width: 100%; min-width: 272px; }
+  .dj-fecha-dias .tecla { padding: 10px 0; font-size: 14px; }
+  .trading-journal { gap: 22px; }
+  .tj-vista { gap: 22px; }
+  .dj-hoja { border-radius: 24px; }
+  .dj-ventana { border-radius: 26px; }
+}

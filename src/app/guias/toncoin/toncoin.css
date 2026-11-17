@@ -1,43 +1,54 @@
-/* Guía «Qué es Toncoin (ahora Gram)». Prefijo: gram-. Lo común está en ../guias.css. */
+/* Guía «Qué es Toncoin (ahora Gram)». Prefijo: gram-. Lo común está en ../guias.css.
+   Estilo «Cuaderno de estudio» (ESTILO.md): papel sobre lavanda, color cielo de las guías. */
 
-/* ── Historia en fechas ── */
-.gram-hitos { list-style: none; display: grid; gap: 0; margin: 26px 0 0; padding: 0; border-left: 2px solid var(--gold-border); }
-.gram-hitos li { position: relative; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px; padding: 12px 0 12px 22px; }
-.gram-hitos li::before { content: ""; position: absolute; left: -7px; top: 18px; width: 12px; height: 12px; border-radius: 50%; background: #0a1628; border: 2px solid var(--gold); }
-.gram-hito-fecha { font-size: 13px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); padding-top: 2px; }
-.gram-hitos p { margin: 0; font-size: 15.5px; line-height: 1.6; color: #dce8f8; }
+/* ── Historia en fechas: una línea de tiempo con sus puntos ── */
+.gram-hitos { position: relative; list-style: none; display: grid; gap: 12px; margin: 26px 0 0; padding: 0 0 0 30px; }
+.gram-hitos::before { content: ""; position: absolute; left: 9px; top: 14px; bottom: 14px; width: 4px; border-radius: 999px; background: var(--gris); }
+.gram-hitos li { position: relative; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px; align-items: start; padding: 16px 18px; border-radius: 18px; background: var(--papel); box-shadow: 0 4px 0 var(--gris-o); }
+.gram-hitos li::before { content: ""; position: absolute; left: -29px; top: 20px; width: 16px; height: 16px; border-radius: 50%; background: var(--cielo); border: 3px solid var(--papel); box-shadow: 0 3px 0 var(--cielo-o); }
+.gram-hito-fecha { justify-self: start; padding: 5px 10px; border-radius: 10px; background: var(--cielo-s); font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cielo-o); }
+.gram-hitos p { margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
-/* ── Calculadora de staking y dilución ── */
-.gram-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.gram-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
-.gram-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; align-items: end; }
-.gram-calc-campos label { display: grid; gap: 9px; }
+/* ── Calculadora de staking y dilución: una hoja de papel ── */
+.gram-calc { margin-top: 24px; padding: 26px; border-radius: 26px; background: var(--papel); box-shadow: 0 6px 0 var(--gris-o); color: var(--tinta); }
+.gram-calc-titulo { display: inline-block; margin: 0 0 20px; padding: 6px 12px; border-radius: 10px; background: var(--cielo-s); font-size: 13px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cielo-o); }
+.gram-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 26px; align-items: end; }
+.gram-calc-campos label { display: grid; gap: 8px; }
 .gram-calc-campos .gram-calc-ancho { grid-column: 1 / -1; }
-.gram-calc-campos label > span { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #dce8f8; }
-.gram-calc-campos label strong { color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.gram-calc-campos input:not([type="range"]) { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
-.gram-calc-campos input[type="range"] { width: 100%; height: 44px; accent-color: var(--accent-orange); }
-.gram-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
-.gram-calc-resultados { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 12px; margin-top: 20px; }
-.gram-calc-resultados > div { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.03); }
-.gram-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
-.gram-calc-resultados span { font-size: 13px; color: #b0c4d8; }
-.gram-calc-resultados strong { font-size: 22px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
-.gram-calc-resultados .es-principal strong { font-size: 30px; color: var(--gold); }
-.gram-calc-resultados strong.es-sube { color: #4ade80; }
-.gram-calc-resultados strong.es-baja { color: #fca5a5; }
-.gram-calc-resultados small { font-size: 12.5px; color: #9db2d3; }
-.gram-calc-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+.gram-calc-campos label > span { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14px; font-weight: 800; color: var(--tinta); }
+.gram-calc-campos label strong { font-family: var(--letra-titular); font-size: 18px; font-weight: 800; color: var(--cielo-o); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Campo de texto, como en sistema.html «Formularios» */
+.gram-calc-campos input:not([type="range"]) { width: 100%; padding: 13px 14px; border: 3px solid var(--gris); border-radius: 14px; background: var(--papel); font-family: var(--letra-texto); font-size: 17px; font-weight: 700; color: var(--tinta); font-variant-numeric: tabular-nums; outline: none; box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05); transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.gram-calc-campos input:not([type="range"]):focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
+
+.gram-calc-resultados { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 14px; margin-top: 22px; }
+.gram-calc-resultados > div { display: grid; gap: 6px; align-content: start; padding: 18px; border-radius: 18px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
+.gram-calc-resultados .es-principal { background: var(--cielo-s); box-shadow: 0 4px 0 var(--cielo-o); }
+.gram-calc-resultados span { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.gram-calc-resultados strong { font-family: var(--letra-titular); font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--tinta); font-variant-numeric: tabular-nums; }
+.gram-calc-resultados .es-principal span, .gram-calc-resultados .es-principal small { color: var(--cielo-o); }
+.gram-calc-resultados .es-principal strong { font-size: 34px; color: var(--cielo-o); }
+.gram-calc-resultados strong.es-sube { color: var(--sube); }
+.gram-calc-resultados strong.es-baja { color: var(--baja); }
+.gram-calc-resultados small { font-size: 13px; font-weight: 700; color: var(--tinta-2); }
+.gram-calc-resultados small b { font-weight: 900; font-variant-numeric: tabular-nums; }
+.gram-calc-resultados small b.es-sube { color: var(--sube); }
+.gram-calc-resultados small b.es-baja { color: var(--baja); }
+.gram-calc-nota { margin: 16px 0 0; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 /* ── Tres datos de la oferta ── */
-.gram-datos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
-.gram-datos > div { display: grid; gap: 8px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--gold); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
-.gram-datos strong { font-size: 24px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
-.gram-datos p { margin: 0; font-size: 15px; line-height: 1.6; color: #dce8f8; }
+.gram-datos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.gram-datos > div { display: grid; gap: 8px; align-content: start; padding: 22px; border-radius: 20px; background: var(--papel); box-shadow: 0 5px 0 var(--gris-o); }
+.gram-datos strong { font-family: var(--letra-titular); font-size: clamp(26px, 7vw, 30px); overflow-wrap: anywhere; font-weight: 800; line-height: 1.1; color: var(--cielo-o); font-variant-numeric: tabular-nums; }
+.gram-datos p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 @media (max-width: 760px) {
-  .gram-hitos li { grid-template-columns: 1fr; gap: 4px; }
-  .gram-calc { padding: 18px 16px; }
+  .gram-hitos { padding-left: 26px; }
+  .gram-hitos li { grid-template-columns: 1fr; gap: 8px; padding: 14px 16px; }
+  .gram-hitos li::before { left: -25px; }
+  .gram-hitos::before { left: 7px; }
+  .gram-calc { padding: 18px 16px; border-radius: 24px; }
   .gram-calc-campos, .gram-calc-resultados, .gram-datos { grid-template-columns: 1fr; }
   .gram-calc-campos label > span { flex-wrap: wrap; }
 }

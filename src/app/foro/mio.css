@@ -1,155 +1,228 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   EL FORO — lo mío (/foro/mio)
+   EL FORO — lo tuyo (/foro/mio)
    ══════════════════════════════════════════════════════════════════════════
-   Lo importa `src/components/foro/vistas/VistaMio.tsx`. Prefijo: fm-.
-   Rehecho desde cero el 12-11-2026.
 
-   Un saludo con el alias, el nivel con su barra hasta el siguiente, las
-   cifras en grande y, debajo, dos columnas: lo que te ha pasado (avisos) y
-   lo que has escrito (mensajes). */
+   Lo importa `VistaMio.tsx`. Prefijo: fm-.
+   Estilo «Cuaderno de estudio» desde el 17-11-2026: el nivel con la barra
+   gruesa del sistema (se llena con un rebote), las cifras como fichas, los
+   logros como pegatinas y los avisos y mensajes como notas de papel con un
+   icono del color de su tono (menta lo bueno, coral la moderación). */
 
-.fm-cabecera { padding: 0.6rem 0 2.2rem; }
+.fm-cabecera { margin-bottom: 2.2rem; }
 
-/* ── Reputación ────────────────────────────────────────────────────────── */
+/* ── Reputación ── */
 
 .fm-reputacion {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-  gap: 1rem;
-  margin-bottom: 1.1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 1.6rem;
+  margin-bottom: 2.2rem;
 }
 
 .fm-nivel {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
+  gap: 1.2rem;
   padding: 1.4rem 1.5rem;
 }
 
 .fm-nivel-icono {
+  display: grid;
   flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
-  border-radius: 18px;
-  background: linear-gradient(145deg, rgba(230, 180, 85, 0.3), rgba(230, 180, 85, 0.08));
-  box-shadow: inset 0 0 0 1px var(--premium-gold-soft);
-  color: var(--premium-gold);
-}
-
-.fm-nivel-texto { flex: 1; min-width: 0; }
-
-.fm-etiqueta {
-  display: block;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.fm-nivel-texto b {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 1.7rem;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.035em;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--lila);
+  box-shadow: 0 5px 0 var(--lila-o);
   color: #fff;
 }
 
+.fm-nivel-texto {
+  display: grid;
+  flex: 1;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.fm-etiqueta {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.fm-nivel-texto > b {
+  font-family: var(--letra-titular);
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--tinta);
+}
+
+/* La barra del sistema: gruesa, con relieve, y se llena con un rebote. */
 .fm-barra {
-  height: 6px;
-  margin: 0.7rem 0 0.4rem;
+  height: 18px;
+  margin-top: 0.3rem;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--gris);
 }
 
-.fm-barra span {
+.fm-barra i {
   display: block;
   height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-orange), var(--premium-gold));
+  border-radius: 999px;
+  background: var(--coral);
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
+  animation: fm-llenar 1.6s cubic-bezier(0.3, 1.3, 0.5, 1) both;
 }
 
-.fm-nivel-texto small { font-size: 0.76rem; color: var(--text-muted); }
+@keyframes fm-llenar { from { width: 0; } }
 
+.fm-nivel-texto small {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  color: var(--tinta-2);
+}
+
+/* Las cifras: cuatro fichas en una hoja. */
 .fm-cifras {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  padding: 1.2rem 0.6rem;
+  margin: 0;
+  padding: 1.3rem 0.8rem;
 }
 
 .fm-cifras > div {
   display: flex;
   flex-direction: column-reverse;
-  align-items: center;
   gap: 0.3rem;
-  padding: 0 0.6rem;
+  padding: 0 0.4rem;
   text-align: center;
 }
 
-.fm-cifras > div + div { border-left: 1px solid var(--fo-borde); }
+.fm-cifras > div + div { border-left: 2px dashed var(--gris); }
 
 .fm-cifras dd {
-  font-family: var(--font-display);
+  margin: 0;
+  font-family: var(--letra-titular);
   font-size: 2rem;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.04em;
-  color: #fff;
+  color: var(--tinta);
   font-variant-numeric: tabular-nums;
 }
 
 .fm-cifras dt {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--tinta-2);
 }
+
+/* ── Logros: pegatinas ── */
 
 .fm-logros {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-bottom: 0.9rem;
+  gap: 1rem 1.2rem;
+  margin: 0 0 1.4rem;
+  padding: 0.4rem 0 0;
   list-style: none;
 }
 
-.fm-logros li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.8rem;
-  border: 1px solid var(--premium-gold-soft);
-  border-radius: 999px;
-  background: rgba(230, 180, 85, 0.08);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--premium-gold);
+.fm-pegatina {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
+  width: 104px;
+  height: 104px;
+  padding: 0.6rem;
+  border: 4px solid var(--papel);
+  border-radius: 50%;
+  background: var(--amarillo);
+  box-shadow: 0 6px 14px -6px rgba(29, 27, 51, 0.4);
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--tinta);
+  text-align: center;
+  transform: rotate(8deg);
 }
 
+.fm-pegatina:nth-child(3n + 2) { background: var(--lila); color: #fff; transform: rotate(-6deg); }
+.fm-pegatina:nth-child(3n + 3) { background: var(--menta); color: var(--tinta); transform: rotate(4deg); }
+
+/* Salir o no del ranking: el interruptor del sistema (sistema.html §11). */
 .fm-ranking {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.3rem 0.6rem;
-  margin-bottom: 3rem;
-  font-size: 0.84rem;
-  color: var(--text-muted);
+  gap: 0.6rem 1rem;
+  margin-bottom: 2.6rem;
 }
 
-.fm-ranking .fp-accion { border-color: var(--fo-borde-vivo); }
+.fm-ranking p {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  line-height: 1.35;
+}
 
-/* ── Las dos columnas ──────────────────────────────────────────────────── */
+.fm-ranking p b { font-weight: 900; color: var(--tinta); }
+.fm-ranking p span { font-size: 0.9rem; font-weight: 700; color: var(--tinta-2); }
+
+.fm-interruptor {
+  position: relative;
+  flex: none;
+  width: 62px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gris);
+  box-shadow: inset 0 3px 0 rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* El dedo: la zona que se pulsa llega a 46 px de alto aunque el interruptor
+   mida 36. */
+.fm-interruptor::before {
+  content: "";
+  position: absolute;
+  inset: -5px -4px;
+}
+
+.fm-interruptor::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 28px;
+  height: 26px;
+  border-radius: 10px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o);
+  transition: left 0.25s var(--fo-muelle), box-shadow 0.25s ease;
+}
+
+.fm-interruptor.is-on { background: var(--menta); }
+.fm-interruptor.is-on::after { left: 30px; box-shadow: 0 4px 0 var(--menta-o); }
+.fm-interruptor:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+.fm-interruptor:disabled { cursor: progress; }
+
+/* ── Avisos y mensajes ── */
 
 .fm-rejilla {
   display: grid;
@@ -158,98 +231,164 @@
   gap: 2.4rem;
 }
 
-.fm-hueco { flex: 1; }
+.fm-rejilla .fo-seccion-cab { align-items: center; }
 
 .fm-sin-leer {
-  padding: 0.18rem 0.6rem;
-  border-radius: 999px;
-  background: var(--accent-orange);
-  font-size: 0.7rem;
-  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--coral);
+  font-size: 0.78rem;
+  font-weight: 900;
   color: #fff;
 }
 
+.fm-hueco { flex: 1; }
+
 .fm-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
-.fm-aviso,
-.fm-mensaje {
-  display: flex;
-  gap: 0.85rem;
-  padding: 0.95rem 1.1rem;
-  border-radius: 16px;
+/* Una nota: papel, su icono a la izquierda. */
+.fm-aviso {
+  --a: var(--tinta-3);
+  --a-o: var(--gris-o);
+  --a-t: #fff;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: var(--fo-canto);
 }
+
+.fm-aviso.is-bueno { --a: var(--menta); --a-o: var(--menta-o); --a-t: var(--tinta); }
+.fm-aviso.is-aviso { --a: var(--coral); --a-o: var(--coral-o); }
+.fm-aviso.is-neutro { --a: var(--cielo); --a-o: var(--cielo-o); --a-t: var(--tinta); }
+.fm-aviso.is-pregunta { --a: var(--coral); --a-o: var(--coral-o); }
+.fm-aviso.is-respuesta,
+.fm-aviso.is-replica { --a: var(--azul); --a-o: var(--azul-o); }
 
 .fm-aviso-icono {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--a);
+  box-shadow: 0 3px 0 var(--a-o);
+  /* Tinta sobre menta y cielo; blanco sobre los demás. */
+  color: var(--a-t);
 }
 
-.fm-aviso-texto { flex: 1; min-width: 0; }
+/* Sin leer: un punto coral en la esquina. */
+.fm-aviso.es-nuevo::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--papel);
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.fm-aviso-texto {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
 
 .fm-linea {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.8rem;
-  font-size: 0.92rem;
-  font-weight: 600;
+  gap: 0.2rem 0.8rem;
+  font-weight: 800;
   line-height: 1.4;
-  color: #fff;
+  color: var(--tinta);
 }
 
-.fm-linea a { color: inherit; text-decoration: none; }
-.fm-linea a:hover { color: var(--accent-orange-soft); }
-.fm-linea time { flex: none; font-size: 0.72rem; font-weight: 400; color: var(--text-muted); white-space: nowrap; }
+.fm-linea a {
+  color: var(--tinta);
+  text-decoration: underline;
+  text-decoration-color: var(--gris-o);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.fm-linea a:hover { text-decoration-color: var(--coral); }
+
+.fm-linea time {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
 
 .fm-aviso-texto small {
-  display: block;
-  margin-top: 0.2rem;
-  font-size: 0.8rem;
-  line-height: 1.5;
-  color: var(--text-muted);
   overflow-wrap: anywhere;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--tinta-2);
 }
 
-.fm-aviso-texto small.fm-motivo { color: var(--premium-gold); }
+.fm-aviso-texto small.fm-motivo {
+  justify-self: start;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: var(--coral-s);
+  font-weight: 800;
+  color: var(--coral-o);
+}
 
 .fm-clase {
-  margin-right: 0.15rem;
-  font-size: 0.64rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
+  margin-right: 0.2rem;
+  padding: 2px 8px;
+  border-radius: 7px;
+  background: var(--gris);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--tinta-2);
 }
 
-/* Sin leer: el icono se enciende y la tarjeta gana un borde naranja. */
-.fm-aviso.es-nuevo { border-color: color-mix(in srgb, var(--accent-orange) 55%, transparent); }
-.fm-aviso.es-nuevo .fm-aviso-icono { background: var(--accent-orange); color: #fff; }
+/* Oculto: el papel, punteado y apagado. */
+.fm-mensaje.es-oculto {
+  background: var(--fondo);
+  box-shadow: inset 0 0 0 3px var(--gris);
+  border: 0;
+}
 
-.fm-aviso.is-bueno .fm-aviso-icono { background: color-mix(in srgb, var(--fo-verde) 16%, transparent); color: var(--fo-verde); }
-.fm-aviso.is-aviso .fm-aviso-icono { background: rgba(230, 180, 85, 0.14); color: var(--premium-gold); }
-.fm-aviso.is-bueno.es-nuevo .fm-aviso-icono { background: var(--fo-verde); color: #06281a; }
+.fm-mensaje.es-oculto .fm-aviso-icono { background: var(--tinta-3); box-shadow: 0 3px 0 var(--gris-o); color: #fff; }
 
-.fm-mensaje.es-oculto { border-style: dashed; border-color: var(--premium-gold-soft); }
+/* ── Tableta y móvil ── */
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .fm-reputacion,
-  .fm-rejilla { grid-template-columns: 1fr; }
+  .fm-rejilla { grid-template-columns: minmax(0, 1fr); }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 520px) {
   .fm-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.2rem; }
   .fm-cifras > div:nth-child(3) { border-left: 0; }
-  .fm-cifras dd { font-size: 1.7rem; }
+  .fm-nivel { padding: 1.2rem 1.1rem; }
+  .fm-nivel-icono { width: 54px; height: 54px; }
+  .fm-pegatina { width: 92px; height: 92px; }
+  .fm-nivel-texto > b { font-size: 1.5rem; overflow-wrap: anywhere; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-barra i { animation: none; }
+  .fm-interruptor,
+  .fm-interruptor::after { transition: none; }
 }

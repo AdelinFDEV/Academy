@@ -36,7 +36,7 @@ export default function GuideSolanaCostes() {
         </label>
         <label htmlFor="sol-precio" className="sol-costes-precio">
           <span>Precio de 1 SOL, en euros</span>
-          <input id="sol-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="sol-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </label>
       </div>
 

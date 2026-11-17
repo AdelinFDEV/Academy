@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { HandHeart, Lightbulb, Users, type LucideIcon } from "lucide-react";
+import Tecla, { type ColorTecla } from "@/components/cuaderno/Tecla";
 import { pedirForo } from "@/components/foro/pedir";
+import { sonar } from "@/lib/sonidos";
 import { ETIQUETAS, type EtiquetaId } from "@/lib/foro/limites";
 import { useHilo } from "./ContextoHilo";
 import Invitacion from "./Invitacion";
@@ -10,6 +12,9 @@ import Invitacion from "./Invitacion";
 type Cuentas = { interesante: number; gracias: number; yo_tambien: number };
 
 const ICONO: Record<EtiquetaId, LucideIcon> = { interesante: Lightbulb, gracias: HandHeart, yo_tambien: Users };
+
+/** El color de la tecla cuando la etiqueta es tuya: la idea en amarillo, el gracias en menta, la misma duda en cielo. */
+const COLOR: Record<EtiquetaId, ColorTecla> = { interesante: "amarillo", gracias: "menta", yo_tambien: "cielo" };
 
 /**
  * Las tres etiquetas de una pregunta: Interesante, Gracias y Yo también.
@@ -26,6 +31,7 @@ export default function Etiquetas({ inicial }: { inicial: Cuentas }) {
   async function alternar(tipo: EtiquetaId) {
     if (!mio || enviando) return;
     if (!mio.puede) {
+      if (invitar === null) sonar("abrir");
       setInvitar(mio.motivo);
       return;
     }
@@ -35,45 +41,49 @@ export default function Etiquetas({ inicial }: { inicial: Cuentas }) {
     const r = await pedirForo<Cuentas>("/api/foro/etiquetar", { pregunta: preguntaId, tipo, poner: !puesta });
     setEnviando(null);
     if (!r.ok) {
+      sonar("error");
       setError(r.mensaje);
       return;
     }
+    // Cada etiqueta es un conmutador (puesta / quitada).
+    sonar("interruptor");
     setCuentas({ interesante: r.interesante, gracias: r.gracias, yo_tambien: r.yo_tambien });
     cambiar((a) => ({ ...a, etiquetas: puesta ? a.etiquetas.filter((x) => x !== tipo) : [...a.etiquetas, tipo] }));
   }
 
   return (
     <div className="fp-etiquetas">
-      <ul className="fh-etiquetas" aria-label="Valoraciones de la pregunta">
+      <ul aria-label="Valoraciones de la pregunta">
         {ETIQUETAS.map((e) => {
           const Icono = ICONO[e.id];
           const puesta = mio?.etiquetas.includes(e.id) ?? false;
           return mio?.esAutorDeLaPregunta ? (
             <li key={e.id} className="fp-etiqueta es-propia" title={e.ayuda}>
-              <Icono size={15} strokeWidth={2.2} aria-hidden="true" />
+              <Icono size={16} strokeWidth={2.5} aria-hidden="true" />
               {e.nombre}
               <b>{cuentas[e.id]}</b>
             </li>
           ) : (
             <li key={e.id}>
-              <button
-                type="button"
+              <Tecla
+                color={puesta ? COLOR[e.id] : "blanca"}
+                tamano="peq"
                 className={`fp-etiqueta${puesta ? " is-puesta" : ""}`}
                 aria-pressed={puesta}
                 title={e.ayuda}
                 disabled={!mio || enviando !== null}
                 onClick={() => alternar(e.id)}
               >
-                <Icono size={15} strokeWidth={2.2} aria-hidden="true" />
+                <Icono size={16} strokeWidth={2.5} aria-hidden="true" />
                 {e.nombre}
                 <b>{cuentas[e.id]}</b>
-              </button>
+              </Tecla>
             </li>
           );
         })}
       </ul>
       {error && <p className="fp-error" role="alert">{error}</p>}
-      {invitar !== null && <Invitacion motivo={invitar} onCerrar={() => setInvitar(null)} />}
+      {invitar !== null && <Invitacion motivo={invitar} onCerrar={() => { sonar("cerrar"); setInvitar(null); }} />}
     </div>
   );
 }

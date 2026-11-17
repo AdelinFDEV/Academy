@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión F · Cuaderno de estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --papel: #f7f2e8; --tinta: #1f1c17; --tinta-2: #6a6358; --linea: #ddd3c0; --naranja: #f07a1a; --amarillo: #ffe27a; --lila: #e6defc; --menta: #d6f3e4; --rosa: #fde0d6; --verde: #1f8a55; --rojo: #c4372c; --serif: "Fraunces", Georgia, serif; --mano: "Caveat", cursive; --sans: "DM Sans", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: var(--tinta); font-family: var(--sans); background: var(--papel); background-image: radial-gradient(var(--linea) 1px, transparent 1px); background-size: 26px 26px; }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+  .mano { font-family: var(--mano); }
+
+  .nav .ancho { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; padding-bottom: 24px; }
+  .marca { font-family: var(--serif); font-weight: 700; font-size: 28px; letter-spacing: -0.02em; }
+  .marca em { color: var(--naranja); font-weight: 500; }
+  .enlaces { display: flex; gap: 26px; font-weight: 500; }
+  .enlaces a { position: relative; }
+  .enlaces a:hover::after { content: ""; position: absolute; left: -4px; right: -4px; bottom: 0; height: 10px; background: var(--amarillo); z-index: -1; border-radius: 3px; }
+  .boton { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 14px; background: var(--tinta); color: var(--papel); font-weight: 700; font-size: 15px; box-shadow: 0 4px 0 #000; transition: transform .1s, box-shadow .1s; }
+  .boton:hover { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+  .boton--naranja { background: var(--naranja); box-shadow: 0 4px 0 #b65508; }
+  .boton--linea { background: #fff; color: var(--tinta); box-shadow: 0 4px 0 var(--linea); border: 1px solid var(--linea); }
+
+  .hero .ancho { display: grid; grid-template-columns: 1.1fr 1fr; gap: 50px; align-items: center; padding-top: 40px; padding-bottom: 80px; }
+  .nota-mano { font-family: var(--mano); font-size: 26px; color: var(--naranja); transform: rotate(-3deg); display: inline-block; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: 74px; line-height: 1; letter-spacing: -0.03em; margin: 10px 0 0; }
+  h1 em { font-style: italic; }
+  .marcador { background: linear-gradient(transparent 55%, var(--amarillo) 55%); padding: 0 4px; }
+  .rodeado { position: relative; display: inline-block; }
+  .rodeado svg { position: absolute; left: -14px; top: -10px; width: calc(100% + 28px); height: calc(100% + 20px); overflow: visible; }
+  .lead { font-size: 19px; line-height: 1.6; color: var(--tinta-2); margin: 24px 0 0; max-width: 44ch; }
+  .acciones { display: flex; gap: 14px; margin-top: 30px; align-items: center; }
+  .flecha-mano { font-family: var(--mano); font-size: 22px; color: var(--tinta-2); transform: rotate(-4deg); }
+
+  .mesa { position: relative; height: 470px; }
+  .hoja { position: absolute; background: #fff; padding: 22px; box-shadow: 0 16px 30px -18px rgba(31,28,23,.45); border: 1px solid var(--linea); transition: transform .4s; }
+  .hoja:hover { transform: rotate(0) translateY(-6px) !important; z-index: 3; }
+  .hoja-1 { left: 0; top: 10px; width: 330px; transform: rotate(-3deg); background-image: repeating-linear-gradient(#fff 0 31px, #e9e2d3 31px 32px); }
+  .hoja-2 { right: 0; top: 60px; width: 260px; transform: rotate(4deg); background: var(--menta); }
+  .hoja-3 { left: 70px; bottom: 0; width: 290px; transform: rotate(2deg); background: var(--lila); }
+  .cinta { position: absolute; top: -12px; left: 50%; width: 90px; height: 24px; margin-left: -45px; background: rgba(255,226,122,.85); transform: rotate(-4deg); }
+  .hoja small { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-2); }
+  .hoja .mano { font-size: 24px; line-height: 32px; display: block; margin-top: 4px; }
+  .hoja strong { display: block; font-family: var(--serif); font-size: 44px; margin-top: 6px; }
+  .tachado { text-decoration: line-through; text-decoration-color: var(--rojo); text-decoration-thickness: 2px; }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 52px; letter-spacing: -0.02em; margin: 0; line-height: 1.05; }
+  h2 em { font-style: italic; color: var(--naranja); }
+  .cab { display: flex; justify-content: space-between; align-items: end; margin-bottom: 30px; }
+  .guias .ancho { padding-bottom: 80px; }
+  .fichas { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 22px; }
+  .ficha { background: #fff; border: 1px solid var(--linea); padding: 22px; position: relative; transition: transform .3s; box-shadow: 0 10px 22px -16px rgba(31,28,23,.4); }
+  .ficha:nth-child(1) { transform: rotate(-1deg); } .ficha:nth-child(2) { transform: rotate(1deg); } .ficha:nth-child(3) { transform: rotate(-.5deg); }
+  .ficha:hover { transform: rotate(0) translateY(-6px); }
+  .ficha-img { aspect-ratio: 16/10; display: grid; place-items: center; font-family: var(--serif); font-style: italic; font-size: 88px; color: var(--naranja); }
+  .ficha h3 { font-family: var(--serif); font-size: 28px; margin: 14px 0 0; font-weight: 700; }
+  .ficha p { color: var(--tinta-2); font-size: 15px; line-height: 1.55; margin: 6px 0 0; }
+  .ficha .mano { font-size: 22px; color: var(--naranja); }
+  .post-it { position: absolute; right: -10px; top: -14px; background: var(--amarillo); padding: 8px 12px; font-family: var(--mano); font-size: 22px; transform: rotate(6deg); box-shadow: 0 6px 12px -8px rgba(0,0,0,.4); }
+
+  .premium .ancho { padding-bottom: 90px; }
+  .libreta { background: var(--tinta); color: var(--papel); border-radius: 22px; padding: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; position: relative; }
+  .libreta::before { content: ""; position: absolute; left: 22px; top: 30px; bottom: 30px; width: 10px; background: repeating-linear-gradient(var(--papel) 0 6px, transparent 6px 22px); opacity: .5; border-radius: 4px; }
+  .libreta h2 { color: var(--papel); }
+  .libreta ul { list-style: none; padding: 0; margin: 20px 0 0; }
+  .libreta li { font-size: 17px; padding: 10px 0; border-bottom: 1px dashed rgba(247,242,232,.25); display: flex; gap: 12px; }
+  .libreta li::before { content: "✓"; color: var(--naranja); font-weight: 700; }
+  .precio { font-family: var(--serif); font-size: 88px; line-height: 1; }
+  .precio small { font-family: var(--mano); font-size: 30px; color: var(--amarillo); }
+  .pie { text-align: center; padding: 0 28px 40px; font-size: 14px; color: var(--tinta-2); }
+  .etiqueta-maqueta { position: fixed; bottom: 16px; right: 16px; background: var(--amarillo); color: var(--tinta); font-family: var(--mano); font-size: 22px; padding: 6px 14px; transform: rotate(-3deg); box-shadow: 0 6px 12px -8px rgba(0,0,0,.4); }
+</style>
+</head>
+<body>
+<header class="nav"><div class="ancho">
+  <span class="marca">Adelin<em>BTC</em></span>
+  <nav class="enlaces"><a href="#">Guías</a><a href="#">Diccionario</a><a href="#">Cursos</a><a href="#">Foro</a></nav>
+  <a class="boton" href="#">Entrar</a>
+</div></header>
+
+<section class="hero"><div class="ancho">
+  <div>
+    <span class="nota-mano">Tus apuntes de cripto, ordenados</span>
+    <h1>Aprende cripto como se aprende <em>de verdad</em>: <span class="rodeado">tomando notas<svg viewBox="0 0 200 60" preserveAspectRatio="none"><path d="M10 34 C 20 6, 180 2, 192 26 C 200 48, 40 58, 14 44 C 4 38, 12 20, 30 16" fill="none" stroke="#f07a1a" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
+    <p class="lead">Guías gratuitas con ejercicios y quiz, un diccionario con cada palabra explicada y, cuando estés listo, un <span class="marcador">diario para operar con método</span>.</p>
+    <div class="acciones"><a class="boton boton--naranja" href="#">Abrir la primera guía</a><span class="flecha-mano">← empieza aquí, es gratis</span></div>
+  </div>
+  <div class="mesa">
+    <div class="hoja hoja-1"><span class="cinta"></span><small>Apuntes · Bitcoin</small><span class="mano">Solo habrá 21 millones.<br>Halving cada ~4 años.<br><span class="tachado">Comprar en el pico</span> → hacer DCA</span></div>
+    <div class="hoja hoja-2"><small>Portfolio Adelin · ejemplo</small><strong style="color:var(--verde)">+24,6 %</strong><span class="mano" style="font-size:20px">también enseño las que pierden</span></div>
+    <div class="hoja hoja-3"><small>Diario de Trading</small><strong>58 %</strong><span class="mano" style="font-size:20px">Nova: cierras pronto las ganadoras</span></div>
+  </div>
+</div></section>
+
+<section class="guias"><div class="ancho">
+  <div class="cab"><h2>Guías para <em>estudiar</em></h2><a class="boton boton--linea" href="#">Todas las guías</a></div>
+  <div class="fichas">
+    <a class="ficha" href="#"><span class="post-it">¡Nueva!</span><div class="ficha-img" style="background:var(--lila)">H</div><h3>Hyperliquid</h3><p>El exchange descentralizado que compite con los grandes, explicado sin tecnicismos.</p><span class="mano">Intermedio · 14 min · quiz</span></a>
+    <a class="ficha" href="#"><div class="ficha-img" style="background:var(--rosa)">X</div><h3>XRP y Ripple</h3><p>Pagos internacionales y la demanda de la SEC.</p><span class="mano">Básico · 11 min</span></a>
+    <a class="ficha" href="#"><div class="ficha-img" style="background:var(--menta)">R</div><h3>Render</h3><p>Cálculo repartido para gráficos e IA.</p><span class="mano">Intermedio · 12 min</span></a>
+  </div>
+</div></section>
+
+<section class="premium"><div class="ancho">
+  <div class="libreta">
+    <div style="padding-left:20px"><span class="mano" style="font-size:26px;color:var(--amarillo)">Cuando quieras ir más allá</span><h2>Premium: <em>tres herramientas</em>, una suscripción</h2>
+      <ul><li>Diario de Trading con Nova</li><li>Portfolio Adelin: spot y DCA de bitcoin</li><li>Todos los cursos, con certificado</li></ul></div>
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:18px"><div class="precio">19,99 € <small>al mes</small></div><span style="color:#b8b0a2">Sin permanencia. Cancelas cuando quieras.</span><a class="boton boton--naranja" href="#" style="align-self:flex-start">Hazte Premium</a></div>
+  </div>
+</div></section>
+
+<footer class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No es asesoramiento financiero</footer>
+<span class="etiqueta-maqueta">Versión F · Cuaderno (maqueta)</span>
+</body>
+</html>

@@ -26,7 +26,7 @@ export default function GuideCardanoStaking() {
       <div className="ada-calc-campos">
         <label htmlFor="ada-cantidad">
           <span>ADA que vas a delegar</span>
-          <input id="ada-cantidad" inputMode="decimal" value={ada} onChange={(e) => setAda(e.target.value)} />
+          <input id="ada-cantidad" inputMode="decimal" autoComplete="off" value={ada} onChange={(e) => setAda(e.target.value)} />
         </label>
         <label htmlFor="ada-pct">
           <span>Rendimiento anual <strong>{num(pct, 1)} %</strong></span>

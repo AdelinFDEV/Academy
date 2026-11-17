@@ -11,6 +11,10 @@ import "@/app/foro/mio.css";
  * Lo del usuario en el foro: su nivel y sus puntos, sus avisos y sus mensajes
  * con su estado. Es personal: la página que lo pinta pide sesión y nunca se
  * cachea ni se indexa.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): el nivel con su barra de
+ * progreso, las cifras como fichas, los logros como pegatinas, y los avisos y
+ * los mensajes como notas con su icono del color de su tono.
  */
 
 const NOMBRE_CLASE = { pregunta: "Pregunta", respuesta: "Respuesta", replica: "Réplica" } as const;
@@ -37,7 +41,7 @@ function fraseDe(a: AvisoForo): string {
   }
 }
 
-/** El tono de un aviso: bueno (verde), de moderación (oro) o neutro. */
+/** El tono de un aviso: bueno (menta), de moderación (coral) o neutro. */
 const tonoDe = (tipo: string) =>
   tipo === "ganadora" || tipo === "restaurado" ? "bueno" : tipo === "retirado" || tipo === "sancion" || tipo === "ganadora_retirada" ? "aviso" : "neutro";
 
@@ -56,12 +60,9 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
       </nav>
 
       <header className="fm-cabecera">
-        <span className="fo-antetitulo">
-          <span className="fo-antetitulo-punto" aria-hidden="true" />
-          Lo tuyo
-        </span>
+        <p className="fo-nota">Lo tuyo en el foro</p>
         <h1 className="fo-titulo">
-          {mio.alias ? <>Hola, <em>{mio.alias}</em>.</> : <>Tu sitio en el <em>foro</em>.</>}
+          {mio.alias ? <>Hola, <span className="fluor">{mio.alias}</span>.</> : <>Tu sitio en el <span className="fluor">foro</span>.</>}
         </h1>
         {!mio.alias && (
           <p className="fo-entradilla">
@@ -71,7 +72,7 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
       </header>
 
       {mio.sanciones.map((s, i) => (
-        <p key={i} className="fo-aviso" role="status">
+        <p key={i} className="fo-aviso fo-aviso--mal" role="status">
           <ShieldAlert size={18} strokeWidth={2.2} aria-hidden="true" />
           <span>
             <b>{NOMBRE_SANCION[s.tipo] ?? "Sanción"}</b>
@@ -83,12 +84,12 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
       {/* ── Reputación ── */}
       <section className="fm-reputacion" aria-label="Tu reputación">
         <div className="fm-nivel fo-tarjeta">
-          <span className="fm-nivel-icono" aria-hidden="true"><Award size={26} strokeWidth={2} /></span>
+          <span className="fm-nivel-icono" aria-hidden="true"><Award size={30} strokeWidth={2.4} /></span>
           <div className="fm-nivel-texto">
             <span className="fm-etiqueta">Tu nivel</span>
             <b>{mio.nivel}</b>
             <div className="fm-barra" role="img" aria-label={siguiente ? `${mio.puntos} de ${siguiente.desde} puntos para ${siguiente.nombre}` : "Nivel máximo"}>
-              <span style={{ width: `${Math.max(4, avance)}%` }} />
+              <i style={{ width: `${Math.max(4, avance)}%` }} />
             </div>
             <small>
               {siguiente ? `${siguiente.desde - mio.puntos} puntos para ${siguiente.nombre}` : "Has llegado al nivel más alto"}
@@ -100,11 +101,11 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
           <div><dt>Puntos</dt><dd>{mio.puntos}</dd></div>
           <div><dt>Este mes</dt><dd>{mio.puntosDelMes}</dd></div>
           <div>
-            <dt><BadgeCheck size={12} strokeWidth={2.4} aria-hidden="true" /> Elegidas</dt>
+            <dt><BadgeCheck size={13} strokeWidth={2.8} aria-hidden="true" /> Elegidas</dt>
             <dd>{mio.ganadoras}</dd>
           </div>
           <div>
-            <dt><HandHeart size={12} strokeWidth={2.4} aria-hidden="true" /> Gracias</dt>
+            <dt><HandHeart size={13} strokeWidth={2.8} aria-hidden="true" /> Gracias</dt>
             <dd>{mio.gracias}</dd>
           </div>
         </dl>
@@ -113,8 +114,8 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
       {logros.length > 0 && (
         <ul className="fm-logros" aria-label="Logros del foro">
           {logros.map((l) => (
-            <li key={l.id} title={l.ayuda}>
-              <Sparkles size={13} strokeWidth={2.3} aria-hidden="true" />
+            <li key={l.id} title={l.ayuda} className="fm-pegatina">
+              <Sparkles size={18} strokeWidth={2.4} aria-hidden="true" />
               {l.nombre}
             </li>
           ))}
@@ -141,8 +142,8 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
           ) : (
             <ul className="fm-lista">
               {mio.avisos.map((a) => (
-                <li key={a.id} className={`fm-aviso fo-tarjeta is-${tonoDe(a.tipo)}${a.leido ? "" : " es-nuevo"}`}>
-                  <span className="fm-aviso-icono" aria-hidden="true"><Bell size={15} strokeWidth={2.2} /></span>
+                <li key={a.id} className={`fm-aviso is-${tonoDe(a.tipo)}${a.leido ? "" : " es-nuevo"}`}>
+                  <span className="fm-aviso-icono" aria-hidden="true"><Bell size={17} strokeWidth={2.5} /></span>
                   <div className="fm-aviso-texto">
                     <span className="fm-linea">
                       {a.hilo ? (
@@ -176,9 +177,9 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
           ) : (
             <ul className="fm-lista">
               {mio.mensajes.map((m) => (
-                <li key={m.respuestaId ?? `p-${m.preguntaId}`} className={`fm-mensaje fo-tarjeta${m.estado === "oculta" ? " es-oculto" : ""}`}>
+                <li key={m.respuestaId ?? `p-${m.preguntaId}`} className={`fm-mensaje fm-aviso is-${m.clase}${m.estado === "oculta" ? " es-oculto" : ""}`}>
                   <span className="fm-aviso-icono" aria-hidden="true">
-                    {m.clase === "pregunta" ? <PenLine size={15} strokeWidth={2.2} /> : <MessageCircle size={15} strokeWidth={2.2} />}
+                    {m.clase === "pregunta" ? <PenLine size={17} strokeWidth={2.5} /> : <MessageCircle size={17} strokeWidth={2.5} />}
                   </span>
                   <div className="fm-aviso-texto">
                     <span className="fm-linea">

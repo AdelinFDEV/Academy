@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión D · Banca privada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --verde: #0f2a22; --verde-2: #163a2f; --verde-3: #1f4a3c; --crema: #f1e9d8; --crema-2: #c9bfa8; --oro: #c8a45d; --oro-2: #e4c98b; --sube: #7fd4a0; --baja: #f08a7a; --serif: "Cormorant Garamond", Georgia, serif; --sans: "Manrope", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--verde); color: var(--crema); font-family: var(--sans); }
+  a { color: inherit; text-decoration: none; }
+  .ancho { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+  .orla { position: fixed; inset: 14px; border: 1px solid rgba(200,164,93,.35); pointer-events: none; z-index: 5; }
+
+  .nav .ancho { display: flex; align-items: center; justify-content: space-between; padding-top: 36px; padding-bottom: 28px; }
+  .marca { display: flex; align-items: center; gap: 14px; }
+  .escudo { width: 46px; height: 52px; border: 1px solid var(--oro); border-radius: 0 0 23px 23px; display: grid; place-items: center; font-family: var(--serif); font-size: 22px; color: var(--oro); }
+  .marca b { font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: .04em; display: block; line-height: 1; }
+  .marca small { font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--crema-2); }
+  .enlaces { display: flex; gap: 34px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
+  .enlaces a { color: var(--crema-2); transition: color .3s; }
+  .enlaces a:hover { color: var(--oro-2); }
+  .boton { display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border: 1px solid var(--oro); color: var(--oro-2); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; transition: background .4s, color .4s; }
+  .boton:hover { background: var(--oro); color: var(--verde); }
+  .boton--lleno { background: var(--oro); color: var(--verde); }
+  .boton--lleno:hover { background: var(--oro-2); }
+
+  .hero .ancho { display: grid; grid-template-columns: 1.1fr 1fr; gap: 70px; align-items: center; padding-top: 70px; padding-bottom: 110px; }
+  .antetitulo { font-size: 11px; letter-spacing: .4em; text-transform: uppercase; color: var(--oro); display: flex; align-items: center; gap: 14px; }
+  .antetitulo::before { content: ""; width: 40px; height: 1px; background: var(--oro); }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: 84px; line-height: 1; margin: 26px 0 0; letter-spacing: -0.01em; }
+  h1 em { color: var(--oro-2); }
+  .lead { font-size: 17px; line-height: 1.8; color: var(--crema-2); margin: 28px 0 0; max-width: 44ch; }
+  .acciones { display: flex; gap: 14px; margin-top: 40px; }
+
+  .extracto { background: var(--crema); color: var(--verde); padding: 36px 34px; position: relative; box-shadow: 0 40px 80px -40px rgba(0,0,0,.7); }
+  .extracto::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(15,42,34,.18); pointer-events: none; }
+  .extracto-cab { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: #6b6450; border-bottom: 1px solid rgba(15,42,34,.2); padding-bottom: 14px; }
+  .extracto-tit { font-family: var(--serif); font-size: 30px; margin: 18px 0 0; }
+  .extracto-cifra { font-family: var(--serif); font-size: 72px; line-height: 1; color: #1d6b45; margin-top: 6px; }
+  .extracto table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px; }
+  .extracto td { padding: 11px 0; border-bottom: 1px dotted rgba(15,42,34,.3); }
+  .extracto td:last-child { text-align: right; font-weight: 600; }
+  .g { color: #1d6b45; } .p { color: #a8382a; }
+  .sello { position: absolute; right: -26px; bottom: -26px; width: 104px; height: 104px; border-radius: 50%; background: var(--verde); color: var(--oro); border: 1px solid var(--oro); display: grid; place-items: center; text-align: center; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; line-height: 1.6; animation: girar 30s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+
+  .servicios { background: var(--verde-2); border-top: 1px solid rgba(200,164,93,.25); border-bottom: 1px solid rgba(200,164,93,.25); }
+  .servicios .ancho { padding-top: 90px; padding-bottom: 90px; }
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 58px; margin: 18px 0 0; line-height: 1.05; text-align: center; }
+  h2 em { color: var(--oro-2); }
+  .centro { text-align: center; }
+  .centro .antetitulo { justify-content: center; }
+  .centro .antetitulo::after { content: ""; width: 40px; height: 1px; background: var(--oro); }
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 60px; }
+  .servicio { padding: 10px 40px 20px; text-align: center; border-left: 1px solid rgba(200,164,93,.25); transition: background .4s; }
+  .servicio:first-child { border-left: 0; }
+  .servicio:hover { background: var(--verde-3); }
+  .numeral { font-family: var(--serif); font-style: italic; font-size: 64px; color: var(--oro); line-height: 1; }
+  .servicio h3 { font-family: var(--serif); font-size: 32px; font-weight: 500; margin: 14px 0 0; }
+  .servicio p { color: var(--crema-2); font-size: 15px; line-height: 1.75; margin: 14px 0 0; }
+  .servicio span { display: inline-block; margin-top: 18px; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--oro); border-bottom: 1px solid var(--oro); padding-bottom: 4px; }
+
+  .guias .ancho { padding-top: 100px; padding-bottom: 100px; }
+  .lista { margin-top: 50px; border-top: 1px solid rgba(200,164,93,.3); }
+  .entrada { display: grid; grid-template-columns: 90px 1fr auto; gap: 24px; align-items: center; padding: 26px 0; border-bottom: 1px solid rgba(200,164,93,.3); transition: padding .4s; }
+  .entrada:hover { padding-left: 16px; }
+  .entrada .numeral { font-size: 42px; }
+  .entrada h3 { font-family: var(--serif); font-size: 34px; font-weight: 500; margin: 0; }
+  .entrada p { margin: 4px 0 0; color: var(--crema-2); font-size: 14px; }
+  .entrada small { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--oro); }
+
+  .socio { background: var(--crema); color: var(--verde); }
+  .socio .ancho { padding-top: 100px; padding-bottom: 100px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .socio h2 { text-align: left; color: var(--verde); }
+  .socio h2 em { color: #8a6a2c; }
+  .socio p { color: #4f5a4f; line-height: 1.8; }
+  .tarjeta { aspect-ratio: 1.586; background: linear-gradient(135deg, #10302a, #1f4a3c 60%, #0f2a22); border-radius: 16px; padding: 30px; color: var(--crema); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 40px 70px -30px rgba(15,42,34,.7); transition: transform .6s; }
+  .tarjeta:hover { transform: rotate(-2deg) translateY(-6px); }
+  .tarjeta-chip { width: 48px; height: 36px; border-radius: 6px; background: linear-gradient(135deg, var(--oro-2), var(--oro)); }
+  .tarjeta-num { font-family: var(--serif); font-size: 26px; letter-spacing: .12em; }
+  .tarjeta-pie { display: flex; justify-content: space-between; align-items: end; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--crema-2); }
+  .tarjeta-pie b { font-family: var(--serif); font-size: 34px; letter-spacing: 0; color: var(--oro-2); text-transform: none; }
+  .pie { text-align: center; padding: 40px; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--crema-2); }
+  .etiqueta-maqueta { position: fixed; bottom: 26px; right: 26px; z-index: 6; background: var(--oro); color: var(--verde); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 8px 14px; }
+</style>
+</head>
+<body>
+<div class="orla"></div>
+<header class="nav"><div class="ancho">
+  <span class="marca"><span class="escudo">A</span><span><b>AdelinBTC</b><small>Academy</small></span></span>
+  <nav class="enlaces"><a href="#">Guías</a><a href="#">Diario</a><a href="#">Portfolio</a><a href="#">Cursos</a><a href="#">Foro</a></nav>
+  <a class="boton" href="#">Acceso socios</a>
+</div></header>
+
+<section class="hero"><div class="ancho">
+  <div>
+    <span class="antetitulo">Educación patrimonial en cripto</span>
+    <h1>Invertir con la <em>calma</em> de quien sabe lo que hace.</h1>
+    <p class="lead">Guías gratuitas para entender cada proyecto, un diario para operar con disciplina y la cartera real de Adelin, abierta a los socios.</p>
+    <div class="acciones"><a class="boton boton--lleno" href="#">Conocer la academia</a><a class="boton" href="#">Hacerse socio</a></div>
+  </div>
+  <div class="extracto">
+    <div class="extracto-cab"><span>Extracto · Portfolio Adelin</span><span>Ejemplo</span></div>
+    <div class="extracto-tit">Rentabilidad de la cartera</div>
+    <div class="extracto-cifra">+24,6 %</div>
+    <table><tr><td>Bitcoin</td><td class="g">+31,2 %</td></tr><tr><td>Solana</td><td class="g">+18,4 %</td></tr><tr><td>Ethereum</td><td class="p">−4,1 %</td></tr></table>
+    <div class="sello">Cartera<br>real<br>en directo</div>
+  </div>
+</div></section>
+
+<section class="servicios"><div class="ancho">
+  <div class="centro"><span class="antetitulo">Para socios</span></div>
+  <h2>Tres servicios, <em>una sola membresía</em></h2>
+  <div class="tres">
+    <a class="servicio" href="#"><div class="numeral">I</div><h3>Diario de Trading</h3><p>Cada operación anotada y medida. Nova, su asistente, señala los patrones que cuestan dinero.</p><span>Descubrir</span></a>
+    <a class="servicio" href="#"><div class="numeral">II</div><h3>Portfolio Adelin</h3><p>La cartera real, con precio de entrada y rentabilidad de cada compra. También las que pierden.</p><span>Descubrir</span></a>
+    <a class="servicio" href="#"><div class="numeral">III</div><h3>Cursos</h3><p>Programas por módulos con examen en cada uno y certificado al completarlos.</p><span>Descubrir</span></a>
+  </div>
+</div></section>
+
+<section class="guias"><div class="ancho">
+  <div class="centro"><span class="antetitulo">Biblioteca abierta</span></div>
+  <h2>Guías <em>gratuitas</em></h2>
+  <div class="lista">
+    <a class="entrada" href="#"><span class="numeral">i.</span><span><small>Nueva · Intermedio · 14 min</small><h3>Hyperliquid: qué es y cómo funciona</h3><p>El exchange descentralizado que compite con los grandes.</p></span><span class="boton">Leer</span></a>
+    <a class="entrada" href="#"><span class="numeral">ii.</span><span><small>Básico · 11 min</small><h3>XRP y Ripple</h3><p>Pagos internacionales y qué queda de la demanda de la SEC.</p></span><span class="boton">Leer</span></a>
+    <a class="entrada" href="#"><span class="numeral">iii.</span><span><small>Intermedio · 12 min</small><h3>Render</h3><p>Potencia de cálculo repartida para gráficos e IA.</p></span><span class="boton">Leer</span></a>
+  </div>
+</div></section>
+
+<section class="socio"><div class="ancho">
+  <div><span class="antetitulo" style="color:#8a6a2c">Membresía</span><h2>Hágase <em>socio</em> de la academia</h2><p>Diario, cartera real y todos los cursos. Sin permanencia: se cancela cuando se quiera.</p><a class="boton boton--lleno" href="#" style="margin-top:20px">Hacerse socio</a></div>
+  <div class="tarjeta"><div style="display:flex;justify-content:space-between;align-items:center"><span class="tarjeta-chip"></span><span style="font-family:var(--serif);font-size:22px;color:var(--oro-2)">AdelinBTC</span></div><div class="tarjeta-num">SOCIO · PREMIUM</div><div class="tarjeta-pie"><span>Membresía mensual</span><b>19,99 €</b></div></div>
+</div></section>
+
+<footer class="pie">AdelinBTC Academy · Aviso legal · Privacidad · Cookies · No constituye asesoramiento financiero</footer>
+<span class="etiqueta-maqueta">Versión D · Banca privada (maqueta)</span>
+</body>
+</html>

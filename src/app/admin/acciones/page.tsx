@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Icon from "@/components/Icon";
+import Tecla from "@/components/cuaderno/Tecla";
 import { cargarAcciones, faltaAlCurso, type CursoAccion, type GuiaAccion } from "@/lib/acciones";
 import BotonPublicar from "./BotonPublicar";
 import "./acciones.css";
@@ -36,7 +36,7 @@ function TarjetaGuia({ g }: { g: GuiaAccion }) {
     <article className="ac-tarjeta">
       <div className="ac-tarjeta-cuerpo">
         <div className="ac-cabecera">
-          <span className="ac-tipo ac-tipo--guia"><Icon name="book" size={13} /> Guía</span>
+          <span className="ac-tipo ac-tipo--guia"><Icon name="book" size={14} /> Guía</span>
           {g.auditada
             ? <span className="ac-sello ac-sello--bien">SEO auditado el {fecha(g.auditada)}</span>
             : <span className="ac-sello ac-sello--ojo">Sin auditoría SEO</span>}
@@ -51,7 +51,7 @@ function TarjetaGuia({ g }: { g: GuiaAccion }) {
         </dl>
       </div>
       <div className="ac-tarjeta-acciones">
-        <Link href={`/guias/${g.slug}`} className="ac-enlace" target="_blank">{publicada ? "Ver la guía" : "Ver el borrador"}</Link>
+        <Tecla href={`/guias/${g.slug}`} color="blanca" tamano="peq" ancho target="_blank">{publicada ? "Ver la guía" : "Ver el borrador"}</Tecla>
         <BotonPublicar tipo="guia" slug={g.slug} publicar={!publicada} />
       </div>
     </article>
@@ -64,7 +64,7 @@ function TarjetaCurso({ c }: { c: CursoAccion }) {
     <article className="ac-tarjeta">
       <div className="ac-tarjeta-cuerpo">
         <div className="ac-cabecera">
-          <span className="ac-tipo ac-tipo--curso"><Icon name="star" size={13} /> Curso</span>
+          <span className="ac-tipo ac-tipo--curso"><Icon name="star" size={14} /> Curso</span>
           {!c.published && (falta
             ? <span className="ac-sello ac-sello--ojo">{falta}</span>
             : <span className="ac-sello ac-sello--bien">Completo</span>)}
@@ -78,7 +78,7 @@ function TarjetaCurso({ c }: { c: CursoAccion }) {
         </dl>
       </div>
       <div className="ac-tarjeta-acciones">
-        <Link href={`/cursos/${c.slug}`} className="ac-enlace" target="_blank">{c.published ? "Ver el curso" : "Ver el borrador"}</Link>
+        <Tecla href={`/cursos/${c.slug}`} color="blanca" tamano="peq" ancho target="_blank">{c.published ? "Ver el curso" : "Ver el borrador"}</Tecla>
         {(c.published || !falta) && <BotonPublicar tipo="curso" slug={c.slug} publicar={!c.published} />}
       </div>
     </article>
@@ -99,7 +99,8 @@ export default async function AccionesPage() {
     <div className="admin-page ac">
       <header className="admin-page-header">
         <div>
-          <h1>Acciones</h1>
+          <span className="admin-page-nota">esperan tu visto bueno</span>
+          <h1><span className="fluor">Acciones</span></h1>
           <p className="admin-page-subtitle">
             Lo que ya está construido y con su SEO hecho, a falta de que tú lo publiques. Hasta que pulses «Publicar», solo lo ves tú.
           </p>
@@ -112,7 +113,8 @@ export default async function AccionesPage() {
 
       {faltaSql && (
         <p className="ac-aviso">
-          Falta ejecutar <code>scripts/create-acciones.sql</code> en Supabase: sin él, esta página no puede leer ni guardar nada.
+          <span className="ac-aviso-ic" aria-hidden="true">×</span>
+          <span>Falta ejecutar <code>scripts/create-acciones.sql</code> en Supabase: sin él, esta página no puede leer ni guardar nada.</span>
         </p>
       )}
 

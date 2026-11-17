@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideSolanaCostes from "./GuideSolanaCostes";
 import GuideSolanaQuiz from "./GuideSolanaQuiz";
@@ -69,7 +71,6 @@ export default async function SolanaPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -82,17 +83,17 @@ export default async function SolanaPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Solana<br />
           <span className="gbc-hero-gold">y qué ha pagado por ser tan rápida</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Solana es una blockchain diseñada para ser rápida y barata</strong>: confirma operaciones en
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Solana es una blockchain diseñada para ser rápida y barata</Anotacion></strong>: confirma operaciones en
           segundos y cada una cuesta una fracción de céntimo. Lo consigue pidiendo ordenadores muy potentes a
-          quienes la mantienen, y eso tiene un precio: menos gente puede validarla, y la red se ha parado entera
-          varias veces. Su moneda es <strong>SOL</strong>.
+          quienes la mantienen, y eso tiene un precio: <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={1300}>menos gente puede validarla, y la red se ha parado entera
+          varias veces</Anotacion>. Su moneda es <strong>SOL</strong>.
         </p>
         <p className="gbc-revisado">Revisada el <strong>13 de noviembre de 2026</strong> · Datos técnicos: solana.com e informes de incidencias de la red</p>
         <div className="gbc-hero-pills">
@@ -115,16 +116,18 @@ export default async function SolanaPage() {
             </p>
             <p>
               Su apuesta es distinta a la de casi todas las demás. En vez de repartir el trabajo entre varias
-              redes, Solana intenta que <strong>una sola red lo aguante todo</strong>, exprimiendo al máximo los
+              redes, Solana intenta que <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>una sola red lo aguante todo</Anotacion></strong>, exprimiendo al máximo los
               ordenadores que la sostienen.
             </p>
             <p>Eso la ha hecho fuerte en los usos donde la velocidad y el coste mandan:</p>
+            <Llave color="azul">
             <ul>
               <li><strong>Pagos con <Termino slug="stablecoin">stablecoins</Termino></strong>: mover dólares digitales cuesta menos de un céntimo.</li>
               <li><strong>Intercambio de monedas</strong> en un <Termino slug="dex">exchange descentralizado</Termino>, con órdenes que se ejecutan casi al instante.</li>
               <li><strong>Memecoins</strong>: crear y lanzar una moneda cuesta casi nada, para bien y para mal.</li>
               <li><strong><Termino slug="nft">NFT</Termino> y juegos</strong>, donde hay muchas operaciones pequeñas.</li>
             </ul>
+            </Llave>
           </div>
         </div>
       </section>
@@ -140,8 +143,8 @@ export default async function SolanaPage() {
             <p>
               En la mayoría de las redes, los ordenadores gastan tiempo en ponerse de acuerdo sobre el orden de
               las operaciones: cuál llegó antes y cuál después. Solana les da un reloj común, llamado
-              <strong> prueba de historia</strong>. Es una cuenta que solo se puede hacer paso a paso, así que
-              cada operación queda sellada con el momento exacto en que entró. Con el orden ya resuelto, no hay
+              <strong> <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta retraso={200}>prueba de historia</Anotacion></strong>. Es una cuenta que solo se puede hacer paso a paso, así que{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>cada operación queda sellada con el momento exacto en que entró</Anotacion>. Con el orden ya resuelto, no hay
               que discutirlo.
             </p>
             <h3 className="gbc-sub">Muchas cajas abiertas a la vez</h3>
@@ -151,21 +154,22 @@ export default async function SolanaPage() {
               pagos entre personas distintas no tienen por qué esperar el uno al otro.
             </p>
             <p>
-              El resultado: un bloque nuevo cada 0,4 segundos, aproximadamente. La cifra de 65.000 operaciones
-              por segundo que se repite por ahí es un máximo teórico. En el día a día la red procesa entre mil y
+              El resultado: un bloque nuevo cada 0,4 segundos, aproximadamente. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>La cifra de 65.000 operaciones
+              por segundo que se repite por ahí es un máximo teórico.</Anotacion> En el día a día la red procesa entre mil y
               unos pocos miles, que sigue siendo muchísimo más que Ethereum.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Lo que cambió el 21 de octubre de 2026</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Lo que cambió el 21 de octubre de 2026</div>
+            <div className="postit-cuerpo">
               <p>Ese día se activó <strong>Alpenglow</strong>, el mayor cambio en la historia de la red: sustituye el
               sistema con el que los validadores votaban y daban por definitivo cada bloque. El objetivo declarado
               es que una operación sea irreversible en unos 150 milisegundos, frente a los casi 13 segundos de
-              antes. Ojo: 150 milisegundos es el <strong>objetivo de diseño</strong>, no una cifra ya medida. El día
+              antes. Ojo: 150 milisegundos es el <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}><strong>objetivo de diseño</strong>, no una cifra ya medida</Anotacion>. El día
               del estreno, el panel oficial marcaba varios segundos (solana.com y Cointelegraph, octubre de 2026).</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -176,21 +180,22 @@ export default async function SolanaPage() {
           <h2 className="gbc-title">Cuánto cuesta una transacción en Solana</h2>
           <div className="gbc-body">
             <p>
-              La comisión base es fija: <strong>0,000005 SOL por firma</strong>, y casi todas las operaciones
+              La comisión base es fija: <strong><Anotacion tipo="circle" junta retraso={200}>0,000005 SOL por firma</Anotacion></strong>, y casi todas las operaciones
               llevan una sola. Con la red muy cargada puedes añadir una propina para pasar antes, pero incluso
               así se habla de céntimos.
             </p>
             <p>
-              Lo que casi nadie te cuenta es el <strong>depósito</strong>. La primera vez que recibes una moneda
+              Lo que casi nadie te cuenta es el <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>depósito</Anotacion></strong>. La primera vez que recibes una moneda
               nueva, Solana te abre una pequeña cuenta para guardarla y te retiene unos
-              <strong> 0,002 SOL</strong> como fianza por el espacio que ocupa. No es una comisión: lo recuperas
-              si cierras esa cuenta. Pero si entras con el SOL justo, esa fianza es lo que te deja a medias.
+              <strong> 0,002 SOL</strong> como fianza por el espacio que ocupa. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>No es una comisión: lo recuperas
+              si cierras esa cuenta.</Anotacion> Pero si entras con el SOL justo, esa fianza es lo que te deja a medias.
             </p>
           </div>
 
           <GuideSolanaCostes />
 
           <p className="gbc-fuente">
+            <SimboloEstudio tipo="asterisco" color="cielo" className="sol-fuente-asterisco" animar={false} />
             Comisión base y depósito de una cuenta de token, según la documentación de Solana. La propina de
             prioridad no está incluida: depende de lo llena que esté la red en ese momento.
           </p>
@@ -205,10 +210,10 @@ export default async function SolanaPage() {
           <div className="gbc-body">
             <p>
               Una caída, aquí, significa que la red entera deja de producir bloques: nadie puede enviar, vender
-              ni retirar nada hasta que los validadores la reinician a mano. Tu dinero no se pierde, pero se
-              queda quieto, y eso en plena caída de precios importa.
+              ni retirar nada hasta que los validadores la reinician a mano. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Tu dinero no se pierde, pero se
+              queda quieto</Anotacion>, y eso en plena caída de precios importa.
             </p>
-            <p>Solana ha tenido seis paradas completas. Estas son, con lo que duraron:</p>
+            <p>Solana ha tenido <Anotacion tipo="circle" junta retraso={600}>seis paradas completas</Anotacion>. Estas son, con lo que duraron:</p>
           </div>
 
           <div className="sol-caidas">
@@ -227,9 +232,9 @@ export default async function SolanaPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Dos lecturas, las dos ciertas. La mala: casi 60 horas parada en total, cuando Bitcoin y Ethereum no
+              Dos lecturas, las dos ciertas. La mala: <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>casi 60 horas parada en total</Anotacion>, cuando Bitcoin y Ethereum no
               se han detenido así en ese tiempo. La buena: cinco de las seis ocurrieron en año y medio, entre
-              2021 y principios de 2023, y la más reciente de la lista es de febrero de 2024.
+              2021 y principios de 2023, y <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>la más reciente de la lista es de febrero de 2024</Anotacion>.
             </p>
             <p>
               Parte de la mejora viene de no depender de un solo programa. Durante años, todos los validadores
@@ -256,12 +261,14 @@ export default async function SolanaPage() {
             </p>
             <p>
               La pega es lo que cuesta ser validador. La documentación de Solana pide un servidor con 256 GB de
-              memoria o más y una conexión muy rápida: un equipo profesional, no el ordenador de casa. Un <Termino slug="nodo">nodo</Termino>
+              memoria o más y una conexión muy rápida: <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>un equipo profesional, no el ordenador de casa</Anotacion>. Un <Termino slug="nodo">nodo</Termino>
               de Bitcoin, en cambio, funciona en un miniordenador doméstico.
             </p>
             <p>
-              Cuanto más cuesta participar, menos gente lo hace, y más se parece la red a un grupo de empresas
-              especializadas. Es el precio de la velocidad, y es la crítica que más se le hace a Solana.
+              <Anotacion tipo="bracket" lados="left" color="var(--lila)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                Cuanto más cuesta participar, menos gente lo hace, y más se parece la red a un grupo de empresas
+                especializadas. Es el precio de la velocidad, y es la crítica que más se le hace a Solana.
+              </Anotacion>
             </p>
           </div>
         </div>
@@ -275,7 +282,7 @@ export default async function SolanaPage() {
           <div className="gbc-body">
             <p>
               SOL se usa para tres cosas: pagar las comisiones, cubrir los depósitos de las cuentas y hacer
-              <Termino slug="staking"> staking</Termino>. No tiene un máximo de monedas. La red crea SOL nuevo
+              <Termino slug="staking"> staking</Termino>. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>No tiene un máximo de monedas.</Anotacion> La red crea SOL nuevo
               cada año para pagar a los validadores, con una <Termino slug="inflacion">inflación</Termino> que
               empezó en el 8 % y baja un 15 % cada año, hasta quedarse en el 1,5 %.
             </p>
@@ -290,12 +297,13 @@ export default async function SolanaPage() {
             <div className="sol-cuenta-op">−</div>
             <div><span>SOL nuevo que se crea</span><strong>≈ 3,7 %</strong></div>
             <div className="sol-cuenta-op">=</div>
-            <div className="es-resultado"><span>Lo que ganas de verdad</span><strong>≈ 1,6 %</strong></div>
+            <div className="es-resultado"><span>Lo que ganas de verdad</span><strong><Anotacion tipo="circle" junta retraso={300}>≈ 1,6 %</Anotacion></strong></div>
           </div>
           <div className="gbc-body" style={{ marginTop: 22 }}>
             <p>
-              Esa cuenta es la que casi nunca se enseña. La mayor parte de lo que «rinde» el staking es SOL
-              recién creado, que <Termino slug="dilucion">diluye</Termino> a todo el mundo. Quien hace staking mantiene su parte del pastel y gana
+              <SimboloEstudio tipo="estrella" color="naranja" margen semilla={12} animar={false} />
+              Esa cuenta es la que casi nunca se enseña. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>La mayor parte de lo que «rinde» el staking es SOL
+              recién creado</Anotacion>, que <Termino slug="dilucion">diluye</Termino> a todo el mundo. Quien hace staking mantiene su parte del pastel y gana
               un poco; quien no lo hace, la va perdiendo. Y todo ello en SOL, cuyo precio se mueve mucho más que
               ese 1,6 %.
             </p>
@@ -316,7 +324,7 @@ export default async function SolanaPage() {
             <p>
               Las dos sirven para lo mismo, ejecutar programas, y han tomado caminos opuestos.
               <Link href="/guias/ethereum"> Ethereum</Link> mantiene su red principal lenta y fácil de validar, y
-              manda el tráfico a otras redes construidas encima. Solana lo hace todo en una.
+              manda el tráfico a otras redes construidas encima. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Solana lo hace todo en una.</Anotacion>
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -325,7 +333,7 @@ export default async function SolanaPage() {
               <tbody>
                 <tr><td><strong>Una operación sencilla</strong></td><td>Menos de un céntimo</td><td>De céntimos a varios euros, según la hora; céntimos en sus <Termino slug="capa-2">capas 2</Termino></td></tr>
                 <tr><td><strong>Un bloque nuevo</strong></td><td>Cada 0,4 segundos</td><td>Cada 12 segundos</td></tr>
-                <tr><td><strong>Paradas completas</strong></td><td>Seis, la última de la lista en 2024</td><td>Ninguna</td></tr>
+                <tr><td><strong>Paradas completas</strong></td><td><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Seis, la última de la lista en 2024</Anotacion></td><td>Ninguna</td></tr>
                 <tr><td><strong>Montar un validador</strong></td><td>Servidor profesional</td><td>Un ordenador normal y 32 ETH</td></tr>
                 <tr><td><strong>Dónde está el dinero</strong></td><td>Menos que en Ethereum</td><td>La mayor parte de las <Termino slug="defi">finanzas descentralizadas</Termino></td></tr>
               </tbody>
@@ -342,21 +350,21 @@ export default async function SolanaPage() {
           <div className="gbc-body">
             <ul>
               <li>
-                <strong>Tratar una memecoin como una inversión.</strong> En Solana, lanzar una moneda cuesta
+                <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1}>Tratar una memecoin como una inversión.</Anotacion></strong> En Solana, lanzar una moneda cuesta
                 minutos y céntimos. La inmensa mayoría sube, quien la creó vende y se queda en nada: es el
                 mecanismo de un <Termino slug="pump-and-dump">pump and dump</Termino>.
               </li>
               <li>
-                <strong>Firmar sin leer.</strong> Como todo es rápido y barato, se firma sin mirar. Una web
+                <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={250}>Firmar sin leer.</Anotacion></strong> Como todo es rápido y barato, se firma sin mirar. Una web
                 falsa que imita a una conocida puede pedirte una firma que le da el control de tus monedas. Es
                 <Termino slug="phishing"> phishing</Termino>, y es el robo más frecuente.
               </li>
               <li>
-                <strong>Entrar con el SOL justo.</strong> Entre comisiones y depósitos de cuentas, quien llega
-                con lo exacto se queda sin poder mover nada. Deja siempre un pequeño margen.
+                <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={500}>Entrar con el SOL justo.</Anotacion></strong> Entre comisiones y depósitos de cuentas, quien llega
+                con lo exacto se queda sin poder mover nada. <SimboloEstudio tipo="check" color="menta" className="sol-check" animar={false} />Deja siempre un pequeño margen.
               </li>
               <li>
-                <strong>Creer que barato es lo mismo que seguro.</strong> Que una operación cueste un céntimo no
+                <strong><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} animar={false}>Creer que barato es lo mismo que seguro.</Anotacion></strong> Que una operación cueste un céntimo no
                 dice nada de la aplicación en la que la haces.
               </li>
             </ul>
@@ -373,9 +381,9 @@ export default async function SolanaPage() {
             <ul>
               <li><strong>Que vuelva a pararse.</strong> Lleva tiempo sin hacerlo, pero un sistema tan exigido tiene menos margen ante un fallo.</li>
               <li><strong>La concentración.</strong> Pocos validadores, caros de mantener, y un cambio tan profundo como Alpenglow recién estrenado.</li>
-              <li><strong>La dilución.</strong> No hay un máximo de SOL: quien lo tiene parado pierde peso cada año.</li>
+              <li><strong>La dilución.</strong> No hay un máximo de SOL: <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>quien lo tiene parado pierde peso cada año</Anotacion>.</li>
               <li><strong>El ruido.</strong> Buena parte de la actividad son memecoins. Si esa moda se enfría, las cifras de uso se enfrían con ella.</li>
-              <li><strong>El precio.</strong> SOL cayó más de un 95 % entre 2021 y finales de 2022. Esa <Termino slug="volatilidad">volatilidad</Termino> forma parte del activo.</li>
+              <li><strong>El precio.</strong> SOL cayó <Anotacion tipo="circle" junta retraso={400}>más de un 95 %</Anotacion> entre 2021 y finales de 2022. Esa <Termino slug="volatilidad">volatilidad</Termino> forma parte del activo.</li>
             </ul>
           </div>
           <DisclaimerRiesgo variante="general" />
@@ -391,7 +399,7 @@ export default async function SolanaPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Solana</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>A Contrarreloj</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">A Contrarreloj</strong>.</p>
           </div>
           {d.isRegistered ? <GuideSolanaQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

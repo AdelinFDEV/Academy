@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, Camera, ImagePlus, Trash2, X } from "lucide-react";
+import { ArrowRight, Camera, ChevronLeft, ChevronRight, ImagePlus, RefreshCw, Trash2, X } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 import type { Trade } from "./tjStats";
+import { useSonidoVentana } from "./useSonidoVentana";
+import { bloquearScroll } from "./useVentanaMovil";
 
 /**
  * Las capturas de una operación: el gráfico antes de entrar y después de
@@ -18,6 +21,10 @@ import type { Trade } from "./tjStats";
  * privado. Antes de subirla, el navegador reduce la captura (lado mayor de
  * 1.920 px, WebP): una captura de pantalla 4K pesa más de lo que admite el
  * servidor y no hace falta tanta resolución para leer un gráfico.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): el hueco vacío es un recuadro de
+ * trazo discontinuo donde soltar la imagen; la captura puesta, una foto
+ * pegada con cinta, un poco torcida, que se hunde como una tecla al pulsarla.
  */
 
 export const TIPOS_CAPTURA = ["antes", "despues"] as const;
@@ -43,15 +50,15 @@ function Boceto({ tipo }: { tipo: TipoCaptura }) {
     [176, 58, 64, 84, 90, true], [202, 44, 52, 72, 80, true], [228, 50, 56, 70, 76, false], [254, 30, 38, 60, 66, true],
   ];
   return (
-    <svg className="tjk-boceto" viewBox="0 0 280 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <svg className="djk-boceto" viewBox="0 0 280 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       {[...velas, ...(tipo === "despues" ? despues : [])].map(([x, m1, c1, c2, m2, sube]) => (
         <g key={x} className={sube ? "es-sube" : "es-baja"}>
-          <line x1={x} y1={m1} x2={x} y2={m2} strokeWidth="2" />
-          <rect x={x - 7} y={c1} width="14" height={c2 - c1} rx="2" />
+          <line x1={x} y1={m1} x2={x} y2={m2} strokeWidth="2.4" strokeLinecap="round" />
+          <rect x={x - 7} y={c1} width="14" height={c2 - c1} rx="3" />
         </g>
       ))}
-      <line className="es-marca" x1="150" y1="14" x2="150" y2="146" strokeWidth="2" />
-      {tipo === "antes" && <path className="es-futuro" d="M162 76 C190 60 214 96 262 44" strokeWidth="2.4" />}
+      <line className="es-marca" x1="150" y1="14" x2="150" y2="146" strokeWidth="2.4" strokeLinecap="round" />
+      {tipo === "antes" && <path className="es-futuro" d="M162 76 C190 60 214 96 262 44" strokeWidth="2.6" strokeLinecap="round" />}
     </svg>
   );
 }
@@ -80,7 +87,6 @@ export const SIN_CAPTURAS: CapturasPendientes = {
 };
 
 const LADO_MAXIMO = 1920;
-const FORMATOS = ["image/png", "image/jpeg", "image/webp"];
 
 const aDataUrl = (blob: Blob) =>
   new Promise<string>((resolve, reject) => {
@@ -90,14 +96,19 @@ const aDataUrl = (blob: Blob) =>
     lector.readAsDataURL(blob);
   });
 
-/** Reduce la captura y la pasa a WebP. Lanza con un mensaje que se puede enseñar. */
+/**
+ * Reduce la captura y la pasa a WebP. Lanza con un mensaje que se puede enseñar.
+ * Vale cualquier imagen que el navegador sepa abrir (17-11-2026): en el móvil la
+ * foto llega de la galería o de la cámara, a veces en HEIC, y aquí se convierte;
+ * el servidor la vuelve a comprobar y a recodificar.
+ */
 async function preparar(archivo: Blob): Promise<{ archivo: Blob; vista: string }> {
-  if (!FORMATOS.includes(archivo.type)) throw new Error("Solo se pueden subir imágenes JPG, PNG o WebP.");
+  if (archivo.type && !archivo.type.startsWith("image/")) throw new Error("Eso no es una imagen. Elige una foto o una captura.");
   let bitmap: ImageBitmap;
   try {
     bitmap = await createImageBitmap(archivo);
   } catch {
-    throw new Error("No se pudo abrir la imagen.");
+    throw new Error("No se pudo abrir la imagen. Prueba con una JPG, PNG o WebP.");
   }
   const escala = Math.min(1, LADO_MAXIMO / Math.max(bitmap.width, bitmap.height));
   const lienzo = document.createElement("canvas");
@@ -110,21 +121,42 @@ async function preparar(archivo: Blob): Promise<{ archivo: Blob; vista: string }
   return { archivo: reducida, vista: await aDataUrl(reducida) };
 }
 
+/** Una captura para la ventana de ampliar. */
+interface Foto { src: string; titulo: string }
+
+/**
+ * La foto pegada con cinta: una tecla blanca (se hunde al pulsarla) con la
+ * imagen y su pie escrito a mano. El giro lo pone su envoltorio, para que no
+ * choque con el movimiento de la tecla.
+ */
+function Polaroid({ src, alt, pie, onAmpliar, perezosa }: { src: string; alt: string; pie: string; onAmpliar: () => void; perezosa?: boolean }) {
+  return (
+    <div className="djk-foto">
+      <Tecla color="blanca" className="djk-ver" onClick={onAmpliar} aria-label={`Ampliar la captura: ${pie}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} {...(perezosa ? { loading: "lazy" as const, decoding: "async" as const } : {})} />
+        <span className="djk-pie">{pie}</span>
+      </Tecla>
+    </div>
+  );
+}
+
 function Hueco({
-  tipo, guardada, pendiente, onChange, onAmpliar,
+  tipo, src, guardada, onChange, onAmpliar,
 }: {
   tipo: TipoCaptura;
-  /** Dirección de la captura ya guardada en el servidor, si la hay. */
-  guardada: string | null;
-  pendiente: CapturaPendiente;
+  /** Lo que se enseña en el hueco: la imagen nueva o la guardada, o nada. */
+  src: string | null;
+  /** Hay una captura guardada en el servidor. */
+  guardada: boolean;
   onChange: (p: CapturaPendiente) => void;
-  onAmpliar: (src: string, titulo: string) => void;
+  onAmpliar: () => void;
 }) {
   const campo = useRef<HTMLInputElement>(null);
+  const id = useId();
   const [error, setError] = useState("");
   const [encima, setEncima] = useState(false);
   const { titulo, etiqueta, ayuda } = ROTULO[tipo];
-  const src = pendiente.vista ?? (pendiente.quitar ? null : guardada);
 
   async function recibir(archivo: Blob | null | undefined) {
     if (!archivo) return;
@@ -143,49 +175,61 @@ function Hueco({
   };
 
   return (
-    <div className={`tjk-hueco is-${tipo}`}>
-      <div className="tjk-rotulo">
-        <span className="tjk-etiqueta">{etiqueta}</span>
-        <span className="tjk-ayuda">{ayuda}</span>
+    <div className={`djk-hueco is-${tipo}`}>
+      <div className="djk-rotulo">
+        <span className={`dj-chip ${tipo === "antes" ? "dj-chip--azul" : "dj-chip--lila"}`}>{etiqueta}</span>
+        <span className="djk-ayuda">{ayuda}</span>
       </div>
 
       <input
-        ref={campo} type="file" accept={FORMATOS.join(",")} hidden
+        ref={campo} id={id} type="file" accept="image/*" hidden
         onChange={(e) => { void recibir(e.target.files?.[0]); e.target.value = ""; }}
       />
 
       {src ? (
-        <div className="tjk-imagen">
-          <button type="button" className="tjk-ver" onClick={() => onAmpliar(src, titulo)} aria-label={`Ampliar la captura: ${titulo}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={`Captura: ${titulo}`} />
-          </button>
-          <div className="tjk-acciones">
-            <button type="button" className="tj-btn" onClick={() => campo.current?.click()}>Cambiar</button>
-            <button
-              type="button" className="tj-icon-btn tone-loss" aria-label={`Quitar la captura: ${titulo}`} title="Quitar"
-              onClick={() => onChange({ archivo: null, vista: null, quitar: !!guardada })}
+        <div className="djk-puesta">
+          <Polaroid src={src} alt={`Captura: ${titulo}`} pie={titulo} onAmpliar={onAmpliar} />
+          <div className="djk-acciones">
+            <Tecla color="blanca" tamano="peq" className="dj-llana" onClick={() => campo.current?.click()}>
+              <RefreshCw size={14} strokeWidth={2.8} aria-hidden="true" /> Cambiar
+            </Tecla>
+            <Tecla
+              color="coral" tamano="peq" icono aria-label={`Quitar la captura: ${titulo}`} title="Quitar"
+              onClick={() => onChange({ archivo: null, vista: null, quitar: guardada })}
             >
-              <Trash2 size={14} />
-            </button>
+              <Trash2 size={16} strokeWidth={2.6} aria-hidden="true" />
+            </Tecla>
           </div>
         </div>
       ) : (
-        <button
-          type="button" className={`tjk-soltar${encima ? " is-encima" : ""}`}
-          onClick={() => campo.current?.click()}
+        /* El hueco es la etiqueta del campo de archivo: pulsarlo abre el
+           selector. Se puede enfocar para pegar con Ctrl+V. */
+        <label
+          htmlFor={id} tabIndex={0}
+          className={`djk-soltar${encima ? " is-encima" : ""}`}
+          aria-label={`Añadir la captura: ${titulo}`}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); campo.current?.click(); } }}
           onPaste={(e) => { const f = imagenDe(e.clipboardData?.items); if (f) { e.preventDefault(); void recibir(f); } }}
           onDragOver={(e) => { e.preventDefault(); setEncima(true); }}
           onDragLeave={() => setEncima(false)}
           onDrop={(e) => { e.preventDefault(); setEncima(false); void recibir(e.dataTransfer.files?.[0]); }}
         >
           <Boceto tipo={tipo} />
-          <span className="tjk-soltar-icono" aria-hidden="true"><ImagePlus size={22} /></span>
+          <span className="djk-soltar-icono" aria-hidden="true"><ImagePlus size={24} strokeWidth={2.4} /></span>
           <strong>Añadir la captura</strong>
-          <span>Pulsa y pega con <kbd>Ctrl</kbd> + <kbd>V</kbd>, arrástrala o elige el archivo</span>
-        </button>
+          <span className="djk-soltar-txt">
+            <span className="djk-raton">Pulsa y pega con <kbd>Ctrl</kbd> + <kbd>V</kbd>, arrástrala o elige el archivo</span>
+            <span className="djk-tactil">Tócalo para elegirla de tu galería o hacer una foto</span>
+          </span>
+          <span className="dj-nota djk-soltar-nota djk-raton" aria-hidden="true">{encima ? "¡suéltala!" : "suéltala aquí"}</span>
+        </label>
       )}
-      {error && <p className="auth-error">{error}</p>}
+      {error && (
+        <div className="dj-aviso dj-aviso--error dj-aviso--peq" role="alert">
+          <span className="ic" aria-hidden="true">×</span>
+          <span>{error}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -198,59 +242,104 @@ export function TjCapturasCampo({
   pendientes: CapturasPendientes;
   onChange: (p: CapturasPendientes) => void;
 }) {
-  const [ampliada, setAmpliada] = useState<{ src: string; titulo: string } | null>(null);
+  const [ampliada, setAmpliada] = useState<number | null>(null);
+  useSonidoVentana(ampliada != null);
+
+  // Lo que enseña cada hueco: la imagen nueva, o la guardada si no se ha quitado.
+  const huecos = TIPOS_CAPTURA.map((tipo) => {
+    const version = capturaDe(editing, tipo);
+    const guardada = editing && version ? urlCaptura(editing.id, tipo, version) : null;
+    const p = pendientes[tipo];
+    return { tipo, guardada, src: p.vista ?? (p.quitar ? null : guardada) };
+  });
+  // Solo las puestas se pueden ampliar y pasar de una a otra.
+  const fotos: (Foto & { tipo: TipoCaptura })[] = huecos.flatMap((h) => (h.src ? [{ tipo: h.tipo, src: h.src, titulo: ROTULO[h.tipo].titulo }] : []));
+
   return (
-    <div className="tjk">
-      <div className="tjk-cab">
-        <span className="tjk-cab-icono" aria-hidden="true"><Camera size={18} /></span>
-        <div>
-          <span className="tjk-titulo">El gráfico, antes y después</span>
-          <span className="tjk-sub">La memoria embellece las entradas. Una captura, no. Solo las ves tú.</span>
-        </div>
-        <span className="tjk-opcional">Opcional</span>
+    <fieldset className="djk">
+      <legend className="djk-cab">
+        <b aria-hidden="true"><Camera size={18} strokeWidth={2.6} /></b>
+        <span>El gráfico, antes y después</span>
+        <span className="dj-chip">Opcional</span>
+      </legend>
+      <p className="djk-sub">La memoria embellece las entradas. Una captura, no. Solo las ves tú.</p>
+      <div className="djk-huecos">
+        {huecos.map(({ tipo, guardada, src }, i) => [
+          i > 0 && <span key="flecha" className="djk-flecha" aria-hidden="true"><ArrowRight size={18} strokeWidth={2.8} /></span>,
+          <Hueco
+            key={tipo}
+            tipo={tipo}
+            src={src}
+            guardada={!!guardada}
+            onChange={(p) => onChange({ ...pendientes, [tipo]: p })}
+            onAmpliar={() => setAmpliada(Math.max(0, fotos.findIndex((f) => f.tipo === tipo)))}
+          />,
+        ])}
       </div>
-      <div className="tjk-huecos">
-        {TIPOS_CAPTURA.map((tipo, i) => {
-          const version = capturaDe(editing, tipo);
-          return [
-            i > 0 && <span key="flecha" className="tjk-flecha" aria-hidden="true"><ArrowRight size={16} /></span>,
-            <Hueco
-              key={tipo}
-              tipo={tipo}
-              guardada={editing && version ? urlCaptura(editing.id, tipo, version) : null}
-              pendiente={pendientes[tipo]}
-              onChange={(p) => onChange({ ...pendientes, [tipo]: p })}
-              onAmpliar={(src, titulo) => setAmpliada({ src, titulo })}
-            />,
-          ];
-        })}
-      </div>
-      {ampliada && <Ampliada {...ampliada} onClose={() => setAmpliada(null)} />}
-    </div>
+      {ampliada != null && fotos.length > 0 && (
+        <Ampliada fotos={fotos} inicio={Math.min(ampliada, fotos.length - 1)} onClose={() => setAmpliada(null)} />
+      )}
+    </fieldset>
   );
 }
 
-/** La imagen a pantalla completa. Se cierra con Escape, con la X o pulsando fuera. */
-function Ampliada({ src, titulo, onClose }: { src: string; titulo: string; onClose: () => void }) {
+/**
+ * La imagen en grande, en una ventana. Se cierra con Escape, con la tecla de
+ * cerrar o pulsando fuera; con dos capturas, se pasa de una a otra con las
+ * flechas (de la ventana o del teclado).
+ */
+function Ampliada({ fotos, inicio, onClose }: { fotos: Foto[]; inicio: number; onClose: () => void }) {
+  const [i, setI] = useState(inicio);
+  const n = fotos.length;
+  const foto = fotos[Math.min(i, n - 1)];
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } };
-    const antes = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { e.stopPropagation(); onClose(); }
+      else if (n > 1 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+        e.stopPropagation();
+        setI((x) => (x + (e.key === "ArrowRight" ? 1 : n - 1)) % n);
+      }
+    };
+    const soltar = bloquearScroll();
     window.addEventListener("keydown", onKey, true);
     return () => {
-      document.body.style.overflow = antes;
+      soltar();
       window.removeEventListener("keydown", onKey, true);
     };
-  }, [onClose]);
+  }, [onClose, n]);
 
   return createPortal(
-    <div className="tjk-velo" role="dialog" aria-modal="true" aria-label={`Captura: ${titulo}`} onClick={onClose}>
-      <div className="tjk-velo-cab" onClick={(e) => e.stopPropagation()}>
-        <span>{titulo}</span>
-        <button type="button" className="tj-icon-btn" onClick={onClose} aria-label="Cerrar" autoFocus><X size={18} /></button>
+    <div className="trading-journal djk-portal">
+      <div className="dj-velo djk-velo" onClick={onClose}>
+        <div className="dj-ventana djk-ampliada" role="dialog" aria-modal="true" aria-label={`Captura: ${foto.titulo}`} onClick={(e) => e.stopPropagation()}>
+          <div className="djk-ampliada-cab">
+            <div>
+              <h3>{foto.titulo}</h3>
+              {n > 1 && <span className="dj-etq">{i + 1} de {n}</span>}
+            </div>
+            <div className="djk-ampliada-teclas">
+              {n > 1 && (
+                <>
+                  <Tecla color="blanca" tamano="peq" icono aria-label="Captura anterior" onClick={() => setI((x) => (x + n - 1) % n)}>
+                    <ChevronLeft size={20} strokeWidth={2.8} aria-hidden="true" />
+                  </Tecla>
+                  <Tecla color="blanca" tamano="peq" icono aria-label="Captura siguiente" onClick={() => setI((x) => (x + 1) % n)}>
+                    <ChevronRight size={20} strokeWidth={2.8} aria-hidden="true" />
+                  </Tecla>
+                </>
+              )}
+              <Tecla color="azul" tamano="peq" icono aria-label="Cerrar" onClick={onClose} autoFocus>
+                <X size={20} strokeWidth={2.8} aria-hidden="true" />
+              </Tecla>
+            </div>
+          </div>
+          <div className="djk-ampliada-marco">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img key={foto.src} src={foto.src} alt={`Captura: ${foto.titulo}`} />
+          </div>
+        </div>
       </div>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={`Captura: ${titulo}`} onClick={(e) => e.stopPropagation()} />
     </div>,
     document.body,
   );
@@ -258,26 +347,23 @@ function Ampliada({ src, titulo, onClose }: { src: string; titulo: string; onClo
 
 /** Las miniaturas en el detalle de una operación. No pinta nada si no hay ninguna. */
 export function TjCapturasVista({ trade }: { trade: Trade }) {
-  const [ampliada, setAmpliada] = useState<{ src: string; titulo: string } | null>(null);
-  const hay = TIPOS_CAPTURA.filter((tipo) => capturaDe(trade, tipo));
-  if (!hay.length) return null;
+  const [ampliada, setAmpliada] = useState<number | null>(null);
+  useSonidoVentana(ampliada != null);
+  const fotos: Foto[] = TIPOS_CAPTURA.flatMap((tipo) => {
+    const version = capturaDe(trade, tipo);
+    return version ? [{ src: urlCaptura(trade.id, tipo, version), titulo: ROTULO[tipo].titulo }] : [];
+  });
+  if (!fotos.length) return null;
 
   return (
-    <div className="tjk-vista">
-      {hay.map((tipo) => {
-        const src = urlCaptura(trade.id, tipo, capturaDe(trade, tipo)!);
-        const { titulo } = ROTULO[tipo];
-        return (
-          <figure key={tipo}>
-            <button type="button" className="tjk-ver" onClick={() => setAmpliada({ src, titulo })} aria-label={`Ampliar la captura: ${titulo}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`Captura de ${trade.pair}: ${titulo}`} loading="lazy" decoding="async" />
-            </button>
-            <figcaption>{titulo}</figcaption>
-          </figure>
-        );
-      })}
-      {ampliada && <Ampliada {...ampliada} onClose={() => setAmpliada(null)} />}
+    <div className="djk-vista">
+      {fotos.map(({ src, titulo }, i) => (
+        <Polaroid
+          key={titulo} src={src} alt={`Captura de ${trade.pair}: ${titulo}`} pie={titulo} perezosa
+          onAmpliar={() => setAmpliada(i)}
+        />
+      ))}
+      {ampliada != null && <Ampliada fotos={fotos} inicio={ampliada} onClose={() => setAmpliada(null)} />}
     </div>
   );
 }

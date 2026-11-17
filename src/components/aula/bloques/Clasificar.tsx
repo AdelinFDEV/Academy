@@ -3,12 +3,20 @@
 import { useMemo, useState } from "react";
 import { motion, LayoutGroup } from "framer-motion";
 import { Check, X, RotateCcw } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import { Marco, barajarFijo } from "./comun";
 
 /**
  * Minijuego de clasificar: cada tarjeta va a su grupo. Se juega con dos
  * toques —tarjeta y luego grupo—, que funciona igual con el dedo que con el
  * ratón; arrastrar en un móvil es más torpe y peor para la accesibilidad.
+ *
+ * Cada tarjeta es una tecla (la elegida, lila), metida en una capa de
+ * framer-motion que la lleva volando hasta su grupo: la tecla se hunde con su
+ * propio CSS y el vuelo va en la capa de fuera, así no se pisan.
+ *
+ * Al comprobar suena a `acierto` si están todas en su sitio y a `fallo` si no.
  *
  * datos: {
  *   titulo, instrucciones?,
@@ -58,6 +66,11 @@ export default function Clasificar({ datos }: { datos: DatosClasificar }) {
     });
   }
 
+  function comprobar() {
+    sonar(aciertos === elementos.length ? "acierto" : "fallo");
+    setComprobado(true);
+  }
+
   function reiniciar() {
     setColocados({});
     setElegido(null);
@@ -72,17 +85,17 @@ export default function Clasificar({ datos }: { datos: DatosClasificar }) {
             <p className="aula-clas-vacio">Todas colocadas. Comprueba si aciertas.</p>
           )}
           {pendientes.map((e) => (
-            <motion.button
-              layout
-              layoutId={`clas-${datos.titulo}-${e.i}`}
-              key={e.i}
-              type="button"
-              className={`aula-clas-carta${elegido === e.i ? " is-elegida" : ""}`}
-              onClick={() => setElegido(elegido === e.i ? null : e.i)}
-              aria-pressed={elegido === e.i}
-            >
-              {e.texto}
-            </motion.button>
+            <motion.div layout layoutId={`clas-${datos.titulo}-${e.i}`} key={e.i} className="aula-clas-capa">
+              <Tecla
+                color={elegido === e.i ? "lila" : "blanca"}
+                tamano="peq"
+                className={`aula-clas-carta${elegido === e.i ? " is-elegida" : ""}`}
+                onClick={() => setElegido(elegido === e.i ? null : e.i)}
+                aria-pressed={elegido === e.i}
+              >
+                {e.texto}
+              </Tecla>
+            </motion.div>
           ))}
         </div>
 
@@ -94,7 +107,11 @@ export default function Clasificar({ datos }: { datos: DatosClasificar }) {
               onClick={() => colocar(g.id)}
               role="button"
               tabIndex={0}
-              onKeyDown={(ev) => (ev.key === "Enter" || ev.key === " ") && colocar(g.id)}
+              onKeyDown={(ev) => {
+                if (ev.key !== "Enter" && ev.key !== " ") return;
+                ev.preventDefault();
+                colocar(g.id);
+              }}
               aria-label={`Colocar en ${g.nombre}`}
             >
               <span className="aula-clas-grupo-nombre">{g.nombre}</span>
@@ -104,21 +121,21 @@ export default function Clasificar({ datos }: { datos: DatosClasificar }) {
                   .map((e) => {
                     const bien = e.grupo === g.id;
                     return (
-                      <motion.button
-                        layout
-                        layoutId={`clas-${datos.titulo}-${e.i}`}
-                        key={e.i}
-                        type="button"
-                        className={`aula-clas-carta is-colocada${comprobado ? (bien ? " is-buena" : " is-mala") : ""}`}
-                        onClick={(ev) => {
-                          ev.stopPropagation();
-                          devolver(e.i);
-                        }}
-                        title={comprobado && !bien && e.explicacion ? e.explicacion : undefined}
-                      >
-                        {comprobado && (bien ? <Check size={13} strokeWidth={3} aria-hidden="true" /> : <X size={13} strokeWidth={3} aria-hidden="true" />)}
-                        {e.texto}
-                      </motion.button>
+                      <motion.div layout layoutId={`clas-${datos.titulo}-${e.i}`} key={e.i} className="aula-clas-capa">
+                        <Tecla
+                          color="blanca"
+                          tamano="peq"
+                          className={`aula-clas-carta is-colocada${comprobado ? (bien ? " is-buena" : " is-mala") : ""}`}
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            devolver(e.i);
+                          }}
+                          title={comprobado && !bien && e.explicacion ? e.explicacion : undefined}
+                        >
+                          {comprobado && (bien ? <Check size={14} strokeWidth={3.2} aria-hidden="true" /> : <X size={14} strokeWidth={3.2} aria-hidden="true" />)}
+                          {e.texto}
+                        </Tecla>
+                      </motion.div>
                     );
                   })}
               </div>
@@ -128,7 +145,7 @@ export default function Clasificar({ datos }: { datos: DatosClasificar }) {
       </LayoutGroup>
 
       {comprobado && (
-        <div className={`aula-feedback ${aciertos === elementos.length ? "is-buena" : "is-mala"}`}>
+        <div className={`aula-feedback ${aciertos === elementos.length ? "is-buena" : "is-mala"}`} role="status">
           <strong>{aciertos} de {elementos.length} en su sitio.</strong>{" "}
           {aciertos === elementos.length ? "Perfecto." : "Las rojas están en el grupo equivocado."}
           {elementos.filter((e) => colocados[e.i] !== e.grupo && e.explicacion).length > 0 && (
@@ -145,13 +162,13 @@ export default function Clasificar({ datos }: { datos: DatosClasificar }) {
 
       <div className="aula-bloque-acciones">
         {!comprobado ? (
-          <button type="button" className="aula-btn" disabled={pendientes.length > 0} onClick={() => setComprobado(true)}>
-            Comprobar
-          </button>
+          <Tecla color="menta" tamano="peq" disabled={pendientes.length > 0} onClick={comprobar}>
+            <Check size={15} strokeWidth={3} aria-hidden="true" /> Comprobar
+          </Tecla>
         ) : (
-          <button type="button" className="aula-btn aula-btn--ghost" onClick={reiniciar}>
-            <RotateCcw size={14} aria-hidden="true" /> Otra vez
-          </button>
+          <Tecla color="blanca" tamano="peq" onClick={reiniciar}>
+            <RotateCcw size={14} strokeWidth={2.6} aria-hidden="true" /> Otra vez
+          </Tecla>
         )}
       </div>
     </Marco>

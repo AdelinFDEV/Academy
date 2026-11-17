@@ -3,10 +3,13 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, Check, Clock, ClipboardCheck, Lock, CalendarCheck } from "lucide-react";
 import AulaShell from "@/components/aula/AulaShell";
+import Tecla from "@/components/cuaderno/Tecla";
+import Anotacion from "@/components/cuaderno/Anotacion";
 import BotonCompletar from "@/components/aula/BotonCompletar";
 import Bloque from "@/components/aula/Bloque";
 import GlosarioPopup, { type TerminoCorto } from "@/components/aula/GlosarioPopup";
-import ProgresoLectura from "@/components/aula/ProgresoLectura";
+import MarcasEstudio from "@/components/marcas/MarcasEstudio";
+import { vestirTexto } from "@/lib/marcas-texto";
 import { buscarTermino } from "@/lib/glosario";
 import { exigirAula } from "../../contexto";
 import { contenidoLeccion, cursoPorSlug } from "@/lib/cursos";
@@ -26,6 +29,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * Una lección. **El texto solo se lee de la base de datos después de
  * comprobar que está abierta**: si el módulo sigue bloqueado, al navegador no
  * llega ni una línea, aunque se escriba la URL a mano.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): una hoja de papel con el texto a
+ * un ancho de línea cómodo (Fraunces en los títulos, Nunito en el texto), las
+ * paradas del módulo como un camino pequeño y, al final, «completar» como una
+ * tecla grande.
  */
 export default async function LeccionPage({ params }: Props) {
   const { curso: slug, leccion: leccionSlug } = await params;
@@ -45,8 +53,8 @@ export default async function LeccionPage({ params }: Props) {
     const previo = curso.modulos.find((m) => m.orden === modulo.orden - 1);
     return (
       <AulaShell ctx={ctx} activo={{ leccion: leccionSlug }}>
-        <div className="aula-cerrada">
-          <span className="aula-cerrada-icono"><Lock size={26} strokeWidth={1.8} aria-hidden="true" /></span>
+        <div className="aula-hoja aula-cerrada">
+          <span className="aula-cerrada-icono"><Lock size={28} strokeWidth={2.4} aria-hidden="true" /></span>
           <span className="aula-kicker">Módulo {modulo.orden} · {modulo.titulo}</span>
           <h1 className="aula-h1">{leccion.titulo}</h1>
           <p className="aula-lead">
@@ -55,9 +63,9 @@ export default async function LeccionPage({ params }: Props) {
             no te pilla con huecos.
           </p>
           {previo && (
-            <Link href={`/aula/${slug}/examen/${previo.orden}`} className="aula-btn aula-btn--grande">
+            <Tecla href={`/aula/${slug}/examen/${previo.orden}`} color="lila" tamano="grande">
               Ir al examen del módulo {previo.orden}
-            </Link>
+            </Tecla>
           )}
         </div>
       </AulaShell>
@@ -86,14 +94,15 @@ export default async function LeccionPage({ params }: Props) {
 
   return (
     <AulaShell ctx={ctx} activo={{ leccion: leccionSlug }}>
-      <ProgresoLectura objetivo=".aula-leccion" />
-      <article className="aula-leccion">
+      <article className="aula-hoja aula-leccion">
         <header className="aula-leccion-cab">
           <div className="aula-leccion-ruta">
             <span className="aula-chip aula-chip--acento">Módulo {modulo.orden}</span>
             <span className="aula-leccion-modtit">{modulo.titulo}</span>
           </div>
-          <h1 className="aula-h1">{leccion.titulo}</h1>
+          <h1 className="aula-h1">
+            <Anotacion tipo="underline" color="var(--aula-acento)" grosor={4} retraso={250}>{leccion.titulo}</Anotacion>
+          </h1>
           {leccion.resumen && <p className="aula-lead">{leccion.resumen}</p>}
           <div className="aula-leccion-meta">
             <span className="aula-chip"><Clock size={13} aria-hidden="true" /> {leccion.minutos} min</span>
@@ -137,11 +146,14 @@ export default async function LeccionPage({ params }: Props) {
         <div className="aula-leccion-cuerpo">
           {trozos.map((t, i) =>
             t.tipo === "html" ? (
-              <div key={i} className="prose-content aula-prose" dangerouslySetInnerHTML={{ __html: t.html }} />
+              <div key={i} className="prose-content aula-prose" dangerouslySetInnerHTML={{ __html: vestirTexto(t.html) }} />
             ) : (
               <Bloque key={i} bloque={t.bloque} datos={t.datos} error={t.error} esAdmin={sesion.esAdmin} />
             ),
           )}
+          {/* Las marcas de estudio (ESTILO.md): pósits desde el servidor y, en el
+              navegador, los trazos y símbolos por estructura. El texto no cambia. */}
+          <MarcasEstudio selector=".aula-leccion-cuerpo .aula-prose" clave={`${slug}/${leccion.slug}`} />
           {trozos.length === 0 && sesion.esAdmin && (
             <p className="aula-bloque-roto">Esta lección todavía no tiene contenido. (Solo lo ves tú, como admin.)</p>
           )}
@@ -156,9 +168,12 @@ export default async function LeccionPage({ params }: Props) {
           <BotonCompletar curso={slug} leccion={leccion.slug} hecha={hecha} destino={destino.href} etiqueta={destino.etiqueta} />
         </footer>
         {anterior && (
-          <Link href={`/aula/${slug}/${anterior.slug}`} className="aula-leccion-anterior">
-            <ArrowLeft size={15} aria-hidden="true" /> Lección anterior: {anterior.titulo}
-          </Link>
+          <div className="aula-leccion-anterior">
+            <Tecla href={`/aula/${slug}/${anterior.slug}`} color="blanca" tamano="peq">
+              <ArrowLeft size={15} strokeWidth={2.6} aria-hidden="true" /> Lección anterior
+            </Tecla>
+            <span>{anterior.titulo}</span>
+          </div>
         )}
       </article>
     </AulaShell>

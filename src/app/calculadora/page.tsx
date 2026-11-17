@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/calculadora" },
 };
 
+/**
+ * Estilo «Cuaderno de estudio» (17-11-2026): la página entera es la
+ * calculadora de colegio que estrenó la portada (`CalculadoraEscolar`): la
+ * carcasa de tinta con su pantalla verde y sus teclas, el mercado como un tique
+ * de papel y la explicación como una hoja del cuaderno. Los cálculos, el tope
+ * sin cuenta y los datos de CoinGecko son los mismos de antes.
+ */
 export default async function CalculadoraPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -43,8 +50,7 @@ export default async function CalculadoraPage() {
   const isAdmin   = role === "admin";
 
   return (
-    <div className="blog-page">
-      <div className="bg-ambient" />
+    <div className="cal">
 
       <SiteNav
         user={!!user}
@@ -53,7 +59,7 @@ export default async function CalculadoraPage() {
         isAdmin={isAdmin}
       />
 
-      <main className="blog-main">
+      <main className="cal-main">
         <CalculadoraClient isLoggedIn={!!user} />
 
         {/*

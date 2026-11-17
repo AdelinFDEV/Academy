@@ -1,529 +1,617 @@
-/* Solo el listado /guias (src/app/guias/page.tsx). Separado de guias.css el
-   03-10-2026: las guías no lo necesitan y el listado no necesita lo de ellas.
+/* El listado /guias, con el estilo «Cuaderno de estudio» (17-11-2026).
+   Importado solo en src/app/guias/page.tsx. Lo común a las guías está en
+   guias.css. Referencias: disenos/sistema.html («Mazos», «Etiquetas», «El
+   camino de un curso») y el bloque GUÍAS de src/app/home.css, de la misma
+   familia: las guías son mazos de color cielo. */
 
-   Rehecho el 07-11-2026: los bloques de texto no tenían margen lateral (en el
-   móvil el texto tocaba los bordes de la pantalla) y cada sección tenía su
-   propio ancho (68ch el texto, 1.100 px las tarjetas, el hero a la izquierda
-   con el buscador centrado). Ahora todo vive en el mismo contenedor
-   (`.guias-bloque`), con el mismo margen lateral, y el hero va centrado. */
+.gl {
+  --muelle: cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: clip;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+}
 
 .guias-page {
-  --guias-ancho: 1100px;
-  --guias-lado: clamp(1.1rem, 4vw, 2rem);
-  min-height: 80vh;
-  overflow-x: clip;
-}
-
-/* El contenedor de cada sección: mismo ancho y mismo margen lateral en toda la página. */
-.guias-bloque {
-  box-sizing: content-box;
-  max-width: var(--guias-ancho);
+  max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(2.5rem, 6vw, 4.5rem) var(--guias-lado) 0;
+  padding: 0 clamp(1.25rem, 4vw, 2rem) clamp(3rem, 6vw, 5rem);
 }
 
-.guias-bloque:last-of-type {
-  padding-bottom: clamp(3rem, 7vw, 5rem);
-}
-
-/* La etiqueta pequeña encima de cada título de sección. */
-.guias-kicker {
-  display: block;
-  margin-bottom: 0.55rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-/* ── Hero ─────────────────────────────────────────────────────────────── */
-
-.guias-hero {
+/* ══ Hero ═════════════════════════════════════════════════════════════════ */
+.gl-hero {
   position: relative;
-  padding: clamp(3.25rem, 8vw, 5.5rem) var(--guias-lado) clamp(2.75rem, 6vw, 4rem);
-  /* Solo en horizontal: en vertical cortaría la lista del buscador. */
-  overflow-x: clip;
-  background: linear-gradient(180deg, #060f1f 0%, var(--bg-dark) 100%);
-  border-bottom: 1px solid var(--gold-border);
-}
-
-.guias-hero-glow {
-  position: absolute;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(800px, 140%);
-  height: 500px;
-  background: radial-gradient(ellipse at center, rgba(230, 180, 85, 0.1) 0%, transparent 65%);
-  pointer-events: none;
-}
-
-.guias-hero-inner {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.15rem;
-  max-width: 780px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.guias-hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.guias-hero-title {
-  margin: 0;
-  font-size: clamp(2rem, 5.4vw, 3.4rem);
-  font-weight: 900;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
-  text-wrap: balance;
-}
-
-.guias-hero-title-gold {
-  background: linear-gradient(90deg, var(--gold) 0%, #f5d07a 50%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.guias-hero-subtitle {
-  max-width: 600px;
-  margin: 0;
-  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
-  line-height: 1.7;
-  color: var(--text-secondary);
-  text-wrap: pretty;
-}
-
-/* El buscador, a la vista bajo el subtítulo. */
-.guias-hero-buscar {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 560px;
-  margin: 0.4rem auto 0;
-}
-
-.guias-hero-pills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.55rem;
-  margin-top: 0.3rem;
-}
-
-.guias-hero-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--gold-border);
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--gold);
-  background: var(--gold-soft);
-}
-
-/* ── Títulos y texto de las secciones ─────────────────────────────────── */
-
-.guias-pilar-title {
-  margin: 0 0 1.4rem;
-  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  text-wrap: balance;
-}
-
-.guias-pilar {
-  max-width: 65ch;
-  line-height: 1.75;
-  color: var(--text-secondary);
-}
-
-.guias-pilar p {
-  margin: 0 0 1.1rem;
-}
-
-.guias-pilar p:last-child {
-  margin-bottom: 0;
-}
-
-.guias-pilar strong,
-.guias-ruta-paso strong {
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-/* ── Introducción: el título a un lado, el texto al otro, en una tarjeta ── */
-
-.guias-intro > .guias-intro-cabeza,
-.guias-intro > .guias-pilar {
-  min-width: 0;
-}
-
-@media (min-width: 900px) {
-  .guias-intro {
-    display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
-    gap: 3.5rem;
-    align-items: start;
-  }
-
-  .guias-intro .guias-pilar-title {
-    margin-bottom: 0;
-  }
-}
-
-/* ── Rejilla de guías ─────────────────────────────────────────────────── */
-
-.guias-section-title {
-  margin: 0 0 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--gold-border);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.guias-grid {
+  z-index: 20; /* el desplegable del buscador cae sobre lo de abajo */
   display: grid;
-  /* min(100%, …): en un teléfono de 320 px la columna no desborda la pantalla. */
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
-  gap: clamp(1rem, 2.4vw, 1.5rem);
-}
-
-.guias-card {
-  --card-pad: clamp(1.25rem, 2.6vw, 1.6rem);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  overflow: hidden;
-  padding: var(--card-pad);
-  border: 1px solid var(--gold-border);
-  border-radius: 18px;
-  background: linear-gradient(135deg, #0f2040 0%, #0a1628 100%);
-  text-decoration: none;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-
-/* La portada encabeza la tarjeta, a sangre: compensa el relleno de la tarjeta. */
-.guias-card-portada {
-  margin: calc(var(--card-pad) * -1) calc(var(--card-pad) * -1) 0.25rem;
-  border-radius: 0;
-}
-
-.guias-card:hover .guia-portada-img {
-  transform: scale(1.05);
-}
-
-.guias-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(230, 180, 85, 0.5);
-  box-shadow: 0 12px 40px rgba(230, 180, 85, 0.08);
-}
-
-.guias-card-glow {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, rgba(230, 180, 85, 0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.guias-card-top {
-  display: flex;
-  flex-wrap: wrap;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
-  gap: 0.6rem;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(2.5rem, 5vw, 4rem);
 }
 
-.guias-card-title {
+.gl-hero-nota {
+  display: inline-block;
   margin: 0;
-  font-size: 1.05rem;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--cielo-o);
+  transform: rotate(-2deg);
+}
+
+.gl-hero-titulo {
+  margin: 0.4rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.2rem, 5.6vw, 4.1rem);
   font-weight: 800;
-  line-height: 1.3;
-  color: var(--text-primary);
+  line-height: 1.06;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
 }
 
-.guias-card-desc {
-  flex: 1;
-  margin: 0;
-  font-size: 0.86rem;
+.gl-hero-sub {
+  max-width: 52ch;
+  margin: 1.2rem 0 0;
+  font-size: 1.12rem;
+  font-weight: 600;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: var(--tinta-2);
 }
 
-.guias-card-meta {
+.gl-buscar {
+  position: relative;
+  z-index: 30;
+  max-width: 520px;
+  margin-top: 1.8rem;
+}
+
+.gl-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.25rem;
+  gap: 8px;
+  margin-top: 1.4rem;
 }
 
-.guias-card-meta span {
+/* ── Chips (sistema.html, «Etiquetas»): cada nivel y cada dato, su color ── */
+.gl-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: var(--text-muted);
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: var(--gris);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--tinta-2);
 }
 
-.guias-card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--gold-border);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--gold);
-  transition: gap 0.15s;
-}
+.gl-chip--cielo,
+.gl-chip--basico { background: var(--cielo-s); color: var(--cielo-o); }
+.gl-chip--naranja,
+.gl-chip--intermedio { background: var(--naranja-s); color: var(--naranja-o); }
+.gl-chip--lila,
+.gl-chip--avanzado { background: var(--lila-s); color: var(--lila-o); }
+.gl-chip--amarillo { background: var(--amarillo-s); color: #7a5d00; }
+.gl-chip--gratis { background: var(--menta-s); color: var(--menta-o); }
 
-.guias-card:hover .guias-card-cta { gap: 0.6rem; }
+/* ── El buscador (GuideSearch.tsx), vestido de campo del cuaderno ──
+   Su diseño base está en globals.css; aquí, papel con borde gordo y
+   foco azul (sistema.html, «Formularios»). Igual que en la portada. */
+.gl .guide-search { max-width: none; }
 
-/* ── Itinerario: tres pasos numerados. El orden ES la información ───────── */
-
-.guias-ruta {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: clamp(1rem, 2.4vw, 1.5rem);
-}
-
-.guias-ruta-paso {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(1.25rem, 2.6vw, 1.6rem);
-  border: 1px solid rgba(240, 244, 255, 0.08);
+.gl .guide-search-box {
+  min-height: 58px;
+  border: 3px solid var(--gris);
   border-radius: 16px;
-  background: rgba(240, 244, 255, 0.025);
-  line-height: 1.7;
-  color: var(--text-secondary);
+  background: var(--papel);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05), 0 5px 0 var(--gris-o);
 }
 
-.guias-ruta-num {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  margin-bottom: 0.9rem;
-  border: 1px solid var(--gold-border);
-  border-radius: 50%;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--gold);
-  background: var(--gold-soft);
+.gl .guide-search-box:focus-within {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px var(--azul-s), 0 5px 0 var(--gris-o);
 }
 
-.guias-ruta-nivel {
+.gl .guide-search-icon { color: var(--cielo-o); }
+.gl .guide-search-input { font-family: var(--letra-texto); font-weight: 700; color: var(--tinta); }
+.gl .guide-search-input::placeholder { font-weight: 600; color: var(--tinta-3); }
+.gl .guide-search-clear { color: var(--tinta-2); }
+.gl .guide-search-clear:hover { color: var(--tinta); }
+
+.gl .guide-search-dropdown {
+  top: calc(100% + 12px);
+  max-height: min(380px, 50dvh);
+  padding: 0.6rem;
+  border: 0;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 26px 40px -22px rgba(29, 27, 51, 0.45);
+}
+
+.gl .guide-search-sugerencias-titulo { font-size: 12px; font-weight: 900; letter-spacing: 0.08em; color: var(--tinta-2); }
+.gl .guide-search-chip { border: 0; border-radius: 10px; background: var(--cielo-s); color: var(--cielo-o); font-weight: 800; }
+.gl .guide-search-chip:hover { border: 0; background: var(--cielo-o); color: #fff; }
+.gl .guide-search-chip:focus-visible,
+.gl .guide-search-result:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+.gl .guide-search-result { border-radius: 12px; }
+.gl .guide-search-result:hover { background: var(--fondo); }
+.gl .guide-search-result-title { font-size: 15px; font-weight: 800; color: var(--tinta); }
+.gl .guide-search-result-desc { font-size: 13px; line-height: 1.45; color: var(--tinta-2); }
+.gl .guide-search-empty { font-size: 15px; font-weight: 700; color: var(--tinta-2); }
+.gl .guide-search-chip { font-size: 14px; }
+
+/* ── La mesa: las portadas de las tres guías más nuevas, en abanico ── */
+.gl-mesa {
+  position: relative;
+  height: clamp(280px, 30vw, 360px);
+}
+
+.gl-mesa-carta {
+  position: absolute;
+  width: 68%;
+  padding: 10px;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 26px 40px -26px rgba(29, 27, 51, 0.5);
+  transition: transform 0.45s var(--muelle);
+}
+
+.gl-mesa-carta--1 { left: 0; top: 18%; z-index: 1; transform: rotate(-9deg); }
+.gl-mesa-carta--2 { right: 0; top: 0; z-index: 2; transform: rotate(7deg); }
+.gl-mesa-carta--3 { left: 16%; bottom: 0; z-index: 3; transform: rotate(-1.5deg); }
+
+@media (hover: hover) {
+  .gl-mesa:hover .gl-mesa-carta--1 { transform: translateX(-10px) rotate(-12deg); }
+  .gl-mesa:hover .gl-mesa-carta--2 { transform: translateX(10px) rotate(10deg); }
+  .gl-mesa:hover .gl-mesa-carta--3 { transform: translateY(-8px) rotate(0deg); }
+}
+
+.gl .gl-mesa-portada,
+.gl .gl-portada {
   display: block;
-  margin-bottom: 0.6rem;
-  font-size: 0.74rem;
+  border-radius: 14px;
+  background: var(--cielo-s);
+}
+
+/* Sin foto: la inicial en cielo sobre su tono suave, como en la portada. */
+.gl .guia-portada-arte::before,
+.gl .guia-portada-arte::after { border-color: color-mix(in srgb, var(--cielo) 35%, transparent); }
+
+.gl .guia-portada-letra {
+  font-family: var(--letra-titular);
+  color: var(--cielo-o);
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
+
+/* ══ Bloques ══════════════════════════════════════════════════════════════ */
+.gl-bloque {
+  padding: clamp(2.75rem, 6vw, 4rem) 0 0;
+  border-top: 2px dashed var(--gris);
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.gl-kicker {
+  display: inline-block;
+  font-family: var(--letra-mano);
+  font-size: 25px;
   font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--gold);
+  color: var(--cielo-o);
+  transform: rotate(-2deg);
 }
 
-.guias-ruta-paso p {
-  flex: 1;
-  margin: 0 0 1.1rem;
-  font-size: 0.93rem;
+.gl-titulo {
+  margin: 0.2rem 0 1.6rem;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.9rem, 3.8vw, 2.7rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+  text-wrap: balance;
 }
 
-.guias-ruta-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* ── El texto pilar: una hoja de cuaderno rayada, con su margen ── */
+.gl-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.gl-hoja {
+  --renglon: 1.8em;
+  padding: calc(var(--renglon) * 0.6) clamp(18px, 3vw, 30px) calc(var(--renglon) * 0.6) clamp(44px, 5vw, 58px);
+  border-radius: 26px;
+  background:
+    linear-gradient(90deg, transparent 30px, var(--coral-s) 30px, var(--coral-s) 32px, transparent 32px),
+    repeating-linear-gradient(transparent 0, transparent calc(var(--renglon) - 2px), var(--cielo-s) calc(var(--renglon) - 2px), var(--cielo-s) var(--renglon)) 0 calc(var(--renglon) * 0.6 - 2px) / 100% 100% no-repeat,
+    var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o), 0 26px 40px -30px rgba(29, 27, 51, 0.45);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: var(--renglon);
+  color: var(--tinta);
+}
+
+.gl-hoja p { margin: 0; }
+.gl-hoja p + p { margin-top: var(--renglon); }
+.gl-hoja strong { font-weight: 900; }
+
+/* ══ Los mazos (sistema.html, «Mazo»): dos hojas detrás y la tarjeta arriba ══ */
+.gl-mazos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.4rem 1.8rem;
   margin: 0;
-  padding: 1rem 0 0;
-  border-top: 1px solid rgba(240, 244, 255, 0.07);
+  padding: 0;
   list-style: none;
 }
 
-.guias-ruta-lista li {
+.gl-mazos > li { display: flex; }
+
+.gl-mazo {
+  position: relative;
+  display: block;
+  width: 100%;
+  isolation: isolate;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gl-mazo-hoja {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 24px;
+  box-shadow: 0 5px 0 var(--gris-o);
+  transition: transform 0.4s var(--muelle);
+}
+
+.gl-mazo-hoja--1 { background: var(--cielo-s); transform: rotate(-3.5deg); }
+.gl-mazo-hoja--2 { background: var(--cielo); box-shadow: 0 5px 0 var(--cielo-o); transform: rotate(2.2deg); }
+
+.gl-mazo-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  height: 100%;
+  padding: 12px 12px 18px;
+  border-radius: 24px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o), 0 24px 40px -30px rgba(29, 27, 51, 0.5);
+  transition: transform 0.4s var(--muelle);
+}
+
+@media (hover: hover) {
+  .gl-mazo:hover .gl-mazo-top { transform: translateY(-10px) rotate(-1.5deg); }
+  .gl-mazo:hover .gl-mazo-hoja--1 { transform: translateX(-6px) rotate(-6.5deg); }
+  .gl-mazo:hover .gl-mazo-hoja--2 { transform: translateX(6px) rotate(4.5deg); }
+  .gl-mazo:hover .guia-portada-img { transform: scale(1.04); }
+  .gl-mazo:hover .gl-mazo-cta svg { transform: translateX(5px); }
+}
+
+.gl-mazo:focus-visible { outline: none; }
+.gl-mazo:focus-visible .gl-mazo-top { outline: 3px solid var(--azul); outline-offset: 4px; transform: translateY(-10px) rotate(-1.5deg); }
+
+.gl-mazo-chips,
+.gl-mazo-titulo,
+.gl-mazo-desc,
+.gl-mazo-meta,
+.gl-mazo-cta { padding: 0 6px; }
+
+.gl-mazo-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+
+.gl-mazo-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.28rem;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+.gl-mazo-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.gl-mazo-meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.25rem 0.6rem;
+  gap: 6px 14px;
+  margin-top: auto;
+  padding-top: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tinta-2);
 }
 
-.guias-ruta-lista a {
-  font-weight: 600;
-  color: var(--text-primary);
-  text-decoration: none;
-  border-bottom: 1px solid var(--gold-border);
+.gl-mazo-meta > span { display: inline-flex; align-items: center; gap: 6px; }
+
+.gl-mazo-logro {
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--amarillo-s);
+  color: #7a5d00;
 }
 
-.guias-ruta-lista a:hover {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-}
-
-.guias-ruta-meta {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-/* ── Preguntas frecuentes ─────────────────────────────────────────────────
-   Sin datos estructurados a propósito: Google dejó de mostrar los resultados
-   enriquecidos de FAQ salvo a sitios oficiales, así que declararlos no aporta
-   nada y sí añade ruido al HTML. Cada pareja va en su caja. */
-
-.guias-faq {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-  gap: clamp(0.8rem, 2vw, 1.1rem);
-  margin: 0;
-}
-
-.guias-faq-item {
-  padding: clamp(1.1rem, 2.4vw, 1.4rem);
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 14px;
-  background: rgba(240, 244, 255, 0.025);
-}
-
-.guias-faq dt {
-  margin: 0;
+.gl-mazo-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--letra-mano);
+  font-size: 25px;
   font-weight: 700;
-  line-height: 1.4;
-  color: var(--text-primary);
+  line-height: 1;
+  color: var(--cielo-o);
 }
 
-.guias-faq dd {
-  margin: 0.5rem 0 0;
-  font-size: 0.92rem;
-  line-height: 1.7;
-  color: var(--text-secondary);
-}
+.gl-mazo-cta svg { transition: transform 0.3s var(--muelle); }
 
-.guias-faq a {
-  color: var(--gold);
-  text-decoration: none;
-  border-bottom: 1px solid var(--gold-border);
-}
-
-.guias-faq a:hover {
-  border-bottom-color: var(--gold);
-}
-
-/* ── Llamada a registrarse ────────────────────────────────────────────── */
-
-.guias-cta-band {
+/* ══ El itinerario: el camino de los cursos, con tres paradas ═══════════ */
+.gl-ruta {
   position: relative;
-  margin: clamp(3rem, 7vw, 5rem) 0 0;
-  padding: clamp(3rem, 7vw, 4rem) var(--guias-lado);
-  overflow: hidden;
-  border-top: 1px solid var(--gold-border);
-  background: linear-gradient(135deg, #0c1a2e 0%, #0a1628 100%);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.6rem;
+  padding-top: 8px;
 }
 
-.guias-cta-band-glow {
+/* El trazo que une las paradas, a trazos como en sistema.html. */
+.gl-ruta::before {
+  content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(600px, 120%);
-  height: 300px;
-  background: radial-gradient(ellipse, rgba(230, 180, 85, 0.07) 0%, transparent 70%);
-  pointer-events: none;
+  top: 43px;
+  left: 10%;
+  right: 10%;
+  height: 10px;
+  border-radius: 5px;
+  background: repeating-linear-gradient(90deg, var(--gris-o) 0 12px, transparent 12px 22px);
 }
 
-.guias-cta-band-inner {
+.gl-ruta-paso {
+  --c: var(--cielo);
+  --t: var(--tinta);
+  --o: var(--cielo-o);
+  --s: var(--cielo-s);
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0 0 4px;
 }
 
-.guias-cta-band-title {
+.gl-ruta-paso--2 { --t: #fff; --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); }
+.gl-ruta-paso--3 { --t: #fff; --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); }
+
+.gl-ruta-num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 7px 0 var(--o);
+  font-family: var(--letra-titular);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--t, #fff);
+}
+
+.gl-ruta-nivel {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--tinta);
+}
+
+.gl-ruta-paso p {
   margin: 0;
-  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta-2);
+}
+
+.gl-ruta-lista {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gl-ruta-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o);
+  transition: transform 0.3s var(--muelle);
+}
+
+@media (hover: hover) {
+  .gl-ruta-lista li:hover { transform: translateY(-3px) rotate(-0.6deg); }
+}
+
+.gl-ruta-lista a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 900;
+  color: var(--o);
+  text-decoration: none;
+}
+
+.gl-ruta-lista a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.gl-ruta-lista a:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 4px; }
+
+.gl-ruta-meta {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--s);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--o);
+}
+
+/* ══ Preguntas frecuentes: fichas de papel ═══════════════════════════════ */
+.gl-faq {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0;
+}
+
+.gl-faq-item {
+  padding: 20px 22px;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+}
+
+.gl-faq dt {
+  margin-bottom: 8px;
+  font-family: var(--letra-titular);
+  font-size: 1.15rem;
   font-weight: 800;
   line-height: 1.25;
-  color: var(--text-primary);
-  text-wrap: balance;
+  color: var(--tinta);
 }
 
-.guias-cta-band-sub {
+.gl-faq dd {
   margin: 0;
-  font-size: 0.92rem;
-  color: var(--text-secondary);
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--tinta-2);
 }
 
-.guias-cta-band-actions {
+.gl-faq a {
+  color: var(--azul-o);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* ══ Llamada a registrarse: tarjeta de producto naranja de la marca ═════ */
+.gl-cta {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  padding: clamp(28px, 5vw, 48px);
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o), 0 34px 50px -36px rgba(29, 27, 51, 0.5);
+}
+
+.gl-cta::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: var(--naranja-s);
+}
+
+.gl-cta-inner { position: relative; max-width: 640px; }
+
+.gl-cta-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.gl-cta-sub {
+  margin: 0.8rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.gl-cta-acciones {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 8px 16px;
+  margin-top: 1.6rem;
 }
 
-.guias-cta-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.75rem;
-  border-radius: 10px;
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: #0a1628;
-  text-decoration: none;
-  background: linear-gradient(135deg, var(--gold) 0%, #f5c842 100%);
-  transition: opacity 0.15s, transform 0.15s;
+/* ══ Tableta y móvil ═════════════════════════════════════════════════════ */
+@media (max-width: 1000px) {
+  .gl-mazos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.guias-cta-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-
-.guias-cta-secondary {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.15s;
+@media (max-width: 900px) {
+  .gl-hero { grid-template-columns: 1fr; }
+  .gl-mesa { max-width: 460px; width: 100%; height: clamp(240px, 58vw, 320px); margin: 0 auto; }
+  .gl-intro { grid-template-columns: 1fr; gap: 0; }
+  .gl-ruta { grid-template-columns: 1fr; gap: 2rem; }
+  .gl-ruta::before { top: 40px; bottom: 40px; left: 34px; right: auto; width: 10px; height: auto; background: repeating-linear-gradient(180deg, var(--gris-o) 0 12px, transparent 12px 22px); }
+  .gl-ruta-paso { padding-left: 96px; }
+  .gl-ruta-num { position: absolute; top: 0; left: 0; width: 70px; height: 70px; font-size: 28px; }
+  .gl-ruta-nivel { min-height: 70px; display: flex; align-items: center; }
+  .gl-faq { grid-template-columns: 1fr; }
 }
 
-.guias-cta-secondary:hover { color: var(--text-primary); }
+@media (max-width: 640px) {
+  .gl-mazos { grid-template-columns: 1fr; gap: 2.2rem; }
+  .gl-hoja { --renglon: 1.75em; font-size: 16px; padding-left: 40px; }
+  .gl-hoja { background-image:
+    linear-gradient(90deg, transparent 22px, var(--coral-s) 22px, var(--coral-s) 24px, transparent 24px),
+    repeating-linear-gradient(transparent 0, transparent calc(var(--renglon) - 2px), var(--cielo-s) calc(var(--renglon) - 2px), var(--cielo-s) var(--renglon)); }
+  .gl-ruta-paso { padding-left: 0; }
+  .gl-ruta::before { display: none; }
+  .gl-ruta-num { position: relative; width: 62px; height: 62px; font-size: 25px; }
+  .gl-ruta-nivel { min-height: 0; }
+  .gl-cta-acciones .tecla { width: 100%; }
+}
 
-/* ── Móvil ────────────────────────────────────────────────────────────── */
-
-@media (max-width: 600px) {
-  .guias-hero-pills { gap: 0.45rem; }
-  .guias-hero-pill { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
-  .guias-ruta-lista li { justify-content: flex-start; }
-  .guias-cta-primary { width: 100%; justify-content: center; }
+/* Con el dedo: cada guía del itinerario se toca en una franja de 44 px. */
+@media (pointer: coarse) {
+  .gl-ruta-lista li { padding-block: 4px; }
+  .gl-ruta-lista a { display: inline-flex; align-items: center; min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .guias-card,
-  .guias-card-cta,
-  .guias-cta-primary { transition: none; }
-  .guias-card:hover { transform: none; }
+  .gl-mesa-carta,
+  .gl-mazo-hoja,
+  .gl-mazo-top,
+  .gl-mazo-cta svg,
+  .gl-ruta-lista li { transition: none; }
+  .gl-mazo:hover .gl-mazo-top,
+  .gl-mazo:hover .gl-mazo-hoja--1,
+  .gl-mazo:hover .gl-mazo-hoja--2,
+  .gl-ruta-lista li:hover,
+  .gl-mazo:hover .guia-portada-img { transform: none; }
 }

@@ -1,0 +1,968 @@
+/*
+ * Diario de Trading — la ventana de la operación y sus capturas (17-11-2026,
+ * estilo «Cuaderno de estudio»). Componentes: TjTradeForm.tsx (`djf-`) y
+ * TjCapturas.tsx (`djk-`). Usa las piezas de diario.css (.dj-velo,
+ * .dj-ventana, .dj-campo, .dj-barra, .dj-aviso, .dj-chip, .dj-nota…).
+ *
+ * La idea: una ficha de cuaderno para apuntar una operación. Cada elección es
+ * una tecla grande que se queda hundida al elegirla; a la derecha, el
+ * resguardo con lo que se va a guardar. Las capturas, fotos pegadas con cinta.
+ */
+
+/* Los envoltorios de los portales solo dan la clase `trading-journal` (para
+   heredar sus variables): no ocupan sitio. */
+.djf-portal,
+.djk-portal { display: contents; }
+
+/* ══ LA VENTANA ════════════════════════════════════════════════════════════ */
+
+/* Cabecera, barra y pasos fijos arriba; el pie, abajo; en medio, lo que se
+   desplaza. Es una ventana modal: lo único que puede quedarse fijo. */
+.dj-ventana.djf {
+  display: flex;
+  flex-direction: column;
+  width: min(1000px, 100%);
+  max-height: calc(var(--vv-alto, 100svh) - 32px);
+  padding: 0;
+  overflow: hidden;
+}
+
+.djf:focus { outline: none; }
+
+.djf-cab {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 28px 14px;
+}
+
+.djf-cab-txt {
+  display: grid;
+  justify-items: start;
+  gap: 3px;
+  min-width: 0;
+}
+
+.djf-cab h2 { font-size: clamp(1.55rem, 3.2vw, 2.05rem); }
+.djf-cab .dj-nota { margin-top: 2px; font-size: 25px; }
+.djf-cerrar { flex: none; }
+
+.djf-barra { flex: none; margin: 0 28px; }
+.djf-barra > i { transition: width 0.55s var(--llegar); }
+
+/* El índice de pasos: una fila de teclas. Hecho en menta, el actual en azul. */
+.djf-indice {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  padding: 16px 28px 4px;
+}
+
+.djf-indice li { min-width: 0; }
+
+.djf .tecla.djf-indice-tecla {
+  justify-content: flex-start;
+  width: 100%;
+  gap: 7px;
+  padding: 7px 8px;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.djf-indice-tecla b {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 8px;
+  background: rgba(29, 27, 51, 0.07);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.djf .tecla--azul.djf-indice-tecla b,
+.djf .tecla--menta.djf-indice-tecla b { background: rgba(255, 255, 255, 0.26); }
+
+.djf-indice-tecla span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── El cuerpo: el paso a la izquierda, el resguardo a la derecha ── */
+.djf-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.djf-cuerpo {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  align-items: start;
+  gap: 26px;
+  min-height: 0;
+  padding: 16px 28px 26px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.djf-pasos {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-width: 0;
+  min-height: 320px;
+  animation: djf-paso 0.4s var(--llegar);
+}
+
+@keyframes djf-paso { from { opacity: 0; transform: translateX(18px); } }
+
+.djf-paso {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* El rótulo del paso: el número en una bolita con canto y el título. */
+.djf-leyenda,
+.djk-cab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--tinta);
+}
+
+.djf-leyenda > b,
+.djk-cab > b {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 13px;
+  background: var(--azul);
+  color: #fff;
+  font-family: var(--letra-titular);
+  font-size: 19px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--azul-o);
+  transform: rotate(-4deg);
+}
+
+.djf-leyenda .dj-chip,
+.djk-cab .dj-chip { margin-left: auto; font-family: var(--letra-texto); letter-spacing: 0; }
+
+.djf-fila {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.djf-opc {
+  margin-left: 4px;
+  font-size: 12.5px;
+  font-style: normal;
+  font-weight: 800;
+  color: var(--tinta-3);
+}
+
+/* La fecha: la tecla del selector ocupa el ancho del campo. */
+.djf .dj-campo .dj-select > .tecla {
+  justify-content: flex-start;
+  width: 100%;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  font-size: 15.5px;
+}
+
+/* El dinero: el símbolo dentro del campo y la cifra en Fraunces. */
+.djf-dinero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.djf-dinero > span {
+  position: absolute;
+  left: 16px;
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--tinta-3);
+  pointer-events: none;
+}
+
+.trading-journal .djf-dinero input[type="number"] {
+  padding-left: 38px;
+  font: 800 21px var(--letra-titular);
+  letter-spacing: -0.01em;
+}
+
+.trading-journal .djf-dinero input[type="number"]::placeholder {
+  font: 600 15px var(--letra-texto);
+  letter-spacing: 0;
+}
+
+/* El P&L real lleva al lado la tecla del signo (el teclado del iPhone no tiene «−»). */
+.djf-dinero--signo { gap: 10px; }
+.djf-dinero--signo input { flex: 1; }
+
+.djf .tecla.djf-signo {
+  flex: none;
+  align-self: stretch;
+  min-width: 56px;
+  padding: 0 14px;
+  font-family: var(--letra-titular);
+  font-size: 19px;
+  letter-spacing: 0;
+}
+
+/* Notas: el contador a la derecha de la etiqueta. */
+.dj-campo > .djf-label-cuenta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.djf-cuenta {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tinta-3);
+}
+
+.djf-cuenta.is-cerca { color: #7a5d00; }
+
+/* ── Las elecciones: teclas grandes que se quedan hundidas ── */
+.djf-opciones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+}
+
+.djf-opciones.is-tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.djf .tecla.djf-opcion {
+  --h: 10px;
+  --r: 20px;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 80px;
+  gap: 14px;
+  padding: 14px 18px;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+}
+
+.djf-opcion-icono {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--fondo);
+  color: var(--tinta-2);
+  transition: transform 0.35s var(--muelle), background-color 0.15s;
+}
+
+.djf-opcion-txt { min-width: 0; }
+
+.djf-opcion-txt strong {
+  display: block;
+  font-family: var(--letra-titular);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.djf-opcion-txt small {
+  display: block;
+  margin-top: 3px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  opacity: 0.82;
+}
+
+/* Long y Short, sin elegir, ya llevan su color en el icono. */
+.djf-opcion.is-long .djf-opcion-icono { background: var(--azul-s); color: var(--azul-o); }
+.djf-opcion.is-short .djf-opcion-icono { background: var(--lila-s); color: var(--lila-o); }
+
+/* El resultado es una cifra con signo: verde, rojo o gris. */
+.djf-res.is-win .djf-opcion-icono { background: color-mix(in srgb, var(--sube) 13%, #fff); color: var(--sube); }
+.djf-res.is-loss .djf-opcion-icono { background: color-mix(in srgb, var(--baja) 12%, #fff); color: var(--baja); }
+.djf-res.is-be .djf-opcion-icono { background: var(--gris); color: var(--tinta-2); }
+
+.djf .tecla.djf-res.is-win.is-on { --c: var(--sube); --o: color-mix(in srgb, var(--sube) 68%, #000); --t: #fff; }
+.djf .tecla.djf-res.is-loss.is-on { --c: var(--baja); --o: color-mix(in srgb, var(--baja) 70%, #000); --t: #fff; }
+.djf .tecla.djf-res.is-be.is-on { --c: var(--tinta-2); --o: var(--tinta); --t: #fff; }
+
+/* Elegida: se queda abajo, hundida, con solo un poco de canto. */
+.djf .tecla.djf-opcion.is-on {
+  transform: translateY(calc(var(--h) - 4px));
+  filter: none;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    inset 0 5px 12px rgba(0, 0, 0, 0.2),
+    0 4px 0 var(--o),
+    0 6px 10px -6px rgba(29, 27, 51, 0.35);
+}
+
+.djf .tecla.djf-opcion.is-on:active { transform: translateY(var(--h)); }
+
+.djf .tecla.djf-opcion.is-on .djf-opcion-icono {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* Con P&L real el resultado no se elige: la elegida sigue a la vista. */
+.djf .tecla.djf-res:disabled:not(.is-on) .djf-opcion-icono { background: rgba(255, 255, 255, 0.5); color: var(--tinta-3); }
+.djf .tecla.djf-res.is-on:disabled { cursor: default; }
+
+/* ── El plan: la barra de lo que arriesgas frente a lo que buscas ── */
+.djf-plan {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px 14px;
+  border-radius: 20px;
+  background: var(--fondo);
+}
+
+.djf-plan-barra {
+  display: flex;
+  gap: 4px;
+  height: 18px;
+}
+
+.djf-plan-barra span {
+  height: 100%;
+  border-radius: 999px;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.1), inset 0 3px 0 rgba(255, 255, 255, 0.3);
+  transition: width 0.45s var(--llegar), background-color 0.2s;
+}
+
+.djf-plan-riesgo { background: var(--baja); }
+.djf-plan-objetivo { flex: 1; background: var(--sube); }
+.djf-plan.is-vacio .djf-plan-barra span { background: var(--gris); box-shadow: none; }
+
+.djf-plan-pie {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.djf-plan-pie strong {
+  font-family: var(--letra-titular);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-transform: none;
+}
+
+.djf-plan.is-vacio .djf-plan-pie strong {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+/* ── El resguardo: lo que se va a guardar ── */
+.djf-resumen {
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  border-radius: 24px;
+}
+
+.djf-resumen-nota { justify-self: start; font-size: 23px; }
+
+.djf-resumen-par {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 6px;
+}
+
+.djf-resumen-par strong {
+  min-width: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.djf-resumen-par strong.is-vacio { color: var(--tinta-3); }
+
+.djf-resumen-fecha {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djf-pnl {
+  display: grid;
+  gap: 2px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o);
+}
+
+.djf-pnl strong {
+  font-size: 2.15rem;
+  color: var(--tone, var(--tinta-3));
+  transition: color 0.2s;
+}
+
+.djf-pnl small {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djf-datos {
+  display: grid;
+  margin: 8px 0 0;
+}
+
+.djf-datos > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 2px dashed var(--gris-o);
+}
+
+.djf-datos > div:last-child { border-bottom: 0; }
+
+.djf-datos dt {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.djf-datos dd {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Riesgo alto: marcado con rotulador amarillo (el color del riesgo). */
+.djf-datos .is-alto dd {
+  padding: 1px 8px;
+  border-radius: 8px;
+  background: var(--amarillo);
+  color: var(--tinta);
+}
+
+/* El medidor de riesgo: la raya del medio es el límite. */
+.djf-medidor { margin-top: 2px; }
+.djf-medidor.is-alto { --c: var(--amarillo); }
+.djf-medidor > i { transition: width 0.45s var(--llegar), background-color 0.2s; }
+
+.djf-medidor > b {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--tinta);
+  opacity: 0.35;
+}
+
+.djf-resumen .djf-riesgo { margin-top: 8px; }
+
+/* ── El pie: atrás, la nota y la acción ── */
+.djf-pie {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 16px 28px 12px;
+  border-top: 3px dashed var(--gris);
+  background: var(--papel);
+}
+
+.djf-error { flex-basis: 100%; }
+
+.djf-pie-nota {
+  flex: 1;
+  min-width: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  text-align: right;
+  color: var(--tinta-2);
+}
+
+.djf-pie-nota .dj-nota { font-size: 22px; transform: rotate(-1deg); }
+.djf-pie-nota strong { font-size: 21px; }
+
+.djf .tecla.djf-seguir { min-width: 200px; }
+
+/* «Guardar ya»: con lo obligatorio relleno, guarda sin pasar por lo opcional.
+   Entonces «Más detalles» baja a tecla blanca y la naranja es esta. */
+.djf .tecla.djf-guardar { min-width: 180px; }
+
+/* ══ LAS CAPTURAS ══════════════════════════════════════════════════════════ */
+
+.djk {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.djk-cab > b { background: var(--lila); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--lila-o); }
+
+.djk-sub {
+  margin-top: -6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.djk-huecos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+
+.djk-flecha {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--azul-s);
+  color: var(--azul-o);
+}
+
+.djk-hueco {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.djk-rotulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.djk-ayuda {
+  font-family: var(--letra-mano);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--tinta-2);
+}
+
+/* El hueco vacío: un recuadro de trazo discontinuo donde soltar la imagen. */
+.djk-soltar {
+  --k: var(--azul);
+  --k-o: var(--azul-o);
+  --k-s: var(--azul-s);
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  min-height: 200px;
+  padding: 20px 16px;
+  overflow: hidden;
+  border: 3px dashed var(--k);
+  border-radius: 22px;
+  outline: none;
+  background: color-mix(in srgb, var(--k-s) 50%, #fff);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.35s var(--muelle), box-shadow 0.15s;
+}
+
+.djk-hueco.is-despues .djk-soltar { --k: var(--lila); --k-o: var(--lila-o); --k-s: var(--lila-s); }
+
+@media (hover: hover) {
+  .djk-soltar:hover { background: var(--k-s); transform: rotate(-0.6deg); }
+  .djk-soltar:hover .djk-boceto { opacity: 0.3; }
+  .djk-soltar:hover .djk-soltar-icono { transform: rotate(4deg) scale(1.08); }
+}
+
+/* Lo que dice el hueco depende de con qué se use: ratón y teclado (pegar,
+   arrastrar) o el dedo (la galería o la cámara). */
+.djk-tactil { display: none; }
+
+@media (hover: none) {
+  .djk-raton { display: none; }
+  .djk-tactil { display: inline; }
+}
+.djk-soltar:focus-visible { box-shadow: 0 0 0 5px var(--k-s); border-style: solid; }
+
+.djk-soltar.is-encima {
+  border-style: solid;
+  background: var(--k-s);
+  transform: scale(1.03) rotate(-1deg);
+}
+
+.djk-boceto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.16;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.djk-boceto .es-sube { fill: var(--sube); stroke: var(--sube); }
+.djk-boceto .es-baja { fill: var(--baja); stroke: var(--baja); }
+.djk-boceto .es-marca { fill: none; stroke: var(--k-o); stroke-dasharray: 5 6; }
+.djk-boceto .es-futuro { fill: none; stroke: var(--tinta-2); stroke-dasharray: 4 7; }
+.djk-soltar.is-encima .djk-boceto { opacity: 0.3; }
+
+.djk-soltar > :not(.djk-boceto) { position: relative; }
+
+.djk-soltar-icono {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 4px;
+  border-radius: 16px;
+  background: var(--k);
+  color: #fff;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 5px 0 var(--k-o);
+  transform: rotate(-5deg);
+  transition: transform 0.35s var(--muelle);
+}
+
+.djk-soltar.is-encima .djk-soltar-icono { transform: rotate(4deg) scale(1.08); }
+
+.djk-soltar strong {
+  font-family: var(--letra-titular);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.djk-soltar-txt {
+  max-width: 30ch;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.djk-soltar kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 900 11.5px var(--letra-texto);
+  box-shadow: 0 2px 0 var(--gris-o);
+}
+
+.djk-soltar-nota { margin-top: 2px; font-size: 21px; color: var(--k-o); }
+
+/* La captura puesta: una foto pegada con cinta, un poco torcida. Es una tecla
+   blanca: se hunde al pulsarla para verla en grande. */
+.djk-puesta {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.djk-foto {
+  --g: -2deg;
+  --cinta: color-mix(in srgb, var(--amarillo) 62%, transparent);
+  --cinta-g: -4deg;
+  position: relative;
+  min-width: 0;
+  padding-top: 12px;
+  transform: rotate(var(--g));
+  transition: transform 0.4s var(--muelle);
+}
+
+.djk-hueco.is-despues .djk-foto,
+.djk-vista > .djk-foto:nth-child(even) {
+  --g: 1.8deg;
+  --cinta: color-mix(in srgb, var(--cielo) 45%, transparent);
+  --cinta-g: 3deg;
+}
+
+/* La cinta. */
+.djk-foto::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  width: 92px;
+  height: 26px;
+  margin-left: -46px;
+  border-radius: 3px;
+  background: var(--cinta);
+  box-shadow: 0 1px 2px rgba(29, 27, 51, 0.1);
+  transform: rotate(var(--cinta-g));
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .djk-foto:hover { --g: 0deg; }
+}
+
+.tecla.djk-ver {
+  --h: 6px;
+  --r: 8px;
+  display: grid;
+  justify-items: stretch;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 10px 8px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+  cursor: zoom-in;
+}
+
+.djk-ver img {
+  display: block;
+  width: 100%;
+  height: 170px;
+  border-radius: 4px;
+  background: var(--fondo);
+  object-fit: cover;
+}
+
+.djk-pie {
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--tinta);
+}
+
+.djk-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* En el detalle de una operación del registro. */
+.djk-vista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 26px;
+  margin-top: 16px;
+  padding: 4px 6px 0;
+}
+
+.djk-vista .djk-ver img { height: 190px; }
+
+/* ── La captura en grande ── */
+.djk-velo { z-index: 1010; }
+
+.dj-ventana.djk-ampliada {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  width: min(1240px, 100%);
+  max-height: calc(var(--vv-alto, 100svh) - 32px);
+  padding: 18px 20px 20px;
+  overflow: hidden;
+}
+
+.djk-ampliada-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.djk-ampliada-cab > div:first-child { display: grid; gap: 2px; min-width: 0; }
+.djk-ampliada-cab h3 { font-size: clamp(1.2rem, 2.4vw, 1.6rem); }
+
+.djk-ampliada-teclas {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+
+.djk-ampliada-marco {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 10px;
+  border-radius: 18px;
+  background: var(--fondo);
+}
+
+.djk-ampliada-marco img {
+  max-width: 100%;
+  max-height: calc(100svh - 170px);
+  border-radius: 8px;
+  background: var(--papel);
+  object-fit: contain;
+  box-shadow: 0 6px 0 var(--gris-o);
+  animation: djk-foto 0.4s var(--llegar);
+}
+
+@keyframes djk-foto { from { opacity: 0; transform: scale(0.96) rotate(-1deg); } }
+
+/* ══ PANTALLAS ESTRECHAS ═══════════════════════════════════════════════════ */
+
+@media (max-width: 880px) {
+  .djf-cuerpo { grid-template-columns: minmax(0, 1fr); }
+
+  /* El resguardo baja debajo del paso, con los datos en una fila. */
+  .djf-datos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .djf-datos > div { display: grid; align-content: start; gap: 4px; padding: 0; border-bottom: 0; }
+  .djf-datos dt { font-size: 12.5px; line-height: 1.25; }
+  .djf-datos dd { justify-self: start; }
+
+  /* En el índice, solo los números: el título del paso está en la cabecera. */
+  .djf .tecla.djf-indice-tecla { justify-content: center; }
+  .djf-indice-tecla span { display: none; }
+}
+
+@media (max-width: 640px) {
+  .djk-huecos { grid-template-columns: minmax(0, 1fr); }
+  .djk-flecha { justify-self: center; transform: rotate(90deg); }
+  .djk-soltar { min-height: 160px; }
+  .djk-ver img { height: 170px; }
+  .djk-vista { grid-template-columns: minmax(0, 1fr); padding: 4px 10px 0; }
+}
+
+/* Móvil: la ventana a pantalla casi completa y las teclas a todo el ancho. */
+@media (max-width: 560px) {
+  .djf-velo { padding: 6px; }
+  .dj-ventana.djf { max-height: calc(var(--vv-alto, 100svh) - 12px); border-radius: 24px; }
+  .djf-cab { padding: 18px 16px 10px; }
+  .djf-cab .dj-nota { font-size: 22px; }
+  .djf-barra { margin: 0 16px; }
+  .djf-indice { gap: 6px; padding: 12px 16px 2px; }
+  .djf .tecla.djf-indice-tecla { padding: 9px 2px; }
+  .djf-cuerpo { gap: 18px; padding: 12px 16px 18px; }
+  .djf-pasos { min-height: 0; }
+  .djf-fila { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+
+  .djf-pie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 10px;
+    padding: 12px 16px 8px;
+  }
+
+  .djf-error,
+  .djf-pie-nota { grid-column: 1 / -1; }
+  .djf-pie-nota { order: -1; text-align: center; }
+  .djf-pie-nota:empty { display: none; }
+  .djf .tecla.djf-atras,
+  .djf .tecla.djf-seguir,
+  .djf .tecla.djf-guardar { width: 100%; min-width: 0; padding-right: 10px; padding-left: 10px; }
+  .djf .tecla.djf-guardar { grid-column: 1 / -1; }
+
+  .djk-velo { padding: 6px; }
+  .dj-ventana.djk-ampliada { max-height: calc(var(--vv-alto, 100svh) - 12px); padding: 14px; border-radius: 24px; }
+  .djk-ampliada-cab { align-items: flex-start; }
+  .djk-ampliada-marco { padding: 6px; }
+  .djk-ampliada-marco img { max-height: calc(100svh - 140px); }
+}
+
+@media (max-width: 480px) {
+  .djf-opciones,
+  .djf-opciones.is-tres { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .djf .tecla.djf-opcion { min-height: 66px; padding: 12px 14px; }
+  .djf-resumen { padding: 16px; }
+  .djf-pnl strong { font-size: 1.9rem; }
+  .djf .tecla.djf-atras,
+  .djf .tecla.djf-seguir,
+  .djf .tecla.djf-guardar { font-size: 14px; }
+}
+
+/* Pantallas bajitas (móvil apaisado): fuera el índice, queda la barra. */
+@media (max-height: 560px) {
+  .djf-indice { display: none; }
+  .djf-cab { padding-top: 14px; padding-bottom: 8px; }
+}
+
+/* Con el teclado del móvil abierto (data-teclado, useVentanaMovil.ts) queda
+   poco alto: se recogen el índice, la nota del paso y el resguardo, para que
+   se vean el campo y el pie con «Siguiente». */
+.djf-velo[data-teclado] .djf-indice,
+.djf-velo[data-teclado] .djf-cab .dj-nota,
+.djf-velo[data-teclado] .djf-resumen { display: none; }
+.djf-velo[data-teclado] .djf-cab { padding-top: 12px; padding-bottom: 8px; }
+.djf-velo[data-teclado] .djf-cab h2 { font-size: 1.3rem; }
+
+/* ── Movimiento reducido ── */
+@media (prefers-reduced-motion: reduce) {
+  .djf-pasos,
+  .djk-ampliada-marco img { animation: none; }
+
+  .djf-barra > i,
+  .djf-medidor > i,
+  .djf-opcion-icono,
+  .djf-plan-barra span,
+  .djf-pnl strong,
+  .djk-soltar,
+  .djk-soltar-icono,
+  .djk-boceto,
+  .djk-foto { transition: none; }
+
+  .djk-soltar:hover,
+  .djk-soltar.is-encima,
+  .djf .tecla.djf-opcion.is-on .djf-opcion-icono,
+  .djk-soltar:hover .djk-soltar-icono,
+  .djk-soltar.is-encima .djk-soltar-icono { transform: none; }
+}

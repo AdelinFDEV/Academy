@@ -1,0 +1,183 @@
+/* El aviso de logro (BadgeNotifier.tsx). Estilo «Cuaderno de estudio»
+   (ESTILO.md, 17-11-2026): la tarjeta de papel sube con rebote y encima se
+   estampa una pegatina redonda, girando, como las del sistema de diseño
+   (disenos/sistema.html, «Etiquetas, notas y pegatinas»). Amarillo, el color
+   de los logros; naranja de marca si el logro es especial.
+
+   Sale sobre cualquier página: lleva su propio papel y no hereda colores de
+   la que tenga debajo. Suena `logro` al aparecer, junto al confeti. */
+
+.bn-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  /* Si la tarjeta no cabe (móvil apaisado), que se pueda bajar hasta ella en
+     vez de quedar cortada por arriba. */
+  place-items: safe center;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(29, 27, 51, 0.5);
+  color-scheme: light;
+  animation: bn-aparece 0.3s ease both;
+}
+
+@keyframes bn-aparece {
+  from { opacity: 0; }
+}
+
+.bn-tarjeta {
+  --p: var(--amarillo);
+  --po: var(--amarillo-o);
+  --pt: var(--tinta);
+
+  position: relative;
+  width: min(380px, 100%);
+  padding: 74px 26px 18px;
+  margin-top: 56px;
+  border-radius: 32px;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  text-align: center;
+  box-shadow:
+    0 8px 0 var(--gris-o),
+    0 40px 60px -30px rgba(29, 27, 51, 0.6);
+  animation: bn-sube 0.55s cubic-bezier(0.34, 1.56, 0.5, 1) both;
+}
+
+.bn-tarjeta--especial {
+  --p: var(--naranja);
+  --po: var(--naranja-o);
+  --pt: #fff;
+}
+
+@keyframes bn-sube {
+  from { opacity: 0; transform: translateY(60px) scale(0.92); }
+}
+
+/* La pegatina: redonda, con borde blanco y sombra, que cae girando y se
+   queda ladeada, como pegada a mano. */
+.bn-pegatina {
+  position: absolute;
+  top: -62px;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 124px;
+  height: 124px;
+  margin-left: -62px;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  background: var(--p);
+  color: var(--pt);
+  box-shadow:
+    inset 0 -6px 0 rgba(0, 0, 0, 0.1),
+    0 6px 0 var(--po),
+    0 18px 26px -12px rgba(29, 27, 51, 0.55);
+  transform: rotate(8deg);
+  animation: bn-estampa 0.7s 0.18s cubic-bezier(0.34, 1.8, 0.5, 1) both;
+}
+
+@keyframes bn-estampa {
+  0% { opacity: 0; transform: scale(2.2) rotate(-40deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) rotate(8deg); }
+}
+
+.bn-pegatina-icono {
+  display: grid;
+  place-items: center;
+  line-height: 0;
+}
+
+.bn-pegatina-icono svg {
+  width: 52px;
+  height: 52px;
+}
+
+.bn-estrella {
+  position: absolute;
+  top: -10px;
+  right: -12px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--amarillo);
+  color: var(--tinta);
+  font-size: 17px;
+  line-height: 1;
+  box-shadow: 0 3px 0 var(--amarillo-o);
+  transform: rotate(-14deg);
+}
+
+.bn-antetitulo {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.bn-titulo {
+  margin: 6px 0 0;
+  font-family: var(--letra-titular);
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+}
+
+.bn-desc {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+/* La recompensa: un pósit amarillo ladeado. */
+.bn-premio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 8px 14px;
+  background: var(--amarillo-s);
+  color: #5c4600;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.35);
+}
+
+.bn-premio span { color: var(--amarillo-o); }
+
+.bn-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 22px;
+}
+
+.bn-acciones .tecla { white-space: normal; text-align: center; }
+
+@media (max-width: 420px) {
+  .bn-tarjeta { padding: 66px 18px 14px; }
+  .bn-titulo { font-size: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bn-fondo,
+  .bn-tarjeta { animation: none; }
+  .bn-pegatina { animation: none; }
+}

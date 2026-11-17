@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Cuánto XLM queda retenido en una cuenta de Stellar. La cuenta es la del
@@ -21,9 +22,9 @@ function Contador({ id, etiqueta, ayuda, valor, cambiar }: { id: string; etiquet
         <span className="xlm-contador-ayuda">{ayuda}</span>
       </div>
       <div className="xlm-contador-botones" role="group" aria-labelledby={id}>
-        <button type="button" onClick={() => cambiar(Math.max(valor - 1, 0))} disabled={valor === 0} aria-label={`Quitar una: ${etiqueta}`}>−</button>
+        <Tecla color="blanca" tamano="peq" icono onClick={() => cambiar(Math.max(valor - 1, 0))} disabled={valor === 0} aria-label={`Quitar una: ${etiqueta}`}>−</Tecla>
         <output aria-live="polite">{valor}</output>
-        <button type="button" onClick={() => cambiar(Math.min(valor + 1, 50))} disabled={valor === 50} aria-label={`Añadir una: ${etiqueta}`}>+</button>
+        <Tecla color="cielo" tamano="peq" icono onClick={() => cambiar(Math.min(valor + 1, 50))} disabled={valor === 50} aria-label={`Añadir una: ${etiqueta}`}>+</Tecla>
       </div>
     </div>
   );
@@ -50,7 +51,7 @@ export default function GuideStellarReserva() {
         <Contador id="xlm-firmantes" etiqueta="Firmantes añadidos" ayuda="Otras claves con permiso sobre la cuenta" valor={firmantes} cambiar={setFirmantes} />
         <label htmlFor="xlm-saldo" className="xlm-reserva-saldo">
           <span>XLM que tienes en la cuenta</span>
-          <input id="xlm-saldo" inputMode="decimal" value={saldo} onChange={(e) => setSaldo(e.target.value)} />
+          <input id="xlm-saldo" inputMode="decimal" autoComplete="off" value={saldo} onChange={(e) => setSaldo(e.target.value)} />
         </label>
       </div>
 

@@ -1,0 +1,453 @@
+/* Las páginas legales (LegalShell.tsx + IndiceLegal.tsx): aviso legal,
+   privacidad y cookies. Estilo «Cuaderno de estudio» (ESTILO.md, 17-11-2026):
+   una hoja de cuaderno con su margen sobre el fondo lavanda, y al lado un
+   índice de teclas. Neutro de papel con acentos naranja de marca, porque lo
+   legal no es ninguna sección. La barra es la de site-nav.css.
+
+   El índice acompaña la lectura en escritorio (se queda a la vista en su
+   columna, sin tapar nada); en tableta y móvil es una tira de teclas normal,
+   que se queda arriba y no persigue al scroll. */
+
+.lg {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: clip;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  color-scheme: light;
+}
+
+.lg-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 4vw, 2rem) 1rem;
+}
+
+/* ── La cabecera ──────────────────────────────────────────────────────────── */
+
+.lg-cabecera {
+  max-width: 760px;
+  margin: 0 0 clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.lg-marca {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.lg-titulo {
+  margin: 0.3rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.3rem, 5.4vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+
+.lg-fecha {
+  display: inline-flex;
+  margin: 1.1rem 0 0;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--gris);
+  color: var(--tinta-2);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* ── El índice y la hoja ──────────────────────────────────────────────────── */
+
+.lg-rejilla {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  align-items: start;
+}
+
+.lg-rejilla--sola { grid-template-columns: minmax(0, 1fr); }
+
+.lg-indice {
+  position: sticky;
+  top: 1.25rem;
+  max-height: calc(100vh - 2.5rem);
+  overflow-y: auto;
+  padding: 18px 16px 10px;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris-o);
+  scrollbar-width: thin;
+}
+
+.lg-indice-nota {
+  margin: 0 0 10px 4px;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.lg-indice-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* La tecla del índice: texto normal, no en mayúsculas, y alineada a la
+   izquierda, que es una lista y se lee de arriba abajo. */
+.lg-indice .lg-indice-tecla {
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+}
+
+.lg-indice-num {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--fondo);
+  color: var(--tinta-2);
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 2px 0 var(--gris-o);
+}
+
+.lg-indice-tecla.tecla--naranja .lg-indice-num {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* La hoja: papel con el margen rojo de los cuadernos. */
+.lg-hoja {
+  position: relative;
+  min-width: 0;
+  padding: clamp(1.6rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) clamp(1.6rem, 4vw, 3rem)
+    clamp(2.2rem, 6vw, 4.75rem);
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow:
+    0 7px 0 var(--gris-o),
+    0 30px 50px -36px rgba(29, 27, 51, 0.45);
+}
+
+.lg-hoja::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 26px;
+  left: clamp(1.1rem, 3.4vw, 2.6rem);
+  width: 3px;
+  border-radius: 2px;
+  background: var(--coral-s);
+}
+
+/* ── El texto ─────────────────────────────────────────────────────────────── */
+
+.lg-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vw, 2.75rem);
+  max-width: 72ch;
+}
+
+.lg-cuerpo section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  scroll-margin-top: 1.5rem;
+}
+
+.lg-cuerpo h2 {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+}
+
+.lg-cuerpo p,
+.lg-cuerpo li {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.75;
+  color: var(--tinta-2);
+}
+
+.lg-cuerpo ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lg-cuerpo ul li {
+  position: relative;
+  padding-left: 1.6rem;
+}
+
+/* La viñeta: un punto naranja con su canto, como una chincheta. */
+.lg-cuerpo ul li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0.2rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--naranja);
+  box-shadow: 0 2px 0 var(--naranja-o);
+}
+
+.lg-cuerpo strong {
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.lg-cuerpo a {
+  color: var(--azul);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.lg-cuerpo a:hover { color: var(--azul-o); }
+
+.lg-cuerpo a:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.lg-cuerpo code {
+  padding: 2px 7px;
+  border-radius: 7px;
+  background: var(--lila-s);
+  color: var(--lila-o);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.86em;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* La entradilla: un aviso de «dato», en cielo. */
+.lg-cuerpo .lg-intro {
+  padding: 18px 20px;
+  border: 3px solid var(--cielo);
+  border-radius: 20px;
+  background: var(--cielo-s);
+  color: var(--tinta);
+}
+
+.lg-cuerpo .lg-intro strong { color: var(--tinta); }
+
+/* La advertencia de riesgo del aviso legal: el aviso amarillo del sistema. */
+.lg-riesgo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 26px 22px 20px;
+  border: 3px solid var(--amarillo);
+  border-radius: 22px;
+  background: var(--amarillo-s);
+}
+
+.lg-riesgo::before {
+  content: "!";
+  position: absolute;
+  top: -20px;
+  left: 18px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--amarillo-o);
+  color: #fff;
+  font-family: var(--letra-titular);
+  font-size: 22px;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #9a7600;
+  transform: rotate(-6deg);
+}
+
+.lg-cuerpo .lg-riesgo p { color: #6b5200; }
+.lg-cuerpo .lg-riesgo strong { color: #4d3b00; }
+
+/* Las tablas: una tarjeta con su canto y la cabecera en gris. */
+.lg-tabla {
+  width: 100%;
+  border: 3px solid var(--gris);
+  border-radius: 18px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: 0.94rem;
+}
+
+.lg-tabla th,
+.lg-tabla td {
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--gris);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.lg-tabla tr:last-child td { border-bottom: 0; }
+
+.lg-tabla th {
+  background: var(--fondo);
+  color: var(--tinta-2);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lg-tabla td {
+  color: var(--tinta-2);
+  font-weight: 600;
+}
+
+.lg-tabla td:first-child {
+  color: var(--tinta);
+  font-weight: 800;
+}
+
+/* ── Tableta y móvil ──────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  .lg-rejilla { grid-template-columns: minmax(0, 1fr); }
+
+  /* El índice pasa a ser una tira de teclas que se desliza de lado. */
+  .lg-indice {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 14px 0 4px;
+    background: none;
+    box-shadow: none;
+  }
+
+  .lg-indice-lista {
+    flex-direction: row;
+    gap: 10px;
+    margin: 0 calc(-1 * clamp(1rem, 4vw, 2rem));
+    padding: 4px clamp(1rem, 4vw, 2rem) 8px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .lg-indice-lista::-webkit-scrollbar { display: none; }
+  .lg-indice-lista li { flex: none; scroll-snap-align: start; }
+
+  .lg-indice .lg-indice-tecla {
+    width: auto;
+    max-width: 240px;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
+  .lg-indice-txt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* En el móvil, cada fila de una tabla es una ficha: el primer dato de
+   titular y los demás con el nombre de su columna delante (LegalShell copia
+   la cabecera a cada celda en `data-label`). Sin deslizar de lado. */
+@media (max-width: 640px) {
+  .lg-tabla,
+  .lg-tabla tbody,
+  .lg-tabla tr,
+  .lg-tabla td {
+    display: block;
+    width: 100%;
+  }
+
+  .lg-tabla {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  /* La cabecera sigue ahí para los lectores de pantalla, no a la vista. */
+  .lg-tabla thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .lg-tabla tr {
+    margin-bottom: 14px;
+    padding: 14px 16px 6px;
+    border: 3px solid var(--gris);
+    border-radius: 18px;
+    background: var(--papel);
+    box-shadow: 0 4px 0 var(--gris-o);
+  }
+
+  .lg-tabla td,
+  .lg-tabla tr:last-child td {
+    padding: 0 0 10px;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .lg-tabla td:first-child {
+    margin-bottom: 4px;
+    font-family: var(--letra-titular);
+    font-size: 1.08rem;
+  }
+
+  .lg-tabla td:not(:first-child)[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .lg-cuerpo p,
+  .lg-cuerpo li { font-size: 0.98rem; }
+}

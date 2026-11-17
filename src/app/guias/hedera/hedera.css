@@ -1,44 +1,53 @@
-/* Guía «Qué es Hedera». Prefijo: hbar-. Lo común está en ../guias.css. */
+/* Guía «Qué es Hedera». Prefijo: hbar-. Lo común está en ../guias.css.
+   Estilo «Cuaderno de estudio» (ESTILO.md, disenos/sistema.html): papel con
+   canto, Guías = color cielo. */
 
 /* ── El hashgraph en cuatro pasos ── */
-.hbar-pasos { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 26px 0 0; padding: 0; }
-.hbar-pasos li { position: relative; display: grid; gap: 8px; align-content: start; padding: 22px 20px 20px; border: 1px solid var(--gold-border); border-radius: 18px; background: rgba(15,32,64,0.5); }
-.hbar-paso-n { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--gold-soft); font-size: 15px; font-weight: 800; color: var(--gold); }
-.hbar-pasos strong { font-size: 17px; line-height: 1.3; color: #fff; }
-.hbar-pasos p { margin: 0; font-size: 15px; line-height: 1.6; color: #dce8f8; }
+.hbar-pasos { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 26px 0 0; padding: 0; }
+.hbar-pasos li { position: relative; display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; border-radius: 20px; background: var(--papel); box-shadow: 0 5px 0 var(--gris-o); color: var(--tinta); }
+.hbar-paso-n { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--cielo); box-shadow: 0 4px 0 var(--cielo-o); font-family: var(--letra-titular); font-size: 18px; font-weight: 800; color: var(--tinta); }
+.hbar-pasos strong { font-family: var(--letra-titular); font-size: 19px; font-weight: 800; line-height: 1.25; color: var(--tinta); }
+.hbar-pasos p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
-/* ── Los nodos del consejo ── */
-.hbar-nodos { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; }
-.hbar-nodos li { padding: 7px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 99px; background: rgba(255,255,255,0.03); font-size: 14px; font-weight: 600; color: #dce8f8; }
+/* ── Los nodos del consejo: chips de papel ── */
+.hbar-nodos { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; padding: 0; }
+.hbar-nodos li { padding: 7px 14px; border-radius: 99px; background: var(--papel); box-shadow: 0 3px 0 var(--gris-o); font-size: 14px; font-weight: 800; color: var(--tinta-2); }
 
 /* ── Calculadora de comisiones ── */
-.hbar-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.hbar-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
-.hbar-calc-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.hbar-calc-campo { display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
-.hbar-calc-campo > span, .hbar-calc-campo > label { font-size: 15px; font-weight: 700; color: #fff; }
-.hbar-calc-campo small { font-size: 12.5px; line-height: 1.45; color: #9db2d3; }
-.hbar-calc select, .hbar-calc input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 15px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
-.hbar-calc-atajos { display: flex; flex-wrap: wrap; gap: 6px; }
-.hbar-calc-atajos button { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.16); border-radius: 8px; background: transparent; font: inherit; font-size: 13px; font-weight: 600; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease; }
-.hbar-calc-atajos button.is-activa { border-color: var(--accent-orange); background: var(--accent-orange); color: #fff; }
-.hbar-calc button:focus-visible, .hbar-calc input:focus-visible, .hbar-calc select:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
-.hbar-calc-resultados { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
-.hbar-calc-resultados > div { display: grid; gap: 4px; padding: 18px 20px; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; background: rgba(255,255,255,0.03); }
-.hbar-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
-.hbar-calc-resultados span { font-size: 13px; color: #b0c4d8; }
-.hbar-calc-resultados strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.hbar-calc-resultados .es-principal strong { color: var(--gold); }
-.hbar-calc-resultados small { font-size: 12.5px; color: #b0c4d8; }
-.hbar-calc-nota { min-height: 3em; margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: #dce8f8; }
+.hbar-calc { margin-top: 24px; padding: 26px; border-radius: 26px; background: var(--papel); box-shadow: 0 6px 0 var(--gris-o); color: var(--tinta); }
+.hbar-calc-titulo { display: inline-block; margin: 0 0 18px; padding: 6px 12px; border-radius: 10px; background: var(--cielo-s); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cielo-o); }
+.hbar-calc-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.hbar-calc-campo { display: grid; gap: 8px; align-content: start; padding: 16px; border-radius: 18px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
+.hbar-calc-campo > span, .hbar-calc-campo > label { font-size: 14px; font-weight: 900; color: var(--tinta); }
+.hbar-calc-campo small { font-size: 13px; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
+
+/* Campos y desplegable: borde de 3px, papel y foco azul (sistema.html, «Formularios»). */
+.hbar-calc select, .hbar-calc input { width: 100%; min-width: 0; padding: 11px 13px; border: 3px solid var(--gris); border-radius: 14px; background-color: var(--papel); font: inherit; font-size: 16px; font-weight: 800; color: var(--tinta); font-variant-numeric: tabular-nums; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.hbar-calc select { cursor: pointer; }
+.hbar-calc input:focus, .hbar-calc input:focus-visible,
+.hbar-calc select:focus, .hbar-calc select:focus-visible { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
+
+/* Cantidades rápidas: teclas pequeñas, la elegida en cielo y las demás blancas. */
+.hbar-calc-atajos { display: flex; flex-wrap: wrap; gap: 8px; }
+.hbar-calc-atajos .tecla { min-height: 44px; padding: 8px 12px; font-size: 12px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+
+.hbar-calc-resultados { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.hbar-calc-resultados > div { display: grid; gap: 5px; padding: 18px 20px; border-radius: 18px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
+.hbar-calc-resultados .es-principal { background: var(--cielo-s); box-shadow: 0 4px 0 var(--cielo-o); }
+.hbar-calc-resultados span { font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta-2); }
+.hbar-calc-resultados .es-principal span { color: var(--cielo-o); }
+.hbar-calc-resultados strong { font-family: var(--letra-titular); font-size: 30px; font-weight: 800; line-height: 1.1; color: var(--tinta); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.hbar-calc-resultados .es-principal strong { color: var(--cielo-o); }
+.hbar-calc-resultados small { font-size: 13px; font-weight: 700; color: var(--tinta-2); }
+.hbar-calc-nota { min-height: 3em; margin: 16px 0 0; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 /* ── Los tres servicios ── */
-.hbar-servicios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
-.hbar-servicios > div { display: grid; gap: 8px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-orange); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
-.hbar-servicio-sigla { font-size: 12px; font-weight: 800; letter-spacing: 2px; color: var(--accent-orange-soft); }
-.hbar-servicios strong { font-size: 18px; color: #fff; }
-.hbar-servicios p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
-.hbar-servicios a { color: var(--gold); }
+.hbar-servicios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+.hbar-servicios > div { display: grid; gap: 10px; align-content: start; padding: 22px; border-radius: 20px; background: var(--papel); box-shadow: 0 5px 0 var(--gris-o); color: var(--tinta); }
+.hbar-servicio-sigla { justify-self: start; padding: 5px 11px; border-radius: 10px; background: var(--cielo-s); font-size: 12px; font-weight: 900; letter-spacing: 0.1em; color: var(--cielo-o); }
+.hbar-servicios strong { font-family: var(--letra-titular); font-size: 20px; font-weight: 800; line-height: 1.25; color: var(--tinta); }
+.hbar-servicios p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.65; color: var(--tinta-2); }
+.hbar-servicios a { color: var(--azul-o); font-weight: 800; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 @media (max-width: 900px) {
   .hbar-pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -46,9 +55,9 @@
 }
 @media (max-width: 640px) {
   .hbar-pasos, .hbar-servicios, .hbar-calc-resultados { grid-template-columns: 1fr; }
-  .hbar-calc { padding: 18px 16px; }
-  .hbar-calc-resultados strong { font-size: 23px; }
+  .hbar-calc { padding: 18px 16px; border-radius: 24px; }
+  .hbar-calc-resultados strong { font-size: 25px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hbar-calc-atajos button { transition: none; }
+  .hbar-calc select, .hbar-calc input { transition: none; }
 }

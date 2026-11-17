@@ -1,0 +1,577 @@
+/*
+ * Diario de Trading — la portada y el armazón de las vistas (17-11-2026).
+ *   TjWelcome      .djp   la portada del cuaderno: foto con cinta, saludo, periodos
+ *   TjBalance      .djb   el balance: la cifra más grande del Diario
+ *   TradingJournal .djp-* pestañas, «Nueva operación», filtros, primeros pasos,
+ *                         reinicio y la rejilla del Resumen
+ *   TjSummary      .djs   la cuenta: anillo de acierto y calidad del sistema
+ * Las piezas comunes (hoja, chips, campos, avisos, ventana) están en diario.css.
+ */
+
+/* ══ LA PORTADA ════════════════════════════════════════════════════════════ */
+
+.djp {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+/* La tapa del cuaderno: papel blanco con un lomo azul de espiral a la izquierda. */
+.djp-portada {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 1fr);
+  gap: clamp(18px, 3vw, 36px);
+  align-items: center;
+  padding: clamp(22px, 3.5vw, 36px) clamp(20px, 3.5vw, 36px) clamp(22px, 3.5vw, 36px) clamp(46px, 6vw, 72px);
+  border-radius: 36px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o), 0 30px 60px -40px rgba(29, 27, 51, 0.45);
+  overflow: hidden;
+}
+
+/* El lomo: una franja azul suave con los agujeros de la espiral. */
+.djp-portada::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: clamp(26px, 3.6vw, 40px);
+  background:
+    radial-gradient(circle at 50% 50%, var(--fondo) 0 6px, var(--azul-o) 6.5px 8px, transparent 8.5px) 0 14px / 100% 30px repeat-y,
+    var(--azul-s);
+  box-shadow: inset -3px 0 0 var(--azul);
+}
+
+.djp-hola {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(14px, 2.5vw, 24px);
+  min-width: 0;
+}
+
+/* La foto, pegada con un trozo de cinta y un poco torcida. */
+.djp-foto {
+  position: relative;
+  flex: none;
+  padding: 6px;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 0 0 2px var(--gris), 0 5px 0 var(--gris-o);
+  transform: rotate(-4deg);
+}
+
+.djp-foto .djp-foto-img {
+  width: clamp(64px, 9vw, 92px);
+  height: clamp(64px, 9vw, 92px);
+  border-radius: 16px;
+  background: var(--azul);
+  color: #fff;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-weight: 800;
+}
+
+.djp-cinta {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 54px;
+  height: 18px;
+  background: color-mix(in srgb, var(--amarillo) 70%, transparent);
+  transform: translateX(-50%) rotate(6deg);
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.25);
+}
+
+.djp-hola-texto { display: grid; justify-items: start; gap: 6px; min-width: 0; }
+
+.djp-momento { display: inline-flex; align-items: center; gap: 6px; font-size: 25px; }
+.djp-hola.is-tarde .djp-momento { color: var(--naranja-o); }
+.djp-hola.is-noche .djp-momento { color: var(--lila-o); }
+
+.djp-titulo {
+  max-width: 100%;
+  font-size: clamp(2rem, 4.6vw, 3.3rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+
+.djp-lead {
+  max-width: 40ch;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.djp-fecha { margin-top: 6px; text-transform: none; }
+.djp-fecha::first-letter { text-transform: uppercase; }
+
+/* ── Los cuatro periodos: fichas de papel en fila ── */
+.djp-periodos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.djp-periodo {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--gris-o);
+  transition: transform 0.3s var(--muelle);
+}
+
+@media (hover: hover) {
+  .djp-periodo:hover { transform: translateY(-3px) rotate(-0.6deg); }
+}
+
+.djp-periodo dt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 26px;
+}
+
+.djp-periodo .dj-chip { padding: 3px 8px; font-size: 11.5px; }
+
+.djp-periodo-pnl {
+  overflow: hidden;
+  font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.djp-periodo-meta { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--tinta-2); }
+.djp-periodo.is-vacio { background: transparent; box-shadow: inset 0 0 0 3px var(--gris); }
+.djp-periodo.is-vacio .djp-periodo-meta { color: var(--tinta-3); }
+
+/* ══ EL BALANCE ════════════════════════════════════════════════════════════ */
+
+.djb {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 20px 22px 18px;
+  border-radius: 26px;
+  background: var(--fondo);
+  transform: rotate(0.6deg);
+}
+
+/* Un pósit azul de esquina, la marca del Diario. */
+.djb::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 26px;
+  width: 44px;
+  height: 16px;
+  background: color-mix(in srgb, var(--azul) 35%, transparent);
+  transform: rotate(-5deg);
+}
+
+.djb.is-primer-paso {
+  background: var(--azul-s);
+  box-shadow: inset 0 0 0 3px var(--azul);
+  transform: none;
+}
+
+.djb-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+}
+
+.djb-herramientas { display: flex; gap: 8px; }
+.djb-herramientas .tecla { margin-bottom: 6px; }
+
+.djb-cifra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.djb-cifra .dj-cifra {
+  font-size: clamp(2.1rem, 4.6vw, 3rem);
+  overflow-wrap: anywhere;
+}
+
+.djb-cifra .dj-chip { font-size: 14px; padding: 6px 11px; }
+
+.djb .dja-spark { margin: 2px 0; }
+
+.djb-pie {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 2px dashed var(--gris-o);
+}
+
+.djb-pie dt { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.djb-pie dd { font-family: var(--letra-titular); font-size: 1.15rem; font-weight: 800; }
+
+.djb .tecla.dj-llana { white-space: normal; line-height: 1.35; text-align: center; }
+
+.djb-form { display: grid; gap: 14px; }
+
+/* El campo del dinero: el $ dentro, a la derecha, y la cifra en Fraunces. */
+.djb-dinero { position: relative; }
+.trading-journal .djb-dinero input { padding-right: 40px; font-family: var(--letra-titular); font-size: 1.35rem; font-weight: 800; }
+.djb-dinero > span {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  font-family: var(--letra-titular);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--tinta-3);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.djb-acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ══ LA BARRA: PESTAÑAS Y «NUEVA OPERACIÓN» (sin anclar al hacer scroll) ════ */
+
+.djp-ancla { height: 0; }
+
+.djp-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  min-width: 0;
+}
+
+/* Las pestañas: separadores de cuaderno, teclas que se quedan del color del Diario. */
+.djp-pestanas { gap: 10px; }
+.djp-pestanas .tecla { padding: 12px 18px; font-size: 15px; }
+
+.djp-nueva { margin-left: auto; }
+.djp-nueva .dj-kbd { margin-left: 2px; }
+
+/* ══ FILTROS ═══════════════════════════════════════════════════════════════ */
+
+.djp-filtros {
+  display: grid;
+  gap: 14px;
+  padding: 18px 22px 10px;
+}
+
+.djp-filtros-cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.djp-filtros-cab .dj-nota { font-size: 20px; }
+
+.djp-filtros-selects {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.djp-filtros-limpiar { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
+.djp-filtros-limpiar .dj-chip { margin-bottom: 6px; }
+
+/* ══ PRIMEROS PASOS: EL CAMINO ═════════════════════════════════════════════ */
+
+.djp-pasos {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 44px);
+  align-items: center;
+}
+
+.djp-pasos-texto { display: grid; justify-items: start; gap: 10px; }
+.djp-pasos-texto h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); }
+.djp-pasos-texto p { max-width: 50ch; margin-bottom: 8px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
+
+/* Tres nodos unidos por un tramo: actual (naranja que late), hecho (menta), meta (amarillo). */
+.djp-camino {
+  position: relative;
+  display: grid;
+  gap: 22px;
+  padding: 6px 0;
+}
+
+.djp-camino::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  bottom: 34px;
+  left: 28px;
+  width: 8px;
+  margin-left: -4px;
+  background: repeating-linear-gradient(180deg, var(--gris-o) 0 10px, transparent 10px 18px);
+}
+
+.djp-camino li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.djp-nodo {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--gris);
+  color: var(--gris-o);
+  font-size: 21px;
+  font-weight: 900;
+  box-shadow: 0 6px 0 var(--gris-o);
+}
+
+.djp-camino li.is-actual { color: var(--tinta); }
+.djp-camino li.is-actual .djp-nodo {
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--naranja-o), 0 0 0 9px rgba(255, 138, 31, 0.2);
+  animation: djp-latir 1.6s ease-in-out infinite;
+}
+
+.djp-camino li.is-hecho .djp-nodo { background: var(--menta); color: var(--tinta); box-shadow: 0 6px 0 var(--menta-o); }
+.djp-camino li.is-meta .djp-nodo { border-radius: 18px; background: var(--amarillo); color: var(--tinta); box-shadow: 0 6px 0 var(--amarillo-o); }
+
+@keyframes djp-latir { 50% { box-shadow: 0 6px 0 var(--naranja-o), 0 0 0 16px rgba(255, 138, 31, 0.06); } }
+
+/* ══ EL AVISO DE REINICIO: rojo, en el centro (pedido el 13-11-2026) ══════ */
+
+.djp-reinicio {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(480px, 100%);
+  text-align: center;
+  box-shadow: 0 0 0 4px var(--coral), 0 10px 0 var(--coral-o), 0 40px 80px -30px rgba(29, 27, 51, 0.6);
+}
+
+.djp-reinicio-icono {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: var(--coral);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--coral-o);
+  transform: rotate(-6deg);
+}
+
+.djp-reinicio h2 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
+
+.djp-reinicio-aviso {
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--coral-s);
+  color: var(--coral-o);
+  font-weight: 900;
+}
+
+.djp-reinicio-lista { width: 100%; font-weight: 700; color: var(--tinta-2); text-align: left; }
+.djp-reinicio-lista ul { display: grid; gap: 6px; margin-top: 8px; }
+.djp-reinicio-lista li { position: relative; padding-left: 22px; line-height: 1.45; }
+.djp-reinicio-lista li::before {
+  content: "";
+  position: absolute;
+  top: 0.45em;
+  left: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--coral);
+}
+
+.djp-reinicio-acciones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ══ EL RESUMEN ════════════════════════════════════════════════════════════ */
+
+/* Últimas operaciones y próximo hito, a la misma altura. */
+.djp-duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.djp-duo > :only-child { grid-column: 1 / -1; }
+
+/* ══ LA CUENTA (TjSummary) ═════════════════════════════════════════════════ */
+
+.djs {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+  gap: 0;
+  padding: 0;
+}
+
+.djs-zona { min-width: 0; padding: clamp(18px, 3vw, 28px); }
+.djs-zona + .djs-zona { border-left: 2px dashed var(--gris); }
+
+.djs-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin-bottom: 18px;
+}
+
+.djs-cab h3 { font-size: 1.3rem; }
+.djs-cab .dj-nota { font-size: 20px; }
+
+.djs-ops-cuerpo { display: grid; justify-items: center; gap: 18px; }
+
+/* El anillo de acierto: grueso, con canto, como una pegatina redonda. */
+.djs-anillo { position: relative; width: 168px; aspect-ratio: 1; }
+.djs-anillo svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.djs-anillo-pista { fill: none; stroke: var(--gris); stroke-width: 15; }
+.djs-anillo-arco { fill: none; stroke: var(--tone); stroke-width: 15; stroke-linecap: butt; }
+
+.djs-anillo-valor {
+  position: absolute;
+  inset: 22px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  background: var(--fondo);
+  text-align: center;
+}
+
+.djs-anillo-valor strong { font-size: 2.3rem; }
+.djs-anillo-valor strong span { font-size: 1.1rem; }
+.djs-anillo-valor small { font-size: 12px; font-weight: 800; color: var(--tinta-2); }
+
+.djs-cuentas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.djs-cuentas li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 16px;
+  background: var(--fondo);
+}
+
+.djs-cuentas strong { font-size: 1.5rem; }
+.djs-cuentas span { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 800; color: var(--tinta-2); }
+.djs-cuentas i { width: 9px; height: 9px; border-radius: 50%; background: var(--tone); }
+
+/* Las cuatro métricas, en fichas. */
+.djs-metricas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.djs-metrica {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--fondo);
+}
+
+.djs-metrica dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--tinta-2);
+}
+
+.djs-metrica-nombre { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.djs-metrica-ic {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 9px;
+  background: var(--azul);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--azul-o);
+}
+
+.djs-metrica .dj-cifra { font-size: clamp(1.4rem, 2.6vw, 1.8rem); overflow-wrap: anywhere; }
+.djs-metrica-sub { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--tinta-2); }
+/* La lectura del profit factor y del ratio: una palabra de su color, sin verde ni rojo de cifras. */
+.djs-metrica-sub.is-win { color: var(--menta-o); }
+.djs-metrica-sub.is-loss { color: var(--coral-o); }
+
+/* ══ RESPONSIVE ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 960px) {
+  .djp-portada { grid-template-columns: minmax(0, 1fr); }
+  .djb { transform: none; }
+  .djp-periodos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .djs { grid-template-columns: minmax(0, 1fr); }
+  .djs-zona + .djs-zona { border-left: 0; border-top: 2px dashed var(--gris); }
+  .djp-pasos { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .djp-duo { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .djp-portada { border-radius: 28px; }
+  .djp-hola { flex-direction: column; }
+  .djp-pestanas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 8px; }
+  .djp-pestanas .tecla { padding: 11px 6px; font-size: 13.5px; }
+  .djp-nueva { flex: 1 1 100%; margin-left: 0; }
+  .djs-metricas { gap: 10px; }
+  .djs-metrica { padding: 12px; }
+  .djp-filtros { padding: 16px 16px 8px; }
+  .djp-filtros-selects .dj-select { flex: 1 1 auto; }
+  .djp-filtros-limpiar { margin-left: 0; }
+}
+
+@media (max-width: 420px) {
+  .djp-periodos { gap: 10px; }
+  .djp-periodo { padding: 13px 14px; border-radius: 18px; }
+  .djp-periodo dt { flex-wrap: wrap; }
+  .djb { padding: 16px; }
+  .djb-pie { grid-template-columns: minmax(0, 1fr); }
+  .djs-metricas { grid-template-columns: minmax(0, 1fr); }
+  .djp-reinicio-acciones { grid-template-columns: minmax(0, 1fr); }
+  .djp-nodo { width: 48px; height: 48px; font-size: 18px; }
+  .djp-camino::before { left: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .djp-periodo { transition: none; }
+  .djp-camino li.is-actual .djp-nodo { animation: none; }
+}

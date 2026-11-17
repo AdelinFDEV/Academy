@@ -1,0 +1,94 @@
+/* El descargo único (DisclaimerRiesgo.tsx), estilo «Cuaderno de estudio»
+   (17-11-2026): el aviso amarillo de riesgo de disenos/sistema.html
+   («Avisos»): fondo amarillo suave, borde grueso amarillo y el «!» en su
+   cuadradito. El amarillo es el color del riesgo en el sistema de diseño.
+
+   Las clases `disclaimer-*` se conservan (globals.css ya solo pone el
+   margen de `.disclaimer`): el aspecto entero vive aquí, con `.aviso-riesgo`
+   delante. El MARGEN no se toca a
+   propósito: lo decide cada página (globals.css, ficha.css, portfolio.css…).
+   Lleva su propio fondo: se lee igual sobre el papel que sobre el lavanda. */
+
+.disclaimer.aviso-riesgo {
+  padding: clamp(18px, 3vw, 24px) clamp(18px, 3vw, 26px);
+  border: 3px solid var(--amarillo);
+  border-radius: 24px;
+  background: var(--amarillo-s);
+  color: #7a5d00;
+  font-family: var(--letra-texto);
+  color-scheme: light;
+}
+
+.aviso-riesgo .disclaimer-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.aviso-riesgo .disclaimer-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--amarillo-o);
+  color: #fff;
+  font-family: var(--letra-titular);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 3px 0 #9a7600;
+  transform: rotate(-4deg);
+}
+
+.aviso-riesgo .disclaimer-title {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(18px, 2.4vw, 21px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #5c4600;
+}
+
+.aviso-riesgo .disclaimer-body p {
+  margin: 0 0 0.75rem;
+  max-width: 72ch;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.65;
+  color: #6b5200;
+}
+
+.aviso-riesgo .disclaimer-body p:last-child { margin-bottom: 0; }
+
+.aviso-riesgo .disclaimer-body strong {
+  font-weight: 800;
+  color: #4d3b00;
+}
+
+.aviso-riesgo .disclaimer-foot {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 2px dashed rgba(201, 154, 0, 0.45);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #7a5d00;
+}
+
+.aviso-riesgo .disclaimer-body a,
+.aviso-riesgo .disclaimer-foot a {
+  color: #4d3b00;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.aviso-riesgo a:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

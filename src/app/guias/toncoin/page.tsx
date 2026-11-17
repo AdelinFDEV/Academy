@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideGramStaking from "./GuideGramStaking";
 import GuideGramQuiz from "./GuideGramQuiz";
@@ -77,7 +79,6 @@ export default async function ToncoinPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -90,16 +91,16 @@ export default async function ToncoinPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel básico · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Toncoin, ahora Gram (GRAM)<br />
           <span className="gbc-hero-gold">la moneda de la red ligada a Telegram</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Toncoin es la moneda de TON, una blockchain que diseñó Telegram, y desde el 15 de junio de 2026
-          se llama Gram, con el ticker GRAM.</strong> Solo cambiaron el nombre y el logotipo: si tenías TON, ahora
-          tienes los mismos Gram sin hacer nada. Sirve para pagar comisiones, hacer staking y comprar dentro de
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Toncoin es la moneda de TON, una blockchain que diseñó Telegram, y desde el 15 de junio de 2026
+          se llama Gram, con el ticker GRAM.</Anotacion></strong> Solo cambiaron el nombre y el logotipo: <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>si tenías TON, ahora
+          tienes los mismos Gram sin hacer nada</Anotacion>. Sirve para pagar comisiones, hacer staking y comprar dentro de
           Telegram, y su valor depende mucho de lo que decida la empresa de Pavel Durov.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de red medidos ese día</p>
@@ -112,7 +113,7 @@ export default async function ToncoinPage() {
 
       {/* ── 1 ── */}
       <section id="que-es" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Lo básico</div>
           <h2 className="gbc-title">Qué es Toncoin y por qué ahora se llama Gram</h2>
           <div className="gbc-body">
@@ -133,27 +134,28 @@ export default async function ToncoinPage() {
             <p>
               El nombre nuevo no es nuevo. «Gram» era como llamaba Telegram a su moneda en el documento técnico
               original de la red, y el código de la red lo conservó. Telegram propuso recuperarlo, la votación estuvo
-              abierta del 1 al 8 de junio de 2026 y salió con el 81,22 % del poder de voto a favor. El voto se
+              abierta del 1 al 8 de junio de 2026 y salió con el <Anotacion tipo="circle" relleno={[4, 8]} animar={false} junta>81,22 %</Anotacion> del poder de voto a favor. El voto se
               pesaba por las monedas que cada cartera tenía el 31 de mayo.
             </p>
             <p>
-              La red sigue llamándose TON, o The Open Network. Lo que cambió el 15 de junio a las 12:00 UTC fue el
-              nombre de la moneda, su ticker y su logotipo. Exchanges, carteras y webs de datos tuvieron hasta el 22
+              La red sigue llamándose TON, o The Open Network. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Lo que cambió el 15 de junio a las 12:00 UTC fue el
+              nombre de la moneda, su ticker y su logotipo.</Anotacion> Exchanges, carteras y webs de datos tuvieron hasta el 22
               de junio para actualizarse, y durante tres meses podían mostrarla como «Gram (prev. Toncoin)», que es
               como la sigue listando CoinGecko en noviembre de 2026.
             </p>
           </div>
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">Si tenías TON, no tienes que hacer nada</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Si tenías TON, no tienes que hacer nada</div>
+            <div className="postit-cuerpo">
               <p>
                 No hubo canje, ni <Termino slug="bridge">puente</Termino>, ni reclamación, ni monedas nuevas: 10 TON son ahora 10 GRAM, con la misma
-                dirección y la misma clave. Por eso cualquier web, bot o mensaje que te pida «reclamar tus GRAM» o
-                «migrar tus TON» es <Termino slug="phishing">phishing</Termino>. Lo advirtió la propia red al anunciar
+                dirección y la misma clave. Por eso <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>cualquier web, bot o mensaje que te pida «reclamar tus GRAM» o
+                «migrar tus TON» es <Termino slug="phishing">phishing</Termino></Anotacion>. Lo advirtió la propia red al anunciar
                 el cambio, y es la estafa que acompaña a cada cambio de nombre de una criptomoneda.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -186,12 +188,12 @@ export default async function ToncoinPage() {
             <p>
               La venta de 2018 fue una <Termino slug="ico">ICO</Termino> privada, una de las mayores de la época.
               La SEC sostuvo que los compradores no querían una moneda para usarla, sino revenderla con beneficio,
-              y que eso la convertía en un valor. Telegram devolvió el dinero y se apartó. Entre 2020 y 2026, la
+              y que <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>eso la convertía en un valor</Anotacion>. Telegram devolvió el dinero y se apartó. Entre 2020 y 2026, la
               red de Toncoin la impulsó la TON Foundation, una fundación independiente con sede en Suiza.
             </p>
             <p>
-              Ese reparto de papeles terminó en mayo de 2026. Durov anunció que Telegram sustituía a la fundación
-              como «fuerza motriz» de la red y se convertía en su mayor validador. Lo presentó como el tercero de
+              Ese reparto de papeles terminó en mayo de 2026. Durov anunció que <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Telegram sustituía a la fundación
+              como «fuerza motriz» de la red y se convertía en su mayor validador</Anotacion>. Lo presentó como el tercero de
               siete pasos de un plan que llama MTONGA, siglas en inglés de «hacer TON grande otra vez». El cambio
               de nombre fue el cuarto.
             </p>
@@ -209,19 +211,21 @@ export default async function ToncoinPage() {
               Más que ninguna otra criptomoneda con una empresa. TON no es Telegram, pero desde enero de 2025 es su
               única blockchain asociada, y la aplicación la usa en casi todo lo que tiene que ver con dinero:
             </p>
+            <Llave color="azul" semilla={6}>
             <ul>
               <li><strong>Stars.</strong> La moneda interna para pagar en las mini apps, que son aplicaciones que se abren dentro del chat sin instalar nada. Quien cobra en Stars retira sus ganancias en Gram.</li>
               <li><strong>Nombres y números.</strong> Los alias y los números anónimos se compran y se venden en Fragment, una plataforma de subastas que funciona sobre TON.</li>
               <li><strong>Regalos coleccionables.</strong> Se pueden convertir en <Termino slug="nft">NFT</Termino> de TON y venderse fuera de la aplicación.</li>
               <li><strong>Anuncios.</strong> En la mayoría de países, la publicidad de Telegram se paga con esta moneda.</li>
             </ul>
+            </Llave>
             <p>
               Para guardarla dentro de Telegram hay dos caminos, y no se parecen. El que conoce más gente es el bot
               Wallet, una mini app de terceros que Telegram puso en sus menús en 2023. En su modo principal es{" "}
-              <strong>custodio</strong>: la empresa guarda las claves y tú ves un saldo, como en un{" "}
+              <strong><Anotacion tipo="circle" relleno={[4, 8]} animar={false} junta>custodio</Anotacion></strong>: la empresa guarda las claves y tú ves un saldo, como en un{" "}
               <Termino slug="exchange">exchange</Termino>. El nuevo es la <strong>Gram Wallet</strong>, que Telegram
-              empezó a repartir el 31 de agosto de 2026. Es una <Termino slug="wallet">cartera</Termino> sin custodia:
-              la <Termino slug="clave-privada">clave privada</Termino> vive en tu teléfono.
+              empezó a repartir el 31 de agosto de 2026. Es una <Termino slug="wallet">cartera</Termino> sin custodia:{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>la <Termino slug="clave-privada">clave privada</Termino> vive en tu teléfono</Anotacion>.
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -245,8 +249,8 @@ export default async function ToncoinPage() {
             <p>
               Ninguna de las dos es la buena para todo el mundo. La <Termino slug="autocustodia">autocustodia</Termino>{" "}
               te quita el riesgo de la empresa y te da el de perder la clave tú mismo. Para unos euros de prueba, la
-              comodidad pesa más. Para una cantidad que te dolería perder, apunta la frase de recuperación en papel
-              antes de recibir nada, porque Telegram no puede devolvértela.
+              comodidad pesa más. Para una cantidad que te dolería perder, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>apunta la frase de recuperación en papel
+              antes de recibir nada</Anotacion>, porque Telegram no puede devolvértela.
             </p>
             {/* EXPERIENCIA DEL ADMIN: si el admin usa la Gram Wallet o el bot Wallet, aquí encaja una línea propia
                 (qué le pidió al activarla, cuánto tardó un envío, qué le sorprendió). No inventar. */}
@@ -266,14 +270,14 @@ export default async function ToncoinPage() {
             <p>
               TON funciona con <Termino slug="prueba-de-participacion">prueba de participación</Termino>: en vez de
               mineros, la protegen <Termino slug="validador">validadores</Termino> que bloquean monedas como garantía.
-              Su rasgo de diseño propio es cómo reparte el trabajo. Hay una cadena maestra que coordina y lleva la
-              cuenta de todo, y debajo, las cadenas de trabajo donde ocurren las operaciones.
+              Su rasgo de diseño propio es cómo reparte el trabajo. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>Hay una cadena maestra que coordina y lleva la
+              cuenta de todo</Anotacion>, y debajo, las cadenas de trabajo donde ocurren las operaciones.
             </p>
             <p>
               Cada cadena de trabajo puede partirse en fragmentos cuando se satura y volver a juntarse cuando baja
               la carga. Es el <Termino slug="sharding">sharding</Termino> dinámico, y la diferencia con otras redes
-              fragmentadas, como <Link href="/guias/near">NEAR</Link>, es que aquí el número de fragmentos no está
-              fijado: lo decide la demanda de cada momento. El 14 de noviembre de 2026, con poco tráfico, la cadena
+              fragmentadas, como <Link href="/guias/near">NEAR</Link>, es que <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>aquí el número de fragmentos no está
+              fijado: lo decide la demanda de cada momento</Anotacion>. El 14 de noviembre de 2026, con poco tráfico, la cadena
               principal de trabajo funcionaba con un solo fragmento.
             </p>
           </div>
@@ -296,8 +300,8 @@ export default async function ToncoinPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              La comisión casi nula tiene una lectura menos bonita. Con 0,00039 monedas por envío, las comisiones
-              no pagan la seguridad de la red. La paga la emisión de monedas nuevas, y eso es lo que explica la
+              La comisión casi nula tiene una lectura menos bonita. Con 0,00039 monedas por envío, <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>las comisiones
+              no pagan la seguridad de la red</Anotacion>. La paga la emisión de monedas nuevas, y eso es lo que explica la
               sección siguiente.
             </p>
           </div>
@@ -311,8 +315,8 @@ export default async function ToncoinPage() {
           <h2 className="gbc-title">¿Cuánto da el staking de Toncoin, y de dónde sale?</h2>
           <div className="gbc-body">
             <p>
-              En noviembre de 2026, alrededor de un 17 % anual en monedas, según Staking Rewards. Antes de 2026
-              rondaba el 4-5 %. La subida no salió de ningún negocio: salió de los bloques más rápidos. La red paga
+              En noviembre de 2026, alrededor de un <Anotacion tipo="circle" retraso={200} junta>17 % anual</Anotacion> en monedas, según Staking Rewards. Antes de 2026
+              rondaba el 4-5 %. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={600}>La subida no salió de ningún negocio: salió de los bloques más rápidos.</Anotacion> La red paga
               1,7 GRAM por cada bloque de la cadena maestra y 1 por cada bloque de trabajo, la misma cantidad de
               siempre. Al producir unas seis veces más bloques, crea unas seis veces más monedas.
             </p>
@@ -324,8 +328,9 @@ export default async function ToncoinPage() {
               que está en staking. Por eso el rendimiento es tan alto: 3,9 dividido entre 0,236 da algo más de un 16 %.
             </p>
             <p>
-              La consecuencia es la parte que no sale en los anuncios. Quien no hace staking no gana nada, pero sí
-              pierde peso: tiene las mismas monedas sobre una oferta que crece cada año. Es{" "}
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={6} animar={false} />
+              La consecuencia es la parte que no sale en los anuncios. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Quien no hace staking no gana nada, pero sí
+              pierde peso</Anotacion>: tiene las mismas monedas sobre una oferta que crece cada año. Es{" "}
               <Termino slug="dilucion">dilución</Termino>. Mueve los controles y mira cuánto cambia tu parte de la
               red en cada caso:
             </p>
@@ -337,8 +342,8 @@ export default async function ToncoinPage() {
             <p>
               Pon 1.000 Gram, una emisión del 3,9 % y un 24 % de la oferta en staking. A tres años, sin comisiones,
               acabas con unos 1.570 Gram y tu parte de la red crece un 40 %. Si no haces nada,
-              sigues con 1.000 y tu parte baja un 11 %. Ninguna de las dos cifras dice nada del precio: si la
-              moneda cae, puedes tener más Gram y menos euros.
+              sigues con 1.000 y tu parte baja un 11 %. Ninguna de las dos cifras dice nada del precio: <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>si la
+              moneda cae, puedes tener más Gram y menos euros</Anotacion>.
             </p>
             <p>
               Un particular no llega al millón de monedas que pide un validador, así que delega. Esa{" "}
@@ -346,7 +351,7 @@ export default async function ToncoinPage() {
               nominador, pensados para grandes tenedores. Los grupos de nominadores, hasta 40 por grupo y 10.000
               monedas de mínimo, que la documentación ya da por anticuados. Y el{" "}
               <Termino slug="staking-liquido">staking líquido</Termino>, que acepta poco dinero y te da a cambio
-              una ficha, como tsTON, que puedes seguir usando. Nominador es como llama TON a quien delega. Cada
+              una ficha, como tsTON, que puedes seguir usando. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>Nominador es como llama TON a quien delega.</Anotacion> Cada
               servicio se queda una parte de la recompensa, y si el validador falla o la red lo multa, lo que se
               llama <Termino slug="slashing">slashing</Termino>, cobras menos.
             </p>
@@ -367,18 +372,18 @@ export default async function ToncoinPage() {
           <div className="gbc-body">
             <p>
               Existen unos 5.284 millones de monedas, pero CoinGecko solo cuenta como{" "}
-              <Termino slug="oferta-circulante">oferta circulante</Termino> 2.857 millones, el 54 %. Con un precio
+              <Termino slug="oferta-circulante">oferta circulante</Termino> 2.857 millones, <Anotacion tipo="circle" retraso={200} junta>el 54 %</Anotacion>. Con un precio
               de 1,05 dólares, eso da una <Termino slug="market-cap">capitalización</Termino> de unos 3.000 millones,
               en el puesto 31 del mercado, a 14 de noviembre de 2026. El{" "}
               <Termino slug="ath">máximo histórico</Termino> de Toncoin fue de 8,25 dólares, el 14 de junio de 2024:
-              el precio actual está un 87 % por debajo.
+              el precio actual está <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>un 87 % por debajo</Anotacion>.
             </p>
             <p>
               Casi todas las monedas se repartieron entre 2020 y 2022 por{" "}
               <Termino slug="prueba-de-trabajo">prueba de trabajo</Termino>: los{" "}
               <Termino slug="minero">mineros</Termino> competían por sacarlas de unos contratos que las guardaban
-              desde el inicio. Un análisis de la firma Whiterabbit, de marzo de 2023, concluyó que unas 248
-              direcciones conectadas entre sí se llevaron más del 85 %. La TON Foundation negó tener lazos estrechos
+              desde el inicio. Un análisis de la firma Whiterabbit, de marzo de 2023, concluyó que <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>unas 248
+              direcciones conectadas entre sí se llevaron más del 85 %</Anotacion>. La TON Foundation negó tener lazos estrechos
               con esos mineros. Lo que no se discute son tres datos públicos:
             </p>
           </div>
@@ -388,7 +393,7 @@ export default async function ToncoinPage() {
               <p>de monedas en 171 carteras de los primeros mineros, congeladas por votación de los validadores en febrero de 2023. Nunca habían hecho un envío.</p>
             </div>
             <div>
-              <strong>21-02-2027</strong>
+              <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} retraso={300} junta>21-02-2027</Anotacion></strong>
               <p>es el día en que esas carteras pueden volver a moverse, a las 09:00 UTC. Son cerca de una quinta parte de todas las monedas.</p>
             </div>
             <div>
@@ -402,8 +407,8 @@ export default async function ToncoinPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Nadie sabe qué harán los dueños de esas carteras congeladas, ni si siguen teniendo las claves. Pero
-              una quinta parte de la oferta que puede llegar al mercado en una fecha conocida es justo el tipo de
+              Nadie sabe qué harán los dueños de esas carteras congeladas, ni si siguen teniendo las claves. Pero{" "}
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>una quinta parte de la oferta que puede llegar al mercado en una fecha conocida</Anotacion> es justo el tipo de
               cosa que conviene saber antes de comprar, y no después. Es lo que en otras monedas se llama una{" "}
               <Termino slug="liberacion-de-tokens">liberación de tokens</Termino>.
             </p>
@@ -418,30 +423,30 @@ export default async function ToncoinPage() {
           <h2 className="gbc-title">Toncoin en España: Hacienda, MiCA y la cartera de Telegram</h2>
           <div className="gbc-body">
             <p>
-              <strong>El cambio de nombre no se declara.</strong> Para Hacienda, lo que tributa es vender o
+              <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>El cambio de nombre no se declara.</Anotacion></strong> Para Hacienda, lo que tributa es vender o
               permutar. Pasar de Toncoin a Gram no fue ninguna de las dos cosas: no se entregó una moneda a cambio
-              de otra, solo cambió la etiqueta. Tu precio y tu fecha de compra siguen siendo los mismos, y los
+              de otra, solo cambió la etiqueta. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Tu precio y tu fecha de compra siguen siendo los mismos</Anotacion>, y los
               necesitarás cuando vendas.
             </p>
             <p>
-              <strong>Las recompensas de staking, sí.</strong> Hacienda las trata como un rendimiento: se declaran
-              por su valor en euros el día que las recibes, aunque no vendas nada. Y ese valor pasa a ser su precio
+              <strong>Las recompensas de staking, sí.</strong> Hacienda las trata como un rendimiento: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>se declaran
+              por su valor en euros el día que las recibes</Anotacion>, aunque no vendas nada. Y ese valor pasa a ser su precio
               de compra para cuando las vendas. Con una red que paga en cada turno de 18 horas, eso son cientos de
               apuntes al año. Lo práctico es usar el historial que exportan los servicios de staking.
             </p>
             <p>
               <strong>Dónde las guardas también cuenta.</strong> El modelo 721 obliga a informar de las
               criptomonedas que tienes en entidades extranjeras que las custodian, si el total supera los 50.000
-              euros a 31 de diciembre. Un saldo en el bot Wallet en modo custodio entra en ese cálculo. Una Gram
-              Wallet sin custodia, no, porque nadie la guarda por ti. Cómo se calcula cada ganancia, con el método{" "}
+              euros a 31 de diciembre. Un saldo en el bot Wallet en modo custodio entra en ese cálculo. <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>Una Gram
+              Wallet sin custodia, no</Anotacion>, porque nadie la guarda por ti. Cómo se calcula cada ganancia, con el método{" "}
               <Termino slug="fifo">FIFO</Termino>, lo tienes en la guía de{" "}
               <Link href="/guias/fiscalidad-cripto-espana">fiscalidad de las criptomonedas en España</Link>.
             </p>
             <p>
               En cuanto a <Termino slug="mica">MiCA</Termino>, el reglamento europeo no prohíbe ni autoriza monedas
               sueltas. Regula a las empresas que las venden o las guardan. Desde el 1 de julio de 2026 no queda
-              periodo transitorio en ningún país de la UE: quien te ofrezca Gram desde España necesita su
-              autorización. Compruébalo en el registro de la CNMV o en el de ESMA antes de mandar dinero, sobre todo
+              periodo transitorio en ningún país de la UE: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>quien te ofrezca Gram desde España necesita su
+              autorización</Anotacion>. Compruébalo en el registro de la CNMV o en el de ESMA antes de mandar dinero, sobre todo
               si la oferta te llega por un canal o un bot de Telegram.
             </p>
           </div>
@@ -455,11 +460,11 @@ export default async function ToncoinPage() {
           <h2 className="gbc-title">Los riesgos de Toncoin, ahora Gram</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Depende de una empresa y de una persona.</strong> Telegram es su mayor validador y su principal cliente. La detención de Durov en 2024 tumbó el precio en horas. Francia le levantó las restricciones de viaje en noviembre de 2025, pero la investigación sobre Telegram sigue abierta.</li>
+              <li><strong>Depende de una empresa y de una persona.</strong> Telegram es su mayor validador y su principal cliente. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>La detención de Durov en 2024 tumbó el precio en horas.</Anotacion> Francia le levantó las restricciones de viaje en noviembre de 2025, pero la investigación sobre Telegram sigue abierta.</li>
               <li><strong>La emisión subió de golpe.</strong> Cerca del 3,9 % anual desde 2026. Si no haces staking, pierdes peso cada año; si lo haces, cobras en una moneda que se diluye.</li>
-              <li><strong>La oferta está concentrada.</strong> Casi la mitad no circula, y una quinta parte puede moverse a partir del 21 de febrero de 2027.</li>
+              <li><strong>La oferta está concentrada.</strong> Casi la mitad no circula, y <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>una quinta parte puede moverse a partir del 21 de febrero de 2027</Anotacion>.</li>
               <li><strong>La red ha cambiado mucho y muy rápido.</strong> Bloques nuevos, comisiones nuevas, <Termino slug="mecanismo-de-consenso">mecanismo de consenso</Termino> nuevo y cartera nueva en seis meses. El código recién estrenado es donde aparecen los fallos.</li>
-              <li><strong>Las estafas viven donde vive la moneda.</strong> Bots que «migran» tus TON, falsos <Termino slug="airdrop">airdrops</Termino> y mini apps que piden tu frase de recuperación. Telegram tiene más de mil millones de usuarios, y los estafadores también lo saben.</li>
+              <li><strong>Las estafas viven donde vive la moneda.</strong> Bots que «migran» tus TON, falsos <Termino slug="airdrop">airdrops</Termino> y <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>mini apps que piden tu frase de recuperación</Anotacion>. Telegram tiene más de mil millones de usuarios, y los estafadores también lo saben.</li>
               <li><strong>El precio.</strong> Su <Termino slug="volatilidad">volatilidad</Termino> es alta: cayó un 87 % desde su máximo de 2024, y en noviembre de 2026 llegó a subir un 14 % en un solo día.</li>
             </ul>
           </div>
@@ -476,7 +481,7 @@ export default async function ToncoinPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Toncoin y Gram</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Vuelta al Gram</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Vuelta al Gram</strong>.</p>
           </div>
           {d.isRegistered ? <GuideGramQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

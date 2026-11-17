@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideZcashTransacciones from "./GuideZcashTransacciones";
 import GuideZcashQuiz from "./GuideZcashQuiz";
@@ -82,7 +84,6 @@ export default async function ZcashPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -95,16 +96,16 @@ export default async function ZcashPage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Zcash (ZEC)<br />
           <span className="gbc-hero-gold">la privacidad que eliges tú</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Zcash es una criptomoneda nacida en 2016 que te deja elegir, en cada pago, si es público como
-          en Bitcoin o privado.</strong> Con una dirección blindada se ocultan quién paga, quién cobra y cuánto.
-          Esa privacidad es opcional, y a noviembre de 2026 solo el 28,9 % de los ZEC está blindado. Tenerla es
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Zcash es una criptomoneda nacida en 2016 que te deja elegir, en cada pago, si es público como
+          en Bitcoin o privado.</Anotacion></strong> Con una dirección blindada se ocultan quién paga, quién cobra y cuánto.{" "}
+          <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Esa privacidad es opcional</Anotacion>, y a noviembre de 2026 solo el 28,9 % de los ZEC está blindado. Tenerla es
           legal en España; comprarla en exchanges europeos puede complicarse desde julio de 2027.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de red: ZecStats, a 14-11-2026</p>
@@ -127,11 +128,11 @@ export default async function ZcashPage() {
               forma de pagar, en la que los datos del pago no se publican. Su moneda se llama ZEC.
             </p>
             <p>
-              Si te preguntas qué es Zcash frente a Monero, la diferencia cabe en una palabra: <strong>opcional</strong>.
+              Si te preguntas qué es Zcash frente a Monero, la diferencia cabe en una palabra: <strong><Anotacion tipo="circle" junta>opcional</Anotacion></strong>.
               En la <Link href="/guias/monero">guía de Monero</Link> verás que allí todo pago es privado y no se
               puede desactivar. En Zcash conviven dos mundos en la misma
-              <Termino slug="blockchain"> blockchain</Termino>: direcciones transparentes, que lo enseñan todo, y
-              direcciones blindadas, que lo ocultan.
+              <Termino slug="blockchain"> blockchain</Termino>: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>direcciones transparentes, que lo enseñan todo, y
+              direcciones blindadas, que lo ocultan</Anotacion>.
             </p>
             <p>
               La pieza que lo hace posible es una técnica matemática llamada
@@ -183,14 +184,15 @@ export default async function ZcashPage() {
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={6} animar={false} />
               El error típico está en las dos filas del medio. Si blindas 2,5 ZEC y diez minutos después
-              desblindas 2,5 ZEC, la cadena no une las dos operaciones, pero cualquiera puede sospecharlo. La
-              privacidad la da mover el dinero <strong>dentro</strong> del fondo blindado, no entrar y salir.
+              desblindas 2,5 ZEC, la cadena no une las dos operaciones, pero cualquiera puede sospecharlo. La{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>privacidad la da mover el dinero <strong>dentro</strong> del fondo blindado, no entrar y salir.</Anotacion>
             </p>
             <p>
               Hay una puerta que abres tú. Cada dirección blindada tiene su
-              <Termino slug="clave-de-visualizacion"> clave de visualización</Termino>: quien la tenga puede ver
-              tus operaciones, pero no gastar. Sirve para enseñarle tus cuentas a un asesor o a una auditoría sin
+              <Termino slug="clave-de-visualizacion"> clave de visualización</Termino>: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>quien la tenga puede ver
+              tus operaciones, pero no gastar</Anotacion>. Sirve para enseñarle tus cuentas a un asesor o a una auditoría sin
               hacerlas públicas para todos.
             </p>
             {/* EXPERIENCIA DEL ADMIN: aquí encaja una operación real (blindar ZEC desde un exchange a una cartera propia, qué dirección pidió el exchange, cuánto tardó y qué se veía después en el explorador). Sin ella, esta sección no tiene experiencia de primera mano. */}
@@ -205,8 +207,8 @@ export default async function ZcashPage() {
           <h2 className="gbc-title">Cómo funciona Zcash: pruebas de conocimiento cero y la ceremonia</h2>
           <div className="gbc-body">
             <p>
-              La mitad de la respuesta a qué es Zcash es matemática. Una prueba de conocimiento cero demuestra
-              que algo es cierto sin enseñar por qué. El ejemplo de
+              La mitad de la respuesta a qué es Zcash es matemática. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Una prueba de conocimiento cero demuestra
+              que algo es cierto sin enseñar por qué.</Anotacion> El ejemplo de
               siempre: probar que eres mayor de edad sin enseñar tu fecha de nacimiento. En Zcash, cada pago
               blindado lleva una prueba que dice «este dinero existe, es de quien lo gasta y no se ha gastado
               antes». La red lo comprueba sin ver la cantidad ni las direcciones.
@@ -217,15 +219,16 @@ export default async function ZcashPage() {
               fabrica unos parámetros y debe destruir después las claves usadas para hacerlos.
             </p>
             <p>
-              Si alguien hubiera guardado esas claves, podría fabricar ZEC falsos dentro del fondo blindado, y
-              nadie lo vería. En octubre de 2016 la ceremonia la hicieron seis personas en lugares distintos;
+              Si alguien hubiera guardado esas claves, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>podría fabricar ZEC falsos dentro del fondo blindado, y
+              nadie lo vería</Anotacion>. En octubre de 2016 la ceremonia la hicieron seis personas en lugares distintos;
               bastaba con que una destruyera su parte. Una firmaba como «John Dobbertin», y en 2022 se supo
               que era Edward Snowden. En 2018 se repitió para Sapling, esta vez abierta a voluntarios de todo
               el mundo.
             </p>
             <p>
+              <SimboloEstudio tipo="estrella" margen semilla={8} retraso={200} />
               El paso que lo cambió todo llegó el 31 de mayo de 2022, con la actualización NU5. Su nuevo fondo,
-              Orchard, usa un sistema de pruebas llamado Halo 2, que no necesita ceremonia. Cada actualización de
+              Orchard, usa un sistema de pruebas llamado Halo 2, <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={400}>que no necesita ceremonia</Anotacion>. Cada actualización de
               este tipo es un <Termino slug="hard-fork">hard fork</Termino> pactado, y desde entonces ya no hay que
               confiar en que nadie guardó una copia.
             </p>
@@ -259,48 +262,49 @@ export default async function ZcashPage() {
 
       {/* ── 4 ── */}
       <section id="orchard-ironwood" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Lo que pasó en 2026</div>
           <h2 className="gbc-title">El fallo de Orchard y la salida por Ironwood</h2>
           <div className="gbc-body">
             <p>
               Quitar la ceremonia no quitó todos los riesgos. El 29 de mayo de 2026, Taylor Hornby, un
               investigador independiente que revisaba Orchard por encargo de Shielded Labs, encontró un fallo en
-              su circuito de pruebas. Permitía crear ZEC de la nada
-              sin dejar rastro, y llevaba abierto desde 2022, unos cuatro años.
+              su circuito de pruebas. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>Permitía crear ZEC de la nada
+              sin dejar rastro</Anotacion>, y llevaba abierto desde 2022, unos cuatro años.
             </p>
             <p>
               Se corrigió en pocos días, con una actualización de urgencia a primeros de junio. Lo difícil era
               otra pregunta: ¿alguien lo había usado antes? La Zcash Foundation dijo no haber encontrado indicios
-              de ello. Pero probar que nunca se fabricó una moneda falsa es imposible en un fondo donde las
-              cantidades no se ven, y los propios desarrolladores lo reconocieron.
+              de ello. Pero <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>probar que nunca se fabricó una moneda falsa es imposible en un fondo donde las
+              cantidades no se ven</Anotacion>, y los propios desarrolladores lo reconocieron.
             </p>
             <p>
               La respuesta fue Ironwood, la actualización NU6.3, activada el 28 de julio de 2026 en el bloque
               3.428.143. Abre un fondo blindado nuevo y sella Orchard: ya no recibe pagos, y solo se puede salir
-              de él hacia Ironwood. Esa salida pasa por un <strong>torniquete</strong>, una regla de contabilidad
-              que no deja sacar más ZEC de los que entraron de forma verificable.
+              de él hacia Ironwood. Esa salida pasa por un <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} animar={false} junta>torniquete</Anotacion></strong>, una regla de contabilidad{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>que no deja sacar más ZEC de los que entraron de forma verificable</Anotacion>.
             </p>
             <p>
-              Si alguien hubiera fabricado monedas falsas, se quedarían atrapadas dentro. El precio es que cada
+              Si alguien hubiera fabricado monedas falsas, <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>se quedarían atrapadas dentro</Anotacion>. El precio es que cada
               dueño tiene que mover sus ZEC por su cuenta, y que la cantidad que cruza de un fondo a otro queda a la
               vista. Al activarse, Orchard guardaba más de 3,6 millones de ZEC; a 14 de noviembre quedaban 321.000.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Ya había pasado una vez</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Ya había pasado una vez</div>
+            <div className="postit-cuerpo">
               <p>En marzo de 2018, Ariel Gabizon, ingeniero de la empresa que creó Zcash, encontró otro fallo de
               falsificación, en las pruebas del fondo original. Se arregló en silencio con Sapling, en octubre de
-              2018, y se hizo público el 5 de febrero de 2019. Tampoco se encontraron indicios de que se usara. Dos
-              fallos en ocho años, los dos hallados por gente que trabajaba para el proyecto, es lo que tienes que
+              2018, y se hizo público el 5 de febrero de 2019. Tampoco se encontraron indicios de que se usara. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Dos
+              fallos en ocho años</Anotacion>, los dos hallados por gente que trabajaba para el proyecto, es lo que tienes que
               saber antes de comprar.</p>
             </div>
-          </div>
+          </Postit>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Mover los fondos también tiene fecha de caducidad. La actualización NU7, activada el 6 de noviembre
-              de 2026, dejó de aceptar el formato de operación que usaba Sprout, el fondo de 2016. Los 12.224 ZEC
+              de 2026, dejó de aceptar el formato de operación que usaba Sprout, el fondo de 2016. Los <Anotacion tipo="circle" relleno={[4, 8]} animar={false} junta>12.224 ZEC</Anotacion>{" "}
               que nadie había sacado se quedaron sin poder gastarse. No se han destruido: la propuesta deja
               abierta la posibilidad de devolver el acceso algún día, sin fecha ni compromiso.
             </p>
@@ -315,9 +319,10 @@ export default async function ZcashPage() {
           <h2 className="gbc-title">¿Cuánto ZEC está blindado de verdad, y por qué te afecta?</h2>
           <div className="gbc-body">
             <p>
+              <SimboloEstudio tipo="estrella" margen semilla={11} retraso={200} />
               Ninguna explicación de qué es Zcash está completa sin este número. A 14 de noviembre de 2026,
-              según ZecStats, hay 4,93 millones de ZEC en fondos blindados. Son el
-              28,9 % de los 17,04 millones que existen. El otro 71 % está en direcciones transparentes, a la vista
+              según ZecStats, hay 4,93 millones de ZEC en fondos blindados. Son el{" "}
+              <Anotacion tipo="circle" retraso={400} junta>28,9 %</Anotacion> de los 17,04 millones que existen. El otro 71 % está en direcciones transparentes, a la vista
               como en Bitcoin.
             </p>
           </div>
@@ -329,7 +334,7 @@ export default async function ZcashPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Te afecta por una razón sencilla: en privacidad, te escondes entre los demás. Ese grupo se llama
-              <Termino slug="conjunto-de-anonimato"> conjunto de anonimato</Termino>, y cuanto más grande, mejor.
+              <Termino slug="conjunto-de-anonimato"> conjunto de anonimato</Termino>, y <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>cuanto más grande, mejor</Anotacion>.
               Si casi nadie blinda, los pocos que lo hacen destacan, y es más fácil relacionar lo que entra con lo
               que sale.
             </p>
@@ -345,8 +350,8 @@ export default async function ZcashPage() {
               los <Termino slug="etp">fondos cotizados</Termino> trabajar con ZEC sin tocar la privacidad: por ahí ha entrado el dinero institucional.
             </p>
             <p>
-              Lo que no cambia es la <Termino slug="fungibilidad">fungibilidad</Termino>. Un ZEC con historial
-              transparente sí arrastra su pasado, igual que un bitcoin. Solo deja de arrastrarlo cuando pasa un
+              Lo que no cambia es la <Termino slug="fungibilidad">fungibilidad</Termino>. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Un ZEC con historial
+              transparente sí arrastra su pasado</Anotacion>, igual que un bitcoin. Solo deja de arrastrarlo cuando pasa un
               tiempo dentro del fondo blindado.
             </p>
           </div>
@@ -375,7 +380,7 @@ export default async function ZcashPage() {
                 <tr><td><strong>Un bloque cada</strong></td><td>10 minutos</td><td>25 segundos (desde el 6-11-2026; antes, 75)</td></tr>
                 <tr><td><strong>Recompensa por bloque</strong></td><td>3,125 BTC</td><td>0,52 ZEC, unos 1.800 ZEC al día</td></tr>
                 <tr><td><strong>Halvings</strong></td><td>2012, 2016, 2020, 2024</td><td>Noviembre de 2020 y de 2024; el próximo, hacia noviembre de 2028</td></tr>
-                <tr><td><strong>Quién cobra el bloque</strong></td><td>El <Termino slug="minero">minero</Termino>, entero</td><td>El minero, el 80 %; el 20 %, el desarrollo</td></tr>
+                <tr><td><strong>Quién cobra el bloque</strong></td><td>El <Termino slug="minero">minero</Termino>, entero</td><td><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[2, 5]} animar={false}>El minero, el 80 %; el 20 %, el desarrollo</Anotacion></td></tr>
               </tbody>
             </table>
           </div>
@@ -386,7 +391,7 @@ export default async function ZcashPage() {
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Ese 20 % para el desarrollo es la seña de identidad de Zcash, y la fuente de casi todas sus
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Ese 20 % para el desarrollo es la seña de identidad de Zcash</Anotacion>, y la fuente de casi todas sus
               discusiones. Ha pasado por cuatro etapas:
             </p>
           </div>
@@ -406,7 +411,7 @@ export default async function ZcashPage() {
               otra hucha cerrada. A 14 de noviembre la propuesta sigue abierta y sin fecha.
             </p>
             <p>
-              NU7 añadió una pieza más: el 60 % de las comisiones de cada operación sale de la circulación, y el
+              NU7 añadió una pieza más: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>el 60 % de las comisiones de cada operación sale de la circulación</Anotacion>, y el
               minero se queda el resto. Ese dinero no se destruye: según la votación de los poseedores, volverá a
               emitirse como recompensa a partir de 2031. Es la forma de que la seguridad de la red no dependa solo
               de una emisión que se va reduciendo.
@@ -417,13 +422,13 @@ export default async function ZcashPage() {
 
       {/* ── 7 ── */}
       <section id="europa" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Desde España</div>
           <h2 className="gbc-title">¿Es legal Zcash en España? Lo que cambia en 2027</h2>
           <div className="gbc-body">
             <p>
-              Sí: tener ZEC en una cartera propia y enviarlo es legal. El
-              Reglamento (UE) 2024/1624 prohíbe, desde el 10 de julio de 2027, que exchanges y custodios de la UE
+              <Anotacion tipo="underline" color="var(--menta)" grosor={2} retraso={200}>Sí: tener ZEC en una cartera propia y enviarlo es legal.</Anotacion> El
+              Reglamento (UE) 2024/1624 prohíbe, <Anotacion tipo="circle" retraso={600}>desde el 10 de julio de 2027</Anotacion>, que exchanges y custodios de la UE
               operen con monedas que refuerzan el anonimato; la <Link href="/guias/monero">guía de Monero</Link>
               explica la norma entera.
             </p>
@@ -431,6 +436,7 @@ export default async function ZcashPage() {
               Lo propio de Zcash es que su privacidad se puede no usar, y eso le ha dado más margen que a Monero.
               Tres hechos lo muestran:
             </p>
+            <Llave color="azul" semilla={8}>
             <ul>
               <li>
                 <strong>Junio de 2023.</strong> Binance anunció que dejaría de ofrecer monedas de privacidad en
@@ -444,11 +450,12 @@ export default async function ZcashPage() {
                 en Europa trabajan solo con direcciones transparentes, y SwissBorg la añadió ese mes.
               </li>
             </ul>
+            </Llave>
             <p>
               La pregunta abierta es si ZEC cuenta como «moneda que refuerza el anonimato» cuando un exchange
               solo toca su parte transparente. A noviembre de 2026 no
-              hemos encontrado una lista oficial europea que lo aclare. Si la normativa la incluye, lo normal es que
-              la vía regulada para cambiar euros por ZEC se cierre como se está cerrando para Monero.
+              hemos encontrado una lista oficial europea que lo aclare. Si la normativa la incluye, lo normal es que{" "}
+              <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>la vía regulada para cambiar euros por ZEC se cierre</Anotacion> como se está cerrando para Monero.
             </p>
             <p>
               En Estados Unidos ha pasado lo contrario. Grayscale convirtió su fondo de Zcash en un ETF, con el
@@ -457,11 +464,12 @@ export default async function ZcashPage() {
               estadounidenses: les falta el documento de datos fundamentales que exige la normativa europea.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Zcash y Hacienda: lo que tributa y lo que no</div>
-            <div className="gbc-box-body">
-              <p>Blindar o desblindar tus propios ZEC es mover dinero entre direcciones tuyas: no es una venta y
-              no tributa. Sí tributa cambiar ZEC por euros o por otra criptomoneda. Además, desde el 1 de enero de
+          <Postit color="amarillo" giro={1.5}>
+            <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={9} animar={false} />
+            <div className="postit-titulo">Zcash y Hacienda: lo que tributa y lo que no</div>
+            <div className="postit-cuerpo">
+              <p>Blindar o desblindar tus propios ZEC es mover dinero entre direcciones tuyas: <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>no es una venta y
+              no tributa</Anotacion>. Sí tributa cambiar ZEC por euros o por otra criptomoneda. Además, desde el 1 de enero de
               2026 los exchanges de la UE recogen los datos de las operaciones de sus clientes para enviarlos a
               Hacienda, por la directiva DAC8: lo que pase por ellos le llegará igual.</p>
               <p>Si un día tienes que justificar de dónde salen unos ZEC que pasaron por el fondo blindado, tu
@@ -470,7 +478,7 @@ export default async function ZcashPage() {
               ganancia lo explica la guía de
               <Link href="/guias/fiscalidad-cripto-espana"> fiscalidad de las criptomonedas en España</Link>.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -481,7 +489,7 @@ export default async function ZcashPage() {
           <h2 className="gbc-title">Los riesgos de Zcash</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>La criptografía puede fallar.</strong> Ha pasado dos veces, en 2018 y en 2026. Las dos se cerraron sin indicios de abuso, pero en un fondo blindado nadie puede demostrar que no lo hubo.</li>
+              <li><strong>La criptografía puede fallar.</strong> Ha pasado dos veces, en 2018 y en 2026. Las dos se cerraron sin indicios de abuso, pero <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={200}>en un fondo blindado nadie puede demostrar que no lo hubo</Anotacion>.</li>
               <li><strong>La salida europea puede cerrarse.</strong> Desde julio de 2027, si los supervisores la tratan como moneda de anonimato, se irá la <Termino slug="liquidez">liquidez</Termino> en euros.</li>
               <li><strong>La privacidad depende de ti.</strong> Blindar y desblindar la misma cantidad en poco tiempo, o usar direcciones transparentes por comodidad, te deja a la vista.</li>
               <li><strong>Las migraciones dejan monedas atrás.</strong> NU7 dejó 12.224 ZEC de Sprout sin poder gastarse. Si guardas ZEC en una cartera antigua, sigue las actualizaciones.</li>
@@ -489,9 +497,10 @@ export default async function ZcashPage() {
               <li><strong>El precio.</strong> Su <Termino slug="volatilidad">volatilidad</Termino> es extrema: tras conocerse el fallo de Orchard, en junio de 2026, cayó de casi 600 a unos 300 dólares en dos días, y el 14 de noviembre rondaba los 880, según ZecStats.</li>
             </ul>
           </div>
-          <div className="gbc-box">
-            <div className="gbc-box-title">Qué es Zcash, en cinco líneas</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="check" color="menta" className="postit-esquina" semilla={4} animar={false} />
+            <div className="postit-titulo">Qué es Zcash, en cinco líneas</div>
+            <div className="postit-cuerpo">
               <ul>
                 <li>Una criptomoneda de 2016 con pagos públicos y pagos privados en la misma red.</li>
                 <li>Lo privado se consigue con pruebas de conocimiento cero, y desde 2022 sin ceremonia.</li>
@@ -500,7 +509,7 @@ export default async function ZcashPage() {
                 <li>Legal en España; su sitio en los exchanges europeos se decide antes de julio de 2027.</li>
               </ul>
             </div>
-          </div>
+          </Postit>
           <DisclaimerRiesgo variante="general" />
         </div>
       </section>
@@ -514,7 +523,7 @@ export default async function ZcashPage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba si has entendido qué es Zcash</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas con casos prácticos sobre qué es Zcash y cómo se usa. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Prueba Silenciosa</strong>.</p>
+            <p>Cinco preguntas con casos prácticos sobre qué es Zcash y cómo se usa. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Prueba Silenciosa</strong>.</p>
           </div>
           {d.isRegistered ? <GuideZcashQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

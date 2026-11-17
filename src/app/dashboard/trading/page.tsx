@@ -5,7 +5,15 @@ import { redirect } from "next/navigation";
 import TradingJournal from "@/components/TradingJournal";
 import { readDiarioLogros } from "@/lib/diarioLogros";
 import type { DiaDiario } from "@/components/trading/tjDias";
-import "./trading.css";
+// El Diario con el estilo «Cuaderno de estudio» (17-11-2026): la base y un
+// archivo por bloque (ver la cabecera de diario.css). Nova, apartada.
+import "./diario.css";
+import "./diario-portada.css";
+import "./diario-calendario.css";
+import "./diario-formulario.css";
+import "./diario-operaciones.css";
+import "./diario-analisis.css";
+import "./nova-oculta.css";
 
 export const metadata: Metadata = {
   title: "Diario de Trading",

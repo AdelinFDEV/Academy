@@ -1,6 +1,8 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Pickaxe, Hash, CheckCircle2, XCircle, Zap, RefreshCw, Cpu } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 async function sha256hex(msg: string): Promise<string> {
   const buf = new TextEncoder().encode(msg);
@@ -31,6 +33,7 @@ export default function GuideMineBlock() {
   const [attempts, setAttempts] = useState(0);
   const [hashRate, setHashRate] = useState(0); // Hashes por segundo simulados
   const stopRef = useRef(false);
+  const nonceId = useId();
 
   useEffect(() => {
     sha256hex(blockStr(nonce)).then(setHash);
@@ -81,6 +84,8 @@ export default function GuideMineBlock() {
         setFound(true);
         setMining(false);
         setHashRate(0);
+        // Reto completado: la persona lanzó el minado y el bloque queda sellado.
+        sonar("logro");
         return;
       }
       
@@ -116,58 +121,63 @@ export default function GuideMineBlock() {
   const rest = hash.slice(difficulty);
 
   return (
-    <div className={`gbc-mine-wrap ${found ? 'is-mined' : ''}`}>
+    <div className={`bc-mine${found ? " is-mined" : ""}`}>
       {/* Header */}
-      <div className="gbc-mine-header">
+      <div className="bc-mine-cab">
         <div>
-          <div className="gbc-mine-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Cpu size={20} /> Simulador: Mina tu propio Bloque
+          <div className="bc-mine-titulo">
+            <span className="bc-mine-titulo-ic" aria-hidden="true"><Cpu size={20} /></span> Simulador: mina tu propio bloque
           </div>
-          <div className="gbc-mine-sub">
-            Modifica el Nonce para cambiar el Hash. El bloque será válido cuando el Hash empiece por{" "}
-            <code className="gbc-mine-code">{prefix}...</code>
+          <div className="bc-mine-sub">
+            Cambia el nonce para cambiar el hash. El bloque será válido cuando el hash empiece por{" "}
+            <code className="bc-mine-code">{prefix}...</code>
           </div>
         </div>
-        <div className="gbc-mine-diff">
-          <span className="gbc-mine-diff-lbl">Nivel de Dificultad</span>
+        <div className="bc-mine-dif">
+          <span className="bc-mine-dif-lbl">Nivel de dificultad</span>
           {[1, 2, 3].map((d) => (
-            <button
+            <Tecla
               key={d}
-              className={`gbc-diff-btn${difficulty === d ? " active" : ""}`}
+              tamano="peq"
+              color={difficulty === d ? "cielo" : "blanca"}
+              aria-pressed={difficulty === d}
               onClick={() => { setDifficulty(d); reset(); }}
               disabled={mining}
             >
               {"0".repeat(d)}…
-            </button>
+            </Tecla>
           ))}
         </div>
       </div>
 
-      <div className="gbc-mine-body">
+      <div className="bc-mine-cuerpo">
         {/* Block card */}
-        <div className="gbc-mine-block">
-          <div className="gbc-mine-block-hd" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="bc-mine-bloque">
+          <div className="bc-mine-bloque-cab">
             Bloque #842.001
           </div>
-          <div className="gbc-mine-row">
-            <span className="gbc-mine-k">Bloque anterior (Link a la cadena)</span>
-            <code className="gbc-mine-v gbc-mine-v--hash">{PREV}</code>
+          <div className="bc-mine-fila">
+            <span className="bc-mine-k">Bloque anterior (el enlace a la cadena)</span>
+            <code className="bc-mine-v bc-mine-v--hash">{PREV}</code>
           </div>
-          <div className="gbc-mine-row gbc-mine-row--txs">
-            <span className="gbc-mine-k">Transacciones incluidas</span>
-            <div className="gbc-mine-txs">
+          <div className="bc-mine-fila">
+            <span className="bc-mine-k">Transacciones incluidas</span>
+            <div className="bc-mine-txs">
               {TXNS.map((t, i) => (
-                <div key={i} className="gbc-mine-tx">{t}</div>
+                <div key={i} className="bc-mine-tx">{t}</div>
               ))}
             </div>
           </div>
-          <div className="gbc-mine-row gbc-mine-row--nonce">
-            <span className="gbc-mine-k" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--gold)' }}>
+          <div className="bc-mine-fila">
+            <label htmlFor={nonceId} className="bc-mine-k bc-mine-k--nonce">
               Nonce (El número mágico)
-            </span>
+            </label>
             <input
-              className={`gbc-mine-nonce-inp ${mining ? 'is-mining' : ''}`}
+              id={nonceId}
+              className={`bc-mine-nonce${mining ? " is-mining" : ""}`}
               type="number"
+              inputMode="numeric"
+              autoComplete="off"
               value={nonceInput}
               min={0}
               disabled={mining}
@@ -177,62 +187,62 @@ export default function GuideMineBlock() {
         </div>
 
         {/* Result panel */}
-        <div className="gbc-mine-result">
-          <div className="gbc-mine-hash-lbl" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Hash size={14} /> SHA-256 RESULTANTE
+        <div className="bc-mine-resultado">
+          <div className="bc-mine-hash-lbl">
+            <Hash size={14} aria-hidden="true" /> SHA-256 RESULTANTE
           </div>
-          <div className={`gbc-mine-hash${valid ? " gbc-mine-hash--ok" : ""}`}>
+          <div className={`bc-mine-hash${valid ? " bc-mine-hash--ok" : ""}`}>
             {hash ? (
               <>
-                <span className="gbc-hash-zeros">{zeros}</span>
-                <span className="gbc-hash-rest">{rest}</span>
+                <span className="bc-mine-ceros">{zeros}</span>
+                <span className="bc-mine-resto">{rest}</span>
               </>
             ) : (
-              <span className="gbc-hash-rest">calculando…</span>
+              <span className="bc-mine-resto">calculando…</span>
             )}
           </div>
-          
-          <div className={`gbc-mine-status${valid ? " ok" : " ko"}`} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {valid ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+
+          <div className={`bc-mine-estado${valid ? " ok" : " ko"}`} role="status">
+            {valid ? <CheckCircle2 size={16} aria-hidden="true" /> : <XCircle size={16} aria-hidden="true" />}
             {valid
-              ? `¡VÁLIDO! El hash empieza por los ${difficulty} ceros requeridos.`
+              ? `¡Válido! El hash empieza por los ${difficulty} ceros requeridos.`
               : `Inválido. Necesitas que el hash empiece por ${prefix}`}
           </div>
 
-          <div className="gbc-mine-stats-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
-            <div className="gbc-mine-stat-box">
-              <span className="stat-label">Intentos realizados</span>
-              <span className="stat-value">{attempts > 0 ? attempts.toLocaleString("es-ES") : "0"}</span>
+          <div className="bc-mine-stats">
+            <div className="bc-mine-stat">
+              <span className="bc-mine-stat-lbl">Intentos realizados</span>
+              <span className="bc-mine-stat-val">{attempts > 0 ? attempts.toLocaleString("es-ES") : "0"}</span>
             </div>
-            <div className="gbc-mine-stat-box">
-              <span className="stat-label">Poder de Minado</span>
-              <span className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Zap size={12} color="var(--gold)" />
+            <div className="bc-mine-stat">
+              <span className="bc-mine-stat-lbl">Potencia de minado</span>
+              <span className="bc-mine-stat-val">
+                <Zap size={16} aria-hidden="true" />
                 {mining ? `${hashRate.toLocaleString("es-ES")} H/s` : "0 H/s"}
               </span>
             </div>
           </div>
 
           {found && (
-            <div className="gbc-mine-found" style={{ marginTop: '10px' }}>
+            <div className="bc-mine-hallado">
               <strong>¡Bloque sellado!</strong> El Nonce {nonce.toLocaleString("es-ES")} es la solución al puzle matemático. Acabas de ganar la recompensa de bloque.
             </div>
           )}
 
-          <div className="gbc-mine-actions" style={{ marginTop: 'auto', paddingTop: '16px' }}>
-            <button
-              className={`gbc-mine-btn${mining ? " gbc-mine-btn--stop" : ""}`}
+          <div className="bc-mine-acciones">
+            <Tecla
+              color={mining ? "coral" : "naranja"}
               onClick={autoMine}
             >
               {mining ? (
-                <><RefreshCw size={16} className="spin-anim" /> Detener Minado</>
+                <><RefreshCw size={16} className="bc-girar" aria-hidden="true" /> Detener minado</>
               ) : (
-                <><Pickaxe size={16} /> Iniciar Auto-minar</>
+                <><Pickaxe size={16} aria-hidden="true" /> Iniciar auto-minado</>
               )}
-            </button>
-            <button className="gbc-mine-btn gbc-mine-btn--ghost" onClick={reset}>
+            </Tecla>
+            <Tecla color="blanca" onClick={reset}>
               Reiniciar
-            </button>
+            </Tecla>
           </div>
         </div>
       </div>

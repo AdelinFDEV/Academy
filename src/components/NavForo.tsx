@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * El foro en la barra de escritorio, al lado de la cápsula de las tres piezas
@@ -15,6 +17,9 @@ import AvatarUsuario from "@/components/AvatarUsuario";
  * una conversación en marcha. Dice «aquí está la gente» sin parecer una cuarta
  * herramienta. Se mecen despacio, se abren en abanico con el ratón encima y,
  * junto al nombre, un punto que late.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): en coral, el color del foro
+ * (ESTILO.md). Dentro del foro es una tecla coral, con su canto.
  *
  * Es de cliente solo para saber si estás dentro del foro y marcarlo. Si se
  * enseña o no lo decide `SiteNav`, en el servidor.
@@ -30,7 +35,12 @@ export default function NavForo() {
   const activo = useEnElForo();
 
   return (
-    <Link href="/foro" className={`nav-foro${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
+    <Link
+      href="/foro"
+      className={`nav-foro${activo ? " is-activo" : ""}`}
+      aria-current={activo ? "page" : undefined}
+      onPointerDown={() => sonar("tecla")}
+    >
       <span className="nav-foro-caras" aria-hidden="true">
         {CARAS.map((c) => (
           <AvatarUsuario key={c} avatar={c} inicial="" className="nav-foro-cara" />
@@ -47,17 +57,22 @@ export default function NavForo() {
  * donde el de escritorio se esconde): entre la marca y la foto de perfil.
  *
  * Más simple a propósito (pedido por el admin el 13-11-2026): ahí no caben las
- * caras. Un botón sólido, de la familia de «Registrarse» (degradado naranja,
- * brillo arriba, sombra), con un bocadillo y la palabra: la primera versión,
- * con borde y un punto, no se leía como botón. Solo sale con sesión: sin ella,
- * la barra del móvil lleva únicamente «Entrar» y «Registrarse» (`SiteNav`).
+ * caras. Una tecla coral, el color del foro, con un bocadillo y la palabra;
+ * dentro del foro, blanca (ya estás ahí). Solo sale con sesión: sin ella, la
+ * barra del móvil lleva únicamente «Entrar» y «Registrarse» (`SiteNav`).
  */
 export function NavForoMovil() {
   const activo = useEnElForo();
   return (
-    <Link href="/foro" className={`nav-foro-movil${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
-      <MessageCircle size={16} strokeWidth={2.4} aria-hidden="true" />
+    <Tecla
+      href="/foro"
+      color={activo ? "blanca" : "coral"}
+      tamano="peq"
+      className={`nav-foro-movil${activo ? " is-activo" : ""}`}
+      aria-current={activo ? "page" : undefined}
+    >
+      <MessageCircle size={16} strokeWidth={2.6} aria-hidden="true" />
       Foro
-    </Link>
+    </Tecla>
   );
 }

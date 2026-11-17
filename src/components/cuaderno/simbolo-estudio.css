@@ -1,0 +1,85 @@
+/* SimboloEstudio y Llave: los símbolos dibujados al margen del cuaderno.
+   Decoración (aria-hidden): estrella, flecha, ¡ojo!, check, asterisco, NB, aro
+   y la llave que agrupa una lista. El color sale de la paleta (ESTILO.md). */
+
+.se {
+  --se-c: var(--naranja);
+  display: inline-block;
+  flex: none;
+  width: var(--se-tam, 1.3em);
+  height: var(--se-tam, 1.3em);
+  line-height: 0;
+  vertical-align: -0.28em;
+  color: var(--se-c);
+  pointer-events: none;
+  user-select: none;
+}
+
+.se svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(var(--se-giro, 0deg));
+}
+
+.se--naranja { --se-c: var(--naranja); }
+.se--azul { --se-c: var(--azul); }
+.se--menta { --se-c: var(--menta); }
+.se--lila { --se-c: var(--lila); }
+.se--amarillo { --se-c: var(--amarillo); }
+.se--coral { --se-c: var(--coral); }
+.se--cielo { --se-c: var(--cielo); }
+
+/* ── Al margen ──
+   El símbolo es el primer hijo del párrafo. En el móvil va delante de la
+   primera palabra; en pantallas anchas se saca al margen izquierdo con
+   position: absolute SIN coordenadas, que lo deja a la altura de la primera
+   línea, y se desplaza fuera del texto. Así no hace falta tocar el párrafo. */
+.se--margen { margin-right: 0.35em; }
+
+@media (min-width: 1180px) {
+  .se--margen {
+    --se-tam: 30px;
+    position: absolute;
+    margin: 0;
+    transform: translate(calc(-100% - 18px), -0.1em);
+  }
+}
+
+/* ── El trazo que se dibuja al entrar en pantalla (TrazoVisible) ──
+   Cada línea tiene pathLength="1": el guion de 1 la tapa entera y se destapa.
+   Sin JavaScript no hay data-trazo y el símbolo se ve dibujado. */
+.se[data-trazo] .se-t { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.se[data-trazo] .se-r { opacity: 0; }
+.se[data-trazo="dibuja"] .se-t { animation: se-trazo 0.65s cubic-bezier(0.45, 0, 0.2, 1) forwards; }
+.se[data-trazo="dibuja"] .se-r { animation: se-punto 0.2s ease-out 0.5s forwards; }
+
+@keyframes se-trazo { to { stroke-dashoffset: 0; } }
+@keyframes se-punto { to { opacity: 1; } }
+
+/* La llave se estira con su lista, así que se destapa de arriba abajo. */
+.se--revela[data-trazo="espera"] { clip-path: inset(0 0 100% 0); }
+.se--revela[data-trazo="dibuja"] { clip-path: inset(0 0 0 0); transition: clip-path 0.8s cubic-bezier(0.45, 0, 0.2, 1); }
+
+/* ── La llave «}» ── */
+.se-llave { position: relative; padding-right: 46px; }
+.se-llave > .se-llave-trazo {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  bottom: 6px;
+  width: 22px;
+  height: auto;
+}
+
+@media (max-width: 640px) {
+  .se-llave { padding-right: 30px; }
+  .se-llave > .se-llave-trazo { right: 0; width: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .se[data-trazo] .se-t,
+  .se[data-trazo] .se-r { animation: none; stroke-dashoffset: 0; opacity: 1; }
+  .se--revela[data-trazo] { clip-path: none; transition: none; }
+}

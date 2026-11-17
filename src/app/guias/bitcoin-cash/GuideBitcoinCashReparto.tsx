@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { sonar } from "@/lib/sonidos";
 
 /**
  * Lo que recibió quien tenía bitcoin el 1 de agosto de 2017, en cada una de las
@@ -39,15 +40,15 @@ export default function GuideBitcoinCashReparto() {
 
       <label className="bch-calc-campo" htmlFor="bch-btc">
         <span>Bitcoin que tenías el 1 de agosto de 2017</span>
-        <input id="bch-btc" inputMode="decimal" value={texto} onChange={(e) => setTexto(e.target.value)} />
+        <input id="bch-btc" inputMode="decimal" autoComplete="off" value={texto} onChange={(e) => setTexto(e.target.value)} />
       </label>
 
       <label className="bch-calc-casilla">
-        <input type="checkbox" checked={bsv} onChange={(e) => setBsv(e.target.checked)} />
+        <input type="checkbox" checked={bsv} onChange={(e) => { setBsv(e.target.checked); sonar("interruptor"); }} />
         <span>Seguía con ese BCH el 15 de noviembre de 2018 (división de BSV)</span>
       </label>
       <label className="bch-calc-casilla">
-        <input type="checkbox" checked={xec} onChange={(e) => setXec(e.target.checked)} />
+        <input type="checkbox" checked={xec} onChange={(e) => { setXec(e.target.checked); sonar("interruptor"); }} />
         <span>Seguía con ese BCH el 15 de noviembre de 2020 (división de eCash)</span>
       </label>
 

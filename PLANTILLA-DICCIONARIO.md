@@ -155,6 +155,8 @@ El vocabulario completo, con el marcado listo para copiar, está en el **anexo**
 
 **La regla que las gobierna: si el bloque no dice nada que el párrafo no diga ya, sobra.** Estructuran, no decoran.
 
+**Las marcas de estudio** (rotulador, pósits, símbolos al margen) siguen [`ESTILO.md`](./ESTILO.md), «Las marcas de estudio en TODOS los textos explicativos». En la ficha no se escriben a mano: las pone `MarcasEstudio` por estructura (el resumen y los avisos como pósits, la primera negrita de cada apartado con rotulador, la cifra de `prose-dato` recuadrada, los pasos con su aro…), así que basta con usar bien las piezas de arriba y poner en `<strong>` la idea clave de cada apartado.
+
 Y una que costó un rehacer: **grafica la diferencia, no el total.** El primer gráfico de `exchange` comparaba «lo que queda de 1.000 €» con comisiones del 1,5 %, 0,5 % y 0,1 %: las tres barras salían casi idénticas —98,5 / 99,5 / 99,9— y escondían justo lo que se quería enseñar. Graficando el coste —15 € / 5 € / 1 €— se ve de un vistazo.
 
 ---

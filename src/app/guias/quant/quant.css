@@ -1,36 +1,49 @@
-/* Guía «Qué es Quant (QNT)». Prefijo: qnt-. Lo común está en ../guias.css. */
+/* Guía «Qué es Quant (QNT)». Prefijo: qnt-. Lo común está en ../guias.css.
+   Estilo «Cuaderno de estudio» (ESTILO.md): guías = color cielo. */
 
-/* ── Tabla de acuerdos: el estado de cada uno ── */
+/* ── Tabla de acuerdos: el estado de cada uno, como chip ── */
 .qnt-acuerdos td:first-child { white-space: nowrap; }
-.qnt-estado { display: inline-block; padding: 4px 11px; border-radius: 99px; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
-.qnt-estado--hecho { background: rgba(74,222,128,0.15); color: #4ade80; }
-.qnt-estado--piloto { background: var(--gold-soft); color: var(--gold); }
-.qnt-estado--anuncio { background: rgba(255,255,255,0.08); color: #dce8f8; }
+.qnt-estado { display: inline-block; padding: 5px 11px; border-radius: 10px; font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.qnt-estado--hecho { background: var(--menta-s); color: var(--menta-o); }
+.qnt-estado--piloto { background: var(--amarillo-s); color: var(--amarillo-o); }
+.qnt-estado--anuncio { background: var(--gris); color: var(--tinta-2); }
 
-/* ── Simulador de licencias ── */
-.qnt-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
-.qnt-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
-.qnt-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.qnt-calc-campo { display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+/* ── Simulador de licencias: una hoja de papel ── */
+.qnt-calc { margin-top: 24px; padding: 26px 28px; border-radius: 28px; background: var(--papel); box-shadow: 0 6px 0 var(--gris-o); color: var(--tinta); }
+.qnt-calc-titulo { display: inline-block; margin: 0 0 18px; padding: 6px 12px; border-radius: 10px; background: var(--cielo-s); color: var(--cielo-o); font-size: 13px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.qnt-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.qnt-calc-campo { display: grid; gap: 10px; align-content: start; padding: 16px 18px; border-radius: 18px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
 .qnt-calc-campo--ancho { grid-column: 1 / -1; }
-.qnt-calc-campo span { font-size: 15px; font-weight: 700; color: #fff; }
-.qnt-calc-campo span strong { color: var(--gold); font-variant-numeric: tabular-nums; }
-.qnt-calc-campo small { font-size: 12.5px; line-height: 1.45; color: #9db2d3; }
-.qnt-calc-campo input:not([type="range"]) { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
-.qnt-calc-campo input[type="range"] { width: 100%; accent-color: var(--accent-orange); cursor: pointer; }
-.qnt-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+.qnt-calc-campo span { font-size: 15px; font-weight: 800; color: var(--tinta); }
+.qnt-calc-campo span strong { font-family: var(--letra-titular); font-size: 19px; font-weight: 800; color: var(--naranja-o); font-variant-numeric: tabular-nums; }
+.qnt-calc-campo small { font-size: 13px; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
 
-.qnt-calc-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
-.qnt-calc-resultados > div { display: grid; gap: 4px; align-content: start; padding: 18px 20px; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; background: rgba(255,255,255,0.03); }
-.qnt-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
-.qnt-calc-resultados span { font-size: 13px; color: #b0c4d8; }
-.qnt-calc-resultados strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.qnt-calc-resultados .es-principal strong { color: var(--gold); }
-.qnt-calc-resultados small { font-size: 12.5px; color: #b0c4d8; }
-.qnt-calc-nota { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: #9db2d3; }
+/* Campo de texto, como en sistema.html «Formularios» */
+.qnt-calc-campo input:not([type="range"]) {
+  width: 100%; padding: 12px 14px;
+  border: 3px solid var(--gris); border-radius: 14px;
+  background: var(--papel); color: var(--tinta);
+  font: inherit; font-family: var(--letra-texto); font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.qnt-calc-campo input:not([type="range"]):focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
+
+/* El deslizador es el común de guias.css (.gbc-wrap input[type="range"]). */
+
+/* Resultados: sub-tarjetas; la principal, en cielo */
+.qnt-calc-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.qnt-calc-resultados > div { display: grid; gap: 4px; align-content: start; padding: 18px 20px; border-radius: 18px; background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
+.qnt-calc-resultados .es-principal { background: var(--cielo-s); box-shadow: 0 4px 0 var(--cielo-o); }
+.qnt-calc-resultados span { font-size: 12px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-2); }
+.qnt-calc-resultados strong { font-family: var(--letra-titular); font-size: 28px; font-weight: 800; line-height: 1.15; color: var(--tinta); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.qnt-calc-resultados .es-principal span, .qnt-calc-resultados .es-principal strong { color: var(--cielo-o); }
+.qnt-calc-resultados small { font-size: 13px; font-weight: 600; color: var(--tinta-2); }
+.qnt-calc-nota { margin: 16px 0 0; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
 @media (max-width: 820px) {
-  .qnt-calc { padding: 18px 16px; }
+  .qnt-calc { padding: 18px 16px; border-radius: 24px; }
   .qnt-calc-campos, .qnt-calc-resultados { grid-template-columns: 1fr; }
   .qnt-calc-campo--ancho { grid-column: auto; }
   .qnt-acuerdos td:first-child { white-space: normal; }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Calculadora del staking de AVAX con la fórmula de la documentación oficial
@@ -73,18 +74,18 @@ export default function GuideAvalancheStaking() {
       <p className="avax-calc-titulo">Calculadora del staking de AVAX</p>
 
       <div className="avax-calc-modos" role="group" aria-label="Cómo haces staking">
-        <button type="button" className={modo === "delegar" ? "is-activo" : ""} aria-pressed={modo === "delegar"} onClick={() => cambiarModo("delegar")}>
+        <Tecla tamano="peq" color={modo === "delegar" ? "cielo" : "blanca"} aria-pressed={modo === "delegar"} onClick={() => cambiarModo("delegar")}>
           Delegar en un validador
-        </button>
-        <button type="button" className={modo === "validar" ? "is-activo" : ""} aria-pressed={modo === "validar"} onClick={() => cambiarModo("validar")}>
+        </Tecla>
+        <Tecla tamano="peq" color={modo === "validar" ? "cielo" : "blanca"} aria-pressed={modo === "validar"} onClick={() => cambiarModo("validar")}>
           Montar mi validador
-        </button>
+        </Tecla>
       </div>
 
       <div className="avax-calc-campos">
         <label htmlFor="avax-cantidad" className="avax-campo">
           <span>AVAX que bloqueas</span>
-          <input id="avax-cantidad" inputMode="decimal" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
+          <input id="avax-cantidad" inputMode="decimal" autoComplete="off" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
           <small>Mínimo: {num(minimo, 0)} AVAX</small>
         </label>
 
@@ -113,7 +114,7 @@ export default function GuideAvalancheStaking() {
 
         <label htmlFor="avax-precio" className="avax-campo">
           <span>Precio de AVAX, en euros</span>
-          <input id="avax-precio" inputMode="decimal" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+          <input id="avax-precio" inputMode="decimal" autoComplete="off" value={precio} onChange={(e) => setPrecio(e.target.value)} />
           <small>7,22 € el 14 de noviembre de 2026</small>
         </label>
       </div>

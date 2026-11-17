@@ -15,10 +15,10 @@ const ADOPTION = [
 ];
 
 const MARKET = [
-  { label: "Bitcoin", pct: 52, color: "#e6b455" },
-  { label: "Ethereum", pct: 18, color: "#ff6b2b" },
-  { label: "Stablecoins", pct: 10, color: "#4a6080" },
-  { label: "Altcoins", pct: 20, color: "#2a4060" },
+  { label: "Bitcoin", pct: 52, color: "#ff8a1f" },
+  { label: "Ethereum", pct: 18, color: "#8f7cff" },
+  { label: "Stablecoins", pct: 10, color: "#2fc488" },
+  { label: "Altcoins", pct: 20, color: "#2fbff5" },
 ];
 
 // (El array DEFI vivía aquí, sin usarse: su copia real y en uso está en
@@ -26,7 +26,9 @@ const MARKET = [
 
 function AdoptionChart() {
   const max = Math.max(...ADOPTION.map((d) => d.v));
-  const W = 560, H = 160, pad = { l: 36, r: 10, t: 10, b: 30 };
+  // Letra de 12 en un lienzo de 520: en el móvil el dibujo mide al menos
+  // 500 px (se desliza dentro de su caja) y los ejes siguen leyéndose.
+  const W = 520, H = 180, pad = { l: 36, r: 12, t: 12, b: 30 };
   const innerW = W - pad.l - pad.r;
   const innerH = H - pad.t - pad.b;
   const pts = ADOPTION.map((d, i) => {
@@ -39,23 +41,18 @@ function AdoptionChart() {
   return (
     <div className="gbc-chart-wrap">
       <div className="gbc-chart-lbl">Usuarios activos en blockchain (millones estimados)</div>
-      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", display: "block" }} aria-label="Gráfica de adopción blockchain 2016-2026">
-        <defs>
-          <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e6b455" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#e6b455" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d={area} fill="url(#aGrad)" />
-        <polyline points={pts} fill="none" stroke="#e6b455" strokeWidth="2" strokeLinejoin="round" />
+      <div className="bc-svg-scroll">
+      <svg className="bc-svg bc-svg--ancha" role="img" viewBox={`0 0 ${W} ${H}`} aria-label="Gráfica de adopción blockchain 2016-2026">
+        <path d={area} fill="#d9f3fd" />
+        <polyline points={pts} fill="none" stroke="#2fbff5" strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round" />
         {ADOPTION.map((d, i) => {
           const x = pad.l + (i / (ADOPTION.length - 1)) * innerW;
           const y = pad.t + innerH - (d.v / max) * innerH;
           return (
             <g key={i}>
-              <circle cx={x} cy={y} r={3} fill="#e6b455" />
+              <circle cx={x} cy={y} r={4} fill="#ffffff" stroke="#0e709b" strokeWidth={2.5} />
               {i % 2 === 0 && (
-                <text x={x} y={H - 6} textAnchor="middle" fontSize={9} fill="#4a6080">{d.yr}</text>
+                <text x={x} y={H - 6} textAnchor="middle" fontSize={12} fill="#5f5c7d">{d.yr}</text>
               )}
             </g>
           );
@@ -64,12 +61,13 @@ function AdoptionChart() {
           const y = pad.t + innerH - t * innerH;
           return (
             <g key={t}>
-              <line x1={pad.l} y1={y} x2={W - pad.r} y2={y} stroke="rgba(255,255,255,0.04)" />
-              <text x={pad.l - 3} y={y + 3} textAnchor="end" fontSize={9} fill="#4a6080">{Math.round(t * max)}</text>
+              <line x1={pad.l} y1={y} x2={W - pad.r} y2={y} stroke="#e2e5f4" strokeWidth={1.5} />
+              <text x={pad.l - 5} y={y + 4} textAnchor="end" fontSize={12} fill="#5f5c7d">{Math.round(t * max)}</text>
             </g>
           );
         })}
       </svg>
+      </div>
       <div className="gbc-chart-src">Fuentes: Chainalysis, Triple-A, CryptoSlate 2026</div>
     </div>
   );
@@ -92,15 +90,15 @@ function MarketChart() {
     return { ...m, x1, y1, x2, y2, large: sweep > Math.PI ? 1 : 0 };
   });
 
-  // Legend: 2 columns of 2 items
-  const LEG_Y = 220, COL_W = 180, PAD_X = 20;
-
   return (
-    <div className="gbc-chart-wrap" style={{ textAlign: "center" }}>
+    <div className="gbc-chart-wrap">
       <div className="gbc-chart-lbl">Distribución capitalización de mercado — Junio 2026</div>
+      {/* Solo el donut va en el dibujo; la leyenda es HTML, para que en el móvil
+          no encoja con él hasta los 8 px. */}
       <svg
-        viewBox="0 0 400 270"
-        style={{ width: "100%", maxWidth: 420, display: "block", margin: "0 auto" }}
+        className="bc-svg bc-donut"
+        role="img"
+        viewBox="104 12 192 192"
         aria-label="Gráfica de distribución de mercado crypto"
       >
         {/* Donut slices */}
@@ -109,34 +107,26 @@ function MarketChart() {
             key={i}
             d={`M ${cx},${cy} L ${s.x1},${s.y1} A ${R},${R} 0 ${s.large},1 ${s.x2},${s.y2} Z`}
             fill={s.color}
-            stroke="#060f1f"
-            strokeWidth={3}
+            stroke="#ffffff"
+            strokeWidth={4}
+            strokeLinejoin="round"
           />
         ))}
         {/* Inner hole */}
-        <circle cx={cx} cy={cy} r={R * 0.53} fill="#060f1f" />
+        <circle cx={cx} cy={cy} r={R * 0.53} fill="#ffffff" />
         {/* Center labels */}
-        <text x={cx} y={cy - 9} textAnchor="middle" fontSize={16} fill="#e6b455" fontWeight="800">$2.17T</text>
-        <text x={cx} y={cy + 8} textAnchor="middle" fontSize={10} fill="#8fa3b8">market cap global</text>
-
-        {/* Divider */}
-        <line x1={PAD_X} y1={LEG_Y - 12} x2={400 - PAD_X} y2={LEG_Y - 12} stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
-
-        {/* Legend 2x2 */}
-        {MARKET.map((m, i) => {
-          const col = i % 2;
-          const row = Math.floor(i / 2);
-          const lx = PAD_X + col * COL_W;
-          const ly = LEG_Y + row * 24;
-          return (
-            <g key={i}>
-              <rect x={lx} y={ly - 9} width={11} height={11} rx={3} fill={m.color} />
-              <text x={lx + 16} y={ly} fontSize={11} fill="#dce8f8">{m.label}</text>
-              <text x={lx + 16 + 80} y={ly} fontSize={11} fill={m.color} fontWeight="700">{m.pct}%</text>
-            </g>
-          );
-        })}
+        <text className="bc-svg-cifra" x={cx} y={cy - 4} textAnchor="middle" fontSize={20} fill="#1d1b33" fontWeight="800">$2.17T</text>
+        <text x={cx} y={cy + 14} textAnchor="middle" fontSize={9.5} fill="#5f5c7d">market cap global</text>
       </svg>
+      <ul className="bc-leyenda">
+        {MARKET.map((m) => (
+          <li key={m.label} className="bc-leyenda-item">
+            <span className="bc-leyenda-muestra" style={{ background: m.color }} aria-hidden="true" />
+            <span className="bc-leyenda-nombre">{m.label}</span>
+            <span className="bc-leyenda-pct">{m.pct}%</span>
+          </li>
+        ))}
+      </ul>
       <div className="gbc-chart-src">Fuente: CoinMarketCap, Junio 2026</div>
     </div>
   );

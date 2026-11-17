@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BookA, ExternalLink, X } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
+import { bloquearScroll } from "@/components/trading/useVentanaMovil";
 
 /**
  * Los términos del diccionario, sin salir de la lección (08-11-2026, pedido por
@@ -16,6 +19,10 @@ import { BookA, ExternalLink, X } from "lucide-react";
  * Las definiciones las manda el servidor, y solo las de los términos que esa
  * lección enlaza (ver la página de la lección). Un enlace a un término que no
  * esté en `terminos` se comporta como un enlace normal.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): una ficha de papel con la
+ * pestaña amarilla del Diccionario y sus dos salidas como teclas. Suena al
+ * abrirse (`abrir`) y al cerrarse (`cerrar`).
  */
 
 export type TerminoCorto = { term: string; definition: string };
@@ -28,10 +35,11 @@ export default function GlosarioPopup({
   children: React.ReactNode;
 }) {
   const [abierto, setAbierto] = useState<{ slug: string; t: TerminoCorto } | null>(null);
-  const cerrarRef = useRef<HTMLButtonElement>(null);
+  const tarjetaRef = useRef<HTMLDivElement>(null);
   const origenRef = useRef<HTMLElement | null>(null);
 
   const cerrar = useCallback(() => {
+    sonar("cerrar");
     setAbierto(null);
     // Devuelve el foco al enlace que lo abrió: quien navega con teclado sigue donde estaba.
     origenRef.current?.focus();
@@ -46,19 +54,21 @@ export default function GlosarioPopup({
     if (!t) return;
     e.preventDefault();
     origenRef.current = enlace;
+    sonar("abrir");
     setAbierto({ slug, t });
   };
 
   useEffect(() => {
     if (!abierto) return;
-    cerrarRef.current?.focus();
+    // El foco entra en la ficha (en su primer botón: la equis de cerrar).
+    tarjetaRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && cerrar();
     window.addEventListener("keydown", onKey);
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // En <html> y en <body>: con solo <body>, la lección seguía corriendo detrás.
+    const soltar = bloquearScroll();
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = overflow;
+      soltar();
     };
   }, [abierto, cerrar]);
 
@@ -69,29 +79,32 @@ export default function GlosarioPopup({
       {abierto && (
         <div className="aula-glosario-velo" onClick={cerrar}>
           <div
+            ref={tarjetaRef}
             className="aula-glosario-tarjeta"
             role="dialog"
             aria-modal="true"
             aria-labelledby="aula-glosario-titulo"
             onClick={(e) => e.stopPropagation()}
           >
-            <button ref={cerrarRef} type="button" className="aula-glosario-x" onClick={cerrar} aria-label="Cerrar">
-              <X size={18} />
-            </button>
+            <Tecla color="blanca" tamano="peq" icono className="aula-glosario-x" onClick={cerrar} aria-label="Cerrar">
+              <X size={18} strokeWidth={2.6} aria-hidden="true" />
+            </Tecla>
             <span className="aula-glosario-kicker"><BookA size={14} aria-hidden="true" /> Diccionario</span>
             <h3 id="aula-glosario-titulo" className="aula-glosario-termino">{abierto.t.term}</h3>
             <p className="aula-glosario-def">{abierto.t.definition}</p>
             <div className="aula-glosario-acciones">
-              <button type="button" className="aula-btn aula-btn--ghost" onClick={cerrar}>Cerrar</button>
-              <a
+              <Tecla color="blanca" tamano="peq" onClick={cerrar}>Cerrar</Tecla>
+              <Tecla
                 href={`/glosario/${abierto.slug}`}
                 target="_blank"
                 rel="noopener"
-                className="aula-btn"
+                color="amarillo"
+                tamano="peq"
+                prefetch={false}
                 onClick={() => setAbierto(null)}
               >
-                Ver explicación detallada <ExternalLink size={14} aria-hidden="true" />
-              </a>
+                Ver explicación detallada <ExternalLink size={14} strokeWidth={2.6} aria-hidden="true" />
+              </Tecla>
             </div>
             <p className="aula-glosario-nota">La explicación detallada se abre en otra pestaña: tu lección sigue aquí.</p>
           </div>

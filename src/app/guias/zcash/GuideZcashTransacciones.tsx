@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Los cuatro tipos de operación de Zcash, según de qué dirección sale y a cuál
@@ -94,16 +95,17 @@ export default function GuideZcashTransacciones() {
 
       <div className="zec-tx-tipos" role="group" aria-label="Elige el tipo de operación">
         {ORDEN.map((t) => (
-          <button
+          <Tecla
             key={t}
-            type="button"
+            tamano="peq"
+            color={tipo === t ? "cielo" : "blanca"}
+            className="zec-tx-tipo"
             aria-pressed={tipo === t}
-            className={tipo === t ? "is-activo" : ""}
             onClick={() => setTipo(t)}
           >
             <strong>{CASOS[t].nombre}</strong>
             <span>{CASOS[t].ruta}</span>
-          </button>
+          </Tecla>
         ))}
       </div>
 

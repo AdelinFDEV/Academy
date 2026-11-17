@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BookA, ExternalLink, X } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import "./glosario-popup.css";
 
 /**
@@ -27,16 +29,23 @@ import "./glosario-popup.css";
  *   como siempre (aunque ese enlace, por las reglas del diccionario, no debería
  *   existir).
  * - Ctrl/Cmd/Mayús o el botón central abren en otra pestaña, como siempre.
+ *
+ * Estilo «Cuaderno de estudio» (17-11-2026): una ficha de cartulina con la
+ * banda amarilla del diccionario, que entra con un pequeño rebote, y sus
+ * botones son teclas. Suena `abrir` y `cerrar` (src/lib/sonidos.ts). Desde
+ * entonces ya no es igual que el del aula
+ * (`aula/GlosarioPopup.tsx`), que lleva el color de cada curso.
  */
 
 export type TerminoCorto = { term: string; definition: string };
 
 export default function GlosarioPopupGlobal({ terminos }: { terminos: Record<string, TerminoCorto> }) {
   const [abierto, setAbierto] = useState<{ slug: string; t: TerminoCorto } | null>(null);
-  const cerrarRef = useRef<HTMLButtonElement>(null);
+  const tarjetaRef = useRef<HTMLDivElement>(null);
   const origenRef = useRef<HTMLElement | null>(null);
 
   const cerrar = useCallback(() => {
+    sonar("cerrar");
     setAbierto(null);
     // Devuelve el foco al enlace que lo abrió: quien navega con teclado sigue donde estaba.
     origenRef.current?.focus();
@@ -54,6 +63,7 @@ export default function GlosarioPopupGlobal({ terminos }: { terminos: Record<str
       if (!t) return;
       e.preventDefault();
       origenRef.current = enlace;
+      sonar("abrir");
       setAbierto({ slug, t });
     };
     document.addEventListener("click", alPulsar, true);
@@ -62,14 +72,20 @@ export default function GlosarioPopupGlobal({ terminos }: { terminos: Record<str
 
   useEffect(() => {
     if (!abierto) return;
-    cerrarRef.current?.focus();
+    tarjetaRef.current?.querySelector<HTMLButtonElement>(".gpop-x")?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && cerrar();
     window.addEventListener("keydown", onKey);
-    const overflow = document.body.style.overflow;
+    // Se bloquea el <html> y no solo el <body>: con `overflow-x` en los dos
+    // (globals.css), bloquear solo el body dejaba la página desplazable
+    // detrás de la ficha, con dos barras de desplazamiento.
+    const raiz = document.documentElement;
+    const antes = [raiz.style.overflow, document.body.style.overflow];
+    raiz.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = overflow;
+      raiz.style.overflow = antes[0];
+      document.body.style.overflow = antes[1];
     };
   }, [abierto, cerrar]);
 
@@ -78,30 +94,32 @@ export default function GlosarioPopupGlobal({ terminos }: { terminos: Record<str
   return (
     <div className="gpop-velo" onClick={cerrar}>
       <div
+        ref={tarjetaRef}
         className="gpop-tarjeta"
         role="dialog"
         aria-modal="true"
         aria-labelledby="gpop-titulo"
         onClick={(e) => e.stopPropagation()}
       >
-        <button ref={cerrarRef} type="button" className="gpop-x" onClick={cerrar} aria-label="Cerrar">
-          <X size={18} />
-        </button>
-        <span className="gpop-kicker"><BookA size={14} aria-hidden="true" /> Diccionario</span>
-        <h3 id="gpop-titulo" className="gpop-termino">{abierto.t.term}</h3>
+        <Tecla icono tamano="peq" color="blanca" className="gpop-x" onClick={cerrar} aria-label="Cerrar">
+          <X size={18} strokeWidth={3} aria-hidden="true" />
+        </Tecla>
+        <span className="gpop-kicker"><BookA size={14} strokeWidth={2.6} aria-hidden="true" /> Diccionario</span>
+        <h2 id="gpop-titulo" className="gpop-termino">{abierto.t.term}</h2>
         <p className="gpop-def">{abierto.t.definition}</p>
         <div className="gpop-acciones">
-          <button type="button" className="gpop-btn gpop-btn--ghost" onClick={cerrar}>Cerrar</button>
-          <a
+          <Tecla color="blanca" tamano="peq" onClick={cerrar}>Cerrar</Tecla>
+          <Tecla
             href={`/glosario/${abierto.slug}`}
             target="_blank"
             rel="noopener"
-            className="gpop-btn"
+            color="amarillo"
+            tamano="peq"
             data-sin-popup
             onClick={() => setAbierto(null)}
           >
-            Ver explicación detallada <ExternalLink size={14} aria-hidden="true" />
-          </a>
+            Ver explicación detallada <ExternalLink size={14} strokeWidth={2.6} aria-hidden="true" />
+          </Tecla>
         </div>
         <p className="gpop-nota">La explicación detallada se abre en otra pestaña: esta página sigue aquí.</p>
       </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RotateCcw } from "lucide-react";
+import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Las proporciones que dicen si las cifras de un token se sostienen: precio,
@@ -71,9 +72,9 @@ export default function GuideRainProporciones() {
     <div className="rain-prop">
       <div className="rain-prop-cab">
         <p className="rain-prop-titulo">Medidor de proporciones de un token</p>
-        <button type="button" className="rain-prop-reset" onClick={() => setV(INICIAL)}>
+        <Tecla color="blanca" tamano="peq" onClick={() => setV(INICIAL)}>
           <RotateCcw size={15} aria-hidden="true" /> Datos de Rain
-        </button>
+        </Tecla>
       </div>
 
       <div className="rain-prop-campos">
@@ -83,6 +84,7 @@ export default function GuideRainProporciones() {
             <input
               id={`rain-${c.id}`}
               inputMode="decimal"
+              autoComplete="off"
               value={v[c.id]}
               onChange={(e) => cambiar(c.id, e.target.value)}
             />
@@ -130,7 +132,7 @@ export default function GuideRainProporciones() {
 
       <p className="rain-prop-nota">
         Datos iniciales del 14 de noviembre de 2026: precio, ofertas y volumen de CoinGecko; TVL de DefiLlama.
-        En rojo, las proporciones que merecen una segunda mirada: los umbrales son orientativos, no una regla.
+        En coral, las proporciones que merecen una segunda mirada: los umbrales son orientativos, no una regla.
       </p>
     </div>
   );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
@@ -10,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideAvalancheStaking from "./GuideAvalancheStaking";
 import GuideAvalancheQuiz from "./GuideAvalancheQuiz";
@@ -101,7 +103,6 @@ export default async function AvalanchePage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideProgressBar />
       <SiteNav {...d.nav} />
 
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -114,16 +115,16 @@ export default async function AvalanchePage() {
       </nav>
 
       <header className="gbc-hero">
-        <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Guía de criptomonedas · Nivel intermedio · 13 min</div>
         <h1 className="gbc-hero-title">
           Qué es Avalanche (AVAX), la criptomoneda<br />
           <span className="gbc-hero-gold">y la red de tres cadenas que hay detrás</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Avalanche es una blockchain para ejecutar aplicaciones, y AVAX es su criptomoneda.</strong> Se
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Avalanche es una blockchain para ejecutar aplicaciones, y AVAX es su criptomoneda.</Anotacion></strong> Se
           divide en tres cadenas con tareas distintas, y la que más se usa, la C-Chain, funciona igual que Ethereum.
-          Confirma las operaciones en torno a un segundo preguntando a validadores elegidos al azar, y deja que
+          Confirma las operaciones en torno a un segundo <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>preguntando a validadores elegidos al azar</Anotacion>, y deja que
           cualquier empresa monte su propia red conectada a ella. AVAX paga las comisiones, que se queman, y se
           bloquea en staking para proteger la red.
         </p>
@@ -156,7 +157,7 @@ export default async function AvalanchePage() {
             <p>
               Avalanche compite en la misma liga que <Link href="/guias/ethereum">Ethereum</Link>,{" "}
               <Link href="/guias/solana">Solana</Link> o <Link href="/guias/near">NEAR</Link>: redes donde se construyen aplicaciones
-              de dinero. Su rasgo propio no es ser la más rápida, sino la forma de organizarse. Divide el trabajo en
+              de dinero. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={200}>Su rasgo propio no es ser la más rápida, sino la forma de organizarse.</Anotacion> Divide el trabajo en
               tres cadenas y permite que cada empresa tenga una red a medida sin salir del ecosistema.
             </p>
           </div>
@@ -166,7 +167,7 @@ export default async function AvalanchePage() {
               <tbody>
                 <tr><td><strong>Precio</strong></td><td>7,22 euros (7,96 dólares)</td></tr>
                 <tr><td><strong><Termino slug="market-cap">Capitalización</Termino></strong></td><td>Unos 3.224 millones de euros, puesto 25</td></tr>
-                <tr><td><strong><Termino slug="ath">Máximo histórico</Termino></strong></td><td>144,96 dólares, el 21 de noviembre de 2021: hoy está un 94,5 % por debajo</td></tr>
+                <tr><td><strong><Termino slug="ath">Máximo histórico</Termino></strong></td><td>144,96 dólares, el 21 de noviembre de 2021: hoy está <Anotacion tipo="circle" relleno={[4, 8]} junta retraso={300}>un 94,5 %</Anotacion> por debajo</td></tr>
                 <tr><td><strong>AVAX que existirán como máximo</strong></td><td>720 millones</td></tr>
               </tbody>
             </table>
@@ -177,7 +178,7 @@ export default async function AvalanchePage() {
 
       {/* ── 2 ── */}
       <section id="cadenas" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Cómo está montada</div>
           <h2 className="gbc-title">Las tres cadenas de Avalanche: X, P y C</h2>
           <div className="gbc-body">
@@ -187,9 +188,10 @@ export default async function AvalanchePage() {
               Avalanche mantienen las tres a la vez.
             </p>
           </div>
-          <div className="avax-cadenas">
+          <div className="avax-cadenas gbc-ancho">
             {CADENAS.map((c) => (
               <div key={c.letra} className="avax-cadena">
+                {c.letra === "C" && <SimboloEstudio tipo="estrella" className="avax-cadena-estrella" semilla={8} retraso={300} />}
                 <span className="avax-cadena-letra" aria-hidden="true">{c.letra}</span>
                 <strong>{c.nombre}</strong>
                 <span className="avax-cadena-para">{c.para}</span>
@@ -203,8 +205,8 @@ export default async function AvalanchePage() {
             <h3 className="gbc-sub">Por qué la C-Chain es compatible con Ethereum</h3>
             <p>
               La C-Chain ejecuta la máquina virtual de Ethereum, la <Termino slug="evm">EVM</Termino>: el mismo
-              «procesador» que interpreta los programas de Ethereum. Un contrato
-              escrito para Ethereum funciona en Avalanche sin reescribirlo. Las direcciones tienen el mismo formato,
+              «procesador» que interpreta los programas de Ethereum. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>Un contrato
+              escrito para Ethereum funciona en Avalanche sin reescribirlo.</Anotacion> Las direcciones tienen el mismo formato,
               0x seguido de 40 caracteres, y MetaMask se conecta añadiendo la red con su identificador, el 43114.
             </p>
             <p>
@@ -213,24 +215,25 @@ export default async function AvalanchePage() {
               lugar de esperar a que alguien aprendiera un lenguaje nuevo.
             </p>
             <p>
-              Ser compatible no significa ser parte de Ethereum. Avalanche no es una
+              <Anotacion tipo="underline" color="var(--coral)" animar={false}>Ser compatible no significa ser parte de Ethereum.</Anotacion> Avalanche no es una
               <Termino slug="capa-2"> capa 2</Termino>: no apunta nada en Ethereum ni toma prestada su seguridad. Tus
               ETH no aparecen en Avalanche, y un USDC de Avalanche no es el mismo que uno de Ethereum aunque tu
               cartera use la misma dirección en las dos.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El error típico: enviar AVAX por la cadena que no toca</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error típico: enviar AVAX por la cadena que no toca</div>
+            <div className="postit-cuerpo">
               <p>Al retirar AVAX de un <Termino slug="exchange">exchange</Termino>, algunos te dejan elegir entre la
-              X-Chain y la C-Chain. Si lo que quieres es usar aplicaciones, elige la C-Chain: lo que llegue a la X-Chain
+              X-Chain y la C-Chain. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Si lo que quieres es usar aplicaciones, elige la C-Chain</Anotacion>: lo que llegue a la X-Chain
               no se ve en MetaMask y tendrás que traspasarlo. Y al revés: antes de enviar a un exchange, comprueba qué
               cadena acepta. Una dirección 0x es de la C-Chain; una que empieza por «X-avax1», de la X-Chain.</p>
               <p>Para hacer staking pasa lo mismo: los AVAX tienen que estar en la P-Chain. Carteras como Core, la de
               Ava Labs, hacen ese traspaso entre cadenas por ti, con una comisión mínima.</p>
             </div>
-          </div>
+          </Postit>
           <p className="gbc-fuente">
             Cadenas y identificador de red: documentación de la red primaria en build.avax.network. Paso de la
             X-Chain a una cadena lineal: actualización Cortina, activada el 25 de abril de 2023.
@@ -249,14 +252,14 @@ export default async function AvalanchePage() {
               forma de que miles de ordenadores que no se fían entre sí acuerden qué ha pasado.
               <Termino slug="bitcoin"> Bitcoin</Termino> lo resuelve con
               <Termino slug="prueba-de-trabajo"> minería</Termino>. La mayoría de redes de <Termino slug="prueba-de-participacion">prueba de participación</Termino>{" "}
-              lo resuelven con rondas de votación en las que participa todo el conjunto de validadores. Avalanche hace otra cosa: muestreo
-              aleatorio.
+              lo resuelven con rondas de votación en las que participa todo el conjunto de validadores. Avalanche hace otra cosa: <Anotacion tipo="circle" junta retraso={200}>muestreo
+              aleatorio</Anotacion>.
             </p>
             <p>
               Funciona como un rumor que se confirma. Cada validador que duda entre
-              dos bloques pregunta a 20 validadores elegidos al azar cuál prefieren. La elección se pondera por lo que
+              dos bloques <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} retraso={500}>pregunta a 20 validadores elegidos al azar</Anotacion> cuál prefieren. La elección se pondera por lo que
               cada uno tiene en staking. Si 15 de los 20 le dan la misma respuesta, cuenta un acierto y vuelve a
-              preguntar a otros 20. Cuando suma 20 aciertos seguidos, la decisión es definitiva.
+              preguntar a otros 20. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Cuando suma 20 aciertos seguidos, la decisión es definitiva.</Anotacion>
             </p>
             <p>
               Como nadie habla con todos, la red puede crecer en número de validadores sin que las rondas se alarguen.
@@ -275,7 +278,7 @@ export default async function AvalanchePage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <h3 className="gbc-sub">Qué significa «definitivo» y por qué importa</h3>
             <p>
-              Cuando Avalanche acepta un bloque, no hay vuelta atrás: eso es la
+              Cuando Avalanche acepta un bloque, <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>no hay vuelta atrás</Anotacion>: eso es la
               <Termino slug="finalidad"> finalidad</Termino>. La documentación habla de en torno a un segundo. En
               Bitcoin se suele esperar una hora, seis bloques, para darlo por seguro. En Ethereum la finalidad formal
               llega a los dos ciclos de votación, unos 13 minutos.
@@ -287,8 +290,8 @@ export default async function AvalanchePage() {
               operación.
             </p>
             <p>
-              El método tiene una condición, como todos: funciona mientras la mayor parte de los AVAX en staking estén
-              en manos de validadores honrados. El 14 de noviembre de 2026 había 603 validadores, y los 15 mayores
+              El método tiene una condición, como todos: <Anotacion tipo="underline" color="var(--coral)" animar={false}>funciona mientras la mayor parte de los AVAX en staking estén
+              en manos de validadores honrados</Anotacion>. El 14 de noviembre de 2026 había 603 validadores, y los 15 mayores
               reunían más de una quinta parte del peso. No es una concentración extrema, pero tampoco es irrelevante.
             </p>
           </div>
@@ -309,7 +312,7 @@ export default async function AvalanchePage() {
           <h2 className="gbc-title">Qué son las Avalanche L1 (antes, subredes) y quién las usa</h2>
           <div className="gbc-body">
             <p>
-              Una Avalanche L1 es una blockchain propia que una empresa o un proyecto monta dentro del ecosistema. Elige
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Una Avalanche L1 es una blockchain propia que una empresa o un proyecto monta dentro del ecosistema.</Anotacion> Elige
               sus validadores, sus reglas, su moneda para pagar comisiones y, si quiere, quién puede usarla. Un banco
               puede exigir que solo operen clientes identificados; un videojuego, que las comisiones se paguen con su
               propia moneda.
@@ -321,7 +324,7 @@ export default async function AvalanchePage() {
             </p>
             <p>
               La actualización Etna, presentada como Avalanche9000, lo cambió el 16 de diciembre de 2024. Desde
-              entonces, los validadores de una L1 no tienen que bloquear los 2.000 AVAX ni validar la red primaria.
+              entonces, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>los validadores de una L1 no tienen que bloquear los 2.000 AVAX ni validar la red primaria.</Anotacion>
               Pagan una cuota continua a la P-Chain, que empezó en torno a 1,33 AVAX al mes por validador. Con el mismo
               cambio, la comisión mínima de la C-Chain bajó casi un 96 %.
             </p>
@@ -346,7 +349,7 @@ export default async function AvalanchePage() {
             <p>
               Esa libertad tiene un precio. Una capa 2 de Ethereum hereda su seguridad; los
               fragmentos de NEAR comparten la de toda la red.
-              Una L1 de Avalanche con diez validadores es tan segura como esos diez validadores, ni más ni menos.
+              <Anotacion tipo="underline" color="var(--coral)" retraso={200}>Una L1 de Avalanche con diez validadores es tan segura como esos diez validadores, ni más ni menos.</Anotacion>
             </p>
           </div>
 
@@ -374,7 +377,7 @@ export default async function AvalanchePage() {
           <h2 className="gbc-title">Para qué se usa Avalanche hoy: fondos tokenizados, juegos y pagos</h2>
           <div className="gbc-body">
             <p>
-              El uso que más ha crecido en Avalanche no es especulativo. Es la tokenización: convertir un activo tradicional, como una
+              El uso que más ha crecido en Avalanche no es especulativo. <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Es la tokenización</Anotacion>: convertir un activo tradicional, como una
               participación en un fondo de deuda pública, en una ficha que se mueve por la cadena.
             </p>
             <ul>
@@ -387,7 +390,7 @@ export default async function AvalanchePage() {
             <p>
               Ahora, la otra cara. La actividad del público en la C-Chain va a menos. Las direcciones activas al día
               pasaron de unas 621.000 de media en el segundo trimestre de 2026 a unas 144.000 en el tercero, y las
-              operaciones cayeron un 19 %. Avalanche está ganando empresas y perdiendo, por ahora, usuarios de a pie.
+              operaciones cayeron un 19 %. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Avalanche está ganando empresas y perdiendo, por ahora, usuarios de a pie.</Anotacion>
             </p>
           </div>
           <p className="gbc-fuente">
@@ -409,7 +412,7 @@ export default async function AvalanchePage() {
             </p>
             <h3 className="gbc-sub">El tope</h3>
             <p>
-              Nunca habrá más de 720 millones de AVAX. La mitad, 360 millones, se creó al arrancar en 2020. La otra
+              Nunca habrá más de <Anotacion tipo="circle" junta retraso={200}>720 millones</Anotacion> de AVAX. La mitad, 360 millones, se creó al arrancar en 2020. La otra
               mitad se va creando para pagar las recompensas del staking, cada vez más despacio: la fórmula reparte una
               fracción de lo que falta por emitir, así que cuanto más cerca está el tope, menos se crea.
             </p>
@@ -419,7 +422,7 @@ export default async function AvalanchePage() {
             </p>
             <h3 className="gbc-sub">La quema</h3>
             <p>
-              Toda comisión que pagas en AVAX en la red primaria se destruye: no va a ningún validador. Es una
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Toda comisión que pagas en AVAX en la red primaria se destruye</Anotacion>: no va a ningún validador. Es una
               <Termino slug="quema-de-tokens"> quema de tokens</Termino> total, no parcial como en Ethereum. El
               contador de la P-Chain no descuenta lo quemado, y por eso CoinGecko daba ese día una oferta total de
               471,4 millones: unos 5 millones menos que lo emitido.
@@ -441,9 +444,9 @@ export default async function AvalanchePage() {
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              La cuenta es clara: la quema existe, pero hoy no frena casi nada, y AVAX sigue teniendo
-              <Termino slug="inflacion"> inflación</Termino>: cada trimestre hay más en circulación. Lo que limita la
-              emisión es el tope de 720 millones, no la quema. Para que la balanza se diera la vuelta, la red tendría que cobrar
+              La cuenta es clara: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>la quema existe, pero hoy no frena casi nada</Anotacion>, y AVAX sigue teniendo
+              <Termino slug="inflacion"> inflación</Termino>: cada trimestre hay más en circulación. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={700}>Lo que limita la
+              emisión es el tope de 720 millones, no la quema.</Anotacion> Para que la balanza se diera la vuelta, la red tendría que cobrar
               decenas de veces más comisiones que ahora.
             </p>
           </div>
@@ -476,7 +479,7 @@ export default async function AvalanchePage() {
                 <tr><td><strong>Mínimo</strong></td><td>2.000 AVAX</td><td>25 AVAX</td></tr>
                 <tr><td><strong>Plazo</strong></td><td>De 48 horas a 1 año (antes de Helicon, desde 2 semanas)</td><td>De 2 semanas a 1 año, dentro del plazo del validador</td></tr>
                 <tr><td><strong>Salida anticipada</strong></td><td>No existe</td><td>No existe</td></tr>
-                <tr><td><strong>Condición para cobrar</strong></td><td><Termino slug="nodo">Nodo</Termino> activo el 90 % del tiempo (antes, el 80 %)</td><td>Que tu validador cumpla esa misma condición</td></tr>
+                <tr><td><strong>Condición para cobrar</strong></td><td><Termino slug="nodo">Nodo</Termino> activo <Anotacion tipo="circle" relleno={[4, 8]} junta retraso={200}>el 90 %</Anotacion> del tiempo (antes, el 80 %)</td><td>Que tu validador cumpla esa misma condición</td></tr>
                 <tr><td><strong>Comisión</strong></td><td>Cobras la de tus delegadores</td><td>Pagas la del validador, del 2 % en adelante</td></tr>
                 <tr><td><strong>Renovación automática</strong></td><td>Sí, desde Helicon</td><td>No</td></tr>
               </tbody>
@@ -486,14 +489,14 @@ export default async function AvalanchePage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <h3 className="gbc-sub">Sin castigo, pero todo o nada</h3>
             <p>
-              Avalanche no aplica <Termino slug="slashing">slashing</Termino>: la red no te quita lo depositado aunque
-              el validador falle o se porte mal. Lo dice su documentación con todas las letras: el validador recupera
-              su depósito entero. Lo que pierde es la recompensa, y la pierde entera: por debajo del 90 % de tiempo
-              activo no hay pago parcial. Si delegas, tu recompensa depende de ese mismo validador.
+              Avalanche no aplica <Termino slug="slashing">slashing</Termino>: <Anotacion tipo="underline" color="var(--menta)" animar={false}>la red no te quita lo depositado aunque
+              el validador falle o se porte mal</Anotacion>. Lo dice su documentación con todas las letras: el validador recupera
+              su depósito entero. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>Lo que pierde es la recompensa, y la pierde entera: por debajo del 90 % de tiempo
+              activo no hay pago parcial.</Anotacion> Si delegas, tu recompensa depende de ese mismo validador.
             </p>
             <h3 className="gbc-sub">El plazo pesa más de lo que parece</h3>
             <p>
-              La fórmula de Avalanche paga más por año cuanto más largo es el bloqueo. Helicon ha ensanchado esa
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>La fórmula de Avalanche paga más por año cuanto más largo es el bloqueo.</Anotacion> Helicon ha ensanchado esa
               diferencia: la tasa del plazo más corto baja del 10 % al 7,5 % de forma gradual hasta el 21 de diciembre
               de 2026, y la del año entero se queda en el 12 %. Cada bloqueo se queda con la tasa del día en que
               empieza. Con la oferta de hoy y la tasa final, un año bloqueado rinde en torno a un 6,1 %; dos semanas
@@ -520,14 +523,15 @@ export default async function AvalanchePage() {
               exchange), aquí encaja su caso real: cuánto delegó, en qué validador o plataforma, qué plazo eligió y
               cuánto recibió de verdad al terminar frente a lo que dice esta calculadora. Con fechas y cifras propias. */}
 
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El rendimiento está en AVAX, y AVAX está un 94 % por debajo de su máximo</div>
-            <div className="gbc-box-body">
-              <p>Un 6 % al año en AVAX no compensa una caída del precio, y durante el plazo no puedes vender lo
+          <Postit color="coral" giro={-1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" semilla={9} retraso={300} />
+            <div className="postit-titulo">El rendimiento está en AVAX, y AVAX está un 94 % por debajo de su máximo</div>
+            <div className="postit-cuerpo">
+              <p><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Un 6 % al año en AVAX no compensa una caída del precio</Anotacion>, y durante el plazo no puedes vender lo
               bloqueado. Además, cada AVAX nuevo que reparte el staking aumenta la oferta: quien no hace staking ve
               cómo su parte de la red se encoge un poco cada año.</p>
             </div>
-          </div>
+          </Postit>
           <p className="gbc-fuente">
             Reglas de staking y de Helicon (ACP-236, 267, 273 y 285): documentación de Avalanche, «Helicon Upgrade» y
             «How to stake», consultadas el 14 de noviembre de 2026. Ausencia de slashing y recompensa del delegador
@@ -545,13 +549,14 @@ export default async function AvalanchePage() {
           <h2 className="gbc-title">Avalanche y Hacienda: qué declarar si vives en España</h2>
           <div className="gbc-body">
             <p>
-              Tener AVAX guardado no tributa. Lo que cuenta es lo que haces con ellos, y en Avalanche hay dos detalles
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} />
+              <Anotacion tipo="underline" color="var(--menta)" retraso={200}>Tener AVAX guardado no tributa.</Anotacion> Lo que cuenta es lo que haces con ellos, y en Avalanche hay dos detalles
               propios que conviene saber antes de la declaración:
             </p>
             <ul>
-              <li><strong>La recompensa del staking llega de golpe al final.</strong> En Avalanche no cobras cada día: recibes todo cuando termina el plazo. La Dirección General de Tributos trata estas recompensas como rendimiento del capital mobiliario, valorado en euros el día que las recibes (consulta V1766-22). Si bloqueas un año en noviembre de 2026, ese ingreso cae en la renta de 2027.</li>
+              <li><strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>La recompensa del staking llega de golpe al final.</Anotacion></strong> En Avalanche no cobras cada día: recibes todo cuando termina el plazo. La Dirección General de Tributos trata estas recompensas como rendimiento del capital mobiliario, valorado en euros el día que las recibes (consulta V1766-22). Si bloqueas un año en noviembre de 2026, ese ingreso cae en la renta de 2027.</li>
               <li><strong>Pasar AVAX de una de tus cadenas a otra no es una venta.</strong> Mover AVAX de la X-Chain a la C-Chain dentro de tu cartera no cambia un activo por otro. Guarda igualmente el registro, porque las direcciones son distintas y tendrás que explicar el camino.</li>
-              <li><strong>Cambiar AVAX por otra moneda sí es una venta</strong>, aunque no pases por euros. Hacienda lo trata como una permuta, y calculas la ganancia o la pérdida en ese momento.</li>
+              <li><strong><Anotacion tipo="underline" color="var(--coral)" retraso={500}>Cambiar AVAX por otra moneda sí es una venta</Anotacion></strong>, aunque no pases por euros. Hacienda lo trata como una permuta, y calculas la ganancia o la pérdida en ese momento.</li>
             </ul>
             <p>
               Si compras AVAX, hazlo en un proveedor autorizado bajo <Termino slug="mica">MiCA</Termino>, el reglamento
@@ -571,12 +576,12 @@ export default async function AvalanchePage() {
           <div className="gbc-body">
             <ul>
               <li><strong>El precio.</strong> AVAX cotizaba el 14 de noviembre de 2026 un 94,5 % por debajo de su máximo de 2021. Esa <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier <Termino slug="altcoin">altcoin</Termino>, y no la arregla ninguna tecnología.</li>
-              <li><strong>La dilución.</strong> Quedan 243 millones de AVAX por crear, y la quema de comisiones no compensa ni una pequeña parte.</li>
+              <li><strong>La dilución.</strong> Quedan 243 millones de AVAX por crear, y <Anotacion tipo="underline" color="var(--coral)" retraso={200}>la quema de comisiones no compensa ni una pequeña parte</Anotacion>.</li>
               <li><strong>El uso de a pie, a la baja.</strong> Las direcciones activas de la C-Chain cayeron más de dos tercios en un trimestre. La tesis depende de empresas cuyos proyectos tardan años y pueden irse a otra red.</li>
               <li><strong>Pocas L1 hacen mucho.</strong> En el tercer trimestre de 2026, Gunzilla sola hizo más operaciones que las dos L1 siguientes juntas, y dos de las tres más activas son videojuegos. Si una de ellas se marcha, se nota.</li>
               <li><strong>Las L1 no heredan la seguridad.</strong> Una L1 pequeña puede tener pocos validadores, y si fallan, la red primaria no responde por ella.</li>
               <li><strong>La competencia.</strong> Ethereum con sus capas 2, Solana y otras redes buscan a las mismas gestoras y los mismos juegos.</li>
-              <li><strong>El bloqueo.</strong> Lo que pones en staking no se puede sacar antes de tiempo, aunque el precio se hunda ese mismo día.</li>
+              <li><strong>El bloqueo.</strong> <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Lo que pones en staking no se puede sacar antes de tiempo</Anotacion>, aunque el precio se hunda ese mismo día.</li>
             </ul>
           </div>
           <DisclaimerRiesgo variante="general" />
@@ -592,7 +597,7 @@ export default async function AvalanchePage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Comprueba lo que sabes de Avalanche</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong style={{ color: "var(--gold)" }}>Veinte al Azar</strong>.</p>
+            <p>Cinco preguntas. Con las cinco acertadas desbloqueas el logro <strong className="gbc-logro">Veinte al Azar</strong>.</p>
           </div>
           {d.isRegistered ? <GuideAvalancheQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>
