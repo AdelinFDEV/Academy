@@ -42,6 +42,11 @@
 .qnt-calc-resultados small { font-size: 13px; font-weight: 600; color: var(--tinta-2); }
 .qnt-calc-nota { margin: 16px 0 0; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--tinta-2); }
 
+/* ══ Marcas de estudio (ESTILO.md; referencia: la guía de Ethereum) ══
+   Lo común (margen de los pósits, estrella de la respuesta) está en
+   ../guias.css. Aquí solo la flecha que baja del texto a la tabla. */
+.qnt-flecha-tabla { --se-tam: 1.7em; margin-left: 0.3em; vertical-align: -0.75em; }
+
 @media (max-width: 820px) {
   .qnt-calc { padding: 18px 16px; border-radius: 24px; }
   .qnt-calc-campos, .qnt-calc-resultados { grid-template-columns: 1fr; }

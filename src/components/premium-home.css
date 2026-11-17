@@ -889,3 +889,21 @@
 
   .pf-curva-linea { animation: none; stroke-dashoffset: 0; }
 }
+
+/* ── Diario: el panel llena su tarjeta ──
+   En escritorio la tarjeta del Diario mide lo que las dos de su derecha
+   juntas, y lo que sobraba quedaba en blanco entre las etiquetas y la tecla
+   (repaso del 17-11-2026). Ahora lo que sobra se lo queda la gráfica. */
+@media (min-width: 900px) {
+  .pf-pieza--diario .pf-panel {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
+  .pf-pieza--diario .pf-curva {
+    flex: 1 1 84px;
+    min-height: 84px;
+    height: auto;
+  }
+}

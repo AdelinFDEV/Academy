@@ -49,6 +49,17 @@
 .hbar-servicios p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.65; color: var(--tinta-2); }
 .hbar-servicios a { color: var(--azul-o); font-weight: 800; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
+/* ══ El cuaderno de quien la ha estudiado (17-11-2026) ══
+   Marcas con significado (src/components/cuaderno/, ESTILO.md): amarillo la
+   idea clave, naranja lo que no te puedes saltar, azul un concepto, coral un
+   error o un riesgo, menta la conclusión, lila lo que entra en el quiz. El
+   margen de los pósits y la estrella de la respuesta son comunes (guias.css).
+   Los cuatro pasos del hashgraph llevan `gbc-ancho`: ocupan el ancho entero
+   aunque la sección tenga margen para el pósit. */
+
+/* El check delante del consejo de apuntar la fecha y el precio. */
+.hbar-check { --se-tam: 1.15em; margin-right: 0.25em; vertical-align: -0.22em; }
+
 @media (max-width: 900px) {
   .hbar-pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hbar-calc-campos { grid-template-columns: 1fr; }

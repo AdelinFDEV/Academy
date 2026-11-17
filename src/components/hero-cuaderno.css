@@ -3,7 +3,8 @@
 
 .hc {
   position: relative;
-  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) clamp(3rem, 7vw, 5.5rem);
+  /* Arriba, menos: la barra ya deja 56 px libres para la etiqueta del altavoz. */
+  padding: clamp(0.5rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
   background: var(--fondo);
   color: var(--tinta);
   font-family: var(--letra-texto);
@@ -56,21 +57,209 @@
   margin-top: 1.9rem;
 }
 
-.hc-flecha {
-  margin: 0.9rem 0 0;
-  font-family: var(--letra-mano);
-  font-size: 23px;
-  color: var(--tinta-2);
-  transform: rotate(-2deg);
-}
-
 /* Las tres tarjetas, como sobre una mesa. */
 .hc-mesa {
   position: relative;
   height: 440px;
 }
 
+/* Detrás de las tarjetas, tres formas planas de la paleta (amarillo, lila y
+   cielo): el papel blanco deja de estar sobre un fondo vacío. Planas y sin
+   brillo, como los círculos de las tarjetas de producto (sistema.html). */
+.hc-mesa::before,
+.hc-mesa::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.hc-mesa::before {
+  left: 50%;
+  top: 50%;
+  width: min(450px, 86%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--amarillo-s);
+  box-shadow:
+    262px 128px 0 -150px var(--lila-s),
+    -258px -150px 0 -178px var(--cielo-s);
+  transform: translate(-50%, -50%);
+}
+
+/* Una raya de rotulador menta, debajo del mazo, como si subrayara la mesa. */
+.hc-mesa::after {
+  left: 12%;
+  bottom: 8px;
+  width: 34%;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--menta-s);
+  transform: rotate(-4deg);
+}
+
+.hc-mesa .hc-garabato {
+  position: absolute;
+  top: -6px;
+  right: 7%;
+  z-index: 1;
+}
+
 .hc-mesa .te { position: absolute; }
+
+/* La nota que dice cómo se usan: un pósit amarillo pegado con celo encima de
+   las tarjetas, con una flecha a mano que baja hacia ellas. Separado de la
+   mesa lo justo para que la flecha tenga dónde caer. */
+.hc-mesa-caja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hc-mesa-caja > .hc-mesa { align-self: stretch; }
+
+.hc-pista {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin: 0 0 52px;
+  padding: 16px 28px 16px 24px;
+  border-radius: 4px 4px 14px 4px;
+  background: var(--amarillo-s);
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--amarillo) 55%, var(--amarillo-s)),
+    0 14px 22px -14px rgba(29, 27, 51, 0.45);
+  font-family: var(--letra-mano);
+  color: var(--tinta);
+  transform: rotate(-3deg);
+}
+
+/* El trozo de celo que lo sujeta. */
+.hc-pista-celo {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 74px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 1px 2px rgba(29, 27, 51, 0.12);
+  transform: translateX(-50%) rotate(4deg);
+}
+
+.hc-pista-titulo {
+  font-family: var(--letra-texto);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amarillo-o);
+}
+
+.hc-pista-texto {
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+/* La flecha sale de la esquina de abajo a la derecha del pósit y baja hacia
+   las tarjetas (pedido por el admin el 17-11-2026). */
+.hc-pista .hc-pista-flecha {
+  position: absolute;
+  right: 6px;
+  bottom: -48px;
+}
+
+/* ── El índice del cuaderno ──
+   Una pestaña por cosa que hay en la academia, cada una con el color de su
+   sección (ESTILO.md), su cifra real y su enlace. Son pestañas de separador:
+   papel de su tono suave con un canto, que se hunden al pulsarlas. */
+.hc-indice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 14px;
+  max-width: 1180px;
+  margin: clamp(1.75rem, 4vw, 3rem) auto 0;
+}
+
+.hc-indice-rotulo {
+  margin-right: 4px;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  color: var(--tinta-2);
+  transform: rotate(-2deg);
+}
+
+.hc-pestana {
+  --c: var(--cielo);
+  --o: var(--cielo-o);
+  --s: var(--cielo-s);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  margin-bottom: 5px;
+  padding: 6px 16px 6px 7px;
+  border-radius: 16px;
+  background: var(--s);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.6),
+    0 5px 0 color-mix(in srgb, var(--c) 45%, var(--s));
+  font-size: 0.95rem;
+  font-weight: 800;
+  white-space: nowrap;
+  color: var(--o);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.hc-pestana b {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 11px;
+  background: var(--papel);
+  font-family: var(--letra-titular);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hc-pestana--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); --s: var(--amarillo-s); }
+.hc-pestana--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); }
+.hc-pestana--naranja { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); }
+
+@media (hover: hover) {
+  .hc-pestana:hover {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.6),
+      0 3px 0 color-mix(in srgb, var(--c) 45%, var(--s));
+  }
+}
+
+.hc-pestana:active {
+  transform: translateY(5px);
+  box-shadow: inset 0 3px 5px rgba(29, 27, 51, 0.12), 0 0 0 transparent;
+  transition-duration: 0.06s;
+}
+
+.hc-pestana:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-pestana { transition: none; }
+}
 .hc-t1 { left: 0; top: 46px; transform: rotate(-8deg); }
 .hc-t2 { left: 50%; top: 0; z-index: 2; transform: translateX(-50%) rotate(2deg); }
 .hc-t3 { right: 0; top: 76px; transform: rotate(9deg); }
@@ -80,7 +269,29 @@
 /* ── Tableta: las tarjetas debajo, en fila ── */
 @media (max-width: 960px) {
   .hc-inner { grid-template-columns: minmax(0, 1fr); }
-  .hc-flecha { display: none; }
+
+  /* En fila y con scroll, las formas de detrás y la estrella no tienen sitio. */
+  .hc-mesa::before,
+  .hc-mesa::after,
+  .hc-mesa .hc-garabato { display: none; }
+
+  .hc-mesa-caja { align-items: flex-start; }
+
+  .hc-pista {
+    margin: 6px 0 30px 4px;
+    padding: 10px 18px 10px 16px;
+    transform: rotate(-2deg);
+  }
+
+  .hc-pista-texto { font-size: 25px; }
+
+  .hc-pista .hc-pista-flecha {
+    right: 4px;
+    bottom: -36px;
+    --se-tam: 36px;
+  }
+
+  .hc-indice { justify-content: flex-start; margin-top: 0.75rem; }
 
   .hc-mesa {
     display: flex;
@@ -114,8 +325,23 @@
 @media (max-width: 560px) {
   .hc-acciones .tecla { flex: 1 1 100%; }
 
-  /* En 230 px de tarjeta, «Recompensa» a 38 px no cabía en una línea. */
-  .hc-mesa .te-respuesta { font-size: 32px; }
+  /* Las pestañas, de dos en dos y a todo el ancho: fáciles de acertar con el dedo. */
+  .hc-indice {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .hc-indice-rotulo { grid-column: 1 / -1; justify-self: start; }
+
+  .hc-pestana {
+    gap: 8px;
+    padding-right: 10px;
+    font-size: 0.86rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
 }
 
 /* Teléfonos estrechos: «criptomonedas», la palabra más larga del titular,

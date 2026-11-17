@@ -261,3 +261,12 @@
   .ytl-principal:hover .ytl-imagen, .ytl-tarjeta:hover .ytl-imagen { scale: none; }
   .ytl-principal:hover .ytl-play, .ytl-tarjeta:hover .ytl-play { transform: none; }
 }
+
+/* En escritorio, los vídeos pequeños se reparten el alto del grande: las dos
+   columnas acaban a la misma altura, sin un hueco debajo de la segunda
+   (repaso del 17-11-2026). */
+@media (min-width: 861px) {
+  .ytl-lado { grid-auto-rows: 1fr; align-content: stretch; }
+  .ytl-marco--mini { width: 46%; max-width: 230px; }
+  .ytl-tarjeta-titulo { font-size: 1.15rem; }
+}

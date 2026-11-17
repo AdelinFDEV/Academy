@@ -37,6 +37,20 @@ deja de ser un equilibrio y pasa a ser una mezcla):
   contraste AA (4,5:1): naranja `#a65000`, menta `#137a52`, coral `#bb3550`, cielo `#0e709b`,
   amarillo `#866500`.
 
+  **La barra de arriba** (17-11-2026, pedido por el admin: «que no se vea todo tan igual»): cada
+  botón va en reposo en el tono suave de su color, con el texto en su lateral `-o`. Cursos lila,
+  Portfolio menta, Diario azul, Foro coral, Instagram lila, YouTube amarillo, altavoz cielo, tu
+  tarjeta naranja y menú menta. La pieza de la página en la que estás sigue siendo la tecla de su
+  color base. Detalle en `src/components/site-nav.css`.
+  En la barra, Cursos tira a rosa violeta y el Diario a azul cielo, y van en una cápsula lavanda
+  más ancha con borde fino: lila y azul puros se confundían ahí (17-11-2026).
+
+  **La portada** (repaso del 17-11-2026): el fondo lleva los puntos de una libreta, muy suaves (los
+  mismos del menú), en vez del lavanda liso. El hero tiene tres formas planas de la paleta detrás de
+  las tarjetas y, debajo, **el índice del cuaderno**: una pestaña por sección, con su color, su cifra
+  real (contada, nunca escrita a mano) y su enlace. Una tarjeta nunca deja un hueco en blanco para
+  igualar el alto de su vecina: lo que sobra se lo queda su dibujo (la gráfica, las fichas).
+
   Neutros: tinta `#1d1b33`, tinta 2 `#5f5c7d`, tinta 3 `#a3a7c0`, gris `#e2e5f4`, gris lateral
   `#c1c6dc`, fondo `#f3f5ff`, papel `#fff`. **Cifras con signo** (y solo ellas): sube `#12a36b`, baja
   `#e5484d`. Sobre naranja, azul, lila, coral y tinta, texto blanco; sobre **menta, cielo y amarillo, texto en tinta** (el blanco no llega al contraste mínimo: corregido el 17-11-2026). Premium cierra en un bloque
@@ -53,6 +67,26 @@ deja de ser un equilibrio y pasa a ser una mezcla):
     cara se oscurece un poco (`brightness(.93)`) y una sombra interior marca el hundido.
   - Al soltar **rebota con muelle** (`cubic-bezier(.34,1.8,.5,1)`, 260ms).
   - Las respuestas del quiz se hunden también con el teclado físico (A, B, C, D).
+  - **Suena dos veces, como una tecla de verdad** (17-11-2026): `tecla` al bajar (con un golpe grave
+    de fondo) y `soltar`, más flojo, al subir; si el dedo se va fuera, sube callada. Se queda hundida
+    **al menos 110 ms**, para que un toque rápido con el dedo también se vea entero, y al subir
+    rebota un pelo más grande y asienta. Con Intro (y Espacio en un botón) hace lo mismo.
+- **El menú se abre como un cuaderno** (17-11-2026, `menu-movil.css`, «La apertura»): la hoja se
+  despliega en círculo desde el botón, las filas se reparten como tarjetas (ladeadas, se pasan y
+  asientan), cada icono salta, las notas a mano se escriben solas y el panel de la cuenta entra por
+  la derecha como una hoja suelta. Al cerrar, todo se recoge hacia el botón en 0,32 s. En el ordenador
+  va un 40 % más pausado (0,85 s al abrir, 0,44 s al cerrar). **El menú nunca tiene scroll**: se
+  compacta y, si aun así no cabe, `.mm-hoja` se escala con `zoom` hasta caber (BlogMobileMenu).
+- **El desplegable de tu cuenta es una ficha de alumno** (17-11-2026): cabecera naranja suave con
+  «¡hola de nuevo!» a mano, filas con su icono de color (dashboard cielo, perfil menta, admin lila,
+  salir coral) y un pico que apunta a la tarjeta; se despliega como una hoja que cae y se pliega al
+  cerrar. La cuenta del menú grande usa el mismo diseño.
+- **🔴 Todas las tarjetas que giran usan el mismo giro** (17-11-2026): `useGiro` + `giro.css`
+  (`src/components/cuaderno/`). Con el ratón encima se levanta y se ladea, pero NO gira (antes giraba
+  al pasar el ratón y el clic la devolvía al sitio); al pulsar se hunde; al soltar se da la vuelta
+  como una carta (se levanta, crece a mitad de giro, se pasa y asienta, siempre hacia el mismo lado)
+  con un brillo que cruza la cara nueva, roce de papel y un toque sordo al caer. Ninguna tarjeta
+  nueva escribe su propio `rotateY`.
   - Vibración corta en el móvil (`navigator.vibrate(8)`, donde exista).
   - El clic sonoro suena por defecto (ver «Los sonidos»). Cómo se hace:
     Web Audio API (no `<audio>`, que tarda en sonar y en iOS falla), un solo `AudioContext` creado o
@@ -64,6 +98,9 @@ deja de ser un equilibrio y pasa a ser una mezcla):
   - Con «reducir movimiento», el mismo hundido pero sin rebote.
   - Radio de 16px (12px el pequeño, 20px el grande) y mayúsculas 900. Variantes: naranja (la acción
     principal, una por bloque), azul, menta y blanca.
+- **La barra de scroll** (17-11-2026, `globals.css`): tirador redondeado en naranja pastel con el
+  brillo y el canto de las teclas, sobre el carril lavanda; se aviva al pasar el ratón. Sin dibujos:
+  el admin la quiere sencilla.
 - **Esquinas:** redondeadas y generosas (16-40px). Nada de esquinas rectas ni filetes de lujo.
 - **Verde y rojo de cifras** (`--sube`, `--baja`) solo para cifras con signo; el «hecho» del camino es menta.
 - **Sin emojis** en la web pública.
@@ -99,6 +136,12 @@ fondo**: lo importante marcado, lo demás limpio. La referencia es `src/app/guia
   escritorio pueden ir al margen; en el móvil, en su sitio.
 - **Moderación**: como mucho 2-3 trazos animados por pantalla; el resto aparece ya dibujado
   (`animar={false}`). Se dibujan al entrar en pantalla, una vez. Con «reducir movimiento», quietos.
+- **🔴 Se dibujan cuando la persona los VE, no cuando rozan la pantalla** (pedido por el admin el
+  17-11-2026: en el móvil se pintaban antes de verse y la animación se perdía). Toda marca que se
+  dibuje sola usa `alVerse` (`src/lib/alVerse.ts`), nunca un `IntersectionObserver` propio: espera a
+  que esté en la franja central (lejos de la barra de arriba y de la del navegador abajo), a que se
+  quede ahí 300 ms (pasar de largo con el dedo no cuenta), a que no esté transparente, a que la
+  pestaña esté delante y a que hayan cargado las fuentes.
 - Piezas en `src/components/cuaderno/`: `Anotacion`, `SimboloEstudio` (+ `Llave`), `TrazoVisible`,
   `Postit`, `colores.ts`. Referencia visual en `disenos/sistema.html`.
 - **Todo texto explicativo NUEVO** (guía, ficha, lección) se escribe ya con sus marcas.
@@ -167,6 +210,8 @@ partida, que se ajustará al construirlo:
 | Guardar (operación del Diario, perfil, formularios) | `guardado` | «Clac» satisfactorio |
 | Error al guardar o validar | `error` | Golpe sordo y corto |
 | Interruptor on/off | `interruptor` | Clic doble |
+| Encender el sonido de la web (el altavoz) | `encender` | Clic y dos notas que suben: algo que se despierta |
+| Apagarlo | `apagar` | Clic y una nota que baja y se apaga; suena antes de silenciar |
 | Abrir y cerrar menús o ventanas | `abrir` / `cerrar` | Muy sutiles |
 | La mascota habla o reacciona | `mascota` | Su «voz» propia, cuando exista |
 
@@ -174,8 +219,14 @@ Lo que no suena: pasar el ratón por encima, hacer scroll, escribir en un campo 
 pase sola sin que la persona haya hecho nada.
 
 - **Vienen ENCENDIDOS por defecto** (lo decidió el admin el 17-11-2026). Por eso el interruptor para
-  silenciarlos tiene que estar **siempre a mano y a la vista** (en la barra, un altavoz-tecla), y
-  la elección se recuerda. Volumen bajo de serie: que no asuste a quien entra desde el trabajo.
+  silenciarlos tiene que estar **siempre a mano y a la vista**, y la elección se recuerda. Desde el
+  17-11-2026 es **una etiqueta que cuelga de la barra con una cuerda trenzada color yute, que sale directamente del borde de la barra, debajo de la marca**: se mece
+  despacio y da un balanceo de péndulo al pulsarla. **Encendido es naranja pastel** (las ondas
+  del altavoz laten); **apagado, gris**, tachado y quieta. Al pulsarla sale unos segundos una nota a
+  mano al lado: «sonido activado» o «en silencio». La barra reserva debajo su hueco (56 px), así
+  que nunca tapa la página (`site-nav.css`, `.nav-sonido`). **En el móvil solo cuelga en la portada**: en cualquier
+  otra página y con el menú abierto no se ve, y el altavoz está dentro del menú, junto al buscador
+  (`SonidoColgante.tsx`). Volumen bajo de serie: que no asuste a quien entra desde el trabajo.
 - Nunca es la única respuesta: todo lo que suena también se ve (la tecla se hunde, el aviso aparece).
   En iPhone, con el interruptor de silencio puesto, no suena nada.
 - Los sonidos tienen que ser propios o con licencia que permita usarlos en una web comercial

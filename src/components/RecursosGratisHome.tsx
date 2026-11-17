@@ -59,7 +59,7 @@ export default function RecursosGratisHome() {
   const def = frente ? partir(frente.definition) : null;
 
   return (
-    <section className="rg" aria-labelledby="rg-titulo">
+    <section id="diccionario" className="rg" aria-labelledby="rg-titulo">
       <div className="rg-inner">
         <header className="rg-cabecera">
           <p className="rg-nota">También gratis, para siempre</p>

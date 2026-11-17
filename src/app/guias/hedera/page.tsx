@@ -9,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideHederaComisiones from "./GuideHederaComisiones";
 import GuideHederaQuiz from "./GuideHederaQuiz";
@@ -118,8 +121,9 @@ export default async function HederaPage() {
           <span className="gbc-hero-gold">y por qué no es una blockchain</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Hedera es una red pública para pagos, tokens y registros, gobernada por un consejo de grandes
-          empresas.</strong> No encadena bloques: ordena las operaciones con un algoritmo llamado hashgraph, en pocos
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Hedera es una red pública para pagos, tokens y registros, gobernada por un consejo de grandes
+          empresas.</Anotacion></strong> No encadena bloques: ordena las operaciones con un algoritmo llamado <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>hashgraph</Anotacion>, en pocos
           segundos y con comisiones fijas en dólares. Su moneda, HBAR, paga esas comisiones y se puede poner en
           staking sin bloquearla. La red es rápida y barata; a cambio, solo una treintena de organizaciones
           deciden y validan.
@@ -145,10 +149,12 @@ export default async function HederaPage() {
               cómo se pone de acuerdo y quién la dirige.
             </p>
             <p>
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>
               Conviene separar tres nombres que se usan como si fueran uno. <strong>Hashgraph</strong> es el
               algoritmo que ordena las operaciones. <strong>Hedera</strong> es la red que lo usa.
               <strong> HBAR</strong> es la moneda de esa red. Cuando alguien dice «Hedera Hashgraph», mezcla los
               dos primeros.
+              </Anotacion>
             </p>
             <p>
               El algoritmo lo inventó Leemon Baird, que fundó la empresa Swirlds en 2015 con Mance Harmon. La red
@@ -163,12 +169,12 @@ export default async function HederaPage() {
 
       {/* ── 2 ── */}
       <section id="hashgraph" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Cómo funciona</div>
           <h2 className="gbc-title">¿Hedera es una blockchain? Cómo funciona hashgraph</h2>
           <div className="gbc-body">
             <p>
-              No, Hedera no es una <Termino slug="blockchain">blockchain</Termino>. En una blockchain, un nodo
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>No, Hedera no es una <Termino slug="blockchain">blockchain</Termino>.</Anotacion> En una blockchain, un nodo
               elegido mete operaciones en un bloque y lo engancha al anterior: una sola fila. En Hedera, cada nodo
               va anotando lo que oye en registros pequeños, llamados eventos. Cada evento apunta a dos eventos
               anteriores, así que el resultado no es una fila, sino una red de flechas que siempre miran al pasado.
@@ -181,7 +187,7 @@ export default async function HederaPage() {
             </p>
           </div>
 
-          <ol className="hbar-pasos">
+          <ol className="hbar-pasos gbc-ancho">
             {PASOS.map((p) => (
               <li key={p.n}>
                 <span className="hbar-paso-n" aria-hidden="true">{p.n}</span>
@@ -193,13 +199,14 @@ export default async function HederaPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Ese último paso es la clave, y se llama <strong>votación virtual</strong>. En otras redes, los nodos se
-              mandan votos para ponerse de acuerdo. En Hedera no hace falta: si todos tienen el mismo historial de
-              conversaciones, cada uno puede calcular qué votaría el resto. Se ahorran millones de mensajes.
+              <SimboloEstudio tipo="estrella" margen semilla={7} />
+              Ese último paso es la clave, y se llama <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta>votación virtual</Anotacion></strong>. En otras redes, los nodos se
+              mandan votos para ponerse de acuerdo. En Hedera no hace falta: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={500}>si todos tienen el mismo historial de
+              conversaciones, cada uno puede calcular qué votaría el resto</Anotacion>. Se ahorran millones de mensajes.
             </p>
             <p>
-              Falta decidir el orden. Cada operación recibe una marca de tiempo: la mediana de los momentos en que
-              cada nodo se enteró de ella. Si Ana la oyó a las 10:00:00,20, Bea a las 0,25, Carla a las 0,31 y Dani
+              Falta decidir el orden. Cada operación recibe una marca de tiempo: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}>la mediana de los momentos en que
+              cada nodo se enteró de ella</Anotacion>. Si Ana la oyó a las 10:00:00,20, Bea a las 0,25, Carla a las 0,31 y Dani
               a las 0,90, la marca queda en 0,28. Dani, lento o tramposo, no puede arrastrarla. Ningún nodo decide
               el orden por su cuenta, y eso limita el <Termino slug="mev">MEV</Termino>, el beneficio que saca en
               otras redes quien ordena las operaciones.
@@ -208,13 +215,14 @@ export default async function HederaPage() {
               El sistema es <Termino slug="tolerancia-a-fallos-bizantinos">tolerante a fallos bizantinos</Termino>:
               según la documentación de Hedera, aguanta mientras los nodos honrados sumen más de dos tercios del HBAR
               en staking, porque cada nodo pesa según lo que tiene vinculado. Hedera lo presenta además como
-              asíncrono (aBFT): no necesita suponer que los mensajes llegan a tiempo. La <Termino slug="finalidad">finalidad</Termino> llega en segundos y es definitiva: lo confirmado no se
-              reescribe.
+              asíncrono (aBFT): no necesita suponer que los mensajes llegan a tiempo. La <Termino slug="finalidad">finalidad</Termino> llega en segundos y <Anotacion tipo="underline" color="var(--menta)" animar={false}>es definitiva: lo confirmado no se
+              reescribe</Anotacion>.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">¿Y los «bloques» que enseña el explorador?</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="asterisco" color="cielo" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">¿Y los «bloques» que enseña el explorador?</div>
+            <div className="postit-cuerpo">
               <p>
                 Si abres HashScan, el <Termino slug="explorador-de-bloques">explorador de bloques</Termino> de
                 Hedera, verás números de bloque. Son un envoltorio: la red agrupa lo ya ordenado cada pocos segundos
@@ -222,13 +230,13 @@ export default async function HederaPage() {
                 102.328.400. El consenso no depende de ellos.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
       {/* ── 3 ── */}
       <section id="consejo" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">El gobierno</div>
           <h2 className="gbc-title">Quién gobierna Hedera: un consejo de hasta 39 empresas</h2>
           <div className="gbc-body">
@@ -239,12 +247,12 @@ export default async function HederaPage() {
             <p>
               El consejo concentra la <Termino slug="gobernanza">gobernanza</Termino>. Decide lo que en otras redes se
               discute en foros abiertos: las actualizaciones del
-              software, las tarifas, la tasa de recompensa del staking y el uso de la tesorería. Para cambiar el
-              número total de HBAR hace falta la unanimidad de todos sus miembros.
+              software, las tarifas, la tasa de recompensa del staking y el uso de la tesorería. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Para cambiar el
+              número total de HBAR hace falta la unanimidad de todos sus miembros.</Anotacion>
             </p>
             <p>
               A 14 de noviembre de 2026, el nodo espejo público de Hedera, un servidor que guarda una copia de todo el
-              historial y deja consultarlo gratis, lista <strong>30 nodos</strong>, todos de miembros del consejo.
+              historial y deja consultarlo gratis, lista <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} junta>30 nodos</Anotacion></strong>, todos de miembros del consejo.
               Entre ellos:
             </p>
           </div>
@@ -263,16 +271,17 @@ export default async function HederaPage() {
               cambia hacia fuera: Boeing, por ejemplo, entró en su día y hoy no tiene nodo.
             </p>
             <p>
-              ¿Es eso descentralización? A medias. A favor: los que <Termino slug="validador">validan</Termino> son organizaciones conocidas, de países
-              y sectores distintos, que responden con su nombre. En contra: son 30, ninguno puede entrar sin
-              invitación y el mismo grupo que valida fija los precios. Si te suena, es porque
+              ¿Es eso descentralización? <Anotacion tipo="circle" retraso={300} junta>A medias.</Anotacion> A favor: los que <Termino slug="validador">validan</Termino> son organizaciones conocidas, de países
+              y sectores distintos, que responden con su nombre. En contra: son 30, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>ninguno puede entrar sin
+              invitación y el mismo grupo que valida fija los precios</Anotacion>. Si te suena, es porque
               <Link href="/guias/canton"> Canton Network</Link> también se gobierna con grandes instituciones. La
               diferencia es que en Hedera cualquiera puede leer todas las operaciones; en Canton, no.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Patentado, después abierto: qué es Hiero</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={1.5}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Patentado, después abierto: qué es Hiero</div>
+            <div className="postit-cuerpo">
               <p>
                 El hashgraph nació patentado por Swirlds, y durante años fue la crítica más repetida. El 19 de enero
                 de 2022 el consejo anunció que había votado comprar esa propiedad intelectual y publicar el código con
@@ -282,10 +291,10 @@ export default async function HederaPage() {
               </p>
               <p>
                 Ojo con la conclusión: <Termino slug="codigo-abierto">código abierto</Termino> no es red abierta. Cualquiera puede leer, copiar y mejorar
-                Hiero. Conectar un nodo a la red principal de Hedera sigue siendo cosa del consejo.
+                Hiero. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Conectar un nodo a la red principal de Hedera sigue siendo cosa del consejo.</Anotacion>
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -300,12 +309,12 @@ export default async function HederaPage() {
           <div className="gbc-body">
             <p>
               En Ethereum o en Solana, la comisión sube cuando hay atasco: pagas el <Termino slug="gas">gas</Termino>
-              {" "}que marque el mercado en ese minuto. En Hedera cada operación tiene un precio fijado en dólares,
+              {" "}que marque el mercado en ese minuto. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>En Hedera cada operación tiene un precio fijado en dólares</Anotacion>,
               publicado en la documentación oficial. Lo pagas en HBAR, al cambio del momento.
             </p>
             <p>
               La consecuencia es útil para una empresa: sabe lo que le costará un millón de operaciones antes de
-              hacerlas. Si el HBAR sube, paga menos HBAR; si baja, más. En dólares, lo mismo.
+              hacerlas. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={600}>Si el HBAR sube, paga menos HBAR; si baja, más. En dólares, lo mismo.</Anotacion>
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -327,13 +336,14 @@ export default async function HederaPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Ahora el matiz que no cuentan las guías que venden Hedera por barata. «Fija» no significa «para
-              siempre». En julio de 2025 la red anunció que el mensaje del servicio de consenso pasaba de 0,0001 a
+              <SimboloEstudio tipo="exclamacion" color="coral" margen />
+              Ahora el matiz que no cuentan las guías que venden Hedera por barata. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>«Fija» no significa «para
+              siempre».</Anotacion> En julio de 2025 la red anunció que el mensaje del servicio de consenso pasaba de 0,0001 a
               0,0008 dólares, ocho veces más, con la actualización de enero de 2026. Quien enviaba un millón de mensajes pasó de pagar 100 dólares a pagar 800.
             </p>
             <p>
-              Sigue siendo barato. Pero te dice algo importante sobre Hedera: las tarifas son estables mientras el
-              consejo quiera que lo sean.
+              Sigue siendo barato. Pero te dice algo importante sobre Hedera: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>las tarifas son estables mientras el
+              consejo quiera que lo sean</Anotacion>.
             </p>
           </div>
         </div>
@@ -367,8 +377,8 @@ export default async function HederaPage() {
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
               ¿Cuánto se usa de verdad? Las guías suelen repetir que Hedera admite «más de 10.000 operaciones por
-              segundo». Es capacidad, no uso. Contamos un día entero en el nodo espejo público: el 13 de noviembre
-              de 2026 registró <strong>667.819 operaciones</strong>, unas 7,7 por segundo. La cifra incluye las
+              segundo». <Anotacion tipo="circle" retraso={200} junta>Es capacidad, no uso.</Anotacion> Contamos un día entero en el nodo espejo público: el 13 de noviembre
+              de 2026 registró <strong>667.819 operaciones</strong>, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>unas 7,7 por segundo</Anotacion>. La cifra incluye las
               operaciones internas que lanzan algunos contratos.
             </p>
           </div>
@@ -406,7 +416,7 @@ export default async function HederaPage() {
           <h2 className="gbc-title">HBAR: 50.000 millones creados de una vez, y aún saliendo de la tesorería</h2>
           <div className="gbc-body">
             <p>
-              Todos los HBAR que habrá se crearon al lanzar la red: 50.000 millones. No hay minería ni emisión
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Todos los HBAR que habrá se crearon al lanzar la red: 50.000 millones.</Anotacion> No hay minería ni emisión
               nueva. Lo que sí hay es una tesorería que los va soltando, y eso es lo que mueve la
               <Termino slug="oferta-circulante"> oferta circulante</Termino>.
             </p>
@@ -435,11 +445,11 @@ export default async function HederaPage() {
               Mira ahora el calendario. La <Termino slug="liberacion-de-tokens">liberación</Termino> dio un salto a
               principios de 2025, del 76,51 % al 84,45 % en un trimestre. Después fue lenta: 85,56 % al cerrar 2025
               y 87,71 % al cerrar septiembre de 2026. Y para el final del cuarto trimestre el mismo informe prevé el
-              <strong> 95,74 %</strong>, es decir, 47.871 millones.
+              <strong> <Anotacion tipo="circle" relleno={[4, 8]} animar={false} junta>95,74 %</Anotacion></strong>, es decir, 47.871 millones.
             </p>
             <p>
-              Haz la cuenta. Entre hoy y el 31 de diciembre faltarían por salir unos 3.540 millones de HBAR, un 8 %
-              más de lo que ya circula. Que salgan de la tesorería no significa que se vendan en el mercado: pueden ir
+              Haz la cuenta. Entre hoy y el 31 de diciembre faltarían por salir <Anotacion tipo="underline" color="var(--coral)" retraso={300}>unos 3.540 millones de HBAR, un 8 %
+              más de lo que ya circula</Anotacion>. Que salgan de la tesorería no significa que se vendan en el mercado: pueden ir
               a ayudas o a cuentas que no venden. Pero es oferta nueva disponible, y conviene saberlo antes de
               comprar.
             </p>
@@ -459,24 +469,28 @@ export default async function HederaPage() {
           <h2 className="gbc-title">Staking de HBAR sin bloqueo: cuánto da y por qué baja</h2>
           <div className="gbc-body">
             <p>
+              <SimboloEstudio tipo="estrella" margen semilla={12} />
               El <Termino slug="staking">staking</Termino> en Hedera es el más sencillo de las redes grandes. Eliges
-              un nodo desde tu cartera y toda tu cuenta queda vinculada a él. Los HBAR no salen de tu cuenta: puedes
-              venderlos o moverlos cuando quieras. No hay periodo de bloqueo ni
+              un nodo desde tu cartera y toda tu cuenta queda vinculada a él. Los HBAR no salen de tu cuenta: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={400}>puedes
+              venderlos o moverlos cuando quieras</Anotacion>. No hay periodo de bloqueo ni
               <Termino slug="slashing"> slashing</Termino>, el castigo que otras redes aplican si el nodo falla.
             </p>
             <p>Tres reglas del programa, tal como las fija su propuesta técnica (HIP-406):</p>
+            <Llave color="azul">
             <ul>
               <li><strong>Cuentan los días completos.</strong> El periodo va de medianoche a medianoche, hora UTC. Si pones tu cuenta en staking a las diez de la mañana, ese día no cobra.</li>
               <li><strong>La recompensa no llega sola cada día.</strong> Se acumula y se paga cuando tu cuenta se mueve: al recibir o enviar HBAR, o al cambiar de nodo.</li>
-              <li><strong>Caduca al año.</strong> Solo se pueden cobrar los últimos 365 días. Si no mueves la cuenta en más de un año, pierdes lo anterior.</li>
+              <li><strong><Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Caduca al año.</Anotacion></strong> Solo se pueden cobrar los últimos 365 días. Si no mueves la cuenta en más de un año, pierdes lo anterior.</li>
             </ul>
+            </Llave>
             <p>
               ¿Cuánto rinde? El consejo fija un máximo del 2,5 % anual, pero solo para los primeros 6.500 millones de
               HBAR que cobran recompensa. Si hay más, el mismo dinero se reparte entre más. El 14 de noviembre de 2026
               el nodo espejo marcaba una tasa de 4.990 tinybars por HBAR y día; un tinybar es la cien millonésima
-              parte de un HBAR. Pasado a un año, un <strong>1,82 %</strong>. El nodo no se queda comisión.
+              parte de un HBAR. Pasado a un año, un <strong><Anotacion tipo="circle" retraso={300} junta>1,82 %</Anotacion></strong>. El nodo no se queda comisión.
             </p>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={5} animar={false} />
               Ojo al elegir nodo. Cada uno tiene un tope de 450 millones de HBAR premiados. Si lo supera, la recompensa
               de ese nodo se reparte entre más y su tasa baja. Ese día, 26 de los 30 nodos pagaban la tasa entera. El
               de Chainlink Labs, el más cargado, pagaba 2.434 tinybars: un 0,89 % al año.
@@ -484,7 +498,7 @@ export default async function HederaPage() {
             <p>
               Con números: 10.000 HBAR en staking todo un año, en un nodo sin tope superado, darían unos 182 HBAR. A
               0,0582 dólares, unos 10,6 dólares. Y si mañana más gente se suma al staking, esa cifra baja. Es una
-              <Termino slug="delegacion"> delegación</Termino> cómoda, pero no un tipo de interés garantizado.
+              <Termino slug="delegacion"> delegación</Termino> cómoda, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>pero no un tipo de interés garantizado</Anotacion>.
             </p>
           </div>
           <p className="gbc-fuente">
@@ -512,7 +526,7 @@ export default async function HederaPage() {
             <ul>
               <li><strong>Tu dirección es un número.</strong> Las cuentas tienen la forma 0.0.123456. Crear una cuesta 0,05 dólares, y alguien tiene que pagarlos: tu cartera o el exchange.</li>
               <li><strong>Para recibir un token, primero lo asocias.</strong> Si alguien te envía un token de Hedera que tu cuenta no ha asociado, la operación puede fallar. Asociarlo cuesta 0,05 dólares, una sola vez.</li>
-              <li><strong>El <Termino slug="memo">memo</Termino> del exchange.</strong> Muchos exchanges reciben todos los HBAR en una sola cuenta y te distinguen por un número de referencia. Si lo olvidas al enviar, tus HBAR llegan, pero nadie sabe que son tuyos. Recuperarlos depende del soporte, y tarda.</li>
+              <li><strong>El <Termino slug="memo">memo</Termino> del exchange.</strong> Muchos exchanges reciben todos los HBAR en una sola cuenta y te distinguen por un número de referencia. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>Si lo olvidas al enviar, tus HBAR llegan, pero nadie sabe que son tuyos.</Anotacion> Recuperarlos depende del soporte, y tarda.</li>
             </ul>
           </div>
           {/* EXPERIENCIA DEL ADMIN: si has tenido HBAR, cuenta aquí en 2-3 frases dónde los compraste y guardaste, si te pasó lo del memo o lo de asociar un token, y si los tienes o no en el Portfolio. Sin cifras de rentabilidad. */}
@@ -520,13 +534,13 @@ export default async function HederaPage() {
             <p>
               Con Hacienda, HBAR es una criptomoneda más. Vender por euros, o cambiarlo por otra criptomoneda o por
               una stablecoin, genera una ganancia o pérdida patrimonial que va a la base del ahorro, aunque nunca
-              hayas tocado euros. Tenerlos guardados, sin más, no tributa.
+              hayas tocado euros. <Anotacion tipo="underline" color="var(--menta)" animar={false}>Tenerlos guardados, sin más, no tributa.</Anotacion>
             </p>
             <p>
               El staking tiene un detalle propio de Hedera. La Dirección General de Tributos trata estas
-              recompensas como rendimiento del capital mobiliario, valorado en euros cuando las recibes (consulta
+              recompensas como <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>rendimiento del capital mobiliario, valorado en euros cuando las recibes</Anotacion> (consulta
               V1766-22). Como Hedera las paga de golpe al mover la cuenta, ese día puedes cobrar meses de recompensa
-              en una sola entrada. Apunta la fecha y el precio.
+              en una sola entrada. <SimboloEstudio tipo="check" color="menta" className="hbar-check" animar={false} />Apunta la fecha y el precio.
             </p>
             <p>
               Desde 2026 los exchanges de la UE informan a Hacienda de tus operaciones por la directiva DAC8. Si
@@ -545,13 +559,13 @@ export default async function HederaPage() {
           <h2 className="gbc-title">Los riesgos de Hedera y de HBAR</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Pocos deciden mucho.</strong> Treinta organizaciones validan, fijan tarifas y reparten la tesorería. Ya han multiplicado una tarifa por ocho. Tú no votas.</li>
+              <li><strong>Pocos deciden mucho.</strong> Treinta organizaciones validan, fijan tarifas y reparten la tesorería. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Ya han multiplicado una tarifa por ocho.</Anotacion> Tú no votas.</li>
               <li><strong>Oferta que todavía sale.</strong> El consejo prevé liberar unos 3.540 millones de HBAR antes de que acabe 2026, un 8 % más de lo que circula hoy.</li>
               <li><strong>Las empresas pueden irse.</strong> Los mandatos son de seis años como mucho y algunos miembros ya no tienen nodo. Un nombre conocido en el consejo no es una promesa de uso.</li>
               <li><strong>Uso real modesto.</strong> Unas 7,7 operaciones por segundo en el día que contamos, frente a una capacidad anunciada de más de 10.000.</li>
               <li><strong>El staking puede rendir menos.</strong> Cuantos más HBAR se vinculan a nodos, menor es la tasa. No hay mínimo garantizado.</li>
               <li><strong>Errores operativos.</strong> Olvidar el memo o enviar un token a una cuenta que no lo ha asociado cuesta tiempo y, a veces, dinero.</li>
-              <li><strong>El precio.</strong> La <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda: está un 90 % por debajo de su máximo de 2021.</li>
+              <li><strong>El precio.</strong> La <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda: <Anotacion tipo="underline" color="var(--coral)" retraso={200}>está un 90 % por debajo de su máximo de 2021</Anotacion>.</li>
             </ul>
           </div>
           <DisclaimerRiesgo variante="general" />

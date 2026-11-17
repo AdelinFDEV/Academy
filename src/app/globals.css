@@ -122,12 +122,17 @@ body {
   overflow-x: hidden;
 }
 
-/* La barra de scroll de la web, visible y naranja (12-11-2026, pedido por el
-   admin): estaba oculta y había quien no sabía que la página seguía hacia
-   abajo. `scrollbar-color` sirve en Chrome, Edge y Firefox; Safari aún no lo
-   entiende y usa las reglas -webkit- de abajo. */
+/* La barra de scroll de la web, con el estilo de la casa (17-11-2026): un
+   tirador redondeado en naranja pastel con el brillo y el canto de nuestras
+   teclas, sobre el lavanda del fondo; al pasar el ratón se aviva al naranja
+   de la marca y al arrastrarlo se oscurece un punto. Sin dibujos: solo estilo
+   (lo pidió así el admin). Visible siempre (12-11-2026: oculta, había quien
+   no sabía que la página seguía).
+   OJO: en Chrome, si `scrollbar-color` no es `auto`, se ignoran las reglas
+   -webkit-. Se pone aquí para Firefox, que solo entiende colores, y se anula
+   donde hay -webkit- (Chrome, Edge, Safari). */
 html {
-  scrollbar-color: var(--naranja) var(--fondo);
+  scrollbar-color: color-mix(in srgb, var(--naranja) 60%, var(--naranja-s)) var(--fondo);
   /* El hueco de la barra se reserva siempre (13-11-2026). Al abrir algo que
      bloquea el scroll (Nova en el centro, un aviso, una captura ampliada) la
      barra desaparecía, la ventana ganaba sus 12 px y toda la web daba un salto
@@ -137,16 +142,40 @@ html {
   scrollbar-gutter: stable;
 }
 
-@supports not (scrollbar-color: auto) {
-  html::-webkit-scrollbar { width: 12px; }
-  html::-webkit-scrollbar-track { background: var(--fondo); }
+@supports selector(::-webkit-scrollbar) {
+  html { scrollbar-color: auto; }
+
+  html::-webkit-scrollbar { width: 14px; }
+
+  /* El carril empieza por debajo de la barra de arriba: así el tirador nunca
+     se cruza con ella (pedido por el admin el 17-11-2026). */
+  html::-webkit-scrollbar-track {
+    margin-top: calc(var(--nav-h, 68px) + 10px);
+    margin-bottom: 6px;
+    background: var(--fondo);
+    box-shadow: inset 2px 0 0 var(--gris);
+  }
+
   html::-webkit-scrollbar-thumb {
-    background: var(--naranja);
     border: 3px solid var(--fondo);
     border-radius: 999px;
+    background: color-mix(in srgb, var(--naranja) 60%, var(--naranja-s));
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.45),
+      inset 0 -3px 0 color-mix(in srgb, var(--naranja-o) 45%, transparent);
   }
-  html::-webkit-scrollbar-thumb:hover { background: var(--naranja-o); }
+
+  html::-webkit-scrollbar-thumb:hover { background: var(--naranja); }
+  html::-webkit-scrollbar-thumb:active { background: color-mix(in srgb, var(--naranja) 80%, var(--naranja-o)); }
 }
+
+/* PRUEBA (17-11-2026, pedida por el admin): la web sin barra de scroll, para
+   ver cómo queda. Se sigue pudiendo desplazar con la rueda, el teclado y el
+   dedo; solo se oculta la barra. Para volver al tirador naranja de arriba,
+   basta con borrar este bloque. Ojo: el 12-11-2026 se volvió a mostrar porque,
+   oculta, había quien no se daba cuenta de que la página seguía hacia abajo. */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
 
 h1,
 h2,

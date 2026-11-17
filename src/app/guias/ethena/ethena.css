@@ -56,6 +56,22 @@
 .ena-barra-leyenda li { display: flex; align-items: center; gap: 8px; }
 .ena-barra-leyenda i { display: inline-block; flex-shrink: 0; width: 14px; height: 14px; border-radius: 5px; }
 
+/* ══ El cuaderno de quien la ha estudiado (17-11-2026) ══
+   Marcas con significado (Anotacion, SimboloEstudio, Postit, Llave en
+   src/components/cuaderno/; ESTILO.md). Todo es decoración: el texto y su
+   orden en el HTML son los de siempre. Lo común (margen de los pósits,
+   estrella de la respuesta) está en ../guias.css. */
+
+/* sUSDe, el token que entra en el quiz, con su estrella en la esquina. */
+.ena-tokens > div { position: relative; }
+.ena-token-estrella { --se-tam: 28px; position: absolute; top: -12px; right: -8px; }
+
+/* La flecha que baja del texto al simulador. */
+.ena-flecha-simulador { --se-tam: 1.7em; margin-left: 0.3em; vertical-align: -0.75em; }
+
+/* El asterisco de la nota de la tabla del respaldo. */
+.ena-fuente-asterisco { --se-tam: 15px; margin-right: 5px; vertical-align: -2px; }
+
 @media (max-width: 760px) {
   .ena-tokens, .ena-ejemplo, .ena-sim-patas, .ena-sim-patas--dos, .ena-sim-dos { grid-template-columns: 1fr; }
   .ena-sim { padding: 18px 16px; border-radius: 24px; }

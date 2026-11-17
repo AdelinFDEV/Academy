@@ -10,7 +10,7 @@ import { INSTAGRAM_DM_URL, YOUTUBE_URL } from "@/lib/contacto";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import { InstagramIcon } from "@/components/SocialLinks";
 import Tecla from "@/components/cuaderno/Tecla";
-import InterruptorSonido from "@/components/cuaderno/InterruptorSonido";
+import SonidoColgante from "@/components/SonidoColgante";
 import "./site-nav.css";
 
 interface Props {
@@ -123,9 +123,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
         {/* El altavoz: los sonidos vienen encendidos, así que silenciarlos
             tiene que estar siempre a mano, en todas las pantallas (ESTILO.md,
             «Los sonidos»). */}
-        <span className="nav-sonido">
-          <InterruptorSonido />
-        </span>
+        <SonidoColgante />
 
         {/* El foro en móvil: solo se ve por debajo de 1200 px, donde se esconde
             el de escritorio (site-nav.css). Solo con sesión: sin ella, ahí van

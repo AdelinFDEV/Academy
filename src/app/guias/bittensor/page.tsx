@@ -9,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideBittensorReparto from "./GuideBittensorReparto";
 import GuideBittensorQuiz from "./GuideBittensorQuiz";
@@ -83,10 +86,11 @@ export default async function BittensorPage() {
           <span className="gbc-hero-gold">y quién se lleva lo que emite cada día</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Bittensor es una red que paga en TAO, su criptomoneda, a quien aporta inteligencia artificial
-          útil.</strong> Se divide en más de cien subredes, cada una con una tarea: responder a un chat, entrenar
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Bittensor es una red que paga en TAO, su criptomoneda, a quien aporta inteligencia artificial
+          útil.</Anotacion></strong> Se divide en <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>más de cien subredes</Anotacion>, cada una con una tarea: responder a un chat, entrenar
           un modelo, alquilar potencia de cálculo. Unos participantes hacen el trabajo, otros lo puntúan, y la red
-          reparte entre ellos unos 3.600 TAO nuevos al día. Como Bitcoin, tiene un tope de 21 millones y
+          reparte entre ellos <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} animar={false} junta>unos 3.600 TAO</Anotacion> nuevos al día. Como Bitcoin, tiene un tope de 21 millones y
           <Termino slug="halving"> halvings</Termino>.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de red y precio a noviembre de 2026</p>
@@ -99,7 +103,7 @@ export default async function BittensorPage() {
 
       {/* ── 1 ── */}
       <section id="que-es" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Lo básico</div>
           <h2 className="gbc-title">Qué es Bittensor y qué problema quiere resolver</h2>
           <div className="gbc-body">
@@ -114,8 +118,8 @@ export default async function BittensorPage() {
               <Termino slug="blockchain"> blockchain</Termino> de Bittensor crea TAO nuevo y lo reparte entre quienes
               han hecho el trabajo más valioso. Es la misma idea que paga a un
               <Termino slug="minero"> minero</Termino> de <Termino slug="bitcoin">Bitcoin</Termino>, con una
-              diferencia de fondo. En Bitcoin se paga por gastar energía en un cálculo inútil; en Bittensor, por
-              producir algo que otro participante considera útil.
+              diferencia de fondo. En Bitcoin se paga por gastar energía en un cálculo inútil; <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>en Bittensor, por
+              producir algo que otro participante considera útil</Anotacion>.
             </p>
             <p>
               Detrás está la Opentensor Foundation, creada por Jacob Steeves y Ala Shaabana. La red arrancó en enero
@@ -124,17 +128,18 @@ export default async function BittensorPage() {
               Polkadot (Substrate), y su moneda se escribe TAO o con la letra griega τ.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">En qué se parece a Render, y en qué no</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">En qué se parece a Render, y en qué no</div>
+            <div className="postit-cuerpo">
               <p>
                 Las dos se meten en el saco de «cripto e IA», pero cobran de forma opuesta. En la red de
                 <Link href="/guias/render"> Render</Link> un cliente encarga un trabajo concreto, lo paga y los
-                <Termino slug="nodo"> nodos</Termino> que lo hacen cobran por él. En Bittensor la mayor parte del pago no viene de clientes: viene de la
-                emisión de la red. Esa diferencia explica casi todo lo bueno y lo malo que leerás abajo.
+                <Termino slug="nodo"> nodos</Termino> que lo hacen cobran por él. En Bittensor <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>la mayor parte del pago no viene de clientes: viene de la
+                emisión de la red</Anotacion>. Esa diferencia explica casi todo lo bueno y lo malo que leerás abajo.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -148,7 +153,7 @@ export default async function BittensorPage() {
               La red no hace una sola cosa. Se divide en <Termino slug="subred">subredes</Termino>, cada una con su
               número y su encargo. La 64, Chutes, sirve modelos de lenguaje a quien paga por usarlos: lo que se
               llama <Termino slug="inferencia">inferencia</Termino>. Otras entrenan modelos entre muchos ordenadores,
-              predicen precios o alquilan tarjetas gráficas. Ojo: aquí una subred no es una blockchain aparte, como en
+              predicen precios o alquilan tarjetas gráficas. Ojo: aquí <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>una subred no es una blockchain aparte</Anotacion>, como en
               Avalanche. Todas viven en la misma cadena; lo que cambia es la tarea. Hay 128, el máximo que admite hoy
               la red, según los datos de la propia cadena a noviembre de 2026.
             </p>
@@ -169,10 +174,11 @@ export default async function BittensorPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              La pieza que lo une todo se llama Yuma. Es el <Termino slug="mecanismo-de-consenso">mecanismo de
+              <SimboloEstudio tipo="estrella" margen semilla={7} animar={false} />
+              La pieza que lo une todo se llama <Anotacion tipo="circle" junta>Yuma</Anotacion>. Es el <Termino slug="mecanismo-de-consenso">mecanismo de
               consenso</Termino> de cada subred, y funciona como un tribunal de jueces. Cada
-              <Termino slug="validador"> validador</Termino> puntúa a los mineros. Yuma junta esas notas, dando más
-              peso a los validadores con más TAO detrás, y recorta las que se apartan mucho de la mayoría. Así, un
+              <Termino slug="validador"> validador</Termino> puntúa a los mineros. <Anotacion tipo="underline" color="var(--lila)" retraso={500}>Yuma junta esas notas, dando más
+              peso a los validadores con más TAO detrás</Anotacion>, y recorta las que se apartan mucho de la mayoría. Así, un
               validador que puntúe a su amigo por encima de lo que opinan los demás no consigue nada.
             </p>
             <p>
@@ -184,7 +190,7 @@ export default async function BittensorPage() {
             <p>
               Desde el 7 de octubre de 2026, con la versión 475 de la red, hay una alternativa. El propietario de una
               subred puede elegir el modo «Null»: puntúa un solo validador, el que tenga más TAO detrás, y la subred
-              admite hasta 2.500 plazas. Es más simple y escala mejor, pero deja la nota en manos de una sola parte.
+              admite hasta 2.500 plazas. Es más simple y escala mejor, pero <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>deja la nota en manos de una sola parte</Anotacion>.
             </p>
           </div>
         </div>
@@ -198,7 +204,7 @@ export default async function BittensorPage() {
           <div className="gbc-body">
             <p>
               Las cuentas de la emisión de Bittensor caben en tres líneas. Sale un bloque cada 12 segundos: 7.200 al
-              día. Desde diciembre de 2025, cada bloque emite 0,5 TAO. Son 3.600 TAO diarios para toda la red, que se
+              día. Desde diciembre de 2025, cada bloque emite <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} junta>0,5 TAO</Anotacion>. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>Son 3.600 TAO diarios para toda la red</Anotacion>, que se
               reparten primero entre subredes y después, dentro de cada una, entre sus tres papeles.
             </p>
             <p>
@@ -216,11 +222,12 @@ export default async function BittensorPage() {
               ¿Y qué decide la parte de cada subred? La demanda de su token: cuánto TAO entra a hacer staking en
               ella. La fórmula exacta cambia a menudo. En noviembre de 2025, Taoflow la ató a las entradas netas de
               TAO; en junio de 2026 se sustituyó por otra basada en el precio medio de ese token. No te quedes con un
-              porcentaje concreto. Quédate con la idea: las subredes compiten por atraer TAO, y la que lo consigue
-              cobra más emisión.
+              porcentaje concreto. Quédate con la idea: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>las subredes compiten por atraer TAO, y la que lo consigue
+              cobra más emisión</Anotacion>.
             </p>
             <p>
-              Un detalle que la calculadora no puede enseñar: muchas subredes no pagan a sus mineros. A 16 de abril
+              <SimboloEstudio tipo="asterisco" color="cielo" margen semilla={12} animar={false} />
+              Un detalle que la calculadora no puede enseñar: muchas subredes <Anotacion tipo="circle" junta animar={false}>no pagan a sus mineros</Anotacion>. A 16 de abril
               de 2026, 67 de las 128 <Termino slug="quema-de-tokens">quemaban</Termino> el 99 % o más del incentivo
               de minería, según datos de Taostats recogidos por FalconX. Con Taoflow les convenía: menos pago a
               mineros era menos venta de su token. Desde junio de 2026, quemar resta a la subred la misma parte de su
@@ -245,16 +252,17 @@ export default async function BittensorPage() {
               febrero de 2025 y le dio esa decisión al mercado.
             </p>
             <p>
-              Desde entonces, cada subred tiene su propio token, llamado alfa, y un
+              Desde entonces, cada subred tiene <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={300}>su propio token, llamado alfa</Anotacion>, y un
               <Termino slug="liquidity-pool"> fondo de liquidez</Termino> que lo cruza con TAO. Funciona como un
               <Termino slug="amm"> AMM</Termino>: si entra TAO, el alfa sube de precio; si sale, baja. Cada token
               alfa tiene, como TAO, un tope de 21 millones y su propia curva de halvings.
             </p>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} />
               Aquí está la parte que más confunde. Hacer <Termino slug="staking">staking</Termino> en una subred ya
-              no es «bloquear TAO»: es cambiarlo por el alfa de esa subred, al precio del fondo en ese momento. Al
-              salir, el cambio se deshace al precio de entonces. Puedes recuperar más TAO del que pusiste o bastante
-              menos, y en un fondo pequeño el <Termino slug="slippage">slippage</Termino> de una operación grande se
+              no es «bloquear TAO»: <Anotacion tipo="underline" color="var(--lila)" retraso={400}>es cambiarlo por el alfa de esa subred, al precio del fondo en ese momento</Anotacion>. Al
+              salir, el cambio se deshace al precio de entonces. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Puedes recuperar más TAO del que pusiste o bastante
+              menos</Anotacion>, y en un fondo pequeño el <Termino slug="slippage">slippage</Termino> de una operación grande se
               nota.
             </p>
           </div>
@@ -290,9 +298,9 @@ export default async function BittensorPage() {
           <h2 className="gbc-title">TAO: 21 millones, halvings y cuándo llega el próximo</h2>
           <div className="gbc-body">
             <p>
-              TAO copia el calendario de Bitcoin con un matiz. El halving no se
-              activa por número de bloques, sino por cantidad emitida: cada vez que se emite la mitad de lo que
-              queda hasta 21 millones, la emisión por bloque se parte por dos.
+              TAO copia el calendario de Bitcoin con un matiz. <Anotacion tipo="underline" color="var(--lila)" retraso={300}>El halving no se
+              activa por número de bloques, sino por cantidad emitida</Anotacion>: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>cada vez que se emite la mitad de lo que
+              queda hasta 21 millones, la emisión por bloque se parte por dos</Anotacion>.
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -300,7 +308,7 @@ export default async function BittensorPage() {
               <thead><tr><th>Tramo</th><th>Se activa al llegar a</th><th>TAO por bloque</th><th>TAO al día</th><th>Cuándo</th></tr></thead>
               <tbody>
                 <tr><td><strong>Inicio</strong></td><td>0</td><td>1</td><td>7.200</td><td>Enero de 2021</td></tr>
-                <tr><td><strong>1.er halving</strong></td><td>10,5 millones</td><td>0,5</td><td>3.600</td><td>15 de diciembre de 2025</td></tr>
+                <tr><td><SimboloEstudio tipo="estrella" className="tao-tabla-estrella" semilla={8} animar={false} /><strong>1.er halving</strong></td><td>10,5 millones</td><td>0,5</td><td>3.600</td><td>15 de diciembre de 2025</td></tr>
                 <tr><td><strong>2.º halving</strong></td><td>15,75 millones</td><td>0,25</td><td>1.800</td><td>Hacia finales de 2029 o 2030 (estimación)</td></tr>
                 <tr><td><strong>3.er halving</strong></td><td>18,375 millones</td><td>0,125</td><td>900</td><td>Años después</td></tr>
               </tbody>
@@ -325,7 +333,7 @@ export default async function BittensorPage() {
               finales de 2029 o 2030», que se retrasará si el reciclaje crece.
             </p>
             <p>
-              ¿Y el precio? El halving no lo sube por sí solo. El día del primero, TAO cayó un 8 %, según Forklog. Su
+              ¿Y el precio? <Anotacion tipo="underline" color="var(--coral)" retraso={300}>El halving no lo sube por sí solo.</Anotacion> El día del primero, TAO <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} animar={false} junta>cayó un 8 %</Anotacion>, según Forklog. Su
               máximo histórico sigue siendo el de marzo de 2024, 757,60 dólares; el 14 de noviembre de 2026 cotizaba a
               193,96 dólares, unos 176 €, con una <Termino slug="market-cap">capitalización</Termino> de 2.270
               millones de dólares, según CoinGecko.
@@ -346,9 +354,11 @@ export default async function BittensorPage() {
           <h2 className="gbc-title">¿Quién usa Bittensor de verdad? La emisión frente a los ingresos</h2>
           <div className="gbc-body">
             <p>
-              Para saber si Bittensor funciona hay que separar dos dineros. Uno es la emisión: TAO nuevo que la red
-              crea y reparte. El otro, lo que pagan clientes de fuera por usar lo que producen las subredes. El
-              primero lo garantiza el protocolo. El segundo es el que demostraría que la red vale algo por sí misma.
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                Para saber si Bittensor funciona hay que separar dos dineros. Uno es la emisión: TAO nuevo que la red
+                crea y reparte. El otro, lo que pagan clientes de fuera por usar lo que producen las subredes. El
+                primero lo garantiza el protocolo. El segundo es el que demostraría que la red vale algo por sí misma.
+              </Anotacion>
             </p>
           </div>
           <div className="tao-balanza">
@@ -365,19 +375,19 @@ export default async function BittensorPage() {
           </div>
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Con esas dos cifras, la emisión vale unas quince veces lo que la red cobra en comisiones. No miden
+              Con esas dos cifras, la emisión vale <Anotacion tipo="circle" junta>unas quince veces</Anotacion> lo que la red cobra en comisiones. No miden
               exactamente lo mismo. La emisión va al precio de hoy, y una parte ni se paga: se quema. Las comisiones
               son de primavera, y los ingresos de cada subred por sus servicios van aparte; algunas los usan para
-              recomprar su propio token. Pero el orden de magnitud es claro. Hoy a los mineros de Bittensor les paga,
-              sobre todo, la emisión.
+              recomprar su propio token. Pero el orden de magnitud es claro. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={400}>Hoy a los mineros de Bittensor les paga,
+              sobre todo, la emisión.</Anotacion>
             </p>
             <p>
               Hay uso real, y conviene no negarlo. Chutes anunció en noviembre de 2025 que había superado el millón de
               dólares de ingresos en 90 días, con más de 10.000 diarios. Sus modelos se ofrecen a través de
               OpenRouter, un mercado de modelos que usan programadores de todo el mundo. Templar entrenaba modelos repartidos
               entre ordenadores de desconocidos, hasta que su equipo se marchó en abril de 2026. Pero el interés está
-              muy concentrado: a 1 de mayo de 2026, solo 9 subredes tenían más de 1.000 cuentas comprando o vendiendo
-              su token en una semana, según FalconX.
+              muy concentrado: a 1 de mayo de 2026, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>solo 9 subredes tenían más de 1.000 cuentas comprando o vendiendo
+              su token en una semana</Anotacion>, según FalconX.
             </p>
             <p>
               Es el mismo dilema que en la red de <Link href="/guias/render">Render</Link>, más acusado. Una
@@ -398,10 +408,11 @@ export default async function BittensorPage() {
           <h2 className="gbc-title">Staking de TAO y tokens alfa: qué pide Hacienda</h2>
           <div className="gbc-body">
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={14} animar={false} />
               Ninguna norma española habla de Bittensor, y la Dirección General de Tributos no ha resuelto ninguna
-              consulta sobre sus tokens alfa. Así que lo que sigue no es un criterio oficial: es la lectura
-              prudente de la academia, aplicando las reglas generales. El problema es que dTAO convierte en
-              operaciones sujetas cosas que parecen simples gestiones de staking.
+              consulta sobre sus tokens alfa. Así que <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>lo que sigue no es un criterio oficial</Anotacion>: es la lectura
+              prudente de la academia, aplicando las reglas generales. El problema es que <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>dTAO convierte en
+              operaciones sujetas cosas que parecen simples gestiones de staking</Anotacion>.
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -409,7 +420,7 @@ export default async function BittensorPage() {
               <thead><tr><th>Lo que haces</th><th>Qué es para Hacienda</th><th>Cómo se calcula</th></tr></thead>
               <tbody>
                 <tr><td><strong>Cobrar recompensas de staking</strong>, en TAO o en alfa</td><td>Rendimiento del capital mobiliario, en la base del ahorro</td><td>Valor en euros el día que las recibes, aunque no vendas</td></tr>
-                <tr><td><strong>Pasar TAO a una subred</strong></td><td>Permuta: cambias TAO por otro criptoactivo</td><td>Ganancia o pérdida entre lo que te costó el TAO y lo que valía al cambiarlo</td></tr>
+                <tr><td><strong>Pasar TAO a una subred</strong></td><td><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} animar={false} junta>Permuta</Anotacion>: cambias TAO por otro criptoactivo</td><td>Ganancia o pérdida entre lo que te costó el TAO y lo que valía al cambiarlo</td></tr>
                 <tr><td><strong>Sacar alfa de una subred</strong></td><td>Otra permuta, ahora de alfa a TAO</td><td>Lo mismo, con el coste de ese alfa</td></tr>
                 <tr><td><strong>Mover tu delegación en el root</strong></td><td>Sin cambio de moneda: no parece haber permuta</td><td>Nada que declarar por el movimiento</td></tr>
               </tbody>
@@ -422,8 +433,8 @@ export default async function BittensorPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Un ejemplo. Compraste 10 TAO a 200 € y hoy valen 250 €. Los pasas a una subred: con ese criterio, tienes una
-              ganancia de 500 € que declarar, aunque no hayas tocado un euro. Si ese alfa luego cae a la mitad, la pérdida existe,
+              Un ejemplo. Compraste 10 TAO a 200 € y hoy valen 250 €. Los pasas a una subred: con ese criterio, <Anotacion tipo="underline" color="var(--lila)" retraso={300}>tienes una
+              ganancia de 500 € que declarar, aunque no hayas tocado un euro</Anotacion>. Si ese alfa luego cae a la mitad, la pérdida existe,
               pero solo cuenta cuando lo cambies de vuelta. Y cada recompensa que cobres se suma aparte, a precio del
               día.
             </p>
@@ -448,13 +459,14 @@ export default async function BittensorPage() {
               fue en julio de 2024.
             </p>
           </div>
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El robo de julio de 2024, y por qué se paró la red</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El robo de julio de 2024, y por qué se paró la red</div>
+            <div className="postit-cuerpo">
               <p>
                 El 2 de julio de 2024 se robaron unos 32.000 TAO, cerca de 8 millones de dólares, de carteras de
-                usuarios. La blockchain no se rompió. Alguien subió al repositorio público de Python una versión falsa
-                de la librería de Bittensor, la 6.12.2. Llevaba un <Termino slug="malware">malware</Termino> que
+                usuarios. La blockchain no se rompió. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Alguien subió al repositorio público de Python una versión falsa
+                de la librería de Bittensor, la 6.12.2.</Anotacion> Llevaba un <Termino slug="malware">malware</Termino> que
                 enviaba la <Termino slug="clave-privada">clave privada</Termino> de quien la usaba a un servidor del
                 atacante.
               </p>
@@ -465,15 +477,17 @@ export default async function BittensorPage() {
                 recogido por The Block el 4 de julio de 2024.
               </p>
             </div>
-          </div>
+          </Postit>
           <div className="gbc-body" style={{ marginTop: 24 }}>
+            <Llave color="coral">
             <ul>
-              <li><strong>Concentración.</strong> En abril de 2026 Covenant, el equipo detrás de tres de las quince mayores subredes, se marchó y cerró sus subredes. Sus alfas cayeron hasta un 40 % al instante y TAO, un 24 % en horas, según FalconX. El modo Null, además, deja la nota de una subred en manos de un solo validador.</li>
+              <li><strong>Concentración.</strong> En abril de 2026 Covenant, el equipo detrás de tres de las quince mayores subredes, se marchó y cerró sus subredes. Sus alfas cayeron hasta un 40 % al instante y <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>TAO, un 24 % en horas</Anotacion>, según FalconX. El modo Null, además, deja la nota de una subred en manos de un solo validador.</li>
               <li><strong>Gobernanza poco clara.</strong> Covenant alegó que el cofundador Jacob Steeves seguía mandando de hecho tras dejar la dirección de la fundación en febrero de 2026; él lo negó. Las reglas de la <Termino slug="gobernanza">gobernanza</Termino> cambian a menudo, con varias versiones de la red en una sola semana.</li>
               <li><strong>Emisión sin clientes.</strong> Si los ingresos reales no crecen, la red reparte TAO nuevo entre quienes lo venden para pagar sus servidores. Es presión vendedora diaria.</li>
               <li><strong>Doble riesgo en las subredes.</strong> El alfa suma su propia <Termino slug="volatilidad">volatilidad</Termino> a la de TAO, y en fondos pequeños la <Termino slug="liquidez">liquidez</Termino> es escasa: en mayo de 2026 solo cuatro aguantaban una compra de un millón de dólares sin que su precio se moviera más de un 2 %.</li>
-              <li><strong>Tu propia seguridad.</strong> El robo de 2024 entró por el ordenador del usuario. Instala software solo desde la fuente oficial y no guardes claves sin cifrar.</li>
+              <li><strong>Tu propia seguridad.</strong> El robo de 2024 entró por el ordenador del usuario. <Anotacion tipo="underline" color="var(--menta)" retraso={500}>Instala software solo desde la fuente oficial</Anotacion> y no guardes claves sin cifrar.</li>
             </ul>
+            </Llave>
           </div>
           <DisclaimerRiesgo variante="general" />
         </div>

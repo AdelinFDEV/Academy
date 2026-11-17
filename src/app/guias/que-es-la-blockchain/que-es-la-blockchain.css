@@ -20,10 +20,9 @@
 
 .gbc-fc-outer { perspective: 1000px; }
 
-.gbc-wrap .gbc-fc { display: grid; width: 100%; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1); cursor: pointer; border: none; background: transparent; padding: 0 0 6px; user-select: none; font: inherit; text-align: left; color: inherit; -webkit-tap-highlight-color: transparent; }
+.gbc-wrap .gbc-fc { display: grid; width: 100%; cursor: pointer; border: none; background: transparent; padding: 0 0 6px; user-select: none; font: inherit; text-align: left; color: inherit; -webkit-tap-highlight-color: transparent; }
 
-/* El giro vive aquí (antes dependía de una regla de globals.css). */
-.gbc-wrap .gbc-fc.flipped { transform: rotateY(180deg); }
+/* El giro, el ladeo con el ratón y el hundido al pulsar: giro.css (useGiro.ts). */
 
 .gbc-wrap .gbc-fc:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; border-radius: 22px; }
 
@@ -39,10 +38,6 @@
 .gbc-fc-def { font-size: 14px; font-weight: 700; color: var(--tinta); line-height: 1.55; flex: 1; }
 
 .gbc-fc-hint { font-family: var(--letra-mano); font-size: 20px; font-weight: 600; line-height: 1.1; color: var(--cielo-o); flex-shrink: 0; }
-
-@media (hover: hover) {
-  .gbc-wrap .gbc-fc:not(.flipped):hover { transform: translateY(-4px) rotate(-1deg); }
-}
 
 @media (max-width: 768px) {
   .gbc-tl-yr { width: 42px; font-size: 12px; }
@@ -302,8 +297,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gbc-wrap .gbc-fc { transition-duration: 0.01s; }
-  .gbc-wrap .gbc-fc:not(.flipped):hover { transform: none; }
   .bc-defi-barra { transition: none; }
   .bc-mine, .bc-mine-hash, .bc-mine-nonce { transition: none; }
   .bc-mine-hallado { animation: none; }

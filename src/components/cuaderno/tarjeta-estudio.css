@@ -14,6 +14,8 @@
   text-align: left;
   cursor: pointer;
   perspective: 1400px;
+  /* Para que la respuesta mida su letra por el ancho de la tarjeta. */
+  container-type: inline-size;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -22,15 +24,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
-}
-
-.te.is-girada .te-giro { transform: rotateY(180deg); }
-
-@media (hover: hover) {
-  .te:hover .te-giro { transform: rotateY(180deg) translateY(-6px); }
-  .te.is-girada:hover .te-giro { transform: rotateY(0deg) translateY(-6px); }
+  /* El giro, el ladeo con el ratón y el hundido al pulsar: giro.css. */
 }
 
 .te:focus-visible { outline: none; }
@@ -84,7 +78,11 @@
 
 .te-respuesta {
   font-family: var(--letra-titular);
-  font-size: 38px;
+  /* Como mucho 38 px, y menos si la tarjeta es estrecha: «Recompensa», a 38 px,
+     no cabía en 250 px y se partía en «Recompe / sa». El 6,7 es lo que ocupa
+     cada px de letra en una palabra de diez letras de Fraunces; 44 px, el
+     relleno de los dos lados. */
+  font-size: min(38px, calc((100cqi - 44px) / 6.7));
   font-weight: 800;
   line-height: 1;
   /* Una palabra más ancha que la tarjeta se parte antes que salirse. */
@@ -113,6 +111,3 @@
 .te--coral { --c: var(--coral); }
 .te--cielo { --c: var(--cielo); }
 
-@media (prefers-reduced-motion: reduce) {
-  .te-giro { transition-duration: 0.01s; }
-}

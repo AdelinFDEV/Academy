@@ -24,9 +24,15 @@
   position: fixed;
   inset: 0;
   z-index: 300;
-  overflow-y: auto;
+  /* Sin scroll nunca: el contenido se compacta y, si aun así no cabe, se
+     escala (BlogMobileMenu, `.mm-hoja`). */
+  overflow: hidden;
   overscroll-behavior: contain;
-  padding: calc(var(--nav-h, 68px) + 1.1rem) clamp(0.85rem, 3vw, 1.5rem) calc(2rem + env(safe-area-inset-bottom, 0px));
+  /* Arriba deja sitio a la etiqueta del altavoz, que cuelga de la barra
+     (site-nav.css, .nav-sonido) y queda por encima de la hoja. */
+  /* Arriba, solo la barra y un respiro: el buscador se coloca al lado de la
+     etiqueta del altavoz (que cuelga a la izquierda), no debajo. */
+  padding: calc(var(--nav-h, 68px) + 14px) clamp(0.85rem, 3vw, 1.5rem) calc(14px + env(safe-area-inset-bottom, 0px));
   /* Los puntos de una libreta, muy suaves. */
   background:
     radial-gradient(circle, var(--gris) 1.3px, transparent 1.6px) 0 0 / 24px 24px,
@@ -36,7 +42,9 @@
   color-scheme: light;
   scrollbar-width: thin;
   scrollbar-color: var(--gris-o) transparent;
-  animation: mm-entrar 0.22s ease both;
+  /* La hoja se despliega en círculo desde el botón del menú (--mm-x, --mm-y,
+     los pone BlogMobileMenu). Ver «La apertura» más abajo. */
+  animation: mm-desplegar 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* La tira de papel de la barra sigue a la vista sobre el menú: la barra se
@@ -62,9 +70,6 @@
   .mm::before { border-radius: 0 0 22px 22px; }
 }
 
-@keyframes mm-entrar {
-  from { opacity: 0; }
-}
 
 .mm-cuerpo {
   display: grid;
@@ -191,14 +196,6 @@
   list-style: none;
 }
 
-.mm-lista > li {
-  animation: mm-subir 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  animation-delay: calc(0.03s + var(--i, 0) * 0.035s);
-}
-
-@keyframes mm-subir {
-  from { opacity: 0; transform: translateY(12px) scale(0.97); }
-}
 
 /* ── Cada destino: una fila-tecla de papel ────────────────────────────────── */
 
@@ -381,7 +378,6 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  animation: mm-subir 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
 }
 
 .mm-cuenta {
@@ -521,6 +517,28 @@
   font-weight: 600;
   line-height: 1.55;
   color: var(--tinta-2);
+}
+
+/* ── Tu cuenta, como ficha de alumno ──
+   El mismo diseño que el desplegable de la barra (site-nav.css, «El
+   desplegable: una ficha de alumno»), que da las piezas: aquí solo se ajusta
+   el marco. Las filas y el saludo esperan a que entre el panel lateral. */
+.mm-cuenta.mm-ficha {
+  gap: 0;
+  padding: 0 0.55rem 0.55rem;
+  overflow: hidden;
+  border-radius: 22px;
+  box-shadow: 0 0 0 2px var(--gris), 0 6px 0 var(--gris-o), 0 16px 24px -18px rgba(29, 27, 51, 0.4);
+}
+
+.mm-ficha .nav-saludo-hola { animation-delay: 0.6s; }
+.mm-ficha .nav-saludo-lista > * { animation-delay: calc(0.42s + var(--i, 0) * 0.06s); }
+.mm-ficha .nav-saludo-icono { animation-delay: calc(0.54s + var(--i, 0) * 0.06s); }
+
+/* En el móvil y la tableta, las filas de dos en dos; cerrar sesión, sola abajo. */
+@media (max-width: 999px) {
+  .mm-ficha .nav-saludo-lista { display: grid; grid-template-columns: 1fr 1fr; }
+  .mm-ficha .nav-saludo-salir-caja { grid-column: 1 / -1; }
 }
 
 /* «Crear cuenta gratis» y «Ya tengo cuenta» son teclas (Tecla.tsx). */
@@ -737,10 +755,119 @@
   color: #b9b7d3;
 }
 
+/* ── La apertura (17-11-2026) ─────────────────────────────────────────────
+   Pedida por el admin: «más personalidad», satisfactoria y acogedora. Abrir el
+   menú es abrir el cuaderno:
+    1. La hoja se despliega en círculo desde el botón del menú, rápida al
+       principio y frenando al final, con una sombra suave en el borde.
+    2. El buscador cae en su sitio.
+    3. Las filas se reparten como tarjetas sobre la mesa: una a una, cada una
+       ladeada hacia un lado, se pasan un poco al caer y asientan.
+    4. El icono de cada fila salta (escala con muelle) cuando su fila ya está.
+    5. Las notas a mano de los grupos se escriben de izquierda a derecha.
+    6. El panel de la cuenta entra por la derecha, como una hoja suelta.
+   Al cerrar se recoge todo hacia el botón en 0,32 s (`is-cerrando`).
+
+   Las entradas usan `backwards`, no `both`: al acabar devuelven el
+   `transform` a su regla normal, y el ladeo del icono con el ratón encima
+   sigue funcionando. */
+
+@keyframes mm-desplegar {
+  from { clip-path: circle(20px at var(--mm-x, 100%) var(--mm-y, 0px)); }
+  to { clip-path: circle(150vmax at var(--mm-x, 100%) var(--mm-y, 0px)); }
+}
+
+@keyframes mm-recoger {
+  from { clip-path: circle(150vmax at var(--mm-x, 100%) var(--mm-y, 0px)); }
+  to { clip-path: circle(20px at var(--mm-x, 100%) var(--mm-y, 0px)); }
+}
+
+.mm-buscar { animation: mm-caer 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards; }
+
+@keyframes mm-caer {
+  from { opacity: 0; transform: translateY(-14px); }
+}
+
+/* Cada fila, una tarjeta repartida: la par se ladea a la izquierda y la
+   impar a la derecha. */
+.mm-lista > li {
+  --ladeo: -4deg;
+  animation: mm-repartir 0.62s backwards;
+  animation-delay: calc(0.16s + var(--i, 0) * 0.05s);
+}
+
+.mm-lista > li:nth-child(even) { --ladeo: 3.5deg; }
+
+@keyframes mm-repartir {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px) rotate(var(--ladeo)) scale(0.9);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(4px) rotate(calc(var(--ladeo) * -0.3)) scale(1.02);
+    animation-timing-function: ease-in-out;
+  }
+  80% { transform: translateY(-1px) rotate(calc(var(--ladeo) * 0.1)); }
+  100% { transform: none; }
+}
+
+/* El icono salta cuando su fila ya ha caído. */
+.mm-item-icono {
+  animation: mm-saltar 0.5s cubic-bezier(0.34, 1.9, 0.5, 1) backwards;
+  animation-delay: calc(0.42s + var(--i, 0) * 0.05s);
+}
+
+@keyframes mm-saltar {
+  from { transform: scale(0.2) rotate(-28deg); }
+}
+
+/* La nota a mano se escribe sola, de izquierda a derecha. */
+.mm-grupo-titulo { animation: mm-caer 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.14s backwards; }
+.mm-grupo-nota { animation: mm-escribir 0.7s cubic-bezier(0.45, 0, 0.25, 1) 0.36s backwards; }
+.mm-grupo + .mm-grupo .mm-grupo-titulo { animation-delay: 0.3s; }
+.mm-grupo + .mm-grupo .mm-grupo-nota { animation-delay: 0.52s; }
+
+@keyframes mm-escribir {
+  from { clip-path: inset(-20% 100% -20% 0); }
+  to { clip-path: inset(-20% -4% -20% 0); }
+}
+
+/* El panel de la cuenta: una hoja suelta que entra por la derecha. */
+.mm-lado { animation: mm-hoja 0.66s cubic-bezier(0.34, 1.4, 0.64, 1) 0.24s backwards; }
+
+@keyframes mm-hoja {
+  from { opacity: 0; transform: translateX(40px) rotate(4deg); }
+}
+
+/* ── El cierre: todo se recoge hacia el botón ── */
+.mm.is-cerrando {
+  pointer-events: none;
+  animation: mm-recoger 0.32s cubic-bezier(0.55, 0, 0.75, 0.2) both;
+}
+
+.mm.is-cerrando .mm-lista > li,
+.mm.is-cerrando .mm-lado,
+.mm.is-cerrando .mm-buscar {
+  animation: mm-irse 0.2s ease-in both;
+}
+
+@keyframes mm-irse {
+  to { opacity: 0; transform: translateY(-10px) scale(0.97); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mm,
+  .mm.is-cerrando,
+  .mm-buscar,
   .mm-lista > li,
-  .mm-lado { animation: none; }
+  .mm.is-cerrando .mm-lista > li,
+  .mm-item-icono,
+  .mm-grupo-titulo,
+  .mm-grupo-nota,
+  .mm-lado,
+  .mm.is-cerrando .mm-lado { animation: none; }
 
   .mm-item,
   .mm-item-icono,
@@ -752,4 +879,137 @@
   .mm-item:hover .mm-item-icono,
   .mm-item:hover .mm-item-flecha,
   .mm-premium:hover .mm-premium-ir svg { transform: none; }
+}
+
+
+/* ══ Sin scroll: todo cabe en la pantalla (17-11-2026) ═════════════════════
+   Pedido por el admin: «el menú nunca debe tener scroll, siempre debe
+   adaptarse a la pantalla». Primero se compacta lo que sobraba (buscador al
+   lado del altavoz, redes en una fila, Premium más corto, filas más bajas) y,
+   si aun así no cabe, BlogMobileMenu escala `.mm-hoja` con `zoom`. */
+
+.mm-hoja { transform-origin: top center; }
+
+/* El buscador, centrado y más estrecho: así no choca con la etiqueta del
+   altavoz, que cuelga a la izquierda. En el móvil, a su lado. */
+.mm-buscar {
+  max-width: 560px;
+  margin: 0 auto 1rem;
+}
+
+/* El altavoz dentro del menú: solo en el móvil, donde la etiqueta colgante
+   no se ve con el menú abierto (site-nav.css). Naranja pastel encendido y gris
+   apagado, como la etiqueta. */
+.mm-sonido { display: none; }
+
+@media (max-width: 899px) {
+  .mm-buscar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: none;
+    margin: 0 0 0.9rem;
+  }
+
+  .mm-buscar .guide-search { flex: 1; min-width: 0; }
+
+  .mm-sonido { display: inline-flex; flex: none; }
+
+  .mm-sonido .tecla--blanca {
+    --c: color-mix(in srgb, var(--naranja) 30%, var(--naranja-s));
+    --o: color-mix(in srgb, var(--naranja) 70%, var(--naranja-s));
+    --t: var(--naranja-o);
+    --h: 4px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .mm-sonido .tecla--blanca[aria-pressed="true"] {
+    --c: var(--gris);
+    --o: var(--gris-o);
+    --t: var(--tinta-3);
+  }
+}
+
+.mm-nav { gap: 1rem 2rem; }
+.mm-grupo-cabecera { margin-bottom: 0.55rem; }
+.mm-lista { gap: 9px; }
+
+.mm-item {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.mm-item-icono { width: 40px; height: 40px; border-radius: 12px; }
+
+.mm-lado { gap: 0.75rem; }
+
+/* Las redes, en una fila y solo con su nombre. */
+.mm-redes { grid-template-columns: 1fr 1fr; gap: 10px; }
+.mm-red { gap: 0.55rem; padding: 0.55rem 0.6rem 0.55rem 0.55rem; border-radius: 16px; }
+.mm-red-icono { width: 36px; height: 36px; border-radius: 11px; }
+.mm-red-texto strong { font-size: 0.85rem; }
+.mm-red-texto small,
+.mm-red-flecha { display: none; }
+
+/* Premium, más corto: sin la nota pequeña y con el título en menos líneas. */
+.mm-premium { gap: 0.45rem; padding: 0.95rem 1.1rem 0.9rem; }
+.mm-premium-titulo { font-size: 1.02rem; }
+.mm-premium-precio { font-size: 1.35rem; }
+.mm-premium-nota { display: none; }
+
+/* La cuenta sin sesión, más corta. */
+.mm-cuenta { gap: 0.65rem; padding: 0.95rem 1.05rem 0.85rem; }
+.mm-cuenta-titulo { font-size: 1.15rem; }
+.mm-cuenta-texto { margin: -0.3rem 0 0; font-size: 0.86rem; line-height: 1.45; }
+
+/* En el móvil, las teclas de tres en fondo, más bajas. */
+@media (max-width: 719px) {
+  .mm-nav { gap: 0.85rem; }
+  .mm-lista { gap: 8px; }
+  .mm-item { gap: 0.3rem; padding: 0.5rem 0.3rem 0.45rem; }
+  .mm-item-icono { width: 34px; height: 34px; border-radius: 10px; }
+  .mm-item-icono svg { width: 16px; height: 16px; }
+  .mm-item-nombre { font-size: 0.8rem; }
+  .mm-cuerpo { gap: 0.9rem; }
+  .mm-premium-titulo { display: none; }
+}
+
+/* Pantallas bajas (portátiles pequeños, móviles en horizontal): sin la línea
+   de explicación de cada fila. */
+@media (max-height: 760px) and (min-width: 720px) {
+  .mm-item-linea { display: none; }
+}
+
+/* ══ En el ordenador, la apertura y el cierre algo más lentos ═════════════
+   Pedido por el admin el 17-11-2026: en pantalla grande la animación pasaba
+   tan rápido que no se apreciaba. Con ratón y pantalla ancha va un 40 % más
+   pausada; en el móvil sigue ágil. El cierre dura 0,44 s (BlogMobileMenu
+   espera 460 ms antes de quitar el menú). */
+@media (min-width: 1000px) and (hover: hover) {
+  .mm { animation-duration: 0.85s; }
+  .mm-buscar { animation-duration: 0.6s; animation-delay: 0.16s; }
+
+  .mm-lista > li {
+    animation-duration: 0.78s;
+    animation-delay: calc(0.24s + var(--i, 0) * 0.07s);
+  }
+
+  .mm-item-icono { animation-delay: calc(0.6s + var(--i, 0) * 0.07s); }
+
+  .mm-grupo-titulo { animation-duration: 0.55s; animation-delay: 0.2s; }
+  .mm-grupo-nota { animation-duration: 0.9s; animation-delay: 0.5s; }
+  .mm-grupo + .mm-grupo .mm-grupo-titulo { animation-delay: 0.4s; }
+  .mm-grupo + .mm-grupo .mm-grupo-nota { animation-delay: 0.72s; }
+
+  .mm-lado { animation-duration: 0.85s; animation-delay: 0.34s; }
+  .mm-ficha .nav-saludo-hola { animation-delay: 0.85s; }
+  .mm-ficha .nav-saludo-lista > * { animation-delay: calc(0.6s + var(--i, 0) * 0.07s); }
+  .mm-ficha .nav-saludo-icono { animation-delay: calc(0.74s + var(--i, 0) * 0.07s); }
+
+  .mm.is-cerrando { animation-duration: 0.44s; }
+
+  .mm.is-cerrando .mm-lista > li,
+  .mm.is-cerrando .mm-lado,
+  .mm.is-cerrando .mm-buscar { animation-duration: 0.28s; animation-delay: 0s; }
 }

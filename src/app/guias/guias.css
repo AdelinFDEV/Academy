@@ -660,15 +660,7 @@
 .gbc-wrap .gfc-giro {
   display: grid;
   height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
-}
-
-.gbc-wrap .gfc.is-girada .gfc-giro { transform: rotateY(180deg); }
-
-@media (hover: hover) {
-  .gbc-wrap .gfc:hover .gfc-giro { transform: rotateY(180deg) translateY(-6px); }
-  .gbc-wrap .gfc.is-girada:hover .gfc-giro { transform: rotateY(0deg) translateY(-6px); }
+  /* El giro, el ladeo con el ratón y el hundido al pulsar: giro.css. */
 }
 
 .gbc-wrap .gfc-cara {
@@ -1847,7 +1839,4 @@
   .gbc-wrap .gbc-rel-card:hover .gbc-rel-hoja--1,
   .gbc-wrap .gbc-rel-card:hover .gbc-rel-hoja--2,
   .gan-tarjeta:hover .gan-figura { transform: none; }
-  .gbc-wrap .gfc:hover .gfc-giro { transform: none; }
-  .gbc-wrap .gfc.is-girada .gfc-giro,
-  .gbc-wrap .gfc.is-girada:hover .gfc-giro { transform: rotateY(180deg); }
 }

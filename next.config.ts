@@ -58,6 +58,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Solo en desarrollo: abrir `npm run dev` desde el móvil, en la misma wifi
+  // (http://192.168.1.97:3001). Sin esto, Next bloquea sus scripts a esa
+  // dirección y la página carga sin JavaScript ni animaciones. Si el router le
+  // da otra IP al ordenador, se cambia aquí. En producción no hace nada.
+  allowedDevOrigins: ["192.168.1.97"],
   async headers() {
     return [
       {

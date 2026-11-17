@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { sonar } from "@/lib/sonidos";
+import { useGiro } from "./useGiro";
 import "./tarjeta-estudio.css";
 
 export type ColorTarjeta = "naranja" | "azul" | "menta" | "lila" | "amarillo" | "coral" | "cielo";
@@ -9,7 +8,9 @@ export type ColorTarjeta = "naranja" | "azul" | "menta" | "lila" | "amarillo" | 
 /**
  * La tarjeta de estudio del estilo «Cuaderno de estudio»: la pregunta delante y
  * la respuesta detrás. Se gira al pulsarla (también con el teclado: es un
- * botón) y, en escritorio, al pasar el ratón. Suena a papel al girar.
+ * botón); con el ratón encima se levanta y se ladea, pero no gira. El giro,
+ * su sonido y su vibración son los de todas las tarjetas de la web
+ * (useGiro.ts y giro.css).
  *
  * El texto de las dos caras está en el HTML desde el principio: lo leen Google
  * y los lectores de pantalla aunque nadie la gire.
@@ -29,19 +30,16 @@ export default function TarjetaEstudio({
   color?: ColorTarjeta;
   className?: string;
 }) {
-  const [girada, setGirada] = useState(false);
+  const { girada, alternar, claseGiro } = useGiro();
 
   return (
     <button
       type="button"
-      className={`te te--${color}${girada ? " is-girada" : ""}${className ? ` ${className}` : ""}`}
+      className={`te giro-zona te--${color}${className ? ` ${className}` : ""}`}
       aria-pressed={girada}
-      onClick={() => {
-        setGirada((g) => !g);
-        sonar("girar");
-      }}
+      onClick={alternar}
     >
-      <span className="te-giro">
+      <span className={`te-giro ${claseGiro}`}>
         <span className="te-cara te-frente">
           <span className="te-tema">{tema}</span>
           <span className="te-pregunta">{pregunta}</span>

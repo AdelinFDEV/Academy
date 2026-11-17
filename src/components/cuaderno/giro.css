@@ -1,0 +1,131 @@
+/* El giro de una tarjeta (useGiro.ts): UNA sola animación para todas las
+   tarjetas que se dan la vuelta en la web —la de estudio (TarjetaEstudio), las
+   de las guías (GuideFlipCards) y las fichas de la guía de blockchain
+   (GuideFlashcards)—, para que todas se sientan igual (pedido por el admin el
+   17-11-2026). Antes cada una tenía su transición, y las tres giraban también
+   al pasar el ratón, así que un clic con el ratón encima la devolvía al sitio.
+
+   Cómo se monta:
+    · `.giro-zona` en el botón (lo que se pulsa y sobre lo que pasa el ratón).
+    · `.giro` en lo que rota, con sus dos caras como hijos directos: la de
+      delante primero y la de detrás la última, ya girada 180° y con
+      `backface-visibility: hidden`. Puede ser el mismo elemento que la zona.
+    · `is-girada` e `is-vuelta` las pone useGiro.
+
+   Cómo se siente:
+    · Con el ratón encima se levanta y se ladea un poco: invita, no gira.
+    · Al pulsar se hunde un instante, como una tecla.
+    · Al soltar se da la vuelta como una carta de verdad: se levanta de la
+      mesa, crece un poco a mitad de giro, se pasa de largo y asienta.
+    · Un brillo cruza la cara que llega, como papel satinado bajo una lámpara.
+
+   El ladeo y el hundido van con `translate`, `rotate` y `scale` (propiedades
+   sueltas), que se suman al `transform` del giro sin pisarlo. */
+
+.giro {
+  --giro-muelle: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+  transition:
+    translate 0.3s var(--giro-muelle),
+    rotate 0.3s var(--giro-muelle),
+    scale 0.14s ease-out;
+}
+
+/* Las caras recortan su brillo. `:where` para no pisar la posición de quien
+   ya las coloca a su manera (TarjetaEstudio las pone en absoluto). */
+:where(.giro > *) { position: relative; }
+.giro > * { overflow: hidden; }
+
+/* ── El ratón encima: se levanta y se ladea ── */
+@media (hover: hover) {
+  .giro-zona:hover .giro,
+  .giro.giro-zona:hover {
+    translate: 0 -8px;
+    rotate: y -10deg;
+  }
+
+  .giro-zona:hover .giro.is-girada,
+  .giro.giro-zona.is-girada:hover { rotate: y 10deg; }
+}
+
+/* ── El dedo o el clic: se hunde un instante ── */
+.giro-zona:active .giro,
+.giro.giro-zona:active {
+  translate: 0 3px;
+  rotate: y 0deg;
+  scale: 0.96;
+  transition-duration: 0.07s;
+}
+
+/* ── La vuelta ── */
+.giro.is-girada {
+  transform: rotateY(180deg);
+  animation: giro-ida 0.72s both;
+}
+
+.giro.is-vuelta { animation: giro-vuelta 0.72s both; }
+
+/* Cada tramo con su curva: sale con decisión, vuela, y asienta despacio. */
+@keyframes giro-ida {
+  0% { transform: rotateY(0deg); animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1); }
+  42% { transform: translateY(-24px) rotateZ(-2deg) scale(1.07) rotateY(100deg); animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+  74% { transform: translateY(2px) rotateZ(0.6deg) scale(0.99) rotateY(190deg); animation-timing-function: ease-in-out; }
+  88% { transform: translateY(-1px) scale(1.005) rotateY(177deg); animation-timing-function: ease-in-out; }
+  100% { transform: rotateY(180deg); }
+}
+
+/* Sigue girando hacia el mismo lado (de 180° a 360°): una carta no deshace
+   el camino, se le da otra vuelta. */
+@keyframes giro-vuelta {
+  0% { transform: rotateY(180deg); animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1); }
+  42% { transform: translateY(-24px) rotateZ(2deg) scale(1.07) rotateY(280deg); animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+  74% { transform: translateY(2px) rotateZ(-0.6deg) scale(0.99) rotateY(370deg); animation-timing-function: ease-in-out; }
+  88% { transform: translateY(-1px) scale(1.005) rotateY(357deg); animation-timing-function: ease-in-out; }
+  100% { transform: rotateY(360deg); }
+}
+
+/* ── El brillo de la cara que llega ── */
+.giro > *::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.giro.is-girada > :last-child::after,
+.giro.is-vuelta > :first-child::after {
+  animation: giro-brillo 0.6s 0.3s ease-out both;
+}
+
+@keyframes giro-brillo {
+  0% { background-position: 130% 0; opacity: 0; }
+  15% { opacity: 1; }
+  100% { background-position: -40% 0; opacity: 0; }
+}
+
+/* Con «reducir movimiento»: la tarjeta cambia de cara sin volar ni brillar. */
+@media (prefers-reduced-motion: reduce) {
+  .giro { transition: none; }
+  .giro.is-girada,
+  .giro.is-vuelta { animation: none; }
+  .giro > *::after { display: none; }
+
+  .giro-zona:hover .giro,
+  .giro.giro-zona:hover,
+  .giro-zona:active .giro,
+  .giro.giro-zona:active {
+    translate: none;
+    rotate: none;
+    scale: none;
+  }
+}

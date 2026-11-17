@@ -89,7 +89,7 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
   const preguntas = PREGUNTAS_FRECUENTES.filter((p) => p.portada);
 
   return (
-    <section className="pf" aria-labelledby={isPremium ? "pf-faq-titulo" : "pf-titulo"}>
+    <section id="premium" className="pf" aria-labelledby={isPremium ? "pf-faq-titulo" : "pf-titulo"}>
       {/* ── 1 · Premium, en su bloque de tinta ─────────────────────────── */}
       {isPremium ? (
         /* A quien ya es Premium no se le vende lo que ya tiene (13-11-2026):

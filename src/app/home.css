@@ -8,11 +8,27 @@
    el hero, en src/components/hero-cuaderno.css.
    ═══════════════════════════════════════════════════════════ */
 
-/* El fondo lavanda de toda la portada (el de toda la web, globals.css). */
+/* El fondo de toda la portada: el lavanda de la web (globals.css) con los
+   puntos de una libreta, muy suaves, los mismos del menú (menu-movil.css).
+   Sin ellos la portada era un lavanda liso de arriba abajo (repaso del
+   17-11-2026). Las secciones que pintaban su propio lavanda encima lo sueltan
+   aquí, para que los puntos corran seguidos de una a otra. */
 .home-page {
-  background: var(--fondo);
+  background:
+    radial-gradient(circle, var(--gris) 1.3px, transparent 1.7px) 0 0 / 26px 26px,
+    var(--fondo);
   color: var(--tinta);
 }
+
+.home-page > .hc,
+.home-page > .gh,
+.home-page > .rg,
+.home-page > .ch,
+.home-page > .fpo,
+.home-page > .ytl { background: transparent; }
+
+/* Las pestañas del hero llevan a estas secciones. */
+.home-page > section[id] { scroll-margin-top: 12px; }
 
 /* ══════════════════════════════════════════════════════════════════════════
    GUÍAS (GuidesHomeSection.tsx)
@@ -948,3 +964,10 @@
     animation: none;
   }
 }
+
+/* ── El diccionario: lo que sobra de alto, alrededor del fichero ──
+   Las dos tarjetas miden lo mismo y la de la calculadora es más alta: en la
+   del diccionario lo que sobraba quedaba en blanco justo encima de la tecla
+   (repaso del 17-11-2026). Ahora se reparte encima y debajo de las fichas. */
+.rg-dic .rg-fichero { margin-block: auto; }
+.rg-dic .rg-cta { margin-top: 0; }

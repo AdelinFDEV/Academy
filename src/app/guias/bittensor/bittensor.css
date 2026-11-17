@@ -151,3 +151,11 @@
   .tao-epocas { grid-template-columns: 1fr; gap: 8px; }
   .tao-balanza strong { font-size: 28px; }
 }
+
+/* ══ El cuaderno de quien la ha estudiado (17-11-2026) ══
+   Marcas de estudio (ESTILO.md; referencia: la guía de Ethereum). Lo común
+   (pósits al margen, estrella de la respuesta, símbolos en el móvil) está en
+   ../guias.css. */
+
+/* El primer halving, el que ya pasó, con su estrella en la tabla. */
+.tao-tabla-estrella { --se-tam: 1.1em; margin-right: 0.3em; vertical-align: -0.2em; }

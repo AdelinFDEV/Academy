@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { alVerse } from "@/lib/alVerse";
 
 /**
  * El envoltorio que hace que un símbolo dibujado (SimboloEstudio, Llave) se
@@ -30,19 +31,18 @@ export default function TrazoVisible({
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     el.dataset.trazo = "espera";
     let espera = 0;
-    const observador = new IntersectionObserver(
-      (entradas) => {
-        if (!entradas.some((e) => e.isIntersecting)) return;
-        observador.disconnect();
+    // Cuando se ve de verdad, no cuando roza la pantalla (src/lib/alVerse.ts).
+    const cancelar = alVerse(
+      el,
+      () => {
         espera = window.setTimeout(() => {
           el.dataset.trazo = "dibuja";
         }, retraso);
       },
-      { threshold: 0.5 },
+      { umbral: 0.5 },
     );
-    observador.observe(el);
     return () => {
-      observador.disconnect();
+      cancelar();
       window.clearTimeout(espera);
       delete el.dataset.trazo;
     };

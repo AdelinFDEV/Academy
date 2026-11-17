@@ -9,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideRainProporciones from "./GuideRainProporciones";
 import GuideRainQuiz from "./GuideRainQuiz";
@@ -119,10 +122,11 @@ export default async function RainPage() {
           <span className="gbc-hero-gold">y qué riesgos tiene</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Rain es un protocolo para crear <Termino slug="mercado-de-prediccion">mercados de predicción</Termino> y
-          apostar en ellos, y RAIN es su token.</strong> Funciona en Arbitrum, una red construida sobre Ethereum, y lo emite una fundación
-          registrada en Panamá en 2025. A 14 de noviembre de 2026, el token capitaliza unos 2.640 millones de dólares:
-          unas 400 veces lo depositado en el protocolo. Y cotiza un 81 % por debajo de su máximo de agosto.
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Rain es un protocolo para crear <Termino slug="mercado-de-prediccion">mercados de predicción</Termino> y
+          apostar en ellos, y RAIN es su token.</Anotacion></strong> Funciona en Arbitrum, una red construida sobre Ethereum, y lo emite una fundación
+          registrada en Panamá en 2025. A 14 de noviembre de 2026, el token capitaliza unos 2.640 millones de dólares: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={1300}>unas
+          400 veces lo depositado en el protocolo</Anotacion>. Y cotiza <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>un 81 % por debajo de su máximo de agosto</Anotacion>.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de mercado: CoinGecko y DefiLlama</p>
         <div className="gbc-hero-pills">
@@ -139,7 +143,7 @@ export default async function RainPage() {
           <h2 className="gbc-title">Qué es Rain crypto, en pocas palabras</h2>
           <div className="gbc-body">
             <p>
-              Un mercado de predicción es una apuesta con precio. Alguien
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>Un mercado de predicción es una apuesta con precio.</Anotacion> Alguien
               plantea una pregunta con respuesta futura («¿ganará tal equipo la final?») y la gente compra el «sí» o el
               «no». Quien acierta cobra; quien falla pierde lo apostado. El precio de cada respuesta refleja qué
               probabilidad le da el mercado.
@@ -153,7 +157,7 @@ export default async function RainPage() {
               <Termino slug="stablecoin"> stablecoins</Termino> como USDT.
             </p>
             <p>
-              El token RAIN es otra cosa. No hace falta tenerlo para apostar, según el propio libro blanco del
+              El token RAIN es otra cosa. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>No hace falta tenerlo para apostar</Anotacion>, según el propio libro blanco del
               proyecto, el documento oficial que lo describe. Se presenta como un <Termino slug="token-de-gobernanza">token de gobernanza</Termino>: servirá
               para votar las decisiones del protocolo. Y una parte de las comisiones se usa para comprarlo en el
               mercado y destruirlo.
@@ -191,6 +195,7 @@ export default async function RainPage() {
           <h2 className="gbc-title">¿Qué Rain? Tres empresas con el mismo nombre</h2>
           <div className="gbc-body">
             <p>
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} />
               Si buscas «Rain crypto», Google te mezcla al menos tres cosas distintas. Confundirlas tiene
               consecuencias: puedes leer una mala noticia que no va contigo, o comprar el token equivocado.
             </p>
@@ -212,14 +217,13 @@ export default async function RainPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Ese robo es el ejemplo perfecto. Varios medios lo titularon «exploit de Rain», y quien leyera solo el
-              titular podía pensar que había caído el protocolo de esta guía. No fue así: la víctima fue la otra
-              empresa con el mismo nombre.
+              titular podía pensar que había caído el protocolo de esta guía. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>No fue así: la víctima fue la otra
+              empresa con el mismo nombre.</Anotacion>
             </p>
             <p>
               Con el símbolo pasa lo mismo: hay otros tokens que también se abrevian RAIN en otras redes. El único
-              de este proyecto es el contrato de Arbitrum que termina en <span className="rain-mono">…099d</span>.
-              Antes de comprar en un exchange o en una
-              <Termino slug="dex"> DEX</Termino>, compara la dirección completa con la de la tabla anterior.
+              de este proyecto es el contrato de Arbitrum que termina en <Anotacion tipo="circle" junta retraso={500}><span className="rain-mono">…099d</span></Anotacion>. <SimboloEstudio tipo="check" color="menta" className="rain-check" animar={false} />Antes de comprar en un exchange o en una
+              <Termino slug="dex"> DEX</Termino>, <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>compara la dirección completa con la de la tabla anterior</Anotacion>.
             </p>
           </div>
         </div>
@@ -232,8 +236,8 @@ export default async function RainPage() {
           <h2 className="gbc-title">Cómo funciona un mercado de predicción en Rain</h2>
           <div className="gbc-body">
             <p>
-              Cada respuesta posible tiene sus propias acciones. Una acción paga 1 dólar si su respuesta resulta
-              cierta y 0 si no. Por eso su precio, entre 0 y 1, se lee como una probabilidad.
+              Cada respuesta posible tiene sus propias acciones. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>Una acción paga 1 dólar si su respuesta resulta
+              cierta y 0 si no.</Anotacion> Por eso su precio, entre 0 y 1, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>se lee como una probabilidad</Anotacion>.
             </p>
             <p>
               Un ejemplo con números. Un mercado pregunta si una moneda superará cierto precio antes de fin de año.
@@ -249,9 +253,10 @@ export default async function RainPage() {
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Quién decide qué ha pasado</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Quién decide qué ha pasado</div>
+            <div className="postit-cuerpo">
               <p>
                 Es la pieza delicada de cualquier mercado de predicción. En Rain, el resultado lo declara quien creó
                 el mercado o, en los mercados públicos, un <Termino slug="oraculo">oráculo</Termino> de inteligencia
@@ -259,12 +264,12 @@ export default async function RainPage() {
               </p>
               <p>
                 Si no estás de acuerdo, puedes abrir una disputa, pero el plazo es corto: la documentación técnica
-                habla de una hora. Tienes que depositar una garantía: el 0,1 % del dinero del mercado, con un máximo
+                habla de <Anotacion tipo="circle" junta animar={false}>una hora</Anotacion>. Tienes que depositar una garantía: el 0,1 % del dinero del mercado, con un máximo
                 de 1.000 dólares. Primero vuelve a decidir una inteligencia artificial. Si se recurre, votan
-                oráculos humanos y su decisión es definitiva. Si no llevabas razón, pierdes la garantía.
+                oráculos humanos y su decisión es definitiva. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Si no llevabas razón, pierdes la garantía.</Anotacion>
               </p>
             </div>
-          </div>
+          </Postit>
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
@@ -289,8 +294,8 @@ export default async function RainPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Un 5 % es mucho para un apostante frecuente. Si reinviertes el mismo dinero en cinco mercados seguidos,
-              las comisiones se llevan cerca del 23 % de lo que pusiste al principio. Es el precio de que los creadores y quienes aportan liquidez tengan un incentivo para hacerlo.
+              Un 5 % es mucho para un apostante frecuente. Si reinviertes el mismo dinero en cinco mercados
+              seguidos, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>las comisiones se llevan cerca del 23 % de lo que pusiste al principio</Anotacion>. Es el precio de que los creadores y quienes aportan liquidez tengan un incentivo para hacerlo.
             </p>
           </div>
         </div>
@@ -316,19 +321,21 @@ export default async function RainPage() {
               29 de julio de 2026, y en ella se abstuvieron la fundación y el equipo.
             </p>
             <p>
-              <strong>Ningún derecho económico.</strong> El mismo libro blanco es tajante: RAIN no da propiedad, ni
-              beneficios, ni derecho a reembolso. Tampoco es necesario para apostar, depositar o crear mercados.
+              <Anotacion tipo="bracket" lados="left" color="var(--lila)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                <strong>Ningún derecho económico.</strong> El mismo libro blanco es tajante: RAIN no da propiedad, ni
+                beneficios, ni derecho a reembolso. Tampoco es necesario para apostar, depositar o crear mercados.
+              </Anotacion>
             </p>
             <p>
               <strong>El «Trading Power».</strong> La web del proyecto, y también la ficha de riesgos de Kraken,
-              lo cuentan al revés: tener RAIN daría acceso a funciones de trading a través de un «Trading Power».
-              Ante la duda, manda el libro blanco: es el documento que la fundación declara veraz ante la UE.
+              lo cuentan al revés: tener RAIN daría acceso a funciones de trading a través de un «Trading
+              Power». <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Ante la duda, manda el libro blanco</Anotacion>: es el documento que la fundación declara veraz ante la UE.
             </p>
             <p>
               <strong>Recompra y quema.</strong> El 2,5 % del volumen de cada mercado se usa para comprar RAIN y
               destruirlo, lo que se llama quema de tokens. Pero el libro blanco advierte
-              que es discrecional, que puede suspenderse y que no garantiza el precio. Además, el 10 % de lo
-              quemado se vuelve a crear para la tesorería del proyecto: lo dice el informe de transparencia de
+              que es discrecional, que puede suspenderse y que no garantiza el precio. Además, <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>el 10 % de lo
+              quemado se vuelve a crear para la tesorería del proyecto</Anotacion>: lo dice el informe de transparencia de
               Blockworks y lo hace el código del contrato.
             </p>
           </div>
@@ -350,7 +357,7 @@ export default async function RainPage() {
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               Suma lo que gestiona el proyecto o reparte a su criterio: marketing y desarrollo, reserva, ecosistema,
-              liquidez y equipo llegan al 80 %. Las ventas a inversores suman el 10 %. El token se repartió primero
+              liquidez y equipo llegan <Anotacion tipo="circle" junta animar={false}>al 80 %</Anotacion>. Las ventas a inversores suman el 10 %. El token se repartió primero
               en Gems Launchpad, en una <Termino slug="ido">venta pública inicial (IDO)</Termino>. Esas
               <Termino slug="tokenomics"> tokenomics</Termino> no son raras en proyectos jóvenes, pero significan que
               el precio depende mucho de cuándo y cómo se liberen los tokens del proyecto.
@@ -368,7 +375,7 @@ export default async function RainPage() {
             <p>
               Cada cifra de Rain, por separado, suena bien. Puesto 35 por
               <Termino slug="market-cap"> capitalización</Termino>, miles de millones de dólares, cotiza en más de
-              diez exchanges. El problema aparece al compararlas entre sí.
+              diez exchanges. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>El problema aparece al compararlas entre sí.</Anotacion>
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -389,10 +396,11 @@ export default async function RainPage() {
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>Con esos datos salen cuatro proporciones que ninguna ficha de exchange te enseña:</p>
+            <Llave color="azul">
             <ul>
               <li>
-                <strong>El token vale unas 400 veces lo depositado.</strong> 2.638 millones frente a 6,59. Casi todo el
-                valor de RAIN es expectativa de que el protocolo crezca, no uso actual.
+                <strong><Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>El token vale unas 400 veces lo depositado.</Anotacion></strong> 2.638 millones frente a 6,59. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Casi todo el
+                valor de RAIN es expectativa de que el protocolo crezca, no uso actual.</Anotacion>
               </li>
               <li>
                 <strong>Solo cambia de manos el 0,46 % al día.</strong> De cada 1.000 dólares de capitalización, se
@@ -405,9 +413,10 @@ export default async function RainPage() {
               </li>
               <li>
                 <strong>Absorberlos llevaría unos 130 días de volumen.</strong> Si todo eso saliera a la venta al
-                precio actual, haría falta el volumen de cuatro meses enteros sin un solo comprador más.
+                precio actual, haría falta el volumen de cuatro meses enteros sin un solo comprador más.<SimboloEstudio tipo="flecha" color="cielo" giro={20} className="rain-flecha-medidor" retraso={200} />
               </li>
             </ul>
+            </Llave>
           </div>
 
           <GuideRainProporciones />
@@ -416,7 +425,7 @@ export default async function RainPage() {
             <p>
               El medidor viene relleno con los datos de Rain, pero sirve para cualquier token: cambia las casillas
               con los de otro y compara. La última fila es la más práctica. Te dice qué parte del volumen diario
-              representa tu compra; si pasa del 1 %, ya moverías el precio al entrar y, sobre todo, al salir.
+              representa tu compra; <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>si pasa del 1 %, ya moverías el precio al entrar y, sobre todo, al salir</Anotacion>.
             </p>
             <p>
               Una advertencia sobre el TVL: mide lo que hay depositado en los contratos del protocolo, no lo que se
@@ -436,15 +445,15 @@ export default async function RainPage() {
           <h2 className="gbc-title">Por qué subió tanto Rain, y qué se sabe de su caída</h2>
           <div className="gbc-body">
             <p>
-              Rain pasó de 0,0022 dólares en septiembre de 2025 a 0,0195 en agosto de 2026: casi nueve veces. Desde
-              entonces ha perdido el 81 %. Tres hechos acompañaron la subida. La caída tiene una explicación menos
+              Rain pasó de 0,0022 dólares en septiembre de 2025 a 0,0195 en agosto de 2026: casi nueve veces. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>Desde
+              entonces ha perdido el 81 %.</Anotacion> Tres hechos acompañaron la subida. La caída tiene una explicación menos
               clara.
             </p>
           </div>
           <div className="rain-crono">
             {CRONOLOGIA.map((c) => (
               <div key={c.cuando} className="rain-crono-fila">
-                <span className="rain-crono-cuando">{c.cuando}</span>
+                <span className="rain-crono-cuando">{c.cuando}{c.cuando === "Julio y agosto de 2026" && <SimboloEstudio tipo="estrella" className="rain-crono-estrella" semilla={8} animar={false} />}</span>
                 <p>{c.que}</p>
               </div>
             ))}
@@ -476,8 +485,8 @@ export default async function RainPage() {
             <p>
               <strong>La caída no coincidió con una gran liberación.</strong> Fue gradual, de septiembre a noviembre,
               y la oferta circulante que publica CoinGecko apenas cambió: de 709.000 a 714.000 millones de RAIN. No
-              hemos encontrado una explicación pública del proyecto. Lo que sí pesa es lo que queda por llegar.
-              Tokenomist calcula que se ha desbloqueado el 68,3 % de la oferta máxima, unos 786.000 millones, y que
+              hemos encontrado una explicación pública del proyecto. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Lo que sí pesa es lo que queda por llegar.</Anotacion> Tokenomist
+              calcula que se ha desbloqueado el 68,3 % de la oferta máxima, unos 786.000 millones, y que
               el calendario se extiende hasta 2027. La diferencia con CoinGecko, unos 72.000 millones, son tokens ya
               desbloqueados que no figuran como circulantes. Es el riesgo típico de la
               <Termino slug="liberacion-de-tokens"> liberación de tokens</Termino>: más oferta disponible sin que
@@ -489,16 +498,16 @@ export default async function RainPage() {
 
       {/* ── 7 ── */}
       <section id="espana" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Desde España</div>
           <h2 className="gbc-title">¿Es legal usar Rain desde España?</h2>
           <div className="gbc-body">
             <p>
-              Depende de qué hagas, porque comprar el token y apostar en sus mercados son dos cosas distintas ante la
-              ley.
+              Depende de qué hagas, porque <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>comprar el token y apostar en sus mercados son dos cosas distintas ante la
+              ley</Anotacion>.
             </p>
           </div>
-          <div className="gbc-tabla-caja">
+          <div className="gbc-tabla-caja gbc-ancho">
             <table className="gbc-tabla">
               <thead><tr><th>Qué haces</th><th>Qué es para la ley</th><th>Qué supone</th></tr></thead>
               <tbody>
@@ -512,14 +521,14 @@ export default async function RainPage() {
             <p>
               <strong>El token.</strong> La Rain Foundation notificó el 24 de febrero de 2026 un libro blanco conforme a MiCA,
               el reglamento europeo de criptoactivos. Ojo con lo que eso significa: el propio documento avisa de que
-              ninguna autoridad europea lo ha aprobado. Es una obligación de información, no un sello de calidad. El
+              ninguna autoridad europea lo ha aprobado. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Es una obligación de información, no un sello de calidad.</Anotacion> El
               emisor está en Panamá, fuera de la supervisión europea, y cualquier reclamación iría a sus tribunales.
             </p>
             <p>
               <strong>Los mercados.</strong> El 26 de mayo de 2026, el Ministerio de Consumo anunció que la Dirección
               General de Ordenación del Juego (DGOJ) había abierto expediente sancionador a Polymarket y Kalshi por
-              operar sin autorización. También ordenó bloquear sus webs en España mientras se resuelve. Su criterio:
-              los mercados de predicción son juego cuando se apuesta sobre resultados futuros inciertos, y operarlos
+              operar sin autorización. También ordenó bloquear sus webs en España mientras se resuelve. Su
+              criterio: <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>los mercados de predicción son juego</Anotacion> cuando se apuesta sobre resultados futuros inciertos, y operarlos
               aquí exige una licencia específica.
             </p>
             <p>
@@ -537,19 +546,20 @@ export default async function RainPage() {
               predicción».
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Y Hacienda, por dos caminos</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Y Hacienda, por dos caminos</div>
+            <div className="postit-cuerpo">
               <p>
                 Si compras RAIN y lo vendes con ganancia, tributa en la base del ahorro, del 19 % al 30 %, igual que
                 cualquier criptomoneda. Si ganas apostando en sus mercados, lo que cobras no viene de vender nada: es
-                una ganancia que va a la base general, con tu tipo marginal. Y las pérdidas de juego solo restan
-                hasta el importe de lo ganado en el juego ese mismo año. El detalle de cómo se calcula cada caso
+                una ganancia que va a la base general, con tu tipo marginal. Y <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>las pérdidas de juego solo restan
+                hasta el importe de lo ganado en el juego ese mismo año</Anotacion>. El detalle de cómo se calcula cada caso
                 está en la guía de <Link href="/guias/fiscalidad-cripto-espana">fiscalidad de las criptomonedas en
                 España</Link>.
               </p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -560,20 +570,21 @@ export default async function RainPage() {
           <h2 className="gbc-title">Los riesgos de Rain, sin maquillaje</h2>
           <div className="gbc-body">
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen />
               Rain es un proyecto de menos de dos años que subió muy rápido. Nada de lo que sigue prueba mala fe,
               pero reúne varias de las señales que conviene mirar dos veces.
             </p>
             <ul>
               <li>
                 <strong>Concentración.</strong> Enlivex tiene el 11 % de lo que circula y una opción sobre casi una
-                cuarta parte de la oferta máxima. El emisor se reserva 157.000 millones de RAIN. Una venta grande de cualquiera de
-                los dos movería el precio. Es la definición de una
+                cuarta parte de la oferta máxima. El emisor se reserva 157.000 millones de RAIN. <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={300}>Una venta grande de cualquiera de
+                los dos movería el precio.</Anotacion> Es la definición de una
                 <Termino slug="whale"> ballena</Termino>.
               </li>
               <li>
                 <strong>Liberaciones pendientes.</strong> Queda un 37,5 % de la oferta total por circular, con un
-                calendario que llega a 2027 y que no se publica completo. Revisa el
-                <Termino slug="vesting"> vesting</Termino> antes de cada compra.
+                calendario que llega a 2027 y que no se publica completo. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Revisa el
+                <Termino slug="vesting"> vesting</Termino> antes de cada compra.</Anotacion>
               </li>
               <li>
                 <strong>Liquidez real escasa.</strong> Kraken retiró el token en junio de 2026 y liquidó en septiembre
@@ -594,12 +605,12 @@ export default async function RainPage() {
                 <strong>Auditorías por partes.</strong> La primera
                 <Termino slug="auditoria-de-seguridad"> auditoría</Termino> de Hacken cubría solo el token. La del
                 protocolo de apuestas llegó después: el libro blanco la daba por «en curso» en marzo de 2026, y Hacken
-                publicó en junio la de su versión 2. Una auditoría reduce el riesgo, no lo elimina. Un fallo en esos
+                publicó en junio la de su versión 2. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Una auditoría reduce el riesgo, no lo elimina.</Anotacion> Un fallo en esos
                 contratos sería un <Termino slug="exploit">exploit</Termino> sobre el dinero de los apostantes.
               </li>
               <li>
-                <strong>Un oráculo de IA.</strong> Si Delphi se equivoca y nadie disputa a tiempo, el resultado
-                erróneo es definitivo. Y disputar exige poner dinero dentro de un plazo muy corto.
+                <strong>Un oráculo de IA.</strong> Si Delphi se equivoca y nadie disputa a tiempo, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>el resultado
+                erróneo es definitivo</Anotacion>. Y disputar exige poner dinero dentro de un plazo muy corto.
               </li>
               <li>
                 <strong>Regulación.</strong> En España, sus mercados chocan con el criterio de la DGOJ. En Europa,

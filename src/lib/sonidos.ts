@@ -18,6 +18,7 @@
 
 export type Sonido =
   | "tecla"
+  | "soltar"
   | "girar"
   | "acierto"
   | "fallo"
@@ -27,6 +28,8 @@ export type Sonido =
   | "guardado"
   | "error"
   | "interruptor"
+  | "encender"
+  | "apagar"
   | "abrir"
   | "cerrar";
 
@@ -79,9 +82,25 @@ function variar(base: number, margen = 0.06): number {
   return base * (1 + (Math.random() * 2 - 1) * margen);
 }
 
-/** El clic de una tecla mecánica: un golpe grave muy corto y un chasquido encima. */
+/**
+ * El clic de una tecla mecánica al BAJAR: un golpe grave muy corto, el cuerpo
+ * sordo de la tecla tocando fondo (lo que hace que suene «llena» y no a
+ * plástico) y un chasquido encima. La otra mitad, al soltarla, es `soltar`.
+ */
 function tecla(ctx: AudioContext) {
   const t = ctx.currentTime;
+
+  // El fondo: una onda grave que cae, casi más sentida que oída.
+  const fondo = ctx.createOscillator();
+  const gFondo = ctx.createGain();
+  fondo.type = "sine";
+  fondo.frequency.setValueAtTime(variar(150), t);
+  fondo.frequency.exponentialRampToValueAtTime(55, t + 0.09);
+  gFondo.gain.setValueAtTime(VOLUMEN * 0.9, t);
+  gFondo.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+  fondo.connect(gFondo).connect(ctx.destination);
+  fondo.start(t);
+  fondo.stop(t + 0.12);
 
   const golpe = ctx.createOscillator();
   const gGolpe = ctx.createGain();
@@ -110,7 +129,41 @@ function tecla(ctx: AudioContext) {
   ruido.start(t);
 }
 
-/** Girar una tarjeta: un roce de papel que sube. */
+/**
+ * La tecla al SUBIR: el chasquido del muelle, más agudo y más flojo que el de
+ * bajar. Un teclado de verdad suena dos veces por pulsación, y es la segunda
+ * la que remata la sensación.
+ */
+function soltar(ctx: AudioContext) {
+  const t = ctx.currentTime;
+
+  const largo = Math.floor(ctx.sampleRate * 0.012);
+  const buffer = ctx.createBuffer(1, largo, ctx.sampleRate);
+  const datos = buffer.getChannelData(0);
+  for (let i = 0; i < largo; i++) datos[i] = (Math.random() * 2 - 1) * (1 - i / largo);
+  const ruido = ctx.createBufferSource();
+  ruido.buffer = buffer;
+  const filtro = ctx.createBiquadFilter();
+  filtro.type = "highpass";
+  filtro.frequency.value = variar(3600, 0.1);
+  const gRuido = ctx.createGain();
+  gRuido.gain.value = VOLUMEN * 0.32;
+  ruido.connect(filtro).connect(gRuido).connect(ctx.destination);
+  ruido.start(t);
+
+  const toque = ctx.createOscillator();
+  const gToque = ctx.createGain();
+  toque.type = "triangle";
+  toque.frequency.setValueAtTime(variar(520), t);
+  toque.frequency.exponentialRampToValueAtTime(260, t + 0.03);
+  gToque.gain.setValueAtTime(VOLUMEN * 0.3, t);
+  gToque.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+  toque.connect(gToque).connect(ctx.destination);
+  toque.start(t);
+  toque.stop(t + 0.05);
+}
+
+/** Girar una tarjeta: un roce de papel que sube y, al caer en la mesa, un toque sordo. */
 function girar(ctx: AudioContext) {
   const t = ctx.currentTime;
   const dur = 0.16;
@@ -131,6 +184,20 @@ function girar(ctx: AudioContext) {
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   ruido.connect(filtro).connect(g).connect(ctx.destination);
   ruido.start(t);
+
+  // La tarjeta asienta (giro.css: la animación toca la mesa hacia los 0,5 s).
+  const cae = t + 0.5;
+  const golpe = ctx.createOscillator();
+  const gGolpe = ctx.createGain();
+  golpe.type = "sine";
+  golpe.frequency.setValueAtTime(variar(170), cae);
+  golpe.frequency.exponentialRampToValueAtTime(70, cae + 0.07);
+  gGolpe.gain.setValueAtTime(0.0001, t);
+  gGolpe.gain.setValueAtTime(VOLUMEN * 0.6, cae);
+  gGolpe.gain.exponentialRampToValueAtTime(0.0001, cae + 0.09);
+  golpe.connect(gGolpe).connect(ctx.destination);
+  golpe.start(cae);
+  golpe.stop(cae + 0.1);
 }
 
 /**
@@ -215,6 +282,37 @@ function interruptor(ctx: AudioContext) {
   window.setTimeout(() => tecla(ctx), 55);
 }
 
+/**
+ * Encender el sonido de la web: un «clic» y dos notas que suben (sol–re),
+ * claras y cortas, como algo que se despierta. Es lo primero que se oye tras
+ * activarlo, así que confirma que ya suena.
+ */
+function encender(ctx: AudioContext) {
+  tecla(ctx);
+  nota(ctx, 783.99, 0.03, 0.12, { tipo: "sine", volumen: VOLUMEN * 0.9 });
+  nota(ctx, 1174.66, 0.1, 0.2, { tipo: "sine", volumen: VOLUMEN * 0.8 });
+}
+
+/**
+ * Apagarlo: el mismo «clic» y una sola nota que baja y se apaga, como una
+ * radio que se queda en silencio. Suena ANTES de silenciar (InterruptorSonido).
+ */
+function apagar(ctx: AudioContext) {
+  tecla(ctx);
+  const t = ctx.currentTime + 0.03;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(660, t);
+  osc.frequency.exponentialRampToValueAtTime(260, t + 0.22);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(VOLUMEN * 0.8, t + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+  osc.connect(g).connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.28);
+}
+
 /** Abrir (menú, ventana, panel): un soplido que sube, muy sutil. */
 function abrir(ctx: AudioContext) {
   barrido(ctx, 500, 1800, 0.12, 0.5);
@@ -249,6 +347,7 @@ function barrido(ctx: AudioContext, desde: number, hasta: number, dur: number, f
 
 const CATALOGO: Record<Sonido, (ctx: AudioContext) => void> = {
   tecla,
+  soltar,
   girar,
   acierto,
   fallo,
@@ -258,6 +357,8 @@ const CATALOGO: Record<Sonido, (ctx: AudioContext) => void> = {
   guardado,
   error,
   interruptor,
+  encender,
+  apagar,
   abrir,
   cerrar,
 };

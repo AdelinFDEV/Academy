@@ -3,6 +3,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { annotate } from "rough-notation";
 import type { BracketType, RoughAnnotationType, RoughPadding } from "rough-notation/lib/model";
+import { alVerse } from "@/lib/alVerse";
 import "./anotacion.css";
 
 /**
@@ -103,18 +104,17 @@ export default function Anotacion({
     });
 
     let espera = 0;
-    const observador = new IntersectionObserver(
-      (entradas) => {
-        if (!entradas.some((e) => e.isIntersecting)) return;
-        observador.disconnect();
+    // Cuando se ve de verdad, no cuando roza la pantalla (src/lib/alVerse.ts).
+    const cancelar = alVerse(
+      el,
+      () => {
         espera = window.setTimeout(() => anotacion.show(), animar ? retraso : 0);
       },
-      { threshold: umbral },
+      { umbral },
     );
-    observador.observe(el);
 
     return () => {
-      observador.disconnect();
+      cancelar();
       window.clearTimeout(espera);
       anotacion.remove();
     };

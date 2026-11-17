@@ -9,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideAaveLiquidacion from "./GuideAaveLiquidacion";
 import GuideAaveQuiz from "./GuideAaveQuiz";
@@ -97,10 +100,11 @@ export default async function AavePage() {
           <span className="gbc-hero-gold">y cómo funciona un préstamo sin banco</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Aave es el mayor protocolo de préstamos de las <Termino slug="defi">finanzas descentralizadas</Termino>:
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Aave es el mayor protocolo de préstamos de las <Termino slug="defi">finanzas descentralizadas</Termino>:
           unos contratos en Ethereum y otras redes donde depositas criptomonedas para cobrar intereses o las dejas
-          como garantía para pedir prestado, sin nadie en medio.</strong> Siempre se presta menos de lo que vale la
-          garantía, y si su precio cae demasiado, el protocolo la vende para cobrarse. AAVE es su token: sirve para
+          como garantía para pedir prestado, sin nadie en medio.</Anotacion></strong> Siempre se presta menos de lo que vale la
+          garantía, y <Anotacion tipo="underline" color="var(--coral)" grosor={2} retraso={1300}>si su precio cae demasiado, el protocolo la vende para cobrarse</Anotacion>. AAVE es su token: sirve para
           votar los cambios del protocolo.
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de DefiLlama, CoinGecko y la gobernanza de Aave</p>
@@ -118,14 +122,14 @@ export default async function AavePage() {
           <h2 className="gbc-title">Qué es Aave y para qué sirve</h2>
           <div className="gbc-body">
             <p>
-              Aave hace lo que hace un banco con los depósitos y los préstamos, pero sin banco. Unos usuarios
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Aave hace lo que hace un banco con los depósitos y los préstamos, pero sin banco.</Anotacion> Unos usuarios
               depositan criptomonedas y cobran intereses. Otros las piden prestadas y pagan intereses. Entre medias
               solo hay <Termino slug="smart-contract">contratos inteligentes</Termino>: código publicado en la{" "}
               <Termino slug="blockchain">cadena de bloques</Termino> que guarda el dinero, calcula los tipos y ejecuta las garantías.
             </p>
             <p>
               No hay estudio de riesgo ni nómina que enseñar. Lo que Aave te pide es una garantía, el{" "}
-              <Termino slug="colateral">colateral</Termino>, y que valga más que lo que te llevas. Si dejas 1.000 €
+              <Termino slug="colateral">colateral</Termino>, y que <Anotacion tipo="circle" retraso={600} junta>valga más</Anotacion> que lo que te llevas. Si dejas 1.000 €
               en ETH, puedes pedir, por ejemplo, 500 € en una <Termino slug="stablecoin">stablecoin</Termino>. Si
               no devuelves, nadie te reclama: el contrato vende tu garantía.
             </p>
@@ -138,8 +142,8 @@ export default async function AavePage() {
               Cuando depositas, recibes un aToken: aUSDC si depositas USDC, aWETH si depositas WETH, que es ETH
               convertido en un token estándar. Es tu justificante, y su saldo crece solo, segundo a segundo, con
               los intereses que pagan los prestatarios. Para recuperar tu dinero devuelves el aToken y te llevas
-              lo depositado más lo ganado, siempre que haya <Termino slug="liquidez">liquidez</Termino> libre en
-              ese momento.
+              lo depositado más lo ganado, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>siempre que haya <Termino slug="liquidez">liquidez</Termino> libre en
+              ese momento</Anotacion>.
             </p>
           </div>
         </div>
@@ -147,7 +151,7 @@ export default async function AavePage() {
 
       {/* ── 2 ── */}
       <section id="prestamo" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Cómo funciona</div>
           <h2 className="gbc-title">Cómo funciona Aave: un préstamo con colateral, en euros</h2>
           <div className="gbc-body">
@@ -163,16 +167,17 @@ export default async function AavePage() {
               momento.
             </p>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} />
               Hay dos límites, y conviene no confundirlos. El primero es el{" "}
-              <Termino slug="ltv">LTV máximo</Termino>, el porcentaje de tu garantía que puedes pedir de golpe.
-              El segundo es el <strong>umbral de liquidación</strong>, algo más alto: si tu deuda llega a ese
+              <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}><Termino slug="ltv">LTV máximo</Termino></Anotacion>, el porcentaje de tu garantía que puedes pedir de golpe.
+              El segundo es el <strong><Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={700}>umbral de liquidación</Anotacion></strong>, algo más alto: si tu deuda llega a ese
               porcentaje de lo que vale tu garantía, te pueden liquidar. Los dos los fija la{" "}
               <Termino slug="gobernanza">gobernanza</Termino> para cada activo. En ETH rondan el 80-85 %.
             </p>
             <p>
               Para seguir el ejemplo, usaremos un umbral del 80 %, el mismo que usa Aave en su centro de ayuda.
               Con 6.000 € de garantía, tu deuda podría llegar hasta 4.800 € antes de que te liquiden. Debes 3.000
-              €. Ese margen es lo que mide el número más importante de Aave.
+              €. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Ese margen es lo que mide el número más importante de Aave.</Anotacion>
             </p>
             <p>
               En la práctica, todo esto son cuatro pasos en app.aave.com: conectas tu cartera, eliges la red,
@@ -182,15 +187,16 @@ export default async function AavePage() {
               la retirada.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">¿Para qué pide nadie un préstamo con más garantía que dinero?</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="nb" color="naranja" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">¿Para qué pide nadie un préstamo con más garantía que dinero?</div>
+            <div className="postit-cuerpo">
               <p>Para tener liquidez sin vender lo que tiene. Para cubrir un gasto sin deshacer una posición a
               largo plazo. Y, lo más habitual, para operar con <Termino slug="apalancamiento">apalancamiento</Termino>:
               pedir stablecoins contra ETH, comprar más ETH y volver a depositarlo. Lo primero tiene sentido en
               casos concretos. Lo segundo multiplica tanto lo que ganas como lo que pierdes.</p>
             </div>
-          </div>
+          </Postit>
           {/* EXPERIENCIA DEL ADMIN: un préstamo real en Aave — qué dejó de colateral, cuánto pidió y para qué, qué factor de salud mantuvo y si alguna vez tuvo que añadir garantía o devolver deuda deprisa en una caída. Una captura del panel de la posición con el factor de salud encajaría aquí. */}
         </div>
       </section>
@@ -202,15 +208,16 @@ export default async function AavePage() {
           <h2 className="gbc-title">El factor de salud de Aave: a qué precio te liquidan</h2>
           <div className="gbc-body">
             <p>
-              El <Termino slug="factor-de-salud">factor de salud</Termino> resume tu posición en una cifra. Es
-              lo que vale tu garantía multiplicado por su umbral de liquidación, dividido entre lo que debes. En
-              el ejemplo: 6.000 € × 0,80 / 3.000 € = <strong>1,6</strong>.
+              El <Termino slug="factor-de-salud">factor de salud</Termino> resume tu posición en una cifra. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Es
+              lo que vale tu garantía multiplicado por su umbral de liquidación, dividido entre lo que debes.</Anotacion> En
+              el ejemplo: 6.000 € × 0,80 / 3.000 € = <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} animar={false} junta>1,6</Anotacion></strong>.
             </p>
             <p>
-              Mientras esté por encima de 1, no pasa nada. Si baja de 1, cualquiera puede{" "}
-              <Termino slug="liquidacion">liquidarte</Termino>. De ahí sale el precio que debes tener apuntado:
+              <SimboloEstudio tipo="estrella" color="naranja" margen semilla={11} retraso={200} />
+              Mientras esté por encima de 1, no pasa nada. <Anotacion tipo="circle" retraso={700} junta>Si baja de 1</Anotacion>, cualquiera puede{" "}
+              <Termino slug="liquidacion">liquidarte</Termino>. De ahí sale el precio que debes tener apuntado:{" "}
               tu deuda dividida entre la cantidad de garantía y el umbral. Aquí, 3.000 / (2 × 0,80) ={" "}
-              <strong>1.875 € por ETH</strong>. Una caída del 37,5 %.
+              <strong><Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 5]} animar={false} junta>1.875 € por ETH</Anotacion></strong>. Una caída del 37,5 %.
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -240,7 +247,8 @@ export default async function AavePage() {
               empezar.
             </p>
             <p>
-              No hay aviso previo ni plazo para reaccionar. Liquidan bots que vigilan todas las posiciones y actúan
+              <SimboloEstudio tipo="exclamacion" color="coral" margen />
+              <Anotacion tipo="underline" color="var(--coral)" retraso={300}>No hay aviso previo ni plazo para reaccionar.</Anotacion> Liquidan bots que vigilan todas las posiciones y actúan
               en segundos, porque el bono es su negocio. Y el precio que manda no es el de tu{" "}
               <Termino slug="exchange">exchange</Termino>, sino el que lee Aave de su{" "}
               <Termino slug="oraculo">oráculo</Termino>, normalmente Chainlink.
@@ -251,20 +259,21 @@ export default async function AavePage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Prueba a mover el umbral y la deuda. Verás que la regla práctica sale sola: con un factor de salud
-              de 2, el precio de tu garantía puede caer a la mitad antes de que te liquiden. Con 1,25, basta una
+              Prueba a mover el umbral y la deuda. Verás que la regla práctica sale sola: <Anotacion tipo="underline" color="var(--menta)" retraso={300}>con un factor de salud
+              de 2, el precio de tu garantía puede caer a la mitad antes de que te liquiden</Anotacion>. Con 1,25, basta una
               caída del 20 %. ETH ha caído más del 20 % en una semana muchas veces.
             </p>
           </div>
-          <div className="gbc-box gbc-box--red">
-            <div className="gbc-box-title">El error típico</div>
-            <div className="gbc-box-body">
-              <p>Pedir el máximo que deja la web. El LTV máximo dice cuánto puedes pedir, no cuánto deberías. Quien
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error típico</div>
+            <div className="postit-cuerpo">
+              <p>Pedir el máximo que deja la web. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>El LTV máximo dice cuánto puedes pedir, no cuánto deberías.</Anotacion> Quien
               pide hasta el límite empieza con un factor de salud muy cerca de 1 y lo pierde con el primer
               movimiento brusco. Y como los intereses suman cada segundo, tu factor de salud baja aunque el
               precio no se mueva.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -279,14 +288,14 @@ export default async function AavePage() {
           <div className="gbc-body">
             <p>
               En Aave nadie fija el tipo de interés a mano. Lo decide una curva, distinta para cada activo, que
-              depende de una sola variable: la <Termino slug="tasa-de-utilizacion">tasa de utilización</Termino>,
+              depende de una sola variable: la <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}><Termino slug="tasa-de-utilizacion">tasa de utilización</Termino></Anotacion>,
               es decir, qué parte de lo depositado está prestada. Con mucho dinero ocioso, pedir es barato. Con
               casi todo prestado, se encarece.
             </p>
             <p>
-              La curva tiene un codo, el punto óptimo. Hasta ahí sube despacio. A partir de ahí, se dispara. La
-              razón es práctica: si el 100 % estuviera prestado, ningún depositante podría retirar. El salto de
-              tipos empuja a los prestatarios a devolver y atrae depósitos nuevos.
+              La curva tiene un codo, el punto óptimo. Hasta ahí sube despacio. A partir de ahí, <Anotacion tipo="circle" retraso={600} junta>se dispara</Anotacion>. La
+              razón es práctica: si el 100 % estuviera prestado, ningún depositante podría retirar. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>El salto de
+              tipos empuja a los prestatarios a devolver y atrae depósitos nuevos.</Anotacion>
             </p>
           </div>
           <ul className="aave-curva" aria-label="Tipo que pagas al pedir prestado según la utilización, con parámetros de ejemplo">
@@ -320,7 +329,7 @@ export default async function AavePage() {
               de reserva, va a la tesorería de Aave. Es de donde salen sus ingresos.
             </p>
             <p>
-              Por eso el <Termino slug="apy">APY</Termino> que ves en la web no es una promesa. Es el tipo de ese
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Por eso el <Termino slug="apy">APY</Termino> que ves en la web no es una promesa.</Anotacion> Es el tipo de ese
               momento, y puede cambiar en la siguiente operación de cualquier usuario. Si pides prestado a un 4 %
               y el mercado se tensa, puedes acabar pagando un 20 % sin haber firmado nada nuevo.
             </p>
@@ -340,10 +349,12 @@ export default async function AavePage() {
           <h2 className="gbc-title">Qué son los préstamos flash de Aave</h2>
           <div className="gbc-body">
             <p>
-              Un <Termino slug="prestamo-flash">préstamo flash</Termino> es un préstamo sin garantía que se pide
-              y se devuelve dentro de la misma transacción. Puede ser de millones. Funciona porque una transacción
-              en Ethereum es todo o nada: si al final no está devuelto el dinero más la comisión, la transacción
-              entera se anula, como si nunca hubiera ocurrido.
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                Un <Termino slug="prestamo-flash">préstamo flash</Termino> es un préstamo sin garantía que se pide
+                y se devuelve dentro de la misma transacción.
+              </Anotacion> Puede ser de millones. Funciona porque una transacción
+              en Ethereum es todo o nada: <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={400}>si al final no está devuelto el dinero más la comisión, la transacción
+              entera se anula</Anotacion>, como si nunca hubiera ocurrido.
             </p>
             <p>
               Aave no corre riesgo, porque o le devuelven o el préstamo no existió. Cobra una comisión que en v3
@@ -398,8 +409,8 @@ export default async function AavePage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              <strong>GHO</strong> es la stablecoin de Aave. No nace de dólares guardados en un banco: se crea
-              cuando alguien la pide prestada contra su colateral en Aave, y se destruye cuando la devuelve.
+              <strong>GHO</strong> es la stablecoin de Aave. No nace de dólares guardados en un banco: <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={300}>se crea
+              cuando alguien la pide prestada contra su colateral en Aave, y se destruye cuando la devuelve.</Anotacion>{" "}
               También hay módulos que la cambian uno a uno por USDC o USDT. Su tipo de interés no sale de la curva
               de utilización, porque no hay depósitos de GHO que prestar: lo fija la gobernanza. Según CoinGecko, a 14 de noviembre de 2026 había unos 699 millones de GHO en
               circulación, cotizando a 0,998 dólares.
@@ -412,8 +423,8 @@ export default async function AavePage() {
             </p>
             <p>
               Desde entonces ha llegado a Avalanche, a Arc, la <Termino slug="capa-1">capa 1</Termino> de
-              Circle, y a Base. Aun así, v3 sigue siendo
-              casi todo Aave. Según el informe de 180 días de Aave Labs, a 1 de octubre de 2026 había 1.340 millones
+              Circle, y a Base. Aun así, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>v3 sigue siendo
+              casi todo Aave</Anotacion>. Según el informe de 180 días de Aave Labs, a 1 de octubre de 2026 había 1.340 millones
               de dólares depositados en v4, frente a 31.900 millones en v3. Como en{" "}
               <Link href="/guias/uniswap">Uniswap</Link>, las versiones conviven: la nueva no apaga la anterior.
             </p>
@@ -428,7 +439,7 @@ export default async function AavePage() {
           <h2 className="gbc-title">Para qué sirve el token AAVE: votar, respaldar y, a veces, recomprarse</h2>
           <div className="gbc-body">
             <p>
-              No necesitas AAVE para usar Aave. Depositas y pides prestado con cualquier activo admitido. El
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>No necesitas AAVE para usar Aave.</Anotacion> Depositas y pides prestado con cualquier activo admitido. El
               token sirve para otra cosa: es el <Termino slug="token-de-gobernanza">token de gobernanza</Termino>{" "}
               del protocolo. Quien lo tiene vota qué activos se admiten, con qué umbrales, qué curvas de interés y
               en qué redes se despliega. La <Termino slug="dao">DAO</Termino> de Aave gestiona además una
@@ -439,7 +450,7 @@ export default async function AavePage() {
               <Termino slug="oferta-circulante">circulación</Termino> a 14 de noviembre de 2026. Ese día cotizaba a
               unos 93 € (102 dólares), con una <Termino slug="market-cap">capitalización</Termino> cercana a los
               1.580 millones de dólares. Su <Termino slug="ath">máximo histórico</Termino> fue de 661 dólares, el 18
-              de mayo de 2021: hoy vale un 85 % menos.
+              de mayo de 2021: <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>hoy vale un 85 % menos</Anotacion>.
             </p>
           </div>
 
@@ -473,7 +484,7 @@ export default async function AavePage() {
               dependerían de una votación cada vez. En octubre se abrió en el foro el debate sobre si debe incluir
               también staking. A 14 de noviembre de 2026 no hemos encontrado en el foro de gobernanza una votación
               aprobada con su presupuesto y su fecha. Hasta que
-              la haya, es un anuncio. Y aunque llegue, una recompra no garantiza que el precio suba: depende de lo
+              la haya, es un anuncio. Y aunque llegue, <Anotacion tipo="underline" color="var(--coral)" retraso={300}>una recompra no garantiza que el precio suba</Anotacion>: depende de lo
               que gane Aave y de lo que haga el mercado.
             </p>
           </div>
@@ -496,7 +507,7 @@ export default async function AavePage() {
             <table className="gbc-tabla">
               <thead><tr><th>Lo que haces en Aave</th><th>Cómo tributa en España</th><th>Seguridad del criterio</th></tr></thead>
               <tbody>
-                <tr><td><strong>Cobrar intereses por depositar</strong></td><td>Rendimiento del capital mobiliario, valorado en euros, en la base del ahorro</td><td>Lo dice la V0648-24</td></tr>
+                <tr><td><strong>Cobrar intereses por depositar</strong></td><td><Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Rendimiento del capital mobiliario, valorado en euros, en la base del ahorro</Anotacion></td><td>Lo dice la V0648-24</td></tr>
                 <tr><td><strong>Cobrar intereses por lo que dejas de colateral</strong></td><td>Igual: rendimiento del capital mobiliario</td><td>Lo dice la V0648-24</td></tr>
                 <tr><td><strong>Pagar intereses por lo que pides</strong></td><td>No se pueden restar de esos rendimientos</td><td>Lo dice la V0648-24</td></tr>
                 <tr><td><strong>Recibir el préstamo</strong></td><td>No es una ganancia: es una deuda que devolverás</td><td>Principio general</td></tr>
@@ -508,8 +519,9 @@ export default async function AavePage() {
           </div>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={4} />
               La liquidación es la fila que más duele. Si te liquidan 0,875 ETH que compraste a 1.000 € la unidad
-              cuando valen 1.800 €, has transmitido un activo con ganancia: unos 700 €, aunque la operación te haya
+              cuando valen 1.800 €, <Anotacion tipo="underline" color="var(--coral)" retraso={300}>has transmitido un activo con ganancia</Anotacion>: unos 700 €, aunque la operación te haya
               costado dinero. No hay una consulta de la DGT sobre este caso exacto. Lo prudente es declararlo como
               transmisión y, con importes grandes, preguntar a un asesor.
             </p>
@@ -520,9 +532,10 @@ export default async function AavePage() {
               <Link href="/guias/fiscalidad-cripto-espana">fiscalidad de las criptomonedas en España</Link>.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Un registro por posición, no por año</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-1.5}>
+            <SimboloEstudio tipo="asterisco" color="naranja" className="postit-esquina" semilla={12} retraso={400} />
+            <div className="postit-titulo">Un registro por posición, no por año</div>
+            <div className="postit-cuerpo">
               <p>Abre una hoja para cada posición de Aave y apunta cinco momentos: depósito, préstamo, devolución,
               retirada y, si llega, la liquidación. En cada uno, la cantidad, el precio en euros y el enlace a la
               transacción en el <Termino slug="explorador-de-bloques">explorador de bloques</Termino>. Al
@@ -530,12 +543,12 @@ export default async function AavePage() {
               valorarlas en euros, si al retirar o día a día, no lo ha aclarado Hacienda: por eso conviene tener
               cada fecha.</p>
             </div>
-          </div>
+          </Postit>
           <div className="gbc-body" style={{ marginTop: 20 }}>
             <p>
               Una nota de supervisión. Aave es un protocolo, no una entidad autorizada por la CNMV ni por el
-              Banco de España. Si algo sale mal, no hay fondo de garantía de depósitos ni servicio de reclamaciones
-              al que acudir.
+              Banco de España. Si algo sale mal, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>no hay fondo de garantía de depósitos ni servicio de reclamaciones
+              al que acudir</Anotacion>.
             </p>
           </div>
         </div>
@@ -551,8 +564,8 @@ export default async function AavePage() {
               El 18 de abril de 2026 alguien atacó el <Termino slug="bridge">puente</Termino> entre redes de
               rsETH, un token de <Termino slug="staking-liquido">staking líquido</Termino> del proyecto Kelp.
               Sacó 116.500 rsETH sin respaldo. Depositó 89.567 en Aave como colateral, y Aave los
-              valoró como si fueran buenos. Con ellos pidió prestados 82.650 WETH. Los contratos de Aave no
-              fallaron: falló lo que aceptaban como garantía.
+              valoró como si fueran buenos. Con ellos pidió prestados 82.650 WETH. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Los contratos de Aave no
+              fallaron: falló lo que aceptaban como garantía.</Anotacion>
             </p>
             <p>
               Aave congeló los mercados afectados en 85 minutos. Después, una coalición de proyectos llamada DeFi
@@ -563,15 +576,17 @@ export default async function AavePage() {
             </p>
           </div>
           <div className="gbc-body">
+            <Llave color="coral">
             <ul>
               <li><strong>La liquidación.</strong> Es el riesgo que eliges tú. Una caída rápida, con un factor de salud bajo, te cuesta el bono y te deja con menos garantía.</li>
               <li><strong>El colateral de otros.</strong> El caso de rsETH lo demostró: si Aave acepta un activo que resulta no valer lo que dice, el agujero afecta a todo el mercado.</li>
               <li><strong>Quedarte sin poder retirar.</strong> Si la utilización llega al 100 %, tu depósito sigue siendo tuyo, pero no puedes sacarlo hasta que alguien devuelva o deposite.</li>
               <li><strong>El oráculo.</strong> Te liquidan por el precio que lee Aave. Un dato erróneo, o un <Termino slug="depeg">depeg</Termino> brusco de una stablecoin, puede disparar liquidaciones.</li>
               <li><strong>El código.</strong> Los contratos llevan años en uso y pasan <Termino slug="auditoria-de-seguridad">auditorías de seguridad</Termino>, pero un <Termino slug="exploit">exploit</Termino> nunca es imposible. Y v4 es código nuevo.</li>
-              <li><strong>Las webs falsas.</strong> El <Termino slug="phishing">phishing</Termino> imita la app de Aave para que firmes una <Termino slug="aprobacion-de-token">aprobación</Termino> que vacía tu cartera. Escribe tú la dirección.</li>
+              <li><strong>Las webs falsas.</strong> El <Termino slug="phishing">phishing</Termino> imita la app de Aave para que firmes una <Termino slug="aprobacion-de-token">aprobación</Termino> que vacía tu cartera. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Escribe tú la dirección.</Anotacion></li>
               <li><strong>El precio de AAVE.</strong> Su <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda. Lleva más de cuatro años muy por debajo de su máximo.</li>
             </ul>
+            </Llave>
           </div>
           <DisclaimerRiesgo variante="general" />
         </div>

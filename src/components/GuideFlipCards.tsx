@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Hand } from "lucide-react";
-import { sonar } from "@/lib/sonidos";
+import { useGiro } from "@/components/cuaderno/useGiro";
 
 interface GuideFlipCardProps {
   title: string;
@@ -15,28 +14,26 @@ interface GuideFlipCardProps {
 /**
  * La tarjeta de estudio de las guías (estilo «Cuaderno de estudio»,
  * disenos/sistema.html → «Tarjetas que giran»): papel por delante, cielo por
- * detrás. Es un botón: se gira al pulsarla (también con el teclado) y, en
- * escritorio, al pasar el ratón. Suena a papel al girar.
+ * detrás. Es un botón: se gira al pulsarla (también con el teclado); con el
+ * ratón encima se levanta y se ladea, pero no gira. El giro, su sonido y su
+ * vibración son los de todas las tarjetas de la web (useGiro.ts y giro.css).
  *
  * Las dos caras están en el HTML desde el principio: Google y los lectores de
  * pantalla las leen aunque nadie la gire. Las dos ocupan la misma celda de la
  * rejilla, así que la tarjeta mide lo que la cara más larga. CSS en guias.css.
  */
 function FlipCard({ title, frontText, backText1, backText2, delay = 0 }: GuideFlipCardProps) {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const { girada, alternar, claseGiro } = useGiro();
 
   return (
     <button
       type="button"
-      className={`gfc${isFlipped ? " is-girada" : ""}`}
-      aria-pressed={isFlipped}
-      onClick={() => {
-        setIsFlipped((f) => !f);
-        sonar("girar");
-      }}
+      className="gfc giro-zona"
+      aria-pressed={girada}
+      onClick={alternar}
       style={{ "--retraso": `${delay}ms` } as React.CSSProperties}
     >
-      <span className="gfc-giro">
+      <span className={`gfc-giro ${claseGiro}`}>
         {/* FRONT */}
         <span className="gfc-cara gfc-frente">
           <span className="gfc-titulo">{title}</span>

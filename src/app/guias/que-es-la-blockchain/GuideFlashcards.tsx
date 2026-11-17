@@ -1,6 +1,5 @@
 "use client";
-import { useState } from "react";
-import { sonar } from "@/lib/sonidos";
+import { useGiro } from "@/components/cuaderno/useGiro";
 
 const CARDS = [
   { term: "Blockchain", def: "Registro distribuido de transacciones agrupadas en bloques encadenados criptográficamente. Ninguna entidad central lo controla." },
@@ -13,36 +12,40 @@ const CARDS = [
   { term: "DeFi", def: "Finanzas Descentralizadas. Ecosistema de protocolos financieros (préstamos, DEX, staking) que operan sin intermediarios bancarios." },
 ];
 
-export default function GuideFlashcards() {
-  const [flipped, setFlipped] = useState<Record<number, boolean>>({});
-
-  // La tarjeta que gira (como TarjetaEstudio): un botón conmutador que suena a papel.
-  const toggle = (i: number) => {
-    setFlipped((prev) => ({ ...prev, [i]: !prev[i] }));
-    sonar("girar");
-  };
+/**
+ * Una ficha: un botón conmutador que se da la vuelta. El giro, su sonido y su
+ * vibración son los de todas las tarjetas de la web (useGiro.ts y giro.css).
+ */
+function Ficha({ term, def }: { term: string; def: string }) {
+  const { girada, alternar, claseGiro } = useGiro();
 
   return (
-    <div className="gbc-fc-grid">
-      {CARDS.map((c, i) => (
-        <div key={i} className="gbc-fc-outer">
-          <button
-            type="button"
-            className={`gbc-fc${flipped[i] ? " flipped" : ""}`}
-            aria-pressed={!!flipped[i]}
-            onClick={() => toggle(i)}
-            aria-label={flipped[i] ? `Definición de ${c.term}: ${c.def}` : `Término: ${c.term}. Toca para ver la definición`}
-          >
-            <div className="gbc-fc-front">
-              <span className="gbc-fc-term">{c.term}</span>
-              <span className="gbc-fc-hint">Toca para ver la definición</span>
-            </div>
-            <div className="gbc-fc-back">
-              <span className="gbc-fc-def">{c.def}</span>
-              <span className="gbc-fc-hint">Toca para volver</span>
-            </div>
-          </button>
+    <div className="gbc-fc-outer">
+      <button
+        type="button"
+        className={`gbc-fc giro-zona ${claseGiro}`}
+        aria-pressed={girada}
+        onClick={alternar}
+        aria-label={girada ? `Definición de ${term}: ${def}` : `Término: ${term}. Toca para ver la definición`}
+      >
+        <div className="gbc-fc-front">
+          <span className="gbc-fc-term">{term}</span>
+          <span className="gbc-fc-hint">Toca para ver la definición</span>
         </div>
+        <div className="gbc-fc-back">
+          <span className="gbc-fc-def">{def}</span>
+          <span className="gbc-fc-hint">Toca para volver</span>
+        </div>
+      </button>
+    </div>
+  );
+}
+
+export default function GuideFlashcards() {
+  return (
+    <div className="gbc-fc-grid">
+      {CARDS.map((c) => (
+        <Ficha key={c.term} term={c.term} def={c.def} />
       ))}
     </div>
   );

@@ -71,6 +71,19 @@
 .rain-crono-cuando { font-size: 13px; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: var(--cielo-o); padding-top: 3px; }
 .rain-crono-fila p { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.6; color: var(--tinta); }
 
+/* ══ Marcas de estudio (ESTILO.md, 17-11-2026; referencia: guía de Ethereum) ══
+   Decoración: el texto y su orden en el HTML no cambian. El margen de los
+   pósits y la estrella de la respuesta son comunes (guias.css). */
+
+/* El check delante del remedio (comparar la dirección del contrato). */
+.rain-check { --se-tam: 1.15em; margin-right: 0.25em; vertical-align: -0.22em; }
+
+/* La flecha que baja de las cuatro proporciones al medidor. */
+.rain-flecha-medidor { --se-tam: 1.6em; margin-left: 0.3em; vertical-align: -0.7em; }
+
+/* El máximo de agosto, el hito que hay que recordar, con su estrella. */
+.rain-crono-estrella { --se-tam: 20px; margin-left: 6px; vertical-align: -4px; }
+
 @media (max-width: 760px) {
   .rain-reparto { padding: 18px 16px; border-radius: 24px; }
   .rain-reparto-fila { grid-template-columns: minmax(0, 1fr) 54px; gap: 8px 10px; }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserRound, type LucideIcon, MessagesSquare } from "lucide-react";
@@ -12,6 +12,7 @@ import { sonar } from "@/lib/sonidos";
 import { INSTAGRAM_DM_URL, YOUTUBE_URL } from "@/lib/contacto";
 import { InstagramIcon } from "./SocialLinks";
 import Tecla from "./cuaderno/Tecla";
+import InterruptorSonido from "./cuaderno/InterruptorSonido";
 import "./menu-movil.css";
 
 interface Props {
@@ -90,6 +91,12 @@ const FUERA_DEL_CATALOGO = new Set(["guias", "glosario", "foro"]);
  * destinos van en teclas de tres en fondo (sin la línea de explicación) para
  * que el menú quepa en la pantalla, y el panel de cuenta queda al final.
  *
+ * Abrir y cerrar tienen su animación (17-11-2026, pedida por el admin: «más
+ * personalidad»): la hoja se despliega en círculo desde el botón del menú,
+ * las filas se reparten como tarjetas sobre la mesa, cada icono salta y las
+ * notas a mano se escriben. Al cerrar, todo se recoge hacia el botón. Por eso
+ * el menú sigue montado un instante después de cerrarlo (`montado`).
+ *
  * Solo hay UNA barra de desplazamiento, la del propio menú: al abrirlo se
  * bloquea el scroll del documento entero (el elemento html), no solo el del
  * body. Con `overflow-x: hidden` en los dos (globals.css), bloquear solo el
@@ -101,13 +108,66 @@ const FUERA_DEL_CATALOGO = new Set(["guias", "glosario", "foro"]);
  */
 export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null, foro = false, precio }: Props) {
   const [open, setOpen] = useState(false);
+  // Sigue en pantalla mientras se recoge, después de cerrarlo.
+  const [montado, setMontado] = useState(false);
+  // De dónde sale la hoja: el centro del botón del menú.
+  const [origen, setOrigen] = useState({ x: "100%", y: "0px" });
   const pathname = usePathname();
   const primerEnlace = useRef<HTMLAnchorElement>(null);
+  // Todo lo que va dentro del menú: se escala si no cabe en la pantalla.
+  const hoja = useRef<HTMLDivElement>(null);
   const boton = useRef<HTMLButtonElement>(null);
 
   const activo = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const destino = (ruta: string) => destinoPorRuta(ruta, { logueado: user, premium: isPremium });
   const close = () => setOpen(false);
+
+  /** Abre o cierra, con su sonido, desde el centro del botón. */
+  const alternar = () => {
+    const r = boton.current?.getBoundingClientRect();
+    if (r) setOrigen({ x: `${Math.round(r.left + r.width / 2)}px`, y: `${Math.round(r.top + r.height / 2)}px` });
+    sonar(open ? "cerrar" : "abrir");
+    if (!open) setMontado(true);
+    setOpen(!open);
+  };
+
+  // El menú nunca tiene scroll (pedido por el admin el 17-11-2026): ocupa la
+  // pantalla y, si su contenido no cabe ni compactado (menu-movil.css), se
+  // escala con `zoom` lo justo para que quepa. Se recalcula al girar el
+  // móvil o cambiar el tamaño de la ventana. Dos pasadas: al escalar, el
+  // contenido se reparte en un ancho distinto y su alto cambia un poco.
+  useLayoutEffect(() => {
+    if (!montado) return;
+    const el = hoja.current;
+    const caja = el?.parentElement;
+    if (!el || !caja) return;
+    const ajustar = () => {
+      el.style.zoom = "1";
+      const estilo = getComputedStyle(caja);
+      const disponible = caja.clientHeight - parseFloat(estilo.paddingTop) - parseFloat(estilo.paddingBottom);
+      for (let pasada = 0; pasada < 2; pasada++) {
+        const actual = parseFloat(el.style.zoom) || 1;
+        const natural = el.getBoundingClientRect().height / actual;
+        // Un 2 % de colchón: el canto de la última tecla y el redondeo.
+        const escala = Math.min(1, (disponible / natural) * 0.98);
+        el.style.zoom = String(Math.max(0.55, Math.floor(escala * 1000) / 1000));
+      }
+    };
+    ajustar();
+    window.addEventListener("resize", ajustar);
+    return () => window.removeEventListener("resize", ajustar);
+  }, [montado, user, isPremium, isAdmin, foro]);
+
+  // Al abrir se monta (en `alternar`); al cerrar se deja que se recoja
+  // (menu-movil.css, `mm-recoger`, 0,32 s) y después se quita. Con «reducir
+  // movimiento», al momento.
+  useEffect(() => {
+    if (open || !montado) return;
+    const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // 0,32 s en el móvil y 0,44 s en el ordenador (menu-movil.css): se espera lo más largo.
+    const espera = window.setTimeout(() => setMontado(false), quieto ? 0 : 460);
+    return () => window.clearTimeout(espera);
+  }, [open, montado]);
 
   // Con el menú abierto, la página de debajo no se desplaza; Escape lo cierra
   // (con su sonido, y el foco vuelve al botón del menú) y el foco entra en el
@@ -140,10 +200,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
         icono
         className={`btn-hamburger${open ? " open" : ""}`}
         ref={boton}
-        onClick={() => {
-          sonar(open ? "cerrar" : "abrir");
-          setOpen(!open);
-        }}
+        onClick={alternar}
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
       >
@@ -154,10 +211,21 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
         </span>
       </Tecla>
 
-      {open && (
-        <div className="mm" role="dialog" aria-modal="true" aria-label="Menú">
+      {(open || montado) && (
+        <div
+          className={`mm${open ? "" : " is-cerrando"}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú"
+          aria-hidden={open ? undefined : true}
+          style={{ "--mm-x": origen.x, "--mm-y": origen.y } as React.CSSProperties}
+        >
+          <div className="mm-hoja" ref={hoja}>
           <div className="mm-buscar">
             <GuideSearch />
+            {/* En el móvil la etiqueta colgante no se ve con el menú abierto:
+                el altavoz pasa aquí, junto al buscador (site-nav.css). */}
+            <span className="mm-sonido"><InterruptorSonido /></span>
           </div>
           <div className="mm-cuerpo">
             <nav className="mm-nav" aria-label="Secciones de la academia">
@@ -167,34 +235,48 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
             <aside className="mm-lado" aria-label="Tu cuenta">
               {user ? (
-                <div className="mm-cuenta">
-                  <div className="mm-cuenta-quien">
-                    <span aria-hidden="true" className="mm-avatar-caja">
-                      <AvatarUsuario avatar={avatar} inicial={(userName || "U").charAt(0).toUpperCase()} className="mm-avatar" />
+                // La misma ficha de alumno que el desplegable de la barra
+                // (NavSaludo, site-nav.css): cabecera naranja con saludo a mano
+                // y filas con su icono de color. Pedido por el admin el 17-11-2026.
+                <div className="mm-cuenta mm-ficha">
+                  <div className="nav-saludo-cabecera">
+                    <span className="nav-saludo-avatar nav-saludo-avatar--grande" aria-hidden="true">
+                      <AvatarUsuario avatar={avatar} inicial={(userName || "U").charAt(0).toUpperCase()} className="nav-saludo-foto" />
+                      {isPremium && <span className="nav-saludo-corona"><Crown size={11} strokeWidth={2.6} /></span>}
                     </span>
-                    <span>
-                      <span className="mm-cuenta-nombre">{userName || "Tu cuenta"}</span>
-                      <span className={`mm-rol${isPremium ? " is-premium" : ""}`}>
+                    <span className="nav-saludo-cabecera-texto">
+                      <span className="nav-saludo-hola" aria-hidden="true">¡hola de nuevo!</span>
+                      <span className="nav-saludo-cabecera-nombre">{userName || "Tu cuenta"}</span>
+                      <span className={`nav-saludo-chip${isPremium ? " is-premium" : ""}`}>
+                        {isPremium && <Crown size={11} strokeWidth={2.4} aria-hidden="true" />}
                         {isAdmin ? "Admin" : isPremium ? "Premium" : "Cuenta gratuita"}
                       </span>
                     </span>
                   </div>
-                  <div className="mm-cuenta-enlaces">
-                    <Link href="/dashboard" onClick={close} className="mm-cuenta-enlace">
-                      <LayoutDashboard size={16} aria-hidden="true" /> Mi dashboard
+                  <div className="nav-saludo-lista">
+                    <Link href="/dashboard" onClick={close} className="nav-saludo-item nav-saludo-item--cielo" style={{ "--i": 0 } as React.CSSProperties}>
+                      <span className="nav-saludo-icono" aria-hidden="true"><LayoutDashboard size={16} strokeWidth={2.2} /></span>
+                      Mi dashboard
+                      <ArrowRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
                     </Link>
-                    <Link href="/dashboard/perfil" onClick={close} className="mm-cuenta-enlace">
-                      <UserRound size={16} aria-hidden="true" /> Mi perfil
+                    <Link href="/dashboard/perfil" onClick={close} className="nav-saludo-item nav-saludo-item--menta" style={{ "--i": 1 } as React.CSSProperties}>
+                      <span className="nav-saludo-icono" aria-hidden="true"><UserRound size={16} strokeWidth={2.2} /></span>
+                      Mi perfil
+                      <ArrowRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
                     </Link>
                     {isAdmin && (
-                      <Link href="/admin" onClick={close} className="mm-cuenta-enlace">
-                        <Shield size={16} aria-hidden="true" /> Panel admin
-                        <ArrowUpRight size={14} aria-hidden="true" className="mm-cuenta-enlace-ext" />
+                      <Link href="/admin" onClick={close} className="nav-saludo-item nav-saludo-item--lila" style={{ "--i": 2 } as React.CSSProperties}>
+                        <span className="nav-saludo-icono" aria-hidden="true"><Shield size={16} strokeWidth={2.2} /></span>
+                        Panel admin
+                        <ArrowUpRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
                       </Link>
                     )}
-                    <LogoutButton className="mm-cuenta-enlace mm-salir" onDone={close}>
-                      <LogOut size={16} aria-hidden="true" /> Cerrar sesión
-                    </LogoutButton>
+                    <span className="nav-saludo-salir-caja" style={{ "--i": isAdmin ? 3 : 2 } as React.CSSProperties}>
+                      <LogoutButton className="nav-saludo-salir" onDone={close}>
+                        <span className="nav-saludo-icono" aria-hidden="true"><LogOut size={16} strokeWidth={2.2} /></span>
+                        Cerrar sesión
+                      </LogoutButton>
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -252,6 +334,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 </Link>
               )}
             </aside>
+          </div>
           </div>
         </div>
       )}

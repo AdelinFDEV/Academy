@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { LayoutDashboard, UserRound, ChevronDown, LogOut, Crown, ArrowRight } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
@@ -28,6 +28,12 @@ const PLAN_TEXTO: Record<PlanUsuario, string> = {
  * el desplegable, una hoja de papel. Premium va en naranja, el color de la
  * marca y de Premium (ESTILO.md): ya no hay dorados.
  *
+ * El desplegable (rehecho el 17-11-2026, pedido por el admin) es una ficha
+ * de alumno que se despliega desde la tarjeta: cabecera naranja suave con un
+ * saludo a mano, filas con su icono de color (como el menú grande) y un pico
+ * que apunta a la tarjeta. Al abrirse baja como una hoja; al cerrarse se
+ * pliega hacia arriba, por eso sigue montado un instante (`montado`).
+ *
  * Pulsarla abre su panel, su cuenta y, a quien no es Premium, el paso a
  * Premium. El plan lo resuelve la barra (`SiteNav`) desde el perfil, así que
  * es el mismo en todas las páginas.
@@ -43,6 +49,8 @@ export default function NavSaludo({
   avatar?: string | null;
 }) {
   const [abierto, setAbierto] = useState(false);
+  // Sigue en pantalla mientras se pliega, después de cerrarlo.
+  const [montado, setMontado] = useState(false);
   const caja = useRef<HTMLDivElement>(null);
   const boton = useRef<HTMLButtonElement>(null);
 
@@ -72,6 +80,15 @@ export default function NavSaludo({
     };
   }, [abierto]);
 
+  // Al cerrar se deja que se pliegue (site-nav.css, `nav-saludo-plegar`,
+  // 0,22 s) y después se quita. Con «reducir movimiento», al momento.
+  useEffect(() => {
+    if (abierto || !montado) return;
+    const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const espera = window.setTimeout(() => setMontado(false), quieto ? 0 : 220);
+    return () => window.clearTimeout(espera);
+  }, [abierto, montado]);
+
   // Solo el nombre de pila en la barra: «Jorge Adelin Gombos» no cabe. En el
   // menú, el nombre entero.
   const pila = nombre.trim().split(/\s+/)[0] ?? nombre;
@@ -87,6 +104,7 @@ export default function NavSaludo({
         ref={boton}
         onClick={() => {
           sonar(abierto ? "cerrar" : "abrir");
+          if (!abierto) setMontado(true);
           setAbierto(!abierto);
         }}
         aria-haspopup="menu"
@@ -105,15 +123,20 @@ export default function NavSaludo({
         <ChevronDown className="nav-saludo-flecha" size={14} strokeWidth={2.6} aria-hidden="true" />
       </Tecla>
 
-      {abierto && (
-        <div className={`nav-saludo-menu${premium ? " is-premium" : ""}`} role="menu">
-          {/* Quién eres, con el nombre entero y el plan. */}
+      {(abierto || montado) && (
+        <div
+          className={`nav-saludo-menu${premium ? " is-premium" : ""}${abierto ? "" : " is-cerrando"}`}
+          role="menu"
+          aria-hidden={abierto ? undefined : true}
+        >
+          {/* Quién eres: un saludo a mano, la foto, el nombre entero y el plan. */}
           <div className="nav-saludo-cabecera">
             <span className="nav-saludo-avatar nav-saludo-avatar--grande" aria-hidden="true">
               <AvatarUsuario avatar={avatar} inicial={inicial} className="nav-saludo-foto" />
-              {premium && <span className="nav-saludo-corona"><Crown size={10} strokeWidth={2.6} /></span>}
+              {premium && <span className="nav-saludo-corona"><Crown size={11} strokeWidth={2.6} /></span>}
             </span>
             <span className="nav-saludo-cabecera-texto">
+              <span className="nav-saludo-hola" aria-hidden="true">¡hola de nuevo!</span>
               <span className="nav-saludo-cabecera-nombre">{nombre}</span>
               <span className={`nav-saludo-chip${premium ? " is-premium" : ""}`}>
                 {premium && <Crown size={11} strokeWidth={2.4} aria-hidden="true" />}
@@ -122,44 +145,53 @@ export default function NavSaludo({
             </span>
           </div>
 
-          <Link
-            href="/dashboard"
-            className="nav-saludo-item"
-            role="menuitem"
-            onClick={() => setAbierto(false)}
-          >
-            <LayoutDashboard size={15} strokeWidth={2.1} aria-hidden="true" />
-            Mi dashboard
-          </Link>
-          <Link
-            href="/dashboard/perfil"
-            className="nav-saludo-item"
-            role="menuitem"
-            onClick={() => setAbierto(false)}
-          >
-            <UserRound size={15} strokeWidth={2.1} aria-hidden="true" />
-            Mi perfil
-          </Link>
-
-          {!premium && (
+          <div className="nav-saludo-lista">
             <Link
-              href="/premium"
-              className="nav-saludo-premium"
+              href="/dashboard"
+              className="nav-saludo-item nav-saludo-item--cielo"
               role="menuitem"
+              style={{ "--i": 0 } as CSSProperties}
               onClick={() => setAbierto(false)}
             >
-              <Crown size={15} strokeWidth={2.2} aria-hidden="true" />
-              Hazte Premium
-              <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
+              <span className="nav-saludo-icono" aria-hidden="true"><LayoutDashboard size={16} strokeWidth={2.2} /></span>
+              Mi dashboard
+              <ArrowRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
             </Link>
-          )}
+            <Link
+              href="/dashboard/perfil"
+              className="nav-saludo-item nav-saludo-item--menta"
+              role="menuitem"
+              style={{ "--i": 1 } as CSSProperties}
+              onClick={() => setAbierto(false)}
+            >
+              <span className="nav-saludo-icono" aria-hidden="true"><UserRound size={16} strokeWidth={2.2} /></span>
+              Mi perfil
+              <ArrowRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
+            </Link>
 
-          {/* Cerrar sesión reutiliza LogoutButton, que es quien sabe limpiar
-              la sesión de verdad. Solo cambia el traje. */}
-          <LogoutButton className="nav-saludo-salir" onDone={() => setAbierto(false)}>
-            <LogOut size={15} strokeWidth={2.1} aria-hidden="true" />
-            Cerrar sesión
-          </LogoutButton>
+            {!premium && (
+              <Link
+                href="/premium"
+                className="nav-saludo-premium"
+                role="menuitem"
+                style={{ "--i": 2 } as CSSProperties}
+                onClick={() => setAbierto(false)}
+              >
+                <Crown size={15} strokeWidth={2.2} aria-hidden="true" />
+                Hazte Premium
+                <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
+              </Link>
+            )}
+
+            {/* Cerrar sesión reutiliza LogoutButton, que es quien sabe limpiar
+                la sesión de verdad. Solo cambia el traje. */}
+            <span className="nav-saludo-salir-caja" style={{ "--i": premium ? 2 : 3 } as CSSProperties}>
+              <LogoutButton className="nav-saludo-salir" onDone={() => setAbierto(false)}>
+                <span className="nav-saludo-icono" aria-hidden="true"><LogOut size={16} strokeWidth={2.2} /></span>
+                Cerrar sesión
+              </LogoutButton>
+            </span>
+          </div>
         </div>
       )}
     </div>

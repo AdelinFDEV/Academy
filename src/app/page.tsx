@@ -13,6 +13,8 @@ import HeroCuaderno from "@/components/HeroCuaderno";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import { cursosPublicados } from "@/lib/cursos";
+import { guiasVisibles } from "@/lib/guiasVisibles";
+import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 import "./home.css";
 
 /**
@@ -36,10 +38,13 @@ export default async function HomePage() {
   // La cartera pública no depende de quién mire: se pide A LA VEZ que la
   // sesión, no después (antes eran tres esperas en fila: sesión, perfil y
   // cartera). La cartera tiene su propia caché; aquí solo se deja de esperar.
-  const [{ data: { user } }, resumenCompleto, cursos] = await Promise.all([
+  const [{ data: { user } }, resumenCompleto, cursos, guias] = await Promise.all([
     supabase.auth.getUser(),
     resumenPortfolioPublico(),
     cursosPublicados(),
+    // Solo para contarlas en el índice del hero; la sección de guías las
+    // vuelve a pedir, y la consulta de las publicadas va con `cache`.
+    guiasVisibles(),
   ]);
 
   const profileRes = user
@@ -77,7 +82,7 @@ export default async function HomePage() {
           final, Premium con las dudas. Cada sección, su color (ESTILO.md). */}
 
       {/* ── Hero: estilo «Cuaderno de estudio». Lleva el único <h1>. ── */}
-      <HeroCuaderno />
+      <HeroCuaderno guias={guias.length} terminos={GLOSARIO_CON_PAGINA.length} cursos={cursos.length} />
 
       {/* ── Las guías, justo tras el hero ─────────────────────────────────
           Desde el 10-10-2026 la academia son las guías. */}

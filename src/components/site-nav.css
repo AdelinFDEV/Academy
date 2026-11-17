@@ -97,7 +97,9 @@
   align-self: stretch;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  /* El mismo hueco entre todas las teclas de la barra (8 px), también entre
+     grupos: antes iban de 4 a 15 px sin criterio (repaso del 17-11-2026). */
+  gap: 8px;
 }
 
 /* ── Las tres piezas de pago (NavPrincipal.tsx) ────────────────────────────
@@ -106,21 +108,43 @@
    (framer-motion) hasta la que tiene el ratón encima. */
 
 /* --t, el texto sobre la base: tinta sobre menta (contraste), blanco en el resto. */
-.nav-tono--azul { --c: var(--azul); --o: var(--azul-o); --s: var(--azul-s); --t: #fff; }
+/* En la barra, Cursos (lila) y el Diario (azul) se separan un poco más que en
+   el resto de la web: son tonos vecinos y, sobre la cápsula lavanda, se
+   confundían (pedido por el admin el 17-11-2026). Cursos tira hacia un violeta
+   rosado y el Diario hacia el cielo; siguen siendo su color de sección. */
+.nav-tono--azul {
+  --c: color-mix(in srgb, var(--azul) 55%, var(--cielo));
+  --o: color-mix(in srgb, var(--azul-o) 70%, var(--cielo-o));
+  --s: color-mix(in srgb, color-mix(in srgb, var(--azul) 55%, var(--cielo)) 18%, var(--papel));
+  --t: #fff;
+}
 .nav-tono--menta { --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s); --t: var(--tinta); }
-.nav-tono--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); --t: #fff; }
+.nav-tono--lila {
+  --c: color-mix(in srgb, var(--lila) 40%, var(--coral));
+  --o: color-mix(in srgb, var(--lila-o) 46%, var(--coral-o));
+  --s: color-mix(in srgb, color-mix(in srgb, var(--lila) 40%, var(--coral)) 25%, var(--papel));
+  --t: #fff;
+}
 
 .nav-principal {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 7px;
   margin: 0;
-  padding: 5px 5px 8px;
+  /* 52 px de alto: más aire arriba y abajo (pedido por el admin el
+     17-11-2026). Queda centrada con las teclas de la barra (46 px con su
+     canto). Abajo, sitio para el canto de 4 px de las piezas. */
+  padding: 5px 9px 9px;
   list-style: none;
-  border-radius: 18px;
-  background: var(--fondo);
-  box-shadow: inset 0 2px 0 rgba(29, 27, 51, 0.06);
+  border-radius: 20px;
+  /* Más ancha y en lavanda (elegido por el admin el 17-11-2026, opción C):
+     antes era el mismo lavanda que el fondo de la página y apenas se veía.
+     Un borde fino de su tono la dibuja como una bandeja. */
+  background: color-mix(in srgb, var(--lila) 14%, var(--papel));
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--lila) 32%, var(--papel)),
+    inset 0 3px 0 rgba(29, 27, 51, 0.05);
 }
 
 .nav-principal > li {
@@ -142,7 +166,16 @@
   letter-spacing: -0.005em;
   white-space: nowrap;
   text-decoration: none;
-  color: var(--tinta-2);
+  /* En reposo cada pieza ya lleva su color: papel de su tono suave y el
+     texto en su lateral (contraste AA, ESTILO.md). Pedido por el admin el
+     17-11-2026: que la barra no se vea toda igual. */
+  background: var(--s);
+  color: var(--o);
+  /* Un canto fino de su color: como todo botón de la web, es una tecla
+     (ESTILO.md). Eran las únicas de la barra sin él (repaso del 17-11-2026). */
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    0 4px 0 color-mix(in srgb, var(--c) 45%, var(--s));
   -webkit-tap-highlight-color: transparent;
   transition:
     color 0.2s ease,
@@ -152,7 +185,6 @@
 
 .nav-principal-enlace:hover,
 .nav-principal-enlace:focus-visible {
-  color: var(--tinta);
   outline: none;
 }
 
@@ -160,14 +192,14 @@
   box-shadow: 0 0 0 3px var(--azul);
 }
 
-/* La ficha que se desliza: papel de su tono suave, con un canto fino. */
+/* La ficha que se desliza: su tono, un punto más vivo, con un canto fino. */
 .nav-principal-ficha {
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--s);
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 45%, transparent);
+  background: color-mix(in srgb, var(--c) 22%, var(--s));
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 55%, transparent);
 }
 
 /* Donde estás: la tecla de su color. */
@@ -180,7 +212,8 @@
 }
 
 .nav-principal-enlace:active {
-  transform: translateY(3px);
+  transform: translateY(4px);
+  box-shadow: inset 0 3px 5px rgba(29, 27, 51, 0.1), 0 0 0 transparent;
   transition-duration: 0.06s;
 }
 
@@ -194,20 +227,21 @@
   width: 28px;
   height: 28px;
   border-radius: 9px;
-  background: var(--s);
+  background: var(--papel);
   color: var(--o);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 35%, transparent);
   transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), background 0.2s ease;
 }
 
 .nav-principal-enlace:hover .nav-principal-icono,
 .nav-principal-enlace:focus-visible .nav-principal-icono {
-  background: var(--papel);
   transform: rotate(-8deg) scale(1.06);
 }
 
 .nav-principal-enlace.is-activo .nav-principal-icono {
   background: rgba(255, 255, 255, 0.24);
   color: var(--t);
+  box-shadow: none;
 }
 
 /* Nova (nova.css), al final de la bandeja, junto a su Diario. Aquí solo se
@@ -246,15 +280,15 @@
   height: 42px;
   margin-bottom: 4px;
   padding: 0 1rem 0 8px;
-  border: 2px solid var(--gris);
+  border: 2px solid var(--coral-s);
   border-radius: 14px;
-  background: var(--papel);
-  box-shadow: 0 4px 0 var(--gris-o);
+  background: var(--coral-s);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
   font-size: 0.9rem;
   font-weight: 800;
   white-space: nowrap;
   text-decoration: none;
-  color: var(--tinta-2);
+  color: var(--coral-o);
   outline: none;
   -webkit-tap-highlight-color: transparent;
   transition:
@@ -274,7 +308,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px var(--papel);
+  box-shadow: 0 0 0 2px var(--coral-s);
   animation: nav-foro-turno 3.6s ease-in-out infinite;
   transition: margin 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
 }
@@ -288,39 +322,33 @@
   35% { transform: translateY(-2px); }
 }
 
-/* El punto que late: actividad, no un aviso sin leer. */
-.nav-foro-latido {
-  position: relative;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--coral);
+/* El bocadillo de diálogo (17-11-2026, en lugar del punto que latía): de vez
+   en cuando se mece y da un saltito, como una conversación en marcha. */
+.nav-foro-bocadillo {
+  flex: none;
+  color: var(--coral);
+  transform-origin: 30% 90%;
+  animation: nav-foro-bocadillo 4.2s ease-in-out infinite;
 }
 
-.nav-foro-latido::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--coral);
-  animation: nav-foro-latido 2.4s ease-out infinite;
-}
-
-@keyframes nav-foro-latido {
-  0% { transform: scale(1); opacity: 0.6; }
-  70%, 100% { transform: scale(2.8); opacity: 0; }
+@keyframes nav-foro-bocadillo {
+  0%, 72%, 100% { transform: none; }
+  78% { transform: translateY(-2px) rotate(-12deg); }
+  86% { transform: translateY(0) rotate(8deg); }
+  93% { transform: rotate(-3deg); }
 }
 
 .nav-foro:hover,
 .nav-foro:focus-visible {
-  border-color: var(--coral-s);
-  background: var(--coral-s);
+  border-color: color-mix(in srgb, var(--coral) 22%, var(--coral-s));
+  background: color-mix(in srgb, var(--coral) 22%, var(--coral-s));
   box-shadow: 0 4px 0 var(--coral);
-  color: var(--coral-o);
 }
 
 .nav-foro:hover .nav-foro-cara.avatar-usuario,
-.nav-foro:focus-visible .nav-foro-cara.avatar-usuario { box-shadow: 0 0 0 2px var(--coral-s); }
+.nav-foro:focus-visible .nav-foro-cara.avatar-usuario {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--coral) 22%, var(--coral-s));
+}
 
 .nav-foro:hover .nav-foro-cara + .nav-foro-cara,
 .nav-foro:focus-visible .nav-foro-cara + .nav-foro-cara { margin-left: -4px; }
@@ -342,9 +370,7 @@
 }
 
 .nav-foro.is-activo .nav-foro-cara.avatar-usuario { box-shadow: 0 0 0 2px var(--coral); }
-.nav-foro.is-activo .nav-foro-latido,
-.nav-foro.is-activo .nav-foro-latido::after { background: #fff; }
-.nav-foro.is-activo .nav-foro-latido::after { animation: none; opacity: 0; }
+.nav-foro.is-activo .nav-foro-bocadillo { color: #fff; animation: none; }
 
 /* El foro en la barra del móvil (NavForoMovil): una tecla coral, solo por
    debajo de 1280 px, donde el de escritorio se esconde, y solo con sesión. */
@@ -361,19 +387,202 @@
   gap: 0.5rem;
 }
 
-.tecla.nav-red--instagram { --t: #d62976; }
-.tecla.nav-red--youtube { --t: #e01b1b; }
+/* Cada tecla de la derecha, su tono pastel (pedido por el admin el
+   17-11-2026: que no se vea todo igual). El canto es su color a medias, para
+   que siga leyéndose como tecla sin gritar. Las redes conservan el icono en
+   su color de marca: Instagram sobre lila (su degradado tira a morado) y
+   YouTube sobre amarillo, para no confundirse con el coral del foro. */
+.blog-nav .tecla.nav-red--instagram {
+  --c: var(--lila-s);
+  --o: color-mix(in srgb, var(--lila) 45%, var(--lila-s));
+  --t: #d62976;
+}
+.blog-nav .tecla.nav-red--youtube {
+  --c: var(--amarillo-s);
+  --o: color-mix(in srgb, var(--amarillo) 70%, var(--amarillo-s));
+  --t: #e01b1b;
+}
 
 @media (min-width: 900px) and (max-width: 1279px), (min-width: 1440px) {
   .nav-redes { display: inline-flex; }
 }
 
-/* El altavoz: siempre a la vista, también con el menú abierto (que tapa el
-   resto de la barra). */
+/* ── El altavoz: una etiqueta que cuelga de la barra ─────────────────────
+   Pedido por el admin el 17-11-2026: fuera de la fila de botones, colgando
+   por debajo de la marca, como la etiqueta de un cuaderno atada con un
+   cordel. Se mece despacio todo el rato y, al pulsarlo, da un balanceo de
+   péndulo que se apaga solo (`is-meciendo`, lo pone InterruptorSonido).
+   Sigue siempre a la vista: también con el menú abierto, encima de su hoja
+   (z-index 500, por encima de .mm). Libera además un hueco en la fila de la
+   derecha, que en el móvil es justo lo que faltaba. */
+/* La barra reserva debajo el hueco donde cuelga la etiqueta (cordel +
+   etiqueta + canto): así no tapa nada de la página, que empieza debajo. Con el
+   menú abierto la barra es fija y el hueco lo deja la propia hoja. */
+.blog-nav:has(> .blog-nav-end > .nav-sonido) { margin-bottom: 56px; }
+.blog-nav:has(.btn-hamburger.open) { margin-bottom: 0; }
+
 .nav-sonido {
-  position: relative;
+  /* Largo y grueso lo bastante para leerse como un cordel del que cuelga
+     (con 8 px y 2 de grosor apenas asomaba un punto, repaso del 17-11-2026). */
+  --cordel: 16px;
+  position: absolute;
+  top: 100%;
+  left: calc(clamp(1rem, 2.4vw, 2rem) + 18px);
   z-index: 500;
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* El cordel sale de debajo del canto de la barra (4 px). */
+  padding-top: calc(var(--cordel) + 4px);
+  transform-origin: 50% 0;
+  animation: nav-sonido-vaiven 6s ease-in-out infinite;
+}
+
+/* La cuerda: trenzada, color yute, colgando directamente del borde de la
+   barra hasta la etiqueta, sin argolla ni puntos (el admin la quiso así,
+   17-11-2026), por donde entra (pedido por el admin el
+   17-11-2026: el cordel liso no le convencía). Va por encima de la etiqueta
+   para que se vea entrar en el ojal. El trenzado son franjas en diagonal de
+   dos tonos de yute, con un brillo a un lado y sombra al otro para que tenga
+   volumen. */
+.nav-sonido::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  width: 4px;
+  height: calc(var(--cordel) + 9px);
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.35), transparent 45%, rgba(74, 46, 18, 0.28)),
+    repeating-linear-gradient(-58deg, #dcb88d 0 2.5px, #b58654 2.5px 4.5px);
+  box-shadow: 0 1px 1px rgba(74, 46, 18, 0.25);
+  transform: translateX(-50%);
+}
+
+
+/* La etiqueta, con el ojal por donde pasa el cordel. Su color dice el estado
+   (pedido por el admin el 17-11-2026: que se vea con claridad):
+    · encendido → naranja pastel, y las ondas del altavoz laten;
+    · apagado → gris, el altavoz tachado y la etiqueta quieta (el silencio no
+      se mueve). El estado lo da `aria-pressed` («Silenciar» pulsado). */
+.nav-sonido .tecla--blanca {
+  /* Un punto más vivo que el naranja suave de la paleta: sobre el fondo
+     lavanda, el suave se quedaba pálido y costaba verlo. */
+  --c: color-mix(in srgb, var(--naranja) 30%, var(--naranja-s));
+  --o: color-mix(in srgb, var(--naranja) 70%, var(--naranja-s));
+  --t: var(--naranja-o);
+  --r: 12px 12px 14px 14px;
+  width: 40px;
+  height: 42px;
+  padding-top: 7px;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1),
+    scale 0.3s cubic-bezier(0.34, 2.2, 0.5, 1),
+    box-shadow 0.3s cubic-bezier(0.34, 1.8, 0.5, 1),
+    background-color 0.25s ease,
+    color 0.25s ease,
+    filter 0.15s ease;
+}
+
+.nav-sonido .tecla--blanca[aria-pressed="true"] {
+  --c: var(--gris);
+  --o: var(--gris-o);
+  --t: var(--tinta-3);
+}
+
+
+/* Las dos ondas del altavoz (Volume2: el 2.º y el 3.º trazo) laten por turnos. */
+.nav-sonido .tecla[aria-pressed="false"] svg path:nth-child(2),
+.nav-sonido .tecla[aria-pressed="false"] svg path:nth-child(3) {
+  animation: nav-sonido-onda 1.6s ease-in-out infinite;
+}
+
+.nav-sonido .tecla[aria-pressed="false"] svg path:nth-child(3) { animation-delay: 0.25s; }
+
+@keyframes nav-sonido-onda {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Apagado: quieta. */
+.nav-sonido:has(.tecla[aria-pressed="true"]) { animation: none; }
+
+/* La nota a mano que confirma el cambio («sonido activado», «en silencio»):
+   aparece al lado de la etiqueta al pulsarla y se va sola (`con-nota`, la pone
+   InterruptorSonido). Solo existe en la barra: fuera de ella no se pinta. */
+.sonido-nota { display: none; }
+
+.nav-sonido .sonido-nota {
+  position: absolute;
+  top: calc(var(--cordel) + 14px);
+  left: calc(100% + 10px);
+  display: block;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--naranja-o);
+  opacity: 0;
+  transform: translateX(-6px) rotate(-3deg);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-sonido:has(.tecla[aria-pressed="true"]) .sonido-nota { color: var(--tinta-2); }
+
+.nav-sonido.con-nota .sonido-nota {
+  opacity: 1;
+  transform: translateX(0) rotate(-3deg);
+}
+
+
+.nav-sonido .tecla--blanca svg { width: 18px; height: 18px; }
+
+/* En el móvil la etiqueta solo cuelga en la portada, y nunca con el menú
+   abierto: entonces el altavoz está dentro del menú (pedido por el admin el
+   17-11-2026). Sin ella, la barra no reserva su hueco. SonidoColgante marca
+   la de la portada con `es-portada`. */
+@media (max-width: 899px) {
+  .nav-sonido:not(.es-portada),
+  .blog-nav:has(.btn-hamburger.open) .nav-sonido { display: none; }
+
+  .blog-nav:has(> .blog-nav-end > .nav-sonido:not(.es-portada)) { margin-bottom: 0; }
+}
+
+@keyframes nav-sonido-vaiven {
+  0%, 100% { rotate: -2.5deg; }
+  50% { rotate: 2.5deg; }
+}
+
+/* Al pulsarlo: un balanceo de péndulo que se va apagando (también al
+   apagarlo: es el último movimiento antes de quedarse quieta). */
+.nav-sonido.is-meciendo,
+.nav-sonido.is-meciendo:has(.tecla[aria-pressed="true"]) { animation: nav-sonido-pendulo 1.3s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
+
+@keyframes nav-sonido-pendulo {
+  0% { rotate: 0deg; }
+  14% { rotate: 16deg; }
+  32% { rotate: -11deg; }
+  50% { rotate: 7deg; }
+  66% { rotate: -4deg; }
+  82% { rotate: 2deg; }
+  100% { rotate: 0deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-sonido,
+  .nav-sonido.is-meciendo,
+  .nav-sonido.is-meciendo:has(.tecla[aria-pressed="true"]),
+  .nav-sonido .tecla svg path { animation: none; }
+}
+
+/* El menú, en menta mientras está cerrado; abierto es la tecla tinta. */
+.blog-nav .btn-hamburger.tecla--blanca {
+  --c: var(--menta-s);
+  --o: color-mix(in srgb, var(--menta) 50%, var(--menta-s));
+  --t: var(--menta-o);
 }
 
 /* ── Visitante sin cuenta: entrar o registrarse ────────────────────────────
@@ -445,6 +654,51 @@
   text-transform: none;
 }
 
+/* ── Las teclas de la barra, con el grosor del foro ──
+   Pedido por el admin el 17-11-2026: las de la derecha (redes, altavoz,
+   Entrar, Registrarse, tu tarjeta y el menú) se veían más gruesas que el
+   botón del foro. Ahora todas tienen su canto de 4 px y su alto de 42 px. */
+.blog-nav .tecla { --h: 4px; }
+
+/* Y la misma PROFUNDIDAD que el foro: solo su canto, sin la sombra difusa que
+   las teclas llevan en el resto de la web. Con ella, las de la derecha
+   parecían flotar más que el foro y que las piezas del centro (repaso del
+   17-11-2026). Se hunden igual que siempre. */
+.blog-nav .tecla {
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    0 var(--h) 0 var(--o);
+}
+
+@media (hover: hover) {
+  .blog-nav .tecla:hover {
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.35),
+      0 calc(var(--h) - 2px) 0 var(--o);
+  }
+}
+
+.blog-nav .tecla:active,
+.blog-nav .tecla.is-pulsada {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 4px 8px rgba(0, 0, 0, 0.18),
+    0 0 0 var(--o);
+}
+
+@media (min-width: 601px) {
+  .blog-nav .tecla--peq:not(.tecla--icono) { min-height: 42px; }
+  .blog-nav .tecla--icono.tecla--peq,
+  .blog-nav .tecla.nav-saludo { height: 42px; }
+  .blog-nav .tecla--icono.tecla--peq { width: 42px; }
+}
+
+/* Tu tarjeta, en naranja suave: el color de la marca. */
+.blog-nav .tecla--blanca.nav-saludo {
+  --c: var(--naranja-s);
+  --o: color-mix(in srgb, var(--naranja) 45%, var(--naranja-s));
+}
+
 /* La moneda: la inicial (o la foto) en un cuadrado redondeado naranja. */
 .nav-saludo-avatar {
   position: relative;
@@ -454,7 +708,7 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: var(--naranja-s);
+  background: var(--papel);
   font-family: var(--letra-titular);
   font-size: 1rem;
   font-weight: 800;
@@ -480,7 +734,7 @@
   border-radius: 50%;
   background: var(--naranja);
   color: #fff;
-  box-shadow: 0 0 0 2px var(--papel);
+  box-shadow: 0 0 0 2px var(--naranja-s);
 }
 
 .nav-saludo-texto {
@@ -508,13 +762,13 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--tinta-3);
+  color: var(--tinta-2);
 }
 
 .nav-saludo.is-premium .nav-saludo-plan { color: var(--naranja-o); }
 
 .nav-saludo-flecha {
-  color: var(--tinta-3);
+  color: var(--naranja-o);
   transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
@@ -530,58 +784,118 @@
 
 /* ── El desplegable: una hoja de papel ── */
 
+/* ── El desplegable: una ficha de alumno ──────────────────────────────────
+   Rehecho el 17-11-2026 (pedido por el admin: mejorar la animación y el
+   diseño para que encaje con la web). Una ficha de papel que baja desde tu
+   tarjeta, con un pico que apunta a ella:
+    · cabecera naranja suave, el color de tu tarjeta, con un saludo a mano;
+    · filas como las del menú grande: icono de su color (dashboard cielo,
+      perfil menta, cerrar sesión coral) y una flecha que asoma al pasar;
+    · se despliega como una hoja que cae (giro en X desde arriba, con muelle),
+      las filas entran una tras otra y los iconos saltan; al cerrar se pliega
+      hacia arriba (`is-cerrando`, NavSaludo la mantiene 0,22 s). */
 .nav-saludo-menu {
   position: absolute;
-  top: calc(100% + 0.6rem);
+  top: calc(100% + 0.75rem);
   right: 0;
   z-index: 500;
-  width: 260px;
-  padding: 0.5rem;
-  border: 2px solid var(--gris);
-  border-radius: 20px;
+  width: 272px;
+  padding: 0 0.55rem 0.55rem;
+  border-radius: 22px;
   background: var(--papel);
   color: var(--tinta);
   box-shadow:
+    0 0 0 2px var(--gris),
     0 6px 0 var(--gris-o),
-    0 26px 40px -22px rgba(29, 27, 51, 0.5);
-  transform-origin: calc(100% - 30px) 0;
-  animation: nav-saludo-entra 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    0 28px 44px -24px rgba(29, 27, 51, 0.5);
+  transform-origin: calc(100% - 34px) -10px;
+  animation: nav-saludo-desplegar 0.46s cubic-bezier(0.34, 1.4, 0.64, 1) both;
 }
 
-@keyframes nav-saludo-entra {
-  from { opacity: 0; transform: translateY(-6px) scale(0.94); }
+/* El pico que apunta a la tarjeta, del naranja de la cabecera. */
+.nav-saludo-menu::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: 30px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px 0 0 0;
+  background: color-mix(in srgb, var(--naranja) 22%, var(--naranja-s));
+  box-shadow: -2px -2px 0 0 var(--gris);
+  transform: rotate(45deg);
 }
 
+@keyframes nav-saludo-desplegar {
+  0% { opacity: 0; transform: perspective(700px) rotateX(-62deg) translateY(-10px) scale(0.96); }
+  45% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+
+.nav-saludo-menu.is-cerrando {
+  pointer-events: none;
+  animation: nav-saludo-plegar 0.22s cubic-bezier(0.55, 0, 0.75, 0.2) both;
+}
+
+@keyframes nav-saludo-plegar {
+  to { opacity: 0; transform: perspective(700px) rotateX(-55deg) translateY(-8px) scale(0.96); }
+}
+
+/* La cabecera: tu franja naranja suave, que llega hasta los bordes. */
 .nav-saludo-cabecera {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.4rem;
-  padding: 0.6rem 0.55rem 0.85rem;
-  border-bottom: 2px dashed var(--gris);
+  /* Con aire para que la corona de la foto no roce el saludo. */
+  gap: 1.1rem;
+  margin: 0 -0.55rem 0.5rem;
+  padding: 1rem 1rem 0.95rem;
+  border-radius: 22px 22px 0 0;
+  background: color-mix(in srgb, var(--naranja) 22%, var(--naranja-s));
 }
 
 .nav-saludo-avatar--grande {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  font-size: 1.2rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  font-size: 1.35rem;
+  box-shadow: 0 0 0 3px var(--papel), 0 4px 0 3px color-mix(in srgb, var(--naranja) 45%, var(--naranja-s));
+  rotate: -4deg;
 }
+
+.nav-saludo-avatar--grande .nav-saludo-corona { box-shadow: 0 0 0 2px var(--papel); }
 
 .nav-saludo-cabecera-texto {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.3rem;
+  gap: 0.15rem;
   min-width: 0;
+}
+
+/* El saludo a mano, que se escribe solo al abrir. */
+.nav-saludo-hola {
+  font-family: var(--letra-mano);
+  font-size: 19px;
+  line-height: 1;
+  color: var(--naranja-o);
+  transform: rotate(-3deg);
+  transform-origin: left center;
+  animation: nav-saludo-escribir 0.6s cubic-bezier(0.45, 0, 0.25, 1) 0.2s backwards;
+}
+
+@keyframes nav-saludo-escribir {
+  from { clip-path: inset(-30% 100% -30% 0); }
+  to { clip-path: inset(-30% -6% -30% 0); }
 }
 
 .nav-saludo-cabecera-nombre {
   max-width: 100%;
   overflow: hidden;
   font-family: var(--letra-titular);
-  font-size: 1.02rem;
+  font-size: 1.1rem;
   font-weight: 800;
+  line-height: 1.15;
   color: var(--tinta);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -591,9 +905,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.2rem 0.55rem;
+  margin-top: 0.2rem;
+  padding: 0.22rem 0.55rem;
   border-radius: 8px;
-  background: var(--gris);
+  background: var(--papel);
   font-size: 0.66rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -601,25 +916,41 @@
   color: var(--tinta-2);
 }
 
-.nav-saludo-chip.is-premium {
-  background: var(--naranja-s);
-  color: var(--naranja-o);
+.nav-saludo-chip.is-premium { color: var(--naranja-o); }
+
+/* ── Las filas ── */
+.nav-saludo-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-saludo-lista > * {
+  animation: nav-saludo-fila 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: calc(0.1s + var(--i, 0) * 0.055s);
+}
+
+@keyframes nav-saludo-fila {
+  from { opacity: 0; transform: translateX(14px); }
 }
 
 .nav-saludo-item,
 .nav-saludo-premium,
 .nav-saludo-salir {
+  --c: var(--cielo);
+  --o: var(--cielo-o);
+  --s: var(--cielo-s);
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.7rem;
   width: 100%;
-  min-height: 44px;
-  padding: 0.65rem 0.7rem;
+  min-height: 48px;
+  padding: 0.45rem 0.7rem 0.45rem 0.45rem;
   border: 0;
-  border-radius: 12px;
+  border-radius: 14px;
   background: transparent;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 800;
   text-align: left;
   text-decoration: none;
@@ -629,20 +960,70 @@
   transition: background 0.16s ease, color 0.16s ease, transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.nav-saludo-item svg { color: var(--tinta-3); transition: color 0.16s ease; }
+.nav-saludo-item--menta { --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s); }
+.nav-saludo-item--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); }
+.nav-saludo-salir { --c: var(--coral); --o: var(--coral-o); --s: var(--coral-s); color: var(--tinta-2); }
+
+/* El icono de cada fila: una teclita de su color suave, con su canto. Salta
+   un poco después de que entre su fila (hereda su --i). */
+.nav-saludo-icono {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 3px;
+  border-radius: 11px;
+  background: var(--s);
+  color: var(--o);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 45%, var(--s));
+  animation: nav-saludo-salto 0.45s cubic-bezier(0.34, 1.9, 0.5, 1) backwards;
+  animation-delay: calc(0.22s + var(--i, 0) * 0.055s);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), background 0.16s ease;
+}
+
+@keyframes nav-saludo-salto {
+  from { transform: scale(0.3) rotate(-24deg); }
+}
+
+/* La flecha que asoma al pasar el ratón. */
+.nav-saludo-ir {
+  margin-left: auto;
+  color: var(--o);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.18s ease, transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
 
 .nav-saludo-item:hover,
-.nav-saludo-item:focus-visible {
-  background: var(--fondo);
+.nav-saludo-item:focus-visible,
+.nav-saludo-salir:hover,
+.nav-saludo-salir:focus-visible {
+  background: var(--s);
   outline: none;
 }
 
-.nav-saludo-item:hover svg,
-.nav-saludo-item:focus-visible svg { color: var(--azul); }
+.nav-saludo-item:hover .nav-saludo-icono,
+.nav-saludo-item:focus-visible .nav-saludo-icono,
+.nav-saludo-salir:hover .nav-saludo-icono,
+.nav-saludo-salir:focus-visible .nav-saludo-icono {
+  background: var(--papel);
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.nav-saludo-item:hover .nav-saludo-ir,
+.nav-saludo-item:focus-visible .nav-saludo-ir {
+  opacity: 1;
+  transform: none;
+}
+
+.nav-saludo-item:active,
+.nav-saludo-salir:active { transform: translateY(2px); transition-duration: 0.06s; }
 
 /* El paso a Premium, solo para quien no lo es: en naranja, como una tecla. */
 .nav-saludo-premium {
-  margin: 0.35rem 0 0.2rem;
+  margin: 0.2rem 0;
+  padding-left: 0.8rem;
   background: var(--naranja-s);
   color: var(--naranja-o);
   box-shadow: 0 3px 0 var(--naranja);
@@ -658,25 +1039,33 @@
 }
 
 /* Cerrar sesión, separada: deshace algo, no lleva a ninguna parte. */
-.nav-saludo-salir {
-  margin-top: 0.4rem;
+.nav-saludo-salir-caja {
+  display: block;
+  margin-top: 0.3rem;
+  padding-top: 0.35rem;
   border-top: 2px dashed var(--gris);
-  border-radius: 0 0 12px 12px;
-  color: var(--tinta-2);
 }
 
 .nav-saludo-salir:hover,
-.nav-saludo-salir:focus-visible {
-  background: var(--coral-s);
-  color: var(--coral-o);
-  outline: none;
-}
+.nav-saludo-salir:focus-visible { color: var(--coral-o); }
 
 /* ── Anchos ───────────────────────────────────────────────────────────────── */
 
 /* Por debajo de 1280 px las tres piezas y el foro de escritorio no caben
    junto a la marca y los accesos (medido sin sesión, que es el caso más
    ancho): van en el menú, y el foro pasa a su tecla de móvil. */
+/* ── El centro, centrado de verdad ──
+   Con `auto 1fr auto`, la cápsula se centraba en el hueco que dejan la marca
+   y los accesos, que es mucho más ancho a la derecha: quedaba 144 px a la
+   izquierda del centro de la pantalla. Con dos columnas laterales iguales
+   queda en el centro; y si la derecha no cabe en su mitad, la columna crece
+   lo justo (`max-content`) y la cápsula se aparta solo eso. */
+@media (min-width: 1280px) {
+  .blog-nav { grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr); }
+  .blog-brand { justify-self: start; }
+  .blog-nav-center { gap: 8px; }
+}
+
 @media (max-width: 1279px) {
   .blog-nav-center { display: none; }
   .tecla.nav-foro-movil { display: inline-flex; }
@@ -771,8 +1160,10 @@
   .nav-principal-enlace:hover .nav-principal-icono { transform: none; }
 
   .nav-foro-cara.avatar-usuario,
-  .nav-foro-latido::after,
-  .nav-saludo-menu { animation: none; }
-
-  .nav-foro-latido::after { opacity: 0; }
+  .nav-foro-bocadillo,
+  .nav-saludo-menu,
+  .nav-saludo-menu.is-cerrando,
+  .nav-saludo-hola,
+  .nav-saludo-lista > *,
+  .nav-saludo-icono { animation: none; }
 }

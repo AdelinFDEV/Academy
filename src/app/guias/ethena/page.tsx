@@ -9,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideEthenaCobertura from "./GuideEthenaCobertura";
 import GuideEthenaQuiz from "./GuideEthenaQuiz";
@@ -85,9 +88,10 @@ export default async function EthenaPage() {
           <span className="gbc-hero-gold">y cómo sostiene USDe su dólar sin tener dólares</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Ethena es un protocolo que emite USDe, un dólar sintético que no se respalda con dólares en un
-          banco.</strong> Se respalda con criptomonedas compradas al contado y una apuesta a la baja del mismo
-          tamaño, de modo que si el precio sube o baja, una cosa compensa a la otra. Y, cada vez más, con otras
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Ethena es un protocolo que emite USDe, un dólar sintético que no se respalda con dólares en un
+          banco.</Anotacion></strong> Se respalda con criptomonedas compradas al contado y <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={1300}>una apuesta a la baja del mismo
+          tamaño</Anotacion>, de modo que si el precio sube o baja, una cosa compensa a la otra. Y, cada vez más, con otras
           stablecoins: en noviembre de 2026 son casi el 80 % del respaldo. Lo que cobra esa apuesta, y lo que rinde el efectivo
           que guarda, es el rendimiento que reparte. Si vives en la Unión Europea, USDe no
           tiene un emisor autorizado y Ethena no te ofrece el depósito que cobra ese rendimiento.
@@ -115,7 +119,7 @@ export default async function EthenaPage() {
             <p>
               USDT o USDC guardan dólares, o deuda pública, en cuentas de bancos y gestoras. Ethena no. Guarda
               criptomonedas y las protege de su propia caída con una posición en
-              <Termino slug="futuros"> futuros</Termino>. Por eso Ethena prefiere llamarlo «dólar sintético»: su
+              <Termino slug="futuros"> futuros</Termino>. Por eso Ethena prefiere llamarlo <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={300}>«dólar sintético»</Anotacion>: su
               valor no sale de un depósito, sale de una operación financiera.
             </p>
             <p>
@@ -128,6 +132,7 @@ export default async function EthenaPage() {
           <div className="ena-tokens">
             {TOKENS.map((t) => (
               <div key={t.nombre}>
+                {t.nombre === "sUSDe" && <SimboloEstudio tipo="estrella" className="ena-token-estrella" semilla={8} retraso={300} />}
                 <span className="ena-token-tipo">{t.tipo}</span>
                 <strong>{t.nombre}</strong>
                 <p>{t.texto}</p>
@@ -144,9 +149,11 @@ export default async function EthenaPage() {
           <h2 className="gbc-title">Cómo funciona USDe: la cobertura delta neutral, con números</h2>
           <div className="gbc-body">
             <p>
-              La idea se llama <Termino slug="delta-neutral">delta neutral</Termino>: tener un activo y, a la vez,
-              una apuesta contraria del mismo tamaño. Lo que gana una parte lo pierde la otra, y el conjunto deja de
-              moverse con el precio: es una <Termino slug="cobertura">cobertura</Termino> completa.
+              <Anotacion tipo="bracket" lados="left" color="var(--azul)" relleno={[2, 6, 2, 6]} iteraciones={1}>
+                La idea se llama <Termino slug="delta-neutral">delta neutral</Termino>: tener un activo y, a la vez,
+                una apuesta contraria del mismo tamaño. Lo que gana una parte lo pierde la otra, y el conjunto deja de
+                moverse con el precio: es una <Termino slug="cobertura">cobertura</Termino> completa.
+              </Anotacion>
             </p>
             <p>
               Ethena compra ETH o BTC al <Termino slug="spot">contado</Termino> y abre una
@@ -186,8 +193,8 @@ export default async function EthenaPage() {
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              Con esos 3.000 dólares de respaldo, Ethena emite 3.000 USDe. Pase lo que pase con ETH, el respaldo
-              sigue valiendo lo mismo. Prueba tú con cualquier movimiento:
+              Con esos 3.000 dólares de respaldo, Ethena emite 3.000 USDe. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>Pase lo que pase con ETH, el respaldo
+              sigue valiendo lo mismo.</Anotacion> Prueba tú con cualquier movimiento:<SimboloEstudio tipo="flecha" color="cielo" giro={20} className="ena-flecha-simulador" retraso={900} />
             </p>
           </div>
 
@@ -197,11 +204,12 @@ export default async function EthenaPage() {
             <p>
               El ETH no se queda en el <Termino slug="exchange">exchange</Termino>. Ethena lo deja en manos de
               custodios externos, empresas que guardan criptomonedas por cuenta de otros. Ellos lo hacen constar
-              como <Termino slug="colateral">colateral</Termino> en Binance, OKX o Bybit sin transferírselo. Así,
-              si un exchange quiebra, el ETH no está dentro. La posición corta, en cambio, sí vive en ese exchange.
+              como <Termino slug="colateral">colateral</Termino> en Binance, OKX o Bybit sin transferírselo. Así,{" "}
+              <Anotacion tipo="underline" color="var(--menta)" animar={false}>si un exchange quiebra, el ETH no está dentro</Anotacion>. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>La posición corta, en cambio, sí vive en ese exchange.</Anotacion>
             </p>
             <p>
-              Una precisión que importa: tú no puedes acuñar USDe. Solo pueden hacerlo usuarios aprobados, que
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={9} />
+              Una precisión que importa: <Anotacion tipo="circle" junta retraso={300}>tú no puedes acuñar USDe</Anotacion>. Solo pueden hacerlo usuarios aprobados, que
               pasan la verificación de identidad (<Termino slug="kyc">KYC</Termino>) de Ethena. Los demás compran
               y venden USDe en el mercado. Son esos usuarios aprobados quienes, al canjear 1 USDe por 1 dólar en
               otras stablecoins, devuelven el precio a su sitio cuando se desvía: compran barato en el mercado y
@@ -214,14 +222,14 @@ export default async function EthenaPage() {
 
       {/* ── 3 ── */}
       <section id="rendimiento" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">De dónde sale el dinero</div>
           <h2 className="gbc-title">De dónde sale el rendimiento de Ethena, y qué pasa si el funding es negativo</h2>
           <div className="gbc-body">
             <p>
               El rendimiento de Ethena tiene tres fuentes. La principal es el
-              <Termino slug="funding-rate"> funding rate</Termino>: el pago periódico entre quienes apuestan al alza
-              y quienes apuestan a la baja en los perpetuos. Cuando el mercado es optimista, los largos pagan a los
+              <Termino slug="funding-rate"> funding rate</Termino>: <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}>el pago periódico entre quienes apuestan al alza
+              y quienes apuestan a la baja en los perpetuos</Anotacion>. Cuando el mercado es optimista, los largos pagan a los
               cortos. Y Ethena está en el lado corto.
             </p>
             <p>
@@ -232,36 +240,37 @@ export default async function EthenaPage() {
               plazo, que rinde aproximadamente lo que paga el Tesoro de Estados Unidos.
             </p>
             <p>
-              Ese rendimiento no llega a quien tiene USDe a secas. Llega a quien lo deposita y recibe sUSDe. El
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Ese rendimiento no llega a quien tiene USDe a secas. Llega a quien lo deposita y recibe sUSDe.</Anotacion> El
               contrato no te ingresa monedas: hace que cada sUSDe valga más USDe con el tiempo. A 11 de noviembre
               de 2026, el rendimiento medio de sUSDe en 30 días era del 5,1 % anual. Desde su lanzamiento, la media
-              es del 10,2 %, según Ethena. Ninguna de las dos cifras está garantizada: el rendimiento depende del
+              es del 10,2 %, según Ethena. <Anotacion tipo="underline" color="var(--coral)" retraso={300}>Ninguna de las dos cifras está garantizada</Anotacion>: el rendimiento depende del
               momento del mercado y puede quedarse en cero.
             </p>
           </div>
 
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Cuando el funding se vuelve negativo</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Cuando el funding se vuelve negativo</div>
+            <div className="postit-cuerpo">
               <p>
                 Si el mercado se pone pesimista, los cortos pagan a los largos. Ethena deja de cobrar y empieza a
-                pagar. Primero lo absorben los otros ingresos. Si no bastan, entra el fondo de reserva, que existe
+                pagar. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Primero lo absorben los otros ingresos. Si no bastan, entra el fondo de reserva</Anotacion>, que existe
                 para que esa pérdida no llegue a quien tiene sUSDe: según la documentación, sUSDe solo acumula
                 rendimiento positivo o nulo.
               </p>
               <p>
                 El fondo de reserva tenía unos 62 millones de dólares el 14 de noviembre de 2026, según el panel
                 de transparencia de Ethena. Es un 1,3 % de los USDe en circulación. Y ya no crece: la parte de los
-                ingresos que se le destina la fija la gobernanza, y hoy es del 0 %.
+                ingresos que se le destina la fija la gobernanza, y <Anotacion tipo="circle" junta animar={false}>hoy es del 0 %</Anotacion>.
               </p>
             </div>
-          </div>
+          </Postit>
 
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               ¿Cuánto aguantaría? Usa la pestaña «Si cambia el funding» del simulador. Con la cobertura actual,
-              cerca del 20 % del respaldo, y un funding de −10 % anual sostenido, el fondo cubriría unos 230 días
-              solo de funding. Es un cálculo orientativo y conservador: no cuenta lo que rinde el efectivo, que
+              cerca del 20 % del respaldo, y un funding de −10 % anual sostenido, <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>el fondo cubriría unos 230 días
+              solo de funding</Anotacion>. Es un cálculo orientativo y conservador: no cuenta lo que rinde el efectivo, que
               compensa parte de la pérdida. Con datos de unos tres años, hasta finales de 2024, Ethena calcula que
               la racha más larga de funding negativo duró 13 días. Que no haya pasado no significa que no pueda
               pasar.
@@ -281,8 +290,8 @@ export default async function EthenaPage() {
           <h2 className="gbc-title">Qué respalda hoy a USDe: menos cobertura y más efectivo</h2>
           <div className="gbc-body">
             <p>
-              La explicación de la cobertura es correcta, pero hoy describe solo una parte de USDe. Cuando el
-              funding baja, Ethena traslada respaldo a stablecoins y deuda a corto plazo, que no necesitan
+              La explicación de la cobertura es correcta, pero hoy describe solo una parte de USDe. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Cuando el
+              funding baja, Ethena traslada respaldo a stablecoins y deuda a corto plazo</Anotacion>, que no necesitan
               cobertura. Así se expone menos a pagar funding. El 14 de noviembre de 2026, el panel de
               transparencia de Ethena mostraba esto:
             </p>
@@ -294,7 +303,7 @@ export default async function EthenaPage() {
             <span className="ena-barra-resto" style={{ width: "5.1%" }} />
           </div>
           <ul className="ena-barra-leyenda">
-            <li><i className="ena-barra-efectivo" />Efectivo líquido, 79,4 %</li>
+            <li><i className="ena-barra-efectivo" /><Anotacion tipo="circle" junta relleno={[4, 10]} retraso={600}>Efectivo líquido, 79,4 %</Anotacion></li>
             <li><i className="ena-barra-btc" />BTC con cobertura, 15,5 %</li>
             <li><i className="ena-barra-resto" />ETH, acciones <Termino slug="tokenizacion">tokenizadas</Termino> y otros, 5,1 %</li>
           </ul>
@@ -312,6 +321,7 @@ export default async function EthenaPage() {
             </table>
           </div>
           <p className="gbc-fuente">
+            <SimboloEstudio tipo="asterisco" color="cielo" className="ena-fuente-asterisco" />
             Fuente: panel de transparencia de Ethena, 14 de noviembre de 2026. Respaldo total: 4.915 millones de
             dólares. «Efectivo líquido» es la etiqueta de Ethena para stablecoins y activos equivalentes.
           </p>
@@ -320,10 +330,10 @@ export default async function EthenaPage() {
             <p>
               Ese efectivo son stablecoins como USDC, USDT o USDtb. USDtb es otra moneda estable de la propia
               Ethena, respaldada sobre todo por un fondo de deuda del Tesoro estadounidense gestionado por
-              BlackRock. El resto incluye pequeñas posiciones en acciones y oro tokenizados. Lectura práctica: a noviembre de 2026, USDe se
-              parece más a una stablecoin respaldada por otras stablecoins que a la máquina de funding de 2024. Eso reduce el riesgo de funding negativo y de los
-              exchanges. A cambio, el rendimiento se acerca al de un depósito en dólares, y aparece otro riesgo: el
-              de las stablecoins que guarda.
+              BlackRock. El resto incluye pequeñas posiciones en acciones y oro tokenizados. Lectura práctica: a noviembre de 2026, <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>USDe se
+              parece más a una stablecoin respaldada por otras stablecoins que a la máquina de funding de 2024</Anotacion>. Eso reduce el riesgo de funding negativo y de los
+              exchanges. A cambio, el rendimiento se acerca al de un depósito en dólares, y <Anotacion tipo="underline" color="var(--coral)" animar={false}>aparece otro riesgo: el
+              de las stablecoins que guarda</Anotacion>.
             </p>
             <p>
               Los números cambian de un mes a otro. Si el funding vuelve a subir, lo previsible es que la cobertura
@@ -336,7 +346,7 @@ export default async function EthenaPage() {
 
       {/* ── 5 ── */}
       <section id="binance" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">El día que se torció</div>
           <h2 className="gbc-title">Qué pasó con USDe en Binance el 10 de octubre de 2025</h2>
           <div className="gbc-body">
@@ -344,34 +354,35 @@ export default async function EthenaPage() {
               Ese viernes el mercado sufrió la mayor ola de <Termino slug="liquidacion">liquidaciones</Termino> de su
               historia: más de 19.000 millones de dólares, según CoinGlass. Bitcoin y{" "}
               <Link href="/guias/ethereum">Ethereum</Link> cayeron más de un 10 % en cuestión de horas. En el
-              mercado al contado de Binance, USDe llegó a cotizar a 0,65 dólares entre las 21:36 y las 22:16, hora
+              mercado al contado de Binance, USDe llegó a cotizar a <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} junta retraso={300}>0,65 dólares</Anotacion> entre las 21:36 y las 22:16, hora
               UTC: unos 40 minutos.
             </p>
             <p>
-              En otros mercados, como Curve, apenas se apartó del dólar. El respaldo siguió por encima de lo
-              emitido y los canjes funcionaron, según Ethena y el análisis de 21Shares. El fallo estaba en
-              Binance: valoraba USDe con su propio
+              En otros mercados, como Curve, apenas se apartó del dólar. <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>El respaldo siguió por encima de lo
+              emitido y los canjes funcionaron</Anotacion>, según Ethena y el análisis de 21Shares. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>El fallo estaba en
+              Binance</Anotacion>: valoraba USDe con su propio
               <Termino slug="libro-de-ordenes"> libro de órdenes</Termino>, y no con un precio de referencia externo
               (un <Termino slug="oraculo">oráculo</Termino>). Y ese libro se quedó sin compradores.
             </p>
             <p>
               Ahí está la lección. Mucha gente tenía USDe como garantía para operar con
-              <Termino slug="apalancamiento"> apalancamiento</Termino> en Binance. Al hundirse el precio en pantalla,
-              su garantía «valía» un 35 % menos y sus posiciones se liquidaron. Binance compensó después a los
+              <Termino slug="apalancamiento"> apalancamiento</Termino> en Binance. Al hundirse el precio en pantalla,{" "}
+              <Anotacion tipo="underline" color="var(--coral)" animar={false}>su garantía «valía» un 35 % menos y sus posiciones se liquidaron</Anotacion>. Binance compensó después a los
               afectados, pero el daño ya estaba hecho.
             </p>
           </div>
-          <div className="gbc-box">
-            <div className="gbc-box-title">El error típico</div>
-            <div className="gbc-box-body">
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" semilla={4} retraso={400} />
+            <div className="postit-titulo">El error típico</div>
+            <div className="postit-cuerpo">
               <p>
-                Pensar que «está respaldado» significa «no puede caer». Un <Termino slug="depeg">depeg</Termino>
+                <Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} retraso={600}>Pensar que «está respaldado» significa «no puede caer».</Anotacion> Un <Termino slug="depeg">depeg</Termino>
                 {" "}puede ocurrir en un mercado concreto aunque el respaldo esté intacto, y dura lo justo para
                 liquidarte. Si usas una stablecoin como garantía de una operación apalancada, el riesgo no es la
                 moneda: es cómo la valora tu exchange en el peor minuto.
               </p>
             </div>
-          </div>
+          </Postit>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
               La confianza tardó más en volver que el precio. La oferta de USDe pasó de 14.700 millones el 1 de
@@ -389,7 +400,7 @@ export default async function EthenaPage() {
           <h2 className="gbc-title">Para qué sirve el token ENA de Ethena: votos y un fee switch dormido</h2>
           <div className="gbc-body">
             <p>
-              ENA es el <Termino slug="token-de-gobernanza">token de gobernanza</Termino> de Ethena: quien lo tiene
+              ENA es el <Anotacion tipo="underline" color="var(--azul)" grosor={2} retraso={200}><Termino slug="token-de-gobernanza">token de gobernanza</Termino></Anotacion> de Ethena: quien lo tiene
               vota las propuestas del protocolo. No es una stablecoin ni da derecho a parte del respaldo de USDe.
               Su precio se mueve libremente.
             </p>
@@ -411,13 +422,13 @@ export default async function EthenaPage() {
             <p>
               Durante años, ENA no recibía nada de los ingresos del protocolo. Eso cambia, en teoría, con el
               llamado «fee switch»: un interruptor que desvía comisiones hacia el token. La Fundación Ethena lo
-              propuso el 27 de agosto de 2026 y la <Termino slug="gobernanza">gobernanza</Termino> lo aprobó.
-              Dedica hasta el 95 % de los ingresos netos que recibe la fundación a la{" "}
-              <Termino slug="recompra-de-tokens">recompra de ENA</Termino> en el mercado.
+              propuso el 27 de agosto de 2026 y la <Termino slug="gobernanza">gobernanza</Termino> lo aprobó.{" "}
+              <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>Dedica hasta el 95 % de los ingresos netos que recibe la fundación a la{" "}
+              <Termino slug="recompra-de-tokens">recompra de ENA</Termino> en el mercado.</Anotacion>
             </p>
             <p>
-              Pero está dormido. Solo se activa cuando la oferta de USDe alcance el primer umbral, fijado
-              inicialmente en 7.500 millones de dólares, según Crypto Briefing a 29 de octubre de 2026. Con 4.900
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Pero está dormido.</Anotacion> Solo se activa cuando la oferta de USDe alcance el primer umbral, fijado
+              inicialmente en <Anotacion tipo="box" color="var(--lila)" grosor={2} relleno={[1, 4]} junta animar={false}>7.500 millones de dólares</Anotacion>, según Crypto Briefing a 29 de octubre de 2026. Con 4.900
               millones en circulación, faltan más de 2.500. Hasta entonces, no hay recompras.
             </p>
             <p>
@@ -439,8 +450,9 @@ export default async function EthenaPage() {
           <h2 className="gbc-title">¿Se puede usar Ethena en España? BaFin, MiCA y Hacienda</h2>
           <div className="gbc-body">
             <p>
-              Respuesta corta: ningún emisor autorizado en la Unión Europea respalda USDe, y Ethena no te ofrece
-              sUSDe si vives aquí, según su propia documentación. Tener USDe no es ilegal. Lo que se está cerrando son las vías reguladas para comprarlo. Así se
+              <SimboloEstudio tipo="exclamacion" color="naranja" margen semilla={14} />
+              Respuesta corta: <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>ningún emisor autorizado en la Unión Europea respalda USDe</Anotacion>, y Ethena no te ofrece
+              sUSDe si vives aquí, según su propia documentación. <Anotacion tipo="underline" color="var(--menta)" animar={false}>Tener USDe no es ilegal.</Anotacion> Lo que se está cerrando son las vías reguladas para comprarlo. Así se
               ha llegado hasta aquí:
             </p>
           </div>
@@ -451,7 +463,7 @@ export default async function EthenaPage() {
                 <tr><td><strong>21 de marzo de 2025</strong></td><td>El supervisor alemán, BaFin, prohíbe a Ethena GmbH ofrecer USDe y le ordena congelar sus reservas, por deficiencias graves frente a <Termino slug="mica">MiCA</Termino></td><td>La filial europea que buscaba la licencia queda paralizada</td></tr>
                 <tr><td><strong>Abril de 2025</strong></td><td>Ethena GmbH retira su solicitud de autorización el día 3 y BaFin le ordena liquidar su emisión de USDe</td><td>No habrá un USDe autorizado en la UE por esa vía</td></tr>
                 <tr><td><strong>Junio de 2025</strong></td><td>Plan de canje de 42 días, hasta el 6 de agosto; los usuarios alemanes ya habían pasado a Ethena BVI, en las Islas Vírgenes Británicas</td><td>El emisor de USDe queda fuera de la UE</td></tr>
-                <tr><td><strong>8 de octubre de 2026</strong></td><td>ESMA, el supervisor europeo de mercados, pide que los proveedores autorizados con MiCA dejen de dar servicios con stablecoins que no cumplen MiCA a clientes de la UE</td><td>Tres meses como máximo para resolver lo que ya tengan sus clientes: hasta el 8 de enero de 2027</td></tr>
+                <tr><td><strong>8 de octubre de 2026</strong></td><td>ESMA, el supervisor europeo de mercados, pide que los proveedores autorizados con MiCA dejen de dar servicios con stablecoins que no cumplen MiCA a clientes de la UE</td><td>Tres meses como máximo para resolver lo que ya tengan sus clientes: <Anotacion tipo="circle" junta relleno={[4, 8]} animar={false}>hasta el 8 de enero de 2027</Anotacion></td></tr>
               </tbody>
             </table>
           </div>
@@ -468,8 +480,8 @@ export default async function EthenaPage() {
               es así, un exchange autorizado con MiCA no debería dejarte comprar USDe ni aumentar lo que tienes.
               Durante el periodo de salida, solo puede ayudarte a venderlo, convertirlo, retirarlo o seguir
               guardándolo. Fuera de esos exchanges, en una
-              <Termino slug="wallet"> cartera</Termino> propia, puedes seguir teniéndolo. Lo haces sin las
-              protecciones de MiCA y sin un emisor al que reclamar en Europa.
+              <Termino slug="wallet"> cartera</Termino> propia, puedes seguir teniéndolo. Lo haces <Anotacion tipo="underline" color="var(--coral)" retraso={300}>sin las
+              protecciones de MiCA y sin un emisor al que reclamar en Europa</Anotacion>.
             </p>
             <p>
               El token ENA es otra cosa. No es una stablecoin, así que el dictamen de ESMA no le afecta: que
@@ -477,8 +489,8 @@ export default async function EthenaPage() {
               consulta los registros de la CNMV, el supervisor español.
             </p>
             <p>
-              Con Hacienda no hay atajo. Cambiar USDe por otra criptomoneda, o por euros, es una operación que se
-              declara, con su ganancia o su pérdida en euros. Además, aunque valga 1 dólar, el euro también se
+              Con Hacienda no hay atajo. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>Cambiar USDe por otra criptomoneda, o por euros, es una operación que se
+              declara</Anotacion>, con su ganancia o su pérdida en euros. Además, aunque valga 1 dólar, el euro también se
               mueve: puedes ganar o perder solo por el tipo de cambio. Hacienda no se ha pronunciado en concreto
               sobre sUSDe, así que guarda cada depósito y cada retirada con su fecha y su valor en euros. El
               método está en la guía de
@@ -494,17 +506,19 @@ export default async function EthenaPage() {
           <div className="gbc-ey">Lo que puede salir mal</div>
           <h2 className="gbc-title">¿Es seguro USDe? Los riesgos de Ethena, sin maquillaje</h2>
           <div className="gbc-body">
+            <Llave color="coral">
             <ul>
               <li><strong>Funding negativo prolongado.</strong> Si dura meses, el fondo de reserva, de unos 62 millones, se agota. Después, la pérdida la soporta el respaldo.</li>
               <li><strong>Riesgo de contraparte.</strong> La cobertura vive en exchanges como Binance, OKX o Bybit. Si uno quiebra o congela cuentas, la posición corta puede perderse, aunque el ETH esté con un custodio. Es el <Termino slug="riesgo-de-contraparte">riesgo de contraparte</Termino>, y Ethena lo reparte, no lo elimina.</li>
               <li><strong>Custodia.</strong> El colateral está con custodios externos. Ethena confía en ellos, y tú confías en Ethena.</li>
-              <li><strong>Las stablecoins que guarda.</strong> Con casi el 80 % del respaldo en efectivo líquido, un problema en esas stablecoins es ya un problema de USDe.</li>
+              <li><strong>Las stablecoins que guarda.</strong> Con casi el 80 % del respaldo en efectivo líquido, <Anotacion tipo="underline" color="var(--coral)" retraso={300}>un problema en esas stablecoins es ya un problema de USDe</Anotacion>.</li>
               <li><strong>Depeg en un mercado concreto.</strong> Octubre de 2025 lo demostró: el precio puede hundirse en un exchange durante minutos, y como garantía de una operación apalancada eso basta para perderlo todo.</li>
               <li><strong>Canje solo para unos pocos.</strong> Tú no puedes canjear USDe directamente: dependes de que otros lo compren a 1 dólar.</li>
               <li><strong>Regulación.</strong> Sin un emisor autorizado en la UE, lo previsible es que las vías reguladas para comprarlo aquí sigan cerrándose.</li>
               <li><strong>El token ENA.</strong> Ha perdido un 92 % desde su máximo, y el fee switch puede no activarse nunca si USDe no vuelve a crecer.</li>
               <li><strong><Termino slug="smart-contract">Contratos inteligentes</Termino>.</strong> Un fallo en el código de USDe o sUSDe afectaría a todo lo depositado.</li>
             </ul>
+            </Llave>
           </div>
           <DisclaimerRiesgo variante="general" />
         </div>

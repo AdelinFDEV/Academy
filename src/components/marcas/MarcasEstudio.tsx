@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { annotate } from "rough-notation";
 import type { RoughAnnotationConfig } from "rough-notation/lib/model";
+import { alVerse } from "@/lib/alVerse";
 import SimboloEstudio, { Llave, type TipoSimbolo } from "@/components/cuaderno/SimboloEstudio";
 import type { ColorCuaderno } from "@/components/cuaderno/colores";
 import "@/components/cuaderno/postit.css";
@@ -95,22 +96,14 @@ export default function MarcasEstudio({
         animationDuration: 900,
         ...(t.brackets ? { brackets: t.brackets } : {}),
       });
-      let espera = 0;
-      const vigia = new IntersectionObserver(
-        (entradas) => {
-          if (!entradas.some((e) => e.isIntersecting)) return;
-          vigia.disconnect();
-          espera = window.setTimeout(() => {
-            anotacion.show();
-            alDibujar?.();
-          }, animar ? 250 : 0);
-        },
-        { threshold: 0.6 },
-      );
-      vigia.observe(el);
+      // Cuando se ve de verdad, no cuando roza la pantalla (src/lib/alVerse.ts).
+      // La espera de 300 ms ya la pone alVerse: aquí no hace falta otra.
+      const cancelar = alVerse(el, () => {
+        anotacion.show();
+        alDibujar?.();
+      });
       deshacer.push(() => {
-        vigia.disconnect();
-        window.clearTimeout(espera);
+        cancelar();
         anotacion.remove();
       });
     };

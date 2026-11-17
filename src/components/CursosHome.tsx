@@ -75,7 +75,7 @@ export default function CursosHome({ cursos }: { cursos: CursoResumen[] }) {
   const alto = paradas[paradas.length - 1].y + MARGEN + 20;
 
   return (
-    <section className="ch" aria-labelledby="ch-titulo">
+    <section id="cursos" className="ch" aria-labelledby="ch-titulo">
       <div className="ch-papel">
         <div className="ch-inner">
           <div className="ch-texto">

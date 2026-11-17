@@ -9,6 +9,9 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Termino from "@/components/Termino";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import Postit from "@/components/cuaderno/Postit";
+import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import { datosDeGuia } from "@/lib/guiaDatos";
 import GuideQuantLicencias from "./GuideQuantLicencias";
 import GuideQuantQuiz from "./GuideQuantQuiz";
@@ -91,11 +94,12 @@ export default async function QuantPage() {
           <span className="gbc-hero-gold">y qué tiene que ver su token con los bancos</span>
         </h1>
         <p className="gbc-respuesta">
-          <strong>Quant es una empresa británica que vende Overledger, un software para conectar blockchains
-          entre sí y con los sistemas de los bancos.</strong> QNT es el token del proyecto: con él se pagan las
+          <SimboloEstudio tipo="estrella" margen className="gbc-respuesta-estrella" retraso={200} />
+          <strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Quant es una empresa británica que vende Overledger, un software para conectar blockchains
+          entre sí y con los sistemas de los bancos.</Anotacion></strong> QNT es el token del proyecto: con él se pagan las
           licencias de ese software y las comisiones de su red, Fusion. Siete bancos británicos ya usan la tecnología de Quant en un
-          piloto, y The Clearing House, de los grandes bancos de Estados Unidos, la ha elegido para una red de 2027.
-          Pero ninguno de esos acuerdos dice que tengan que comprar QNT.
+          piloto, y The Clearing House, de los grandes bancos de Estados Unidos, la ha elegido para una red de 2027.{" "}
+          <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={1300}>Pero ninguno de esos acuerdos dice que tengan que comprar QNT.</Anotacion>
         </p>
         <p className="gbc-revisado">Revisada el <strong>14 de noviembre de 2026</strong> · Datos de mercado: CoinGecko</p>
         <div className="gbc-hero-pills">
@@ -117,12 +121,12 @@ export default async function QuantPage() {
             <ul>
               <li><strong>La empresa.</strong> Quant Network Ltd, registrada en Inglaterra el 28 de septiembre de 2015. Su fundador más conocido, Gilbert Verdian, sigue siendo su director general.</li>
               <li><strong>El software.</strong> Overledger, que conecta redes distintas y los sistemas que los bancos ya tienen. Es lo que Quant vende.</li>
-              <li><strong>El token.</strong> QNT, un <Termino slug="erc-20">token ERC-20</Termino> que vive en Ethereum. No tiene una <Termino slug="blockchain">blockchain</Termino> propia de la que sea la moneda principal.</li>
+              <li><strong>El token.</strong> QNT, un <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}><Termino slug="erc-20">token ERC-20</Termino> que vive en Ethereum</Anotacion>. No tiene una <Termino slug="blockchain">blockchain</Termino> propia de la que sea la moneda principal.</li>
             </ul>
             <p>
               Ese orden importa. Quant no es una red abierta que se sostiene con su moneda, como
               <Link href="/guias/ethereum"> Ethereum</Link>. Es una compañía con clientes, contratos y patentes, que
-              además emitió un token en 2018. Lo que le va bien a la empresa no tiene por qué irle bien al token.
+              además emitió un token en 2018. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Lo que le va bien a la empresa no tiene por qué irle bien al token.</Anotacion>{" "}
               El resto de la guía explica por qué.
             </p>
           </div>
@@ -131,17 +135,17 @@ export default async function QuantPage() {
 
       {/* ── 2 ── */}
       <section id="overledger" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Cómo funciona</div>
           <h2 className="gbc-title">Cómo funciona Overledger, el software de Quant</h2>
           <div className="gbc-body">
             <p>
               Cada blockchain habla su propio idioma. Un banco que quiera emitir un bono en una red, cobrarlo en
               otra y apuntarlo en su contabilidad de siempre necesitaría tres equipos y tres integraciones. El
-              problema tiene nombre: <Termino slug="interoperabilidad">interoperabilidad</Termino>.
+              problema tiene nombre: <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}><Termino slug="interoperabilidad">interoperabilidad</Termino></Anotacion>.
             </p>
             <p>
-              Overledger hace de traductor. El banco se conecta una sola vez a Overledger, y Overledger se
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Overledger hace de traductor.</Anotacion> El banco se conecta una sola vez a Overledger, y Overledger se
               encarga de hablar con cada red y con cada sistema. Quant lo llama una capa de orquestación: no
               guarda el dinero, coordina los pasos para que ocurran en el orden pactado.
             </p>
@@ -154,20 +158,21 @@ export default async function QuantPage() {
             <p>
               Desde el 2 de junio de 2026, Quant tiene además su propia red, Fusion. Es un
               <Termino slug="rollup"> rollup</Termino>: agrupa operaciones y deja su resumen anotado en otras
-              cadenas. Quant asegura que enlaza 74 blockchains, una cifra que solo publica la empresa. Y es la
+              cadenas. Quant asegura que enlaza 74 blockchains, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>una cifra que solo publica la empresa</Anotacion>. Y es la
               propia Quant Network Ltd la que hace de <Termino slug="secuenciador">secuenciador</Termino>:
               decide el orden de las operaciones.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">Quant, Chainlink y Canton no hacen lo mismo</div>
-            <div className="gbc-box-body">
+          <Postit color="amarillo" giro={-2}>
+            <SimboloEstudio tipo="asterisco" color="cielo" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">Quant, Chainlink y Canton no hacen lo mismo</div>
+            <div className="postit-cuerpo">
               <p>Los tres aparecen en las noticias sobre bancos. <Link href="/guias/chainlink">Chainlink</Link> es
               una red de operadores que llevan datos y mensajes entre cadenas. <Link href="/guias/canton">Canton</Link> es
-              una blockchain propia donde cada banco solo ve sus contratos. Quant vende el software que conecta lo
-              que el banco ya tiene con cualquiera de esas redes.</p>
+              una blockchain propia donde cada banco solo ve sus contratos. <Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Quant vende el software que conecta lo
+              que el banco ya tiene con cualquiera de esas redes.</Anotacion></p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -179,12 +184,12 @@ export default async function QuantPage() {
           <div className="gbc-body">
             <p>
               En Bitcoin o en Ethereum cualquiera puede leer el código, copiarlo y montar un
-              <Termino slug="nodo"> nodo</Termino>. En Quant, no. El núcleo de Overledger es software propiedad de
-              la empresa. Lo que publica en su cuenta pública de GitHub son sobre todo kits para conectarse,
-              tutoriales y herramientas, no el motor. No es <Termino slug="codigo-abierto">código abierto</Termino>.
+              <Termino slug="nodo"> nodo</Termino>. En Quant, no. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>El núcleo de Overledger es software propiedad de
+              la empresa.</Anotacion> Lo que publica en su cuenta pública de GitHub son sobre todo kits para conectarse,
+              tutoriales y herramientas, no el motor. <Anotacion tipo="circle" junta retraso={900}>No es <Termino slug="codigo-abierto">código abierto</Termino></Anotacion>.
             </p>
             <p>
-              Además está protegido con patentes. En febrero de 2024 la oficina de patentes de Estados Unidos le
+              Además está <Anotacion tipo="underline" color="var(--lila)" grosor={2} animar={false}>protegido con patentes</Anotacion>. En febrero de 2024 la oficina de patentes de Estados Unidos le
               concedió la número 11.842.335, sobre cómo ordenar en el tiempo operaciones de varias blockchains.
               En 2023 había obtenido la equivalente en Japón, la 7.273.053.
             </p>
@@ -207,9 +212,10 @@ export default async function QuantPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen animar={false} />
               Para un banco, que el software sea de una empresa es una ventaja: hay a quién pedir cuentas,
               contratos de soporte y un responsable legal. Para ti, si compras QNT, es lo contrario. Dependes de
-              lo que decida una sociedad privada que no te debe nada: el token no te convierte en accionista.
+              lo que decida una sociedad privada que no te debe nada: <Anotacion tipo="underline" color="var(--coral)" retraso={200}>el token no te convierte en accionista</Anotacion>.
             </p>
           </div>
         </div>
@@ -228,7 +234,7 @@ export default async function QuantPage() {
               Casi todo lo que se publica sobre Quant mezcla tres cosas: lo que funciona, lo que se está probando
               y lo que se ha anunciado. Aquí van los seis acuerdos más citados, con su estado a noviembre de 2026.
               Casi todos giran en torno a la <Termino slug="tokenizacion">tokenización</Termino>: convertir el
-              dinero de los bancos en tokens que se mueven por una red. Fíjate en la última columna.
+              dinero de los bancos en tokens que se mueven por una red. <Anotacion tipo="circle" junta>Fíjate en la última columna</Anotacion>.<SimboloEstudio tipo="flecha" color="cielo" giro={20} className="qnt-flecha-tabla" retraso={300} />
             </p>
           </div>
           <div className="gbc-tabla-caja">
@@ -254,7 +260,7 @@ export default async function QuantPage() {
           </p>
           <div className="gbc-body" style={{ marginTop: 24 }}>
             <p>
-              El caso más sólido es el británico. Barclays, HSBC UK, Lloyds, Monzo, Nationwide, NatWest y
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>El caso más sólido es el británico.</Anotacion> Barclays, HSBC UK, Lloyds, Monzo, Nationwide, NatWest y
               Santander forman la iniciativa GBTD, y la plataforma la ha desarrollado Quant. En septiembre de 2026
               cerraron sus primeras operaciones con clientes: dos cambios de hipoteca y un pago entre particulares
               que se liberó al entregarse el producto. El dinero era un
@@ -263,10 +269,11 @@ export default async function QuantPage() {
             <p>
               El más grande es el estadounidense. The Clearing House, la entidad que compensa y liquida más de 2
               billones de dólares al día entre bancos de Estados Unidos, eligió a Quant para su red de depósitos
-              tokenizados. Todavía no funciona: está prevista para el primer semestre de 2027.
+              tokenizados. <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>Todavía no funciona</Anotacion>: está prevista para el primer semestre de 2027.
             </p>
             <p>
-              Y la pregunta que nadie responde. En los comunicados de los bancos no aparece QNT. Los clientes
+              <SimboloEstudio tipo="nb" color="naranja" margen animar={false} />
+              Y la pregunta que nadie responde. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={300}>En los comunicados de los bancos no aparece QNT.</Anotacion> Los clientes
               pagan a una empresa por un servicio, en dinero normal. Que parte de ese dinero termine comprando
               QNT depende de cómo Quant cobre, y eso no lo detalla en público.
             </p>
@@ -281,22 +288,24 @@ export default async function QuantPage() {
           <h2 className="gbc-title">Para qué sirve el token QNT de Quant</h2>
           <div className="gbc-body">
             <p>
-              QNT es un <Termino slug="token-de-utilidad">token de utilidad</Termino>: da acceso a un servicio, no
+              QNT es un <Anotacion tipo="underline" color="var(--azul)" grosor={2} animar={false}><Termino slug="token-de-utilidad">token de utilidad</Termino></Anotacion>: da acceso a un servicio, no
               una parte del negocio. Según la ficha que el proyecto entregó a Blockworks en 2026, tiene tres usos.
             </p>
+            <Llave color="azul">
             <ul>
               <li><strong>Pagar las licencias de Overledger.</strong> Se pagan en QNT. En la versión 2.1.5 de Overledger, la licencia anual de producción costaba 100 libras, pagaderas en QNT. Las tarifas de la plataforma también se pueden pagar en dólares.</li>
               <li><strong>Pagar las comisiones de Fusion.</strong> Según esa ficha, el <Termino slug="gas">gas</Termino> de cada operación en la red de Quant se paga en QNT.</li>
               <li><strong>Hacer de fianza.</strong> Los operadores de nodos de confianza de Fusion deben depositar QNT. A cambio cobran recompensas en QNT. Es un <Termino slug="staking">staking</Termino> reservado a ellos; para el público no tiene fecha.</li>
             </ul>
+            </Llave>
             <p>
-              Lo que cobra Quant por sus servicios es ingreso de la empresa, según la misma ficha. Ningún
-              mecanismo reparte esos ingresos entre quienes tienen QNT, ni recompra tokens con ellos.
+              Lo que cobra Quant por sus servicios es ingreso de la empresa, según la misma ficha. <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Ningún
+              mecanismo reparte esos ingresos entre quienes tienen QNT, ni recompra tokens con ellos.</Anotacion>
             </p>
             <p>
               Entonces, ¿cuánta demanda pueden crear las licencias? Haz la cuenta en el caso más favorable:
               todo lo que pagan los clientes se convierte en QNT y se queda retenido un año. Con 500 clientes que
-              pagan 100.000 euros cada uno y un QNT a 138 euros, se retienen unos 362.000 QNT. Es el 2,5 % de lo que
+              pagan 100.000 euros cada uno y un QNT a 138 euros, se retienen unos 362.000 QNT. Es <Anotacion tipo="circle" junta retraso={200}>el 2,5 %</Anotacion> de lo que
               circula. Y esos 50 millones de euros son menos de lo que se negocia de QNT en un solo día.
             </p>
           </div>
@@ -305,8 +314,9 @@ export default async function QuantPage() {
 
           <div className="gbc-body" style={{ marginTop: 26 }}>
             <p>
-              Mira lo que pasa al subir el precio. Como la cuota se pacta en euros, a más precio hacen falta menos
-              tokens. La demanda de las licencias es una cantidad de dinero, no de QNT. Puede sostener el precio
+              <SimboloEstudio tipo="estrella" color="naranja" margen semilla={11} animar={false} />
+              Mira lo que pasa al subir el precio. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={200}>Como la cuota se pacta en euros, a más precio hacen falta menos
+              tokens.</Anotacion> <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} animar={false}>La demanda de las licencias es una cantidad de dinero, no de QNT.</Anotacion> Puede sostener el precio
               si crece mucho el número de clientes, pero no lo empuja hacia arriba por sí sola.
             </p>
             {/* EXPERIENCIA DEL ADMIN: si has tenido QNT o lo has analizado para el Portfolio, aquí encaja por qué
@@ -322,15 +332,16 @@ export default async function QuantPage() {
           <h2 className="gbc-title">Cuántos QNT hay y quién los tiene</h2>
           <div className="gbc-body">
             <p>
-              Hay 14.612.493 QNT y no se crearán más. Salieron de una <Termino slug="ico">ICO</Termino> en abril de
+              <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Hay 14.612.493 QNT y no se crearán más.</Anotacion> Salieron de una <Termino slug="ico">ICO</Termino> en abril de
               2018: se vendieron 9,96 millones de tokens por 11 millones de dólares, a un precio efectivo de unos
               1,10 dólares. Los 9,55 millones que no se vendieron se destruyeron el 14 de septiembre de 2018, una
               <Termino slug="quema-de-tokens"> quema de tokens</Termino>.
             </p>
             <p>
+              <SimboloEstudio tipo="exclamacion" color="coral" margen semilla={9} animar={false} />
               Hay un detalle que confunde a mucha gente. Si miras el <Termino slug="smart-contract">contrato inteligente</Termino> de QNT en un
-              <Termino slug="explorador-de-bloques"> explorador de bloques</Termino>, verás un máximo de 45,47
-              millones. Es un resto del diseño original, anterior a la quema. Los tokens quemados siguen
+              <Termino slug="explorador-de-bloques"> explorador de bloques</Termino>, verás <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>un máximo de 45,47
+              millones</Anotacion>. Es un resto del diseño original, anterior a la quema. Los tokens quemados siguen
               apuntados a la dirección del propio contrato, donde nadie puede moverlos.
             </p>
           </div>
@@ -362,9 +373,9 @@ export default async function QuantPage() {
             </p>
             <p>
               La empresa, en cambio, conserva poco. Tras la ICO se quedó 2,6 millones como reserva y 1,3 millones
-              para los fundadores. Según su ficha, hoy conserva unos 68.000 QNT, menos del 0,5 % del total y sin bloqueo. Es decir:
+              para los fundadores. Según su ficha, hoy conserva unos 68.000 QNT, menos del 0,5 % del total y sin bloqueo. Es decir: <Anotacion tipo="underline" color="var(--menta)" retraso={300}>
               no hay <Termino slug="liberacion-de-tokens">desbloqueos</Termino> pendientes que vayan a inundar el
-              mercado.
+              mercado</Anotacion>.
             </p>
           </div>
         </div>
@@ -372,7 +383,7 @@ export default async function QuantPage() {
 
       {/* ── 7 ── */}
       <section id="espana" className="gbc-section">
-        <div className="gbc-gc">
+        <div className="gbc-gc gbc-margen">
           <div className="gbc-ey">Desde España</div>
           <h2 className="gbc-title">Cómo comprar Quant en España y cómo lo trata Hacienda</h2>
           <div className="gbc-body">
@@ -385,29 +396,30 @@ export default async function QuantPage() {
             <p>
               Si lo sacas a tu propia <Termino slug="wallet">cartera</Termino>, recuerda que es un token de
               Ethereum. Tienes que retirarlo por esa red y tener algo de ETH para pagar la comisión de cada envío.
-              Enviarlo por otra red es la forma más común de perderlo.
+              {" "}<Anotacion tipo="underline" color="var(--coral)" retraso={200}>Enviarlo por otra red es la forma más común de perderlo.</Anotacion>
             </p>
             <p>
-              Con Hacienda no hay nada especial. Vender QNT por euros, o cambiarlo por otra criptomoneda, genera
-              una ganancia o una pérdida. Se calcula como la diferencia entre lo que valía al salir y lo que te
+              Con Hacienda no hay nada especial. <Anotacion tipo="underline" color="var(--lila)" grosor={2} retraso={400}>Vender QNT por euros, o cambiarlo por otra criptomoneda, genera
+              una ganancia o una pérdida.</Anotacion> Se calcula como la diferencia entre lo que valía al salir y lo que te
               costó, y tributa en la base del ahorro, entre el 19 % y el 30 %. Si a 31 de diciembre tienes más de
               50.000 euros en criptomonedas en un exchange de fuera de España, además presentas el modelo 721.
               El detalle está en la guía de <Link href="/guias/fiscalidad-cripto-espana">fiscalidad de las
               criptomonedas en España</Link>.
             </p>
           </div>
-          <div className="gbc-box gbc-box--gold">
-            <div className="gbc-box-title">El error típico con Quant</div>
-            <div className="gbc-box-body">
-              <p>Comprar QNT después de un titular del tipo «un gran banco elige a Quant». El 24 de septiembre de
+          <Postit color="coral" giro={1.5}>
+            <SimboloEstudio tipo="exclamacion" color="coral" className="postit-esquina" retraso={400} />
+            <div className="postit-titulo">El error típico con Quant</div>
+            <div className="postit-cuerpo">
+              <p><Anotacion tipo="strike-through" color="var(--coral)" iteraciones={1} animar={false}>Comprar QNT después de un titular del tipo «un gran banco elige a Quant».</Anotacion> El 24 de septiembre de
               2026 se anunciaron a la vez la red de la Clearing House y las primeras operaciones del piloto
               británico. Ese día QNT abrió en unos 71 dólares; cuatro días después rozaba los 287: se había
               multiplicado por cuatro. El 14 de noviembre estaba en 152, poco más de la mitad que en el pico
               (precios diarios de CoinGecko).
-              Antes de comprar por una noticia, pregúntate si ese acuerdo obliga a alguien a usar el token.
+              {" "}<Anotacion tipo="underline" color="var(--menta)" grosor={2} animar={false}>Antes de comprar por una noticia, pregúntate si ese acuerdo obliga a alguien a usar el token.</Anotacion>{" "}
               Casi nunca lo dice.</p>
             </div>
-          </div>
+          </Postit>
         </div>
       </section>
 
@@ -418,10 +430,10 @@ export default async function QuantPage() {
           <h2 className="gbc-title">Los riesgos de Quant y de QNT</h2>
           <div className="gbc-body">
             <ul>
-              <li><strong>Depende de una sola empresa.</strong> Si Quant Network Ltd cambia de estrategia, se vende o cierra, el token no tiene una comunidad ni una fundación que siga sin ella.</li>
+              <li><strong>Depende de una sola empresa.</strong> Si Quant Network Ltd cambia de estrategia, se vende o cierra, <Anotacion tipo="underline" color="var(--coral)" grosor={2} animar={false}>el token no tiene una comunidad ni una fundación que siga sin ella</Anotacion>.</li>
               <li><strong>El negocio puede crecer sin que crezca el token.</strong> Los grandes clientes pagan en dinero normal. Si Quant decidiera cobrar sin pasar por QNT, nada te protege.</li>
               <li><strong>Código cerrado.</strong> No puedes comprobar cómo funciona lo que compras. Te fías de lo que publica la empresa, y varias cifras, como las 74 redes de Fusion, solo las da ella.</li>
-              <li><strong>Los anuncios no son ingresos.</strong> La red de la Clearing House aún no funciona, y un piloto puede quedarse en piloto.</li>
+              <li><strong><Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={300}>Los anuncios no son ingresos.</Anotacion></strong> La red de la Clearing House aún no funciona, y un piloto puede quedarse en piloto.</li>
               <li><strong>Competencia.</strong> Chainlink, Canton y la propia red de Swift buscan los mismos clientes. Los bancos no están casados con nadie.</li>
               <li><strong>Grandes tenedores y <Termino slug="liquidez">liquidez</Termino>.</strong> Unas pocas direcciones concentran buena parte de la oferta. En una caída fuerte, vender sin mover el precio puede costar.</li>
               <li><strong>El precio.</strong> QNT cotiza un 64 % por debajo de su máximo de 2021. Su <Termino slug="volatilidad">volatilidad</Termino> es la de cualquier criptomoneda.</li>
