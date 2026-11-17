@@ -47,6 +47,65 @@
   right: 0;
 }
 
+/* ── El toro y el oso del hueco (17-11-2026) ──
+   Pedido por el admin: con el menú abierto en el móvil, entre la marca y la X
+   quedaba un hueco blanco. Lo llena una pegatina del cuaderno (ESTILO.md): un
+   toro que persigue a un oso que huye con los brazos en alto. Primero fueron
+   unas velas dibujadas en SVG; la pegatina las sustituyó el mismo día. Se
+   centra en el hueco que queda entre la marca (que acaba a unos 135 px del
+   borde) y la X (55 px antes del otro borde): el centro de ese hueco cae 40 px
+   a la derecha del centro de la barra. Va por encima de la hoja del menú
+   (.mm, capa 300), como la marca y la X. Entra corriendo desde la izquierda
+   y luego trota en el sitio; al cerrar, se va corriendo hacia la derecha. Decoración pura (sin texto alternativo). */
+.nav-toro-oso { display: none; }
+
+@media (max-width: 719px) {
+  /* Mientras el menú se cierra (.mm.is-cerrando, 0,7 s) la pegatina sigue
+     ahí para poder irse corriendo (más abajo). */
+  .blog-nav:has(.btn-hamburger.open) .nav-toro-oso,
+  .blog-nav:has(.mm.is-cerrando) .nav-toro-oso {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 40px);
+    z-index: 500;
+    width: 94px;
+    height: auto;
+    margin-top: -16px;
+    margin-left: -47px;
+    pointer-events: none;
+    user-select: none;
+    animation:
+      nav-toro-oso-entra 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) 0.4s backwards,
+      nav-toro-oso-trota 0.36s ease-in-out 1.1s infinite alternate;
+  }
+
+  /* Al cerrar (pedido por el admin), se van corriendo hacia la derecha, hacia donde miran:
+     cogen carrerilla, aceleran y desaparecen antes de que suba la hoja. */
+  .blog-nav:has(.mm.is-cerrando) .nav-toro-oso {
+    animation: nav-toro-oso-sale 0.5s cubic-bezier(0.5, 0, 0.75, 0) both;
+  }
+}
+
+@keyframes nav-toro-oso-entra {
+  from { opacity: 0; translate: -60px 0; }
+}
+
+@keyframes nav-toro-oso-sale {
+  0% { translate: 0 0; rotate: 0deg; }
+  20% { translate: -6px -2px; rotate: -2deg; }
+  100% { opacity: 0; translate: 150px 0; rotate: 4deg; }
+}
+
+@keyframes nav-toro-oso-trota {
+  from { translate: 0 0; rotate: 0deg; }
+  to { translate: 0 -2px; rotate: -1.5deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-toro-oso { animation: none !important; }
+}
+
 /* La marca: «Adelin» en tinta y «BTC» en naranja, en la letra de los
    titulares. Se ladea un poco al pasar el ratón, como una pegatina. */
 .blog-brand {
@@ -374,7 +433,32 @@
 
 /* El foro en la barra del móvil (NavForoMovil): una tecla coral, solo por
    debajo de 1280 px, donde el de escritorio se esconde, y solo con sesión. */
-.tecla.nav-foro-movil { display: none; }
+.nav-foro--movil { display: none; }
+
+/* El foro en el móvil: el mismo botón de las tres caras, más compacto para
+   caber entre la marca y tu foto (17-11-2026). */
+.nav-foro.nav-foro--movil {
+  gap: 0.35rem;
+  height: 34px;
+  margin-bottom: 3px;
+  padding: 0 0.55rem 0 5px;
+  border-width: 1.5px;
+  border-radius: 11px;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+  font-size: 0.78rem;
+}
+
+.nav-foro--movil .nav-foro-bocadillo { width: 15px; height: 15px; }
+
+.nav-foro--movil .nav-foro-cara.avatar-usuario { width: 19px; height: 19px; }
+.nav-foro--movil .nav-foro-cara + .nav-foro-cara { margin-left: -8px; }
+
+/* En los teléfonos más estrechos (360 px o menos), sin el bocadillo: así la
+   fila cabe entera. */
+@media (max-width: 360px) {
+  .nav-foro--movil .nav-foro-bocadillo { display: none; }
+  .nav-foro.nav-foro--movil { padding-right: 0.65rem; }
+}
 
 /* ── Las redes: Instagram (mensaje directo) y YouTube (el canal) ────────────
    Dos teclas blancas gemelas con el icono en su color de marca. Se ven donde
@@ -545,10 +629,41 @@
    17-11-2026). Sin ella, la barra no reserva su hueco. SonidoColgante marca
    la de la portada con `es-portada`. */
 @media (max-width: 899px) {
-  .nav-sonido:not(.es-portada),
-  .blog-nav:has(.btn-hamburger.open) .nav-sonido { display: none; }
+  .nav-sonido:not(.es-portada) { display: none; }
 
   .blog-nav:has(> .blog-nav-end > .nav-sonido:not(.es-portada)) { margin-bottom: 0; }
+
+  /* Con el menú abierto, la etiqueta se recoge: sube hacia la barra, como si
+     se enrollara su cuerda, y se desvanece (0,25 s). Al cerrar, espera a que
+     la persiana termine de subir (0,65 s, menu-movil.css) y baja colgando con
+     un rebote, como si se soltara. Antes reaparecía de golpe y se cruzaba con
+     la animación del menú (avisado por el admin el 17-11-2026). Se anima con
+     `translate` y `scale`, que no pisan el `rotate` del vaivén. */
+  .nav-sonido.es-portada {
+    transition:
+      translate 0.55s cubic-bezier(0.34, 1.7, 0.5, 1) 0.68s,
+      scale 0.55s cubic-bezier(0.34, 1.7, 0.5, 1) 0.68s,
+      opacity 0.2s ease 0.68s,
+      visibility 0s linear 0.68s;
+  }
+
+  .blog-nav:has(.btn-hamburger.open) .nav-sonido.es-portada {
+    translate: 0 -34px;
+    scale: 0.6;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      translate 0.25s cubic-bezier(0.55, 0, 0.75, 0.2),
+      scale 0.25s cubic-bezier(0.55, 0, 0.75, 0.2),
+      opacity 0.22s ease,
+      visibility 0s linear 0.25s;
+  }
+}
+
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .nav-sonido.es-portada,
+  .blog-nav:has(.btn-hamburger.open) .nav-sonido.es-portada { transition: none; }
 }
 
 @keyframes nav-sonido-vaiven {
@@ -884,6 +999,10 @@
   animation: nav-saludo-escribir 0.6s cubic-bezier(0.45, 0, 0.25, 1) 0.2s backwards;
 }
 
+@keyframes nav-saludo-subrayar {
+  from { stroke-dashoffset: 1; }
+}
+
 @keyframes nav-saludo-escribir {
   from { clip-path: inset(-30% 100% -30% 0); }
   to { clip-path: inset(-30% -6% -30% 0); }
@@ -917,6 +1036,17 @@
 }
 
 .nav-saludo-chip.is-premium { color: var(--naranja-o); }
+
+/* Los dibujos de la cabecera (cinta, garabatos y subrayado) solo salen en el
+   móvil (más abajo). */
+.nav-saludo-garabato,
+.nav-saludo-cinta,
+.nav-saludo-subrayado { display: none; }
+
+.nav-saludo-nombre-caja { display: block; max-width: 100%; }
+
+/* En el ordenador, el nombre largo («Mi dashboard»); el corto, en el móvil. */
+.nav-saludo-corto { display: none; }
 
 /* ── Las filas ── */
 .nav-saludo-lista {
@@ -1068,7 +1198,7 @@
 
 @media (max-width: 1279px) {
   .blog-nav-center { display: none; }
-  .tecla.nav-foro-movil { display: inline-flex; }
+  .nav-foro--movil { display: inline-flex; }
 }
 
 /* Y la barra, más baja. Se declara sobre la propia barra y no en :root porque
@@ -1090,8 +1220,11 @@
   .blog-nav { gap: 0.5rem; }
   /* La marca lleva a la portada: 44 px de alto para el dedo, sin ocupar más ancho. */
   .blog-brand { align-items: center; min-height: 44px; font-size: 1.3rem; }
-  .blog-nav-end { gap: 0.45rem; }
-  .nav-acceso { gap: 0.4rem; }
+  /* Un solo hueco entre todos los botones de la derecha, el mismo en la fila
+     y dentro de Entrar/Registrarse: la barra, simétrica (pedido por el admin
+     el 17-11-2026). 12 px bastan para no pisar con el dedo el botón vecino. */
+  .blog-nav-end { gap: 12px; }
+  .nav-acceso { gap: 12px; }
 
   .blog-nav .tecla--peq:not(.tecla--icono) {
     padding: 9px 11px;
@@ -1109,22 +1242,35 @@
   /* Las teclas se ven más ceñidas, pero el dedo sigue teniendo 44 px de
      alto donde acertar: una zona invisible que desborda la tecla por arriba
      y por abajo (y apenas a los lados, para no pisar a la vecina). */
+  /* Solo hacia arriba y abajo, nunca de lado: con el dedo, tu foto y el
+     menú, pegados, se pisaban la zona y a veces se abría el menú al querer
+     abrir tu perfil (avisado por el admin el 17-11-2026). Se anulan aquí el
+     ancho y el centrado que tecla.css le da a esta zona en pantallas táctiles. */
   .blog-nav .tecla--peq::after {
     content: "";
     position: absolute;
-    inset: min(0px, calc((100% - 44px) / 2)) -2px;
+    inset: min(0px, calc((100% - 44px) / 2)) 0;
+    width: auto;
+    height: auto;
+    transform: none;
   }
+
+  /* Y el menú, separado de tu foto: es lo que más se pulsa sin querer. */
 }
 
 @media (max-width: 480px) {
   /* Sin hueco de rejilla: la columna del centro está vacía y sus dos huecos
      eran 13 px que aquí no sobran. */
-  .blog-nav { padding: 0 0.6rem; gap: 0; }
+  /* 18 px a cada lado: la barra respira y queda centrada (pedido por el
+     admin el 17-11-2026; antes, 10 px). */
+  .blog-nav { padding: 0 18px; gap: 0; }
   .blog-brand { font-size: 1.15rem; }
-  .blog-nav-end { gap: 0.32rem; }
-  .nav-acceso { gap: 0.32rem; }
+  .blog-nav-end { gap: 12px; }
+  .nav-acceso { gap: 12px; }
 
+  /* 34 px de alto, como el resto de botones de la barra a este ancho. */
   .blog-nav .tecla--peq:not(.tecla--icono) {
+    min-height: 34px;
     padding: 8px 8px;
     font-size: 11px;
     letter-spacing: 0.01em;
@@ -1143,8 +1289,19 @@
 }
 
 @media (max-width: 360px) {
-  .blog-nav { padding: 0 0.45rem; }
+  .blog-nav { padding: 0 14px; }
   .blog-brand { font-size: 1.05rem; }
+  /* En los más estrechos, todos los huecos a 8 px (iguales entre sí): con 12,
+     la marca y «Entrar» quedaban pegadas. */
+  .blog-nav-end,
+  .nav-acceso { gap: 8px; }
+}
+
+/* Los teléfonos de 320 px: la marca algo más pequeña para que, sin sesión,
+   «Entrar» no quede pegada a ella con el margen nuevo. */
+@media (max-width: 340px) {
+  .blog-nav { padding: 0 12px; }
+  .blog-brand { font-size: 0.98rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1164,6 +1321,208 @@
   .nav-saludo-menu,
   .nav-saludo-menu.is-cerrando,
   .nav-saludo-hola,
+  .nav-saludo-subrayado path,
   .nav-saludo-lista > *,
   .nav-saludo-icono { animation: none; }
+}
+
+/* ══ El desplegable de tu cuenta, en el móvil (17-11-2026) ═════════════════
+   Pedido por el admin: centrado en la pantalla y con el espacio mejor
+   aprovechado. Ocupa el ancho de la pantalla con el mismo margen que la barra
+   a cada lado, y es una ficha centrada (más abajo). El pico sigue apuntando a tu foto: su
+   distancia al borde derecho es la tecla del menú (34 px), el hueco (12 px u
+   8 px) y media foto (17 px), menos medio pico (8 px). */
+@media (max-width: 600px) {
+  .nav-saludo-menu {
+    position: fixed;
+    top: calc(var(--nav-h, 58px) + 12px);
+    left: 18px;
+    right: 18px;
+    width: auto;
+    transform-origin: calc(100% - 63px) -10px;
+  }
+
+  .nav-saludo-menu::before { right: 55px; }
+
+  /* ── La ficha del alumno (rediseño del 17-11-2026) ──
+     Pedido por el admin: «sigo viendo mucho espacio libre arriba». En una
+     fila (foto y texto) quedaba un hueco a la derecha que no llenaba nada.
+     Ahora la cabecera se centra: la foto arriba y, debajo, el saludo, tu
+     nombre y tu plan. Las acciones son tres teclas iguales en una fila, con
+     la misma anatomía que las del menú del móvil (menu-movil.css): fondo
+     pastel, canto de 5 px de su color y el icono en una teclita sólida con su
+     propio canto. */
+  .nav-saludo-cabecera {
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1.1rem 1rem 1rem;
+    text-align: center;
+  }
+
+  .nav-saludo-avatar--grande {
+    width: 76px;
+    height: 76px;
+    border-radius: 22px;
+    font-size: 1.8rem;
+  }
+
+  .nav-saludo-cabecera-texto {
+    flex: none;
+    align-items: center;
+    gap: 0.2rem;
+    max-width: 100%;
+  }
+
+  .nav-saludo-hola { font-size: 21px; transform-origin: center; }
+
+  /* ── Los dibujos de la cabecera (17-11-2026) ──
+     Pedido por el admin: detalles creativos del cuaderno en la franja. La
+     foto va pegada con dos trocitos de cinta lila, en las esquinas de abajo
+     hay dos garabatos de margen (una moneda de bitcoin y una gráfica que
+     sube, simétricos) y tu nombre lleva un subrayado a mano que se dibuja al
+     abrir. Todo es decoración (aria-hidden). */
+  .nav-saludo-cinta {
+    display: block;
+    position: absolute;
+    bottom: -4px;
+    width: 30px;
+    height: 12px;
+    background: color-mix(in srgb, var(--lila) 45%, transparent);
+    /* Los bordes cortados de la cinta, en zigzag. */
+    clip-path: polygon(0 0, 8% 25%, 0 50%, 8% 75%, 0 100%, 100% 100%, 92% 75%, 100% 50%, 92% 25%, 100% 0);
+    pointer-events: none;
+  }
+
+  .nav-saludo-cinta--izq { left: -11px; rotate: 40deg; }
+  .nav-saludo-cinta--der { right: -11px; rotate: -40deg; }
+
+  .nav-saludo-garabato {
+    display: block;
+    position: absolute;
+    bottom: 14px;
+    width: 40px;
+    height: 40px;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--naranja-o) 55%, var(--naranja-s));
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+
+  .nav-saludo-garabato--moneda { left: 18px; rotate: -12deg; }
+  .nav-saludo-garabato--grafica { right: 18px; rotate: 6deg; }
+
+  .nav-saludo-nombre-caja { position: relative; }
+
+  .nav-saludo-subrayado {
+    display: block;
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    bottom: -7px;
+    width: calc(100% + 8px);
+    height: 9px;
+    overflow: visible;
+    fill: none;
+    stroke: var(--naranja);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .nav-saludo-subrayado path {
+    stroke-dasharray: 1;
+    animation: nav-saludo-subrayar 0.6s cubic-bezier(0.45, 0, 0.25, 1) 0.5s backwards;
+  }
+
+  .nav-saludo-chip { margin-top: 0.55rem; }
+  .nav-saludo-cabecera-nombre { font-size: 1.5rem; }
+
+  .nav-saludo-lista {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0.35rem 0.15rem 0.4rem;
+  }
+
+  /* «Hazte Premium», si toca, encima de las tres y a lo ancho. */
+  .nav-saludo-premium { grid-column: 1 / -1; order: -1; margin: 0 0 0.2rem; }
+
+  .nav-saludo-item,
+  .nav-saludo-salir {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 0;
+    height: calc(100% - 5px);
+    padding: 0.75rem 0.3rem 0.6rem;
+    border-radius: 16px;
+    background: var(--s);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.6),
+      0 5px 0 color-mix(in srgb, var(--c) 50%, var(--s)),
+      0 12px 18px -12px rgba(29, 27, 51, 0.3);
+    font-family: var(--letra-titular);
+    font-size: 0.86rem;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    color: var(--o);
+  }
+
+  /* El icono, una teclita sólida de su color con su canto. */
+  .nav-saludo-item .nav-saludo-icono,
+  .nav-saludo-salir .nav-saludo-icono {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+    border-radius: 12px;
+    background: var(--c);
+    color: #fff;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--o);
+  }
+
+  .nav-saludo-item--menta .nav-saludo-icono { color: var(--tinta); }
+
+  .nav-saludo-item:hover,
+  .nav-saludo-item:focus-visible,
+  .nav-saludo-salir:hover,
+  .nav-saludo-salir:focus-visible {
+    background: color-mix(in srgb, var(--c) 22%, var(--s));
+    color: var(--o);
+  }
+
+  .nav-saludo-item:hover .nav-saludo-icono,
+  .nav-saludo-item:focus-visible .nav-saludo-icono,
+  .nav-saludo-salir:hover .nav-saludo-icono,
+  .nav-saludo-salir:focus-visible .nav-saludo-icono { background: var(--c); }
+
+  /* Al pulsar, la tecla baja y el canto desaparece, como en el menú. */
+  .nav-saludo-item:active,
+  .nav-saludo-salir:active {
+    transform: translateY(5px);
+    box-shadow: inset 0 4px 8px rgba(29, 27, 51, 0.12), 0 0 0 transparent;
+  }
+
+  /* Sin la flecha: con el dedo no hay «pasar el ratón». */
+  .nav-saludo-ir { display: none; }
+
+  /* Nombres de una palabra, como las teclas del menú: «Dashboard», «Perfil». */
+  .nav-saludo-largo { display: none; }
+  .nav-saludo-corto { display: inline; }
+
+  /* Cerrar sesión ya se distingue por su coral: sin la raya de separación. */
+  .nav-saludo-salir-caja { margin: 0; padding: 0; border: 0; }
+}
+
+@media (max-width: 360px) {
+  .nav-saludo-menu { left: 14px; right: 14px; transform-origin: calc(100% - 57px) -10px; }
+  .nav-saludo-menu::before { right: 51px; }
+}
+
+@media (max-width: 340px) {
+  .nav-saludo-menu { left: 12px; right: 12px; transform-origin: calc(100% - 59px) -10px; }
+  .nav-saludo-menu::before { right: 51px; }
 }

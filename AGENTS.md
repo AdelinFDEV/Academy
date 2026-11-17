@@ -25,6 +25,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Tocar el **foro** o el **perfil público** (alias, foto, avisos) | [`FORO.md`](./FORO.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 | Una **historia de Instagram** (o cualquier imagen vertical para redes) para anunciar algo de la web | La skill [`historia-instagram`](./.claude/skills/historia-instagram/SKILL.md): estilo aprobado el 15-11-2026, con su modelo |
+| Un **dibujo o pegatina** generado como imagen para la web (o el prompt para pedirlo) | [`ESTILO.md`](./ESTILO.md) § «🔴 Las pegatinas del cuaderno»: el prompt base, **siempre entero**, y cómo se sube |
 | Apuntar o consultar **cursos y guías que queremos lanzar** en el futuro (ideas aún sin empezar) | [`CURSOS-PENDIENTES.md`](./CURSOS-PENDIENTES.md) · [`GUIAS-PENDIENTES.md`](./GUIAS-PENDIENTES.md) |
 
 Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan. El panel de SEO es el «cómo y por qué», para cualquier página; `AUDITORIA-SEO.md` es el protocolo que se ejecuta fase a fase sobre una guía terminada.

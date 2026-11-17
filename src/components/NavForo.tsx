@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageCircle, MessageCircleMore } from "lucide-react";
+import { MessageCircleMore } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
-import Tecla from "@/components/cuaderno/Tecla";
 import { sonar } from "@/lib/sonidos";
 
 /**
@@ -55,26 +54,33 @@ export default function NavForo() {
 }
 
 /**
- * El foro en la barra del móvil (y de cualquier pantalla de menos de 1200 px,
- * donde el de escritorio se esconde): entre la marca y la foto de perfil.
+ * El foro en la barra del móvil (y de cualquier pantalla de menos de 1280 px,
+ * donde el de escritorio se esconde): entre la marca y la foto de perfil. Solo
+ * sale con sesión: sin ella, la barra del móvil lleva únicamente «Entrar» y
+ * «Registrarse» (`SiteNav`).
  *
- * Más simple a propósito (pedido por el admin el 13-11-2026): ahí no caben las
- * caras. Una tecla coral, el color del foro, con un bocadillo y la palabra;
- * dentro del foro, blanca (ya estás ahí). Solo sale con sesión: sin ella, la
- * barra del móvil lleva únicamente «Entrar» y «Registrarse» (`SiteNav`).
+ * Desde el 17-11-2026 (pedido por el admin) es el MISMO botón que el de
+ * escritorio, con las tres caras de la comunidad, solo más compacto
+ * (site-nav.css, `.nav-foro--movil`). Antes era una tecla coral con un icono.
  */
 export function NavForoMovil() {
   const activo = useEnElForo();
+
   return (
-    <Tecla
+    <Link
       href="/foro"
-      color={activo ? "blanca" : "coral"}
-      tamano="peq"
-      className={`nav-foro-movil${activo ? " is-activo" : ""}`}
+      className={`nav-foro nav-foro--movil${activo ? " is-activo" : ""}`}
       aria-current={activo ? "page" : undefined}
+      aria-label="Foro"
+      onPointerDown={() => sonar("tecla")}
     >
-      <MessageCircle size={16} strokeWidth={2.6} aria-hidden="true" />
-      Foro
-    </Tecla>
+      <span className="nav-foro-caras" aria-hidden="true">
+        {CARAS.map((c) => (
+          <AvatarUsuario key={c} avatar={c} inicial="" className="nav-foro-cara" />
+        ))}
+      </span>
+      <span className="nav-foro-texto">Foro</span>
+      <MessageCircleMore className="nav-foro-bocadillo" size={17} strokeWidth={2.4} aria-hidden="true" />
+    </Link>
   );
 }

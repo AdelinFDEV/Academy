@@ -13,6 +13,7 @@ import { INSTAGRAM_DM_URL, YOUTUBE_URL } from "@/lib/contacto";
 import { InstagramIcon } from "./SocialLinks";
 import Tecla from "./cuaderno/Tecla";
 import InterruptorSonido from "./cuaderno/InterruptorSonido";
+import CoheteGarabato from "./MenuGarabatos";
 import "./menu-movil.css";
 
 interface Props {
@@ -77,6 +78,22 @@ const GRATIS: Entrada[] = [
  */
 const FORO: Entrada = { id: "foro", ruta: "/foro", label: "Foro", linea: "Preguntas y respuestas de la comunidad", icon: MessagesSquare, tono: "coral" };
 
+/**
+ * El nombre corto de cada tecla, para el móvil (17-11-2026, pedido por el
+ * admin): una palabra cabe en una línea, el menú gana alto y los iconos pueden
+ * crecer. En el ordenador sale el nombre completo (menu-movil.css).
+ */
+const NOMBRE_CORTO: Record<string, string> = {
+  diario: "Diario",
+  portfolio: "Portfolio",
+  cursos: "Cursos",
+  guias: "Guías",
+  glosario: "Diccionario",
+  prediccion: "Predicción",
+  logros: "Logros",
+  foro: "Foro",
+};
+
 /** Las entradas que no salen del catálogo: su ruta es siempre la misma. */
 const FUERA_DEL_CATALOGO = new Set(["guias", "glosario", "foro"]);
 
@@ -116,18 +133,27 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
   const primerEnlace = useRef<HTMLAnchorElement>(null);
   // Todo lo que va dentro del menú: se escala si no cabe en la pantalla.
   const hoja = useRef<HTMLDivElement>(null);
+  // Lo que ocupa la barra en la página (alto y margen) justo antes de abrir.
+  const hueco = useRef(0);
   const boton = useRef<HTMLButtonElement>(null);
 
   const activo = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const destino = (ruta: string) => destinoPorRuta(ruta, { logueado: user, premium: isPremium });
   const close = () => setOpen(false);
+  const gratis = foro ? [GRATIS[0], GRATIS[1], FORO, ...GRATIS.slice(2)] : GRATIS;
 
   /** Abre o cierra, con su sonido, desde el centro del botón. */
   const alternar = () => {
     const r = boton.current?.getBoundingClientRect();
     if (r) setOrigen({ x: `${Math.round(r.left + r.width / 2)}px`, y: `${Math.round(r.top + r.height / 2)}px` });
     sonar(open ? "cerrar" : "abrir");
-    if (!open) setMontado(true);
+    if (!open) {
+      // Se mide ANTES de abrir: al abrir, la barra pasa a fija (site-nav.css)
+      // y deja de ocupar su sitio.
+      const barra = boton.current?.closest<HTMLElement>(".blog-nav");
+      if (barra) hueco.current = barra.getBoundingClientRect().height + parseFloat(getComputedStyle(barra).marginBottom);
+      setMontado(true);
+    }
     setOpen(!open);
   };
 
@@ -141,21 +167,36 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
     const el = hoja.current;
     const caja = el?.parentElement;
     if (!el || !caja) return;
+    // Se mide con `offsetHeight`, el alto de maquetación: no lo cambian ni la
+    // animación de apertura (la tapa gira en perspectiva y, medida con
+    // getBoundingClientRect a mitad de giro, parecía 226 px en vez de 850, y el
+    // menú se cortaba: avisado por el admin el 17-11-2026) ni el propio `zoom`,
+    // que solo multiplica lo que se ve.
     const ajustar = () => {
-      el.style.zoom = "1";
       const estilo = getComputedStyle(caja);
       const disponible = caja.clientHeight - parseFloat(estilo.paddingTop) - parseFloat(estilo.paddingBottom);
-      for (let pasada = 0; pasada < 2; pasada++) {
-        const actual = parseFloat(el.style.zoom) || 1;
-        const natural = el.getBoundingClientRect().height / actual;
+      el.style.zoom = "1";
+      for (let pasada = 0; pasada < 3; pasada++) {
         // Un 2 % de colchón: el canto de la última tecla y el redondeo.
-        const escala = Math.min(1, (disponible / natural) * 0.98);
+        const escala = Math.min(1, (disponible / el.offsetHeight) * 0.98);
         el.style.zoom = String(Math.max(0.55, Math.floor(escala * 1000) / 1000));
       }
     };
     ajustar();
+    // Y otra vez si el contenido cambia de tamaño después (una foto que carga,
+    // una fuente): una vez por fotograma como mucho.
+    let pendiente = 0;
+    const observador = new ResizeObserver(() => {
+      cancelAnimationFrame(pendiente);
+      pendiente = requestAnimationFrame(ajustar);
+    });
+    for (const hijo of Array.from(el.children)) observador.observe(hijo);
     window.addEventListener("resize", ajustar);
-    return () => window.removeEventListener("resize", ajustar);
+    return () => {
+      cancelAnimationFrame(pendiente);
+      observador.disconnect();
+      window.removeEventListener("resize", ajustar);
+    };
   }, [montado, user, isPremium, isAdmin, foro]);
 
   // Al abrir se monta (en `alternar`); al cerrar se deja que se recoja
@@ -164,10 +205,23 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
   useEffect(() => {
     if (open || !montado) return;
     const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // 0,32 s en el móvil y 0,44 s en el ordenador (menu-movil.css): se espera lo más largo.
-    const espera = window.setTimeout(() => setMontado(false), quieto ? 0 : 460);
+    // 0,65 s en el móvil y 0,44 s en el ordenador (menu-movil.css): se espera lo más largo.
+    const espera = window.setTimeout(() => setMontado(false), quieto ? 0 : 700);
     return () => window.clearTimeout(espera);
   }, [open, montado]);
+
+  // Al abrir, la barra pasa a fija y sale del flujo: todo lo de detrás subía de
+  // golpe lo que ella medía (el «salto» que vio el admin el 17-11-2026). La
+  // página reserva ese hueco arriba mientras el menú está abierto. En
+  // useLayoutEffect, para que se aplique antes de pintar y no se vea el salto.
+  useLayoutEffect(() => {
+    if (!open || !hueco.current) return;
+    const cuerpo = document.body;
+    cuerpo.style.paddingTop = `${hueco.current}px`;
+    return () => {
+      cuerpo.style.paddingTop = "";
+    };
+  }, [open]);
 
   // Con el menú abierto, la página de debajo no se desplaza; Escape lo cierra
   // (con su sonido, y el foco vuelve al botón del menú) y el foco entra en el
@@ -177,7 +231,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
     const raiz = document.documentElement;
     raiz.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-    primerEnlace.current?.focus();
+    // Sin desplazar la página al darle el foco.
+    primerEnlace.current?.focus({ preventScroll: true });
     const alPulsar = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       sonar("cerrar");
@@ -229,8 +284,35 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
           </div>
           <div className="mm-cuerpo">
             <nav className="mm-nav" aria-label="Secciones de la academia">
-              <Grupo titulo="Mejora como trader" nota="Incluido en Premium" entradas={PREMIUM} desde={0} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
-              <Grupo titulo="Aprende cripto" nota="Gratis, a tu ritmo" entradas={foro ? [GRATIS[0], GRATIS[1], FORO, ...GRATIS.slice(2)] : GRATIS} desde={PREMIUM.length} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+              <Grupo titulo="Mejora como trader" adorno={<CoheteGarabato />} nota="Incluido en Premium" entradas={PREMIUM} desde={0} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+              <Grupo
+                titulo="Aprende cripto"
+                nota="Gratis, a tu ritmo"
+                entradas={gratis}
+                desde={PREMIUM.length}
+                activo={activo}
+                destino={destino}
+                close={close}
+                primerEnlace={primerEnlace}
+                extra={
+                  // Tu dashboard, con tu foto, en el hueco que queda al final:
+                  // en naranja sólido, distinta del resto (pedido por el admin el
+                  // 17-11-2026). Solo en el móvil (menu-movil.css), donde tu
+                  // cuenta ya no va en el menú, y solo con sesión.
+                  user && (
+                    <li className="mm-tu-li" style={{ "--i": PREMIUM.length + gratis.length } as React.CSSProperties}>
+                      <Link href="/dashboard" onClick={close} className="mm-item mm-tu" onPointerDown={() => sonar("tecla")}>
+                        <span className="mm-tu-foto" aria-hidden="true">
+                          <AvatarUsuario avatar={avatar} inicial={(userName || "U").charAt(0).toUpperCase()} className="mm-tu-avatar" />
+                        </span>
+                        <span className="mm-item-texto">
+                          <span className="mm-item-nombre">Dashboard</span>
+                        </span>
+                      </Link>
+                    </li>
+                  )
+                }
+              />
             </nav>
 
             <aside className="mm-lado" aria-label="Tu cuenta">
@@ -298,7 +380,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-red mm-instagram">
                   <span className="mm-red-icono" aria-hidden="true"><InstagramIcon size={19} /></span>
                   <span className="mm-red-texto">
-                    <strong>Escríbeme por Instagram</strong>
+                    <strong><span className="mm-nombre-largo">Escríbeme por Instagram</span><span className="mm-nombre-corto" aria-hidden="true">Instagram</span></strong>
                     <small>@adelinbtc · te contesto yo</small>
                   </span>
                   <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" className="mm-red-flecha" />
@@ -311,7 +393,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                     </svg>
                   </span>
                   <span className="mm-red-texto">
-                    <strong>Mi canal de YouTube</strong>
+                    <strong><span className="mm-nombre-largo">Mi canal de YouTube</span><span className="mm-nombre-corto" aria-hidden="true">YouTube</span></strong>
                     <small>@AdelinBTC · todos mis vídeos</small>
                   </span>
                   <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" className="mm-red-flecha" />
@@ -343,8 +425,10 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 }
 
 /** Un grupo del menú: su cabecera y sus destinos. */
-function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEnlace }: {
+function Grupo({ titulo, adorno, nota, entradas, desde, activo, destino, close, primerEnlace, extra }: {
   titulo: string;
+  /** Un dibujo pequeño junto al título (el cohete, en el móvil). */
+  adorno?: React.ReactNode;
   nota: string;
   entradas: Entrada[];
   /** Posición del primer enlace en todo el menú: escalona la entrada. */
@@ -353,12 +437,15 @@ function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEn
   destino: (ruta: string) => string;
   close: () => void;
   primerEnlace: React.RefObject<HTMLAnchorElement | null>;
+  /** Una tecla más al final de la lista (el acceso a tu dashboard, en el móvil). */
+  extra?: React.ReactNode;
 }) {
   return (
     <section className="mm-grupo" aria-label={titulo}>
-      <header className="mm-grupo-cabecera">
+      <header className={adorno ? "mm-grupo-cabecera mm-grupo-cabecera--adorno" : "mm-grupo-cabecera"}>
         <span className="mm-grupo-titulo">{titulo}</span>
         <span className="mm-grupo-nota">{nota}</span>
+        {adorno}
       </header>
       <ul className="mm-lista">
         {entradas.map((e, i) => {
@@ -371,14 +458,15 @@ function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEn
                 ref={desde + i === 0 ? primerEnlace : undefined}
                 href={href}
                 onClick={close}
-                className={`mm-item mm-tono--${e.tono}${activo(e.ruta) ? " is-activo" : ""}`}
+                className={`mm-item mm-item--${e.id} mm-tono--${e.tono}${activo(e.ruta) ? " is-activo" : ""}`}
                 onPointerDown={() => sonar("tecla")}
                 aria-current={activo(e.ruta) ? "page" : undefined}
               >
                 <span className="mm-item-icono" aria-hidden="true"><Icono size={19} strokeWidth={2} /></span>
                 <span className="mm-item-texto">
                   <span className="mm-item-nombre">
-                    {e.label}
+                    <span className="mm-nombre-largo">{e.label}</span>
+                    <span className="mm-nombre-corto" aria-hidden="true">{NOMBRE_CORTO[e.id] ?? e.label}</span>
                     {proximamente && <span className="mm-pill mm-pill--pronto">Próximamente</span>}
                   </span>
                   <span className="mm-item-linea">{e.linea}</span>
@@ -388,6 +476,7 @@ function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEn
             </li>
           );
         })}
+        {extra}
       </ul>
     </section>
   );

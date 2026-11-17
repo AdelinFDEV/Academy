@@ -131,13 +131,34 @@ export default function NavSaludo({
         >
           {/* Quién eres: un saludo a mano, la foto, el nombre entero y el plan. */}
           <div className="nav-saludo-cabecera">
+            {/* En el móvil, dos garabatos de margen en las esquinas de abajo
+                (site-nav.css): una moneda de bitcoin y una gráfica que sube. */}
+            <svg className="nav-saludo-garabato nav-saludo-garabato--moneda" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+              <path d="M20 3.5c9.3-.2 16.4 7.2 16.5 16.3.1 9.4-7.3 16.7-16.6 16.7C10.6 36.6 3.4 29.3 3.5 20 3.6 10.9 10.8 3.7 20 3.5z" />
+              <path d="M15.5 12.5v15M15.5 12.8h6.2c2.6 0 4.3 1.5 4.3 3.6s-1.7 3.5-4.3 3.6h-6.2M15.5 20h7c2.8 0 4.6 1.5 4.6 3.7 0 2.3-1.8 3.8-4.6 3.8h-7M18.5 9.5v3M22 9.5v3M18.5 27.5v3M22 27.5v3" />
+            </svg>
+            <svg className="nav-saludo-garabato nav-saludo-garabato--grafica" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+              <path d="M5 5.5c-.3 9.8-.2 19.6.2 29.5 9.9.3 19.8.3 29.8-.1" />
+              <path d="M9.5 28.5l7-8.5 6 4.5 9.8-13" />
+              <path d="M26.5 10.8l5.9-.4.3 5.9" />
+            </svg>
+
             <span className="nav-saludo-avatar nav-saludo-avatar--grande" aria-hidden="true">
               <AvatarUsuario avatar={avatar} inicial={inicial} className="nav-saludo-foto" />
               {premium && <span className="nav-saludo-corona"><Crown size={11} strokeWidth={2.6} /></span>}
+              {/* La foto, pegada con dos trocitos de cinta (solo en el móvil). */}
+              <span className="nav-saludo-cinta nav-saludo-cinta--izq" />
+              <span className="nav-saludo-cinta nav-saludo-cinta--der" />
             </span>
             <span className="nav-saludo-cabecera-texto">
               <span className="nav-saludo-hola" aria-hidden="true">¡hola de nuevo!</span>
-              <span className="nav-saludo-cabecera-nombre">{nombre}</span>
+              <span className="nav-saludo-nombre-caja">
+                <span className="nav-saludo-cabecera-nombre">{nombre}</span>
+                {/* El subrayado a mano que se dibuja al abrir (solo en el móvil). */}
+                <svg className="nav-saludo-subrayado" viewBox="0 0 120 10" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                  <path pathLength={1} d="M2 6.5c14-3.2 26 2.6 40-.6s26-3.4 38-.4 26 1.6 38-1.8" />
+                </svg>
+              </span>
               <span className={`nav-saludo-chip${premium ? " is-premium" : ""}`}>
                 {premium && <Crown size={11} strokeWidth={2.4} aria-hidden="true" />}
                 {PLAN_TEXTO[plan]}
@@ -154,7 +175,8 @@ export default function NavSaludo({
               onClick={() => setAbierto(false)}
             >
               <span className="nav-saludo-icono" aria-hidden="true"><LayoutDashboard size={16} strokeWidth={2.2} /></span>
-              Mi dashboard
+              <span className="nav-saludo-largo">Mi dashboard</span>
+              <span className="nav-saludo-corto">Dashboard</span>
               <ArrowRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
             </Link>
             <Link
@@ -165,7 +187,8 @@ export default function NavSaludo({
               onClick={() => setAbierto(false)}
             >
               <span className="nav-saludo-icono" aria-hidden="true"><UserRound size={16} strokeWidth={2.2} /></span>
-              Mi perfil
+              <span className="nav-saludo-largo">Mi perfil</span>
+              <span className="nav-saludo-corto">Perfil</span>
               <ArrowRight className="nav-saludo-ir" size={15} strokeWidth={2.4} aria-hidden="true" />
             </Link>
 

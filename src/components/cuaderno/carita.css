@@ -1,0 +1,52 @@
+/* La carita feliz del cuaderno (CaritaFeliz.tsx). Reglas de uso en ESTILO.md:
+   una por pantalla como mucho y solo en momentos amables. */
+
+.carita {
+  display: inline-block;
+  line-height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.carita svg { display: block; overflow: visible; }
+
+.carita-cara {
+  fill: var(--amarillo);
+  stroke: var(--naranja-o);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+}
+
+.carita-linea {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.carita-moflete { fill: var(--coral); opacity: 0.55; }
+
+/* Se anima el dibujo (el svg), no la caja: alVerse, que decide cuándo se ve,
+   mide la caja y toma por invisible lo transparente o encogido a cero. Sin
+   JavaScript no hay `data-trazo` y la carita está a la vista. */
+.carita[data-trazo="espera"] svg { scale: 0; }
+
+.carita[data-trazo="dibuja"] svg {
+  animation:
+    carita-sale 0.55s cubic-bezier(0.34, 1.9, 0.5, 1) both,
+    carita-mece 3.6s ease-in-out 0.7s infinite;
+}
+
+@keyframes carita-sale {
+  from { scale: 0; rotate: -30deg; }
+  to { scale: 1; rotate: 10deg; }
+}
+
+@keyframes carita-mece {
+  0%, 100% { rotate: 10deg; }
+  50% { rotate: -4deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carita[data-trazo] svg { scale: 1; rotate: 10deg; animation: none; }
+}

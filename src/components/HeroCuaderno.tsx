@@ -2,6 +2,7 @@ import Tecla from "@/components/cuaderno/Tecla";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import TarjetaEstudio from "@/components/cuaderno/TarjetaEstudio";
+import CaritaFeliz from "@/components/cuaderno/CaritaFeliz";
 import "./hero-cuaderno.css";
 
 /**
@@ -60,6 +61,10 @@ export default function HeroCuaderno({ guias, terminos, cursos }: {
             <span className="hc-pista-titulo">Así se aprende aquí</span>
             <span className="hc-pista-texto">toca una tarjeta y gírala</span>
             <SimboloEstudio tipo="flecha" color="naranja" giro={78} tamano={48} semilla={9} retraso={900} className="hc-pista-flecha" />
+            {/* En el móvil, una carita feliz a su lado, como un emoji dibujado
+                a mano (hero-cuaderno.css). No es un emoji de verdad: la web no
+                los usa (ESTILO.md). Aparece con un saltito al verla. */}
+            <CaritaFeliz className="hc-carita" retraso={1100} />
           </p>
           <div className="hc-mesa">
             <SimboloEstudio tipo="estrella" color="naranja" className="hc-garabato" tamano={46} semilla={5} retraso={700} />

@@ -1013,3 +1013,298 @@
   .mm.is-cerrando .mm-lado,
   .mm.is-cerrando .mm-buscar { animation-duration: 0.28s; animation-delay: 0s; }
 }
+
+/* ══ En el móvil, una persiana de cuaderno (17-11-2026) ════════════════════
+   Pedido por el admin: el despliegue en círculo del ordenador no queda bien
+   en una pantalla estrecha (nace en una esquina y las teclas de tres en fondo,
+   ladeadas a la vez, se ven desordenadas). En el móvil:
+    1. la hoja baja desde la barra, de arriba abajo, como una persiana o la
+       página de un bloc, y frena suave al final;
+    2. el buscador cae en su sitio;
+    3. las teclas aparecen por orden, con un rebote y sin ladearse;
+    4. los iconos saltan y las notas a mano se escriben (como en el ordenador);
+    5. tu cuenta, las redes y Premium suben desde abajo, uno tras otro.
+   Al cerrar, la persiana sube rápido. Todo con `transform` y `clip-path`, que
+   el móvil anima sin tirones. */
+@media (max-width: 719px) {
+  /* La tapa del cuaderno (17-11-2026, segunda versión: la primera «seguía
+     viéndose muy rápida»). La persiana baja a ritmo constante, despacio al
+     empezar y al acabar (1,1 s, curva de entrada y salida: con una de solo
+     salida casi todo el recorrido pasaba en el primer tercio y parecía un
+     parpadeo). A la vez, el contenido se abate desde arriba como la tapa de un
+     cuaderno con bisagra, cae hacia quien mira y asienta. Las teclas salen
+     cuando la tapa ya está casi abierta. Al cerrar, la tapa se levanta y la
+     persiana sube (0,65 s). */
+  .mm { animation: mm-persiana 1.1s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .mm.is-cerrando { animation: mm-persiana-cierra 0.65s cubic-bezier(0.65, 0, 0.35, 1) both; }
+
+  .mm-hoja { animation: mm-tapa 1.1s cubic-bezier(0.3, 1.2, 0.5, 1) both; }
+  .mm.is-cerrando .mm-hoja { animation: mm-tapa-cierra 0.65s cubic-bezier(0.65, 0, 0.35, 1) both; }
+
+  .mm-buscar { animation: mm-caer 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s backwards; }
+
+  .mm-lista > li {
+    animation: mm-tecla-aparece 0.6s cubic-bezier(0.34, 1.7, 0.5, 1) backwards;
+    animation-delay: calc(0.55s + var(--i, 0) * 0.06s);
+  }
+
+  .mm-item-icono { animation-delay: calc(0.75s + var(--i, 0) * 0.06s); }
+
+  .mm-grupo-titulo { animation: mm-desde-izquierda 0.55s cubic-bezier(0.34, 1.4, 0.64, 1) 0.5s backwards; }
+  .mm-grupo + .mm-grupo .mm-grupo-titulo { animation-delay: 0.68s; }
+  .mm-grupo-nota { animation-delay: 0.75s; }
+  .mm-grupo + .mm-grupo .mm-grupo-nota { animation-delay: 0.95s; }
+
+  /* El panel de abajo, pieza a pieza. */
+  .mm-lado { animation: none; }
+
+  .mm-lado > * { animation: mm-sube 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) backwards; }
+  .mm-lado > :nth-child(1) { animation-delay: 0.85s; }
+  .mm-lado > :nth-child(2) { animation-delay: 0.97s; }
+  .mm-lado > :nth-child(3) { animation-delay: 1.09s; }
+
+  .mm-ficha .nav-saludo-hola { animation-delay: 1.2s; }
+  .mm-ficha .nav-saludo-lista > * { animation-delay: calc(1s + var(--i, 0) * 0.06s); }
+  .mm-ficha .nav-saludo-icono { animation-delay: calc(1.12s + var(--i, 0) * 0.06s); }
+
+  /* Al cerrar, todo se va con la persiana: sin animaciones propias. */
+  .mm.is-cerrando .mm-lista > li,
+  .mm.is-cerrando .mm-lado > *,
+  .mm.is-cerrando .mm-buscar { animation: none; }
+}
+
+@keyframes mm-persiana {
+  from { clip-path: inset(0 0 100% 0 round 0 0 28px 28px); }
+  to { clip-path: inset(0 0 0 0 round 0); }
+}
+
+@keyframes mm-persiana-cierra {
+  from { clip-path: inset(0 0 0 0 round 0); }
+  to { clip-path: inset(0 0 100% 0 round 0 0 28px 28px); }
+}
+
+/* La tapa: gira desde su borde de arriba (la bisagra), cae hacia quien mira,
+   se pasa un poco y asienta. */
+@keyframes mm-tapa {
+  0% { opacity: 0.2; transform: perspective(900px) rotateX(-62deg) translateY(-24px); }
+  55% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes mm-tapa-cierra {
+  to { opacity: 0; transform: perspective(900px) rotateX(-55deg) translateY(-20px); }
+}
+
+@keyframes mm-tecla-aparece {
+  from { opacity: 0; transform: translateY(10px) scale(0.86); }
+}
+
+@keyframes mm-desde-izquierda {
+  from { opacity: 0; transform: translateX(-14px); }
+}
+
+@keyframes mm-sube {
+  from { opacity: 0; transform: translateY(22px); }
+}
+
+@media (max-width: 719px) and (prefers-reduced-motion: reduce) {
+  .mm,
+  .mm.is-cerrando,
+  .mm-hoja,
+  .mm.is-cerrando .mm-hoja,
+  .mm-buscar,
+  .mm-lista > li,
+  .mm-grupo-titulo,
+  .mm-lado > * { animation: none; }
+}
+
+/* En el móvil, con sesión, tu cuenta no va en el menú: ya está en el
+   desplegable de tu foto, en la barra (pedido por el admin el 17-11-2026, para
+   que el menú quepa sin scroll). Sin sesión se queda «Crear cuenta». */
+@media (max-width: 719px) {
+  .mm-lado .mm-cuenta.mm-ficha { display: none; }
+}
+
+/* ── Tu dashboard, en el hueco del final (solo en el móvil y con sesión) ──
+   Pedido por el admin el 17-11-2026: la única tecla del menú en naranja
+   sólido, con tu foto en vez de icono, para que se distinga del resto. */
+.mm-tu-li { display: none; }
+
+@media (max-width: 719px) {
+  .mm-tu-li { display: block; }
+
+  .mm-item.mm-tu {
+    background: var(--naranja);
+    color: #fff;
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.35),
+      0 5px 0 var(--naranja-o),
+      0 12px 18px -12px rgba(166, 80, 0, 0.5);
+  }
+
+  .mm-item.mm-tu .mm-item-nombre { color: #fff; }
+
+  .mm-item.mm-tu:active {
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 var(--naranja-o);
+  }
+
+  .mm-tu-foto {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 2px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--naranja-s);
+    box-shadow: 0 0 0 2.5px #fff, 0 4px 0 2.5px var(--naranja-o);
+    animation: mm-saltar 0.5s cubic-bezier(0.34, 1.9, 0.5, 1) backwards;
+    animation-delay: calc(0.75s + var(--i, 0) * 0.06s);
+  }
+
+  .mm-tu-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    font-family: var(--letra-titular);
+    font-weight: 800;
+    color: var(--naranja-o);
+  }
+}
+
+/* ── En el móvil, cada tecla en el pastel de su sección (17-11-2026) ──────
+   Pedido por el admin: «todos se ven demasiado parecidos, tenemos una paleta
+   rica». Como en la barra de arriba: fondo de su tono suave, canto de su
+   color, nombre en su lateral oscuro (contraste AA, ESTILO.md) y el icono en
+   su color fuerte, que destaca sobre el pastel. Tu dashboard sigue en naranja
+   sólido: es la que tiene que llamar la atención. */
+@media (max-width: 719px) {
+  .mm-item:not(.mm-tu) {
+    background: var(--s);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.6),
+      0 5px 0 color-mix(in srgb, var(--c) 50%, var(--s)),
+      0 12px 18px -12px rgba(29, 27, 51, 0.3);
+  }
+
+  .mm-item:not(.mm-tu) .mm-item-nombre { color: var(--o); }
+
+  .mm-item:not(.mm-tu):active {
+    box-shadow:
+      inset 0 4px 8px rgba(29, 27, 51, 0.12),
+      0 0 0 transparent;
+  }
+
+  /* Donde estás: un punto más vivo. */
+  .mm-item.is-activo:not(.mm-tu) {
+    background: color-mix(in srgb, var(--c) 22%, var(--s));
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.5),
+      0 5px 0 var(--c);
+  }
+
+  /* Las redes, también en pastel: Instagram en lila (su degradado tira a
+     morado) y YouTube en coral (su rojo). */
+  .mm-red.mm-instagram {
+    background: var(--lila-s);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--lila) 45%, var(--lila-s));
+  }
+
+  .mm-red.mm-youtube {
+    background: var(--coral-s);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+  }
+
+  .mm-red.mm-instagram .mm-red-texto strong { color: var(--lila-o); }
+  .mm-red.mm-youtube .mm-red-texto strong { color: var(--coral-o); }
+}
+
+/* En el móvil, Logros en menta (lo que está bien hecho, ESTILO.md): en
+   amarillo caía justo debajo del Diccionario, también amarillo. */
+@media (max-width: 719px) {
+  .mm-item--logros.mm-tono--amarillo {
+    --c: var(--menta);
+    --o: var(--menta-o);
+    --s: var(--menta-s);
+    --t: var(--tinta);
+  }
+}
+
+/* ── Nombres cortos en el móvil (17-11-2026) ───────────────────────────────
+   «Diario», «Guías», «Instagram»…: una línea por tecla. El menú gana alto y
+   lo aprovechan los iconos, más grandes. El nombre largo sigue en el HTML para
+   los lectores de pantalla; el corto lleva aria-hidden. */
+.mm-nombre-corto { display: none; }
+
+@media (max-width: 719px) {
+  .mm-nombre-largo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mm-nombre-corto { display: inline; }
+
+  .mm-item-nombre {
+    font-size: 0.9rem;
+    overflow-wrap: normal;
+    hyphens: none;
+    white-space: nowrap;
+  }
+
+  .mm-item { gap: 0.4rem; padding: 0.65rem 0.3rem 0.6rem; }
+  .mm-item-icono { width: 42px; height: 42px; border-radius: 13px; }
+  .mm-item-icono svg { width: 20px; height: 20px; }
+  .mm-tu-foto { width: 42px; height: 42px; }
+
+  .mm-red { justify-content: center; padding: 0.6rem 0.7rem; }
+  .mm-red-texto { flex: 0 1 auto; }
+  .mm-red-texto strong { font-size: 0.95rem; }
+}
+
+/* ── El cohete junto a «Mejora como trader» (MenuGarabatos.tsx) ───────────
+   Solo en el móvil. Una pegatina del cuaderno (ESTILO.md), a la derecha del
+   título y su nota. Entra con un saltito cuando ya está el título y flota. */
+.mm-cohete { display: none; }
+
+@media (max-width: 719px) {
+  /* Ocupa el hueco a la derecha del título y la nota (pedido por el admin:
+     «más grande y más a la derecha, que ocupe su sitio»). La nota baja a su
+     propia línea para que el cohete tenga siempre la misma columna. */
+  .mm-grupo-cabecera--adorno {
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 62px;
+    padding-right: 76px;
+  }
+  /* La pegatina del cohete (ya viene inclinada): entra con un saltito y
+     luego flota despacio. */
+  .mm-cohete {
+    display: block;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 50px;
+    height: auto;
+    margin-top: -33px;
+    pointer-events: none;
+    user-select: none;
+    animation:
+      mm-saltar 0.5s cubic-bezier(0.34, 1.9, 0.5, 1) 1s backwards,
+      mm-cohete-flota 3s ease-in-out 1.6s infinite;
+  }
+}
+
+@keyframes mm-cohete-flota {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -3px; }
+}
+
+@media (max-width: 719px) and (prefers-reduced-motion: reduce) {
+  .mm-cohete { animation: none; }
+}

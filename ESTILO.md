@@ -103,7 +103,21 @@ deja de ser un equilibrio y pasa a ser una mezcla):
   el admin la quiere sencilla.
 - **Esquinas:** redondeadas y generosas (16-40px). Nada de esquinas rectas ni filetes de lujo.
 - **Verde y rojo de cifras** (`--sube`, `--baja`) solo para cifras con signo; el «hecho» del camino es menta.
-- **Sin emojis** en la web pública.
+- **Sin emojis** en la web pública. En su lugar existe la **carita feliz dibujada**
+  (`CaritaFeliz.tsx`, 17-11-2026): cara amarilla con contorno naranja, ojos sonrientes, mofletes
+  rosados y sonrisa, que aparece con un saltito al verse y se mece despacio. Al admin le encanta y
+  quiere verla más, **sin exagerar**:
+  - **Una por pantalla como mucho**, y nunca dos seguidas en la misma página si se ven a la vez.
+  - **Solo en momentos amables**: una bienvenida, una pista que ayuda, algo bien hecho (un quiz
+    acertado, una lección terminada, un formulario enviado, un estado vacío que anima a empezar).
+  - **Nunca** junto a un riesgo, un error, una advertencia, el descargo de responsabilidad, precios o
+    dinero: ahí resta seriedad.
+  - Va al lado del texto, como un dibujo al margen; no sustituye palabras ni lleva texto propio.
+  - Primer uso: junto al pósit «Así se aprende aquí» del hero, en el móvil.
+  - **Las pegatinas del cuaderno**: los dibujos amables que se generan como imagen. Tienen su propio
+    apartado, con el prompt base que se usa SIEMPRE: «🔴 Las pegatinas del cuaderno», más abajo.
+  - En el **menú del móvil** las teclas llevan nombres de una palabra («Diario», «Guías»…), el pastel
+    de su sección y, con sesión, una tecla naranja sólida con tu foto que lleva a tu dashboard.
 
 ## 🔴 Las marcas de estudio en TODOS los textos explicativos (decidido el 17-11-2026)
 
@@ -226,11 +240,68 @@ pase sola sin que la persona haya hecho nada.
   mano al lado: «sonido activado» o «en silencio». La barra reserva debajo su hueco (56 px), así
   que nunca tapa la página (`site-nav.css`, `.nav-sonido`). **En el móvil solo cuelga en la portada**: en cualquier
   otra página y con el menú abierto no se ve, y el altavoz está dentro del menú, junto al buscador
-  (`SonidoColgante.tsx`). Volumen bajo de serie: que no asuste a quien entra desde el trabajo.
+  (`SonidoColgante.tsx`).
+- **La barra del móvil es simétrica** (17-11-2026, el admin es perfeccionista con esto): el mismo
+  margen a izquierda y derecha (18 px; 14 px a 360 y 12 px a 320), el mismo hueco entre todos los
+  botones (12 px; 8 px a 360 o menos) y todos con el mismo alto (34 px por debajo de 480). Volumen bajo de serie: que no asuste a quien entra desde el trabajo.
 - Nunca es la única respuesta: todo lo que suena también se ve (la tecla se hunde, el aviso aparece).
   En iPhone, con el interruptor de silencio puesto, no suena nada.
 - Los sonidos tienen que ser propios o con licencia que permita usarlos en una web comercial
   (sintetizados en el propio código, o de un banco con licencia clara). Se apunta el origen de cada uno.
+
+## 🔴 Las pegatinas del cuaderno: el prompt base (decidido el 17-11-2026)
+
+Todo dibujo que se genere como imagen para la web (con ChatGPT, Gemini o la herramienta que sea) es
+una **pegatina del cuaderno**, y se pide **siempre con este prompt base**, completo y desde cero
+(nunca «edita la imagen anterior»). Solo cambian la escena y el formato. Así todas parecen del mismo
+dibujante. Lo pidió el admin el 17-11-2026: «para siempre respetar el mismo arte gráfico».
+
+**Pegatinas aprobadas**, que son el modelo a imitar:
+
+- `public/cuaderno/toro-oso-pegatina.webp`: el toro menta persigue al oso coral, que huye a dos patas
+  con los brazos en alto. Va en la barra del móvil con el menú abierto (`site-nav.css`, `.nav-toro-oso`).
+  Es la que mejor fija el estilo: **graciosa, tierna y nada violenta**.
+- `public/cuaderno/cohete-pegatina.webp`: un cohete kawaii que despega entre estrellas, junto a «Mejora
+  como trader» en el menú del móvil (`MenuGarabatos.tsx`, `.mm-cohete`).
+
+**El prompt base**: se copia entero y se rellenan los dos huecos entre corchetes.
+
+```
+Crea una pegatina ilustrada, [FORMATO: p. ej. «horizontal y alargada (proporción 3:1)» o «cuadrada»],
+con FONDO TRANSPARENTE (PNG con canal alfa), sin ningún texto, letras ni números.
+
+ESCENA: [qué pasa, quién sale y qué hace, con el gesto y la expresión de cada uno. Siempre en clave de
+dibujo animado: tierna y con humor, nunca violenta ni que dé miedo].
+
+ESTILO (muy importante, debe ser exactamente este): ilustración de pegatina troquelada, como dibujada
+a mano con rotulador en una libreta. Trazo de contorno en tinta azul marino muy oscura (#1d1b33),
+grosor medio y ligeramente irregular, como hecho a mano, con extremos redondeados. Relleno de colores
+PASTEL PLANOS, sin degradados, sin texturas, sin sombreado realista, tomados de esta paleta: menta
+suave (#d9f5e9) con detalles en verde (#2fc488); coral rosado suave (#ffe2e7) con detalles en coral
+(#ff6b81); crema (#fff3c4); naranja suave (#ffead6) con detalles en naranja (#ff8a1f); lila suave
+(#ece8ff) con detalles en lila (#8f7cff); azul cielo suave (#d9f3fd) con detalles en azul (#2fbff5).
+Mejillas con un toque rosa. Alrededor de TODA la silueta, un BORDE BLANCO GRUESO TROQUELADO, uniforme,
+como el margen de una pegatina recortada, y detrás una sombra lila suave y difusa (#8f7cff al 25 % de
+opacidad) desplazada ligeramente hacia abajo. Estética kawaii pero con humor, proporciones redondeadas
+y cabezas algo grandes.
+
+COMPOSICIÓN: el dibujo ocupa casi todo el lienzo, con aire mínimo alrededor del borde blanco. Silueta
+clara y legible incluso a tamaño muy pequeño (se verá a unos [TAMAÑO EN LA WEB] px), así que evita
+detalles finos, fondos, suelos, paisajes o elementos sueltos fuera del borde blanco de la pegatina.
+
+NO incluir: texto, logotipos, fondo de color, marco rectangular, estilo 3D, fotorrealismo, degradados
+ni brillos.
+```
+
+**Al subirla a la web:**
+
+- El original que entrega el admin se deja donde lo deje. En la web se usa una **copia ligera**:
+  recortada (`sharp().trim()`), a unas **3 veces el tamaño en pantalla** y en **webp**, en
+  `public/cuaderno/<nombre>-pegatina.webp`.
+- Si se cambia una imagen, se le pone **otro nombre**: Next y el navegador guardan la anterior por nombre.
+- Siempre es decoración: `alt=""` y nada de texto dentro.
+- Valen las reglas de los gestos de calidez (arriba): pocas, en momentos amables y nunca junto a un
+  riesgo, un error, el descargo de responsabilidad o el dinero.
 
 ## Pendiente del nuevo diseño
 

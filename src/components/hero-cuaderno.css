@@ -149,6 +149,11 @@
   transform: translateX(-50%) rotate(4deg);
 }
 
+/* La carita feliz junto al pósit: solo en el móvil (más abajo). */
+.hc-pista .hc-carita { display: none; }
+
+/* Su dibujo y su animación son los de la pieza (cuaderno/carita.css). */
+
 .hc-pista-titulo {
   font-family: var(--letra-texto);
   font-size: 13px;
@@ -289,6 +294,16 @@
     right: 4px;
     bottom: -36px;
     --se-tam: 36px;
+  }
+
+  /* La carita feliz al lado del pósit (17-11-2026, solo en el móvil: en el
+     ordenador ese hueco lo ocupan las tarjetas). */
+  .hc-pista .hc-carita {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 16px);
+    margin-top: -21px;
   }
 
   .hc-indice { justify-content: flex-start; margin-top: 0.75rem; }
