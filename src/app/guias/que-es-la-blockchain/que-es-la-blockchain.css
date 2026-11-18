@@ -20,7 +20,7 @@
 
 .gbc-fc-outer { perspective: 1000px; }
 
-.gbc-wrap .gbc-fc { display: grid; width: 100%; cursor: pointer; border: none; background: transparent; padding: 0 0 6px; user-select: none; font: inherit; text-align: left; color: inherit; -webkit-tap-highlight-color: transparent; }
+.gbc-wrap .gbc-fc { display: grid; width: 100%; cursor: var(--puntero-mano, pointer); border: none; background: transparent; padding: 0 0 6px; user-select: none; font: inherit; text-align: left; color: inherit; -webkit-tap-highlight-color: transparent; }
 
 /* El giro, el ladeo con el ratón y el hundido al pulsar: giro.css (useGiro.ts). */
 

@@ -169,7 +169,7 @@
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.avax-campo select { cursor: pointer; }
+.avax-campo select { cursor: var(--puntero-mano, pointer); }
 .avax-campo input:not([type="range"]):focus, .avax-campo select:focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
 /* El deslizador es el común de guias.css (.gbc-wrap input[type="range"]). */
 .avax-campo--nota { background: var(--papel); box-shadow: none; border: 3px dashed var(--gris); }

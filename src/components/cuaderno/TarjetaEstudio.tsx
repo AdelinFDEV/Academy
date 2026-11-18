@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useGiro } from "./useGiro";
 import "./tarjeta-estudio.css";
 
@@ -25,7 +26,8 @@ export default function TarjetaEstudio({
 }: {
   tema: string;
   pregunta: string;
-  respuesta: string;
+  /** Texto, o texto con su propio marcado (p. ej. la palabra clave en negrita). */
+  respuesta: ReactNode;
   detalle?: string;
   color?: ColorTarjeta;
   className?: string;

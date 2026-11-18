@@ -622,7 +622,7 @@
   outline: none;
   background: color-mix(in srgb, var(--k-s) 50%, #fff);
   text-align: center;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background-color 0.15s, transform 0.35s var(--muelle), box-shadow 0.15s;
 }
 

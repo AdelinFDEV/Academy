@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check, PenLine, Trophy } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
@@ -44,10 +45,10 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
           <div>
             <p className="fpo-nota">Foro de la comunidad</p>
             <h2 id="fpo-titulo" className="fpo-titulo">
-              Lo último que se ha <span className="fluor">preguntado</span>
+              Lo último que se ha <span className="fpo-titulo-mano">preguntado</span>
             </h2>
           </div>
-          <Tecla href="/foro" color="blanca" tamano="peq">
+          <Tecla href="/foro" color="blanca" tamano="peq" className="fpo-ver">
             Ver el foro <ArrowRight size={16} strokeWidth={2.8} aria-hidden="true" />
           </Tecla>
         </header>
@@ -59,6 +60,21 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
               return (
                 <li key={h.id} style={colorDe(h.categoria.slug)}>
                   <Link href={`/foro/${h.id}-${h.slug}`} className={`fpo-hilo${h.resuelto ? " is-resuelto" : ""}`}>
+                    {/* La pegatina del «?» pensativo: solo se ve en la pregunta
+                        destacada, en el ordenador (portada.css). */}
+                    <span className="fpo-garabatos fpo-garabatos--duda" aria-hidden="true">
+                      <i className="fpo-g fpo-g--1">?</i>
+                      <i className="fpo-g fpo-g--2">¿?</i>
+                      <i className="fpo-g fpo-g--3">?</i>
+                      <svg className="fpo-g-bombilla" viewBox="0 0 40 52">
+                        <path d="M20 4c-9 0-15.5 6.6-15.5 15 0 5.8 3 9.5 6 12.4 1.7 1.7 2.6 3.6 2.6 5.9v1.7h13.8v-1.7c0-2.3.9-4.2 2.6-5.9 3-2.9 6-6.6 6-12.4C35.5 10.6 29 4 20 4z" />
+                        <path d="M14 44.5h12M15.8 49h8.4" />
+                      </svg>
+                      <svg className="fpo-g-camino" viewBox="0 0 120 70">
+                        <path d="M4 60c18-4 22-22 38-24s16 18 34 14 14-30 40-42" />
+                      </svg>
+                    </span>
+                    <Image src="/cuaderno/pregunta-pegatina.webp" alt="" width={225} height={300} className="fpo-pegatina" draggable={false} />
                     <span className="fpo-meta">
                       <span className="fpo-cat">
                         <Icono size={13} strokeWidth={2.6} aria-hidden="true" />
@@ -74,9 +90,14 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
                     {h.extracto && <span className="fpo-extracto">{h.extracto}</span>}
                     <span className="fpo-pie">
                       <Firma autor={h.autor} fecha={h.fecha} compacta />
-                      <span className="fpo-respuestas">
-                        <b>{h.respuestas}</b> {h.respuestas === 1 ? "respuesta" : "respuestas"}
-                      </span>
+                      {h.respuestas === 0 ? (
+                        // Sin respuestas, una invitación a mano en vez de un «0».
+                        <span className="fpo-primero">¡sé el primero en responder!</span>
+                      ) : (
+                        <span className="fpo-respuestas">
+                          <b>{h.respuestas}</b> {h.respuestas === 1 ? "respuesta" : "respuestas"}
+                        </span>
+                      )}
                     </span>
                   </Link>
                 </li>
@@ -86,22 +107,23 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
 
           {/* La invitación: lo que llena el bloque y le da un porqué. */}
           <aside className="fpo-invita" aria-label="Participa en el foro">
-            {/* Una conversación dibujada, en bucle: llega una pregunta, alguien
-                escribe y llega la respuesta. Son rayas, no texto: es un adorno y
-                no pone en boca de nadie algo que no ha dicho. */}
-            <div className="fpo-chat" aria-hidden="true">
-              <div className="fpo-burbuja fpo-burbuja--a">
-                <i className="fpo-chat-cara" />
-                <span><b /><b /></span>
-              </div>
-              <div className="fpo-burbuja fpo-burbuja--b">
-                <span><b /><b /><b /></span>
-                <i className="fpo-chat-cara fpo-chat-cara--b" />
-              </div>
-              <div className="fpo-burbuja fpo-burbuja--c">
-                <i className="fpo-chat-cara fpo-chat-cara--c" />
-                <span className="fpo-escribiendo"><em /><em /><em /></span>
-              </div>
+            {/* Una pegatina del cuaderno (18-11-2026; antes, una conversación de
+                rayas en bucle): una burbuja que levanta la mano para preguntar y
+                otra, detrás, que sonríe dispuesta a contestar. */}
+            <div className="fpo-mano">
+              <span className="fpo-garabatos fpo-garabatos--charla" aria-hidden="true">
+                <svg className="fpo-g-bocadillo fpo-g-bocadillo--1" viewBox="0 0 60 46">
+                  <path d="M8 5h44c3 0 5 2 5 5v18c0 3-2 5-5 5H26l-12 9 2-9H8c-3 0-5-2-5-5V10c0-3 2-5 5-5z" />
+                </svg>
+                <svg className="fpo-g-bocadillo fpo-g-bocadillo--2" viewBox="0 0 60 46">
+                  <path d="M52 5H8c-3 0-5 2-5 5v18c0 3 2 5 5 5h26l12 9-2-9h8c3 0 5-2 5-5V10c0-3-2-5-5-5z" />
+                </svg>
+                <i className="fpo-g fpo-g--4">…</i>
+                <i className="fpo-g fpo-g--5">!</i>
+                <i className="fpo-g fpo-g--6">✦</i>
+                <i className="fpo-g fpo-g--7">✦</i>
+              </span>
+              <Image src="/cuaderno/burbujas-pegatina.webp" alt="" width={360} height={339} className="fpo-mano-img" draggable={false} />
             </div>
 
             <p className="fpo-invita-titulo">¿Se te ha quedado una duda?</p>
@@ -114,7 +136,10 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
                 <PenLine size={17} strokeWidth={2.6} aria-hidden="true" /> Hacer una pregunta
               </Tecla>
               <Link href="/foro/ranking" className="fpo-invita-enlace">
-                <Trophy size={15} strokeWidth={2.4} aria-hidden="true" /> Ver el ranking
+                <span className="fpo-invita-trofeo" aria-hidden="true">
+                  <Trophy size={15} strokeWidth={2.4} />
+                </span>
+                Ver el ranking
               </Link>
             </div>
           </aside>

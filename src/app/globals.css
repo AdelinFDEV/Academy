@@ -455,7 +455,7 @@ html {
   border: none;
   background: none;
   color: var(--text-muted);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
 }
 
 .guide-search-clear:hover {
@@ -1014,7 +1014,7 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background 0.15s, color 0.15s;
 }
 
@@ -1540,4 +1540,84 @@ select {
   .ia-copa, .ia-destello, .ia-cinta, .ia-chincheta, .ia-diana { animation: none; }
   .ia-diana--2 { display: none; }
   .ia-ruta { animation: none; stroke-dashoffset: 0; }
+}
+
+/* ── El puntero del cuaderno (18-11-2026) ──────────────────────────────────
+   Pedido por el admin: el puntero con el trazo de la web. Solo con ratón
+   (en el móvil no hay puntero). Son punteros nativos (SVG de 32 px en
+   public/cuaderno/), no un dibujo que sigue al ratón con JavaScript: van
+   igual de rápidos que los de siempre y, si no cargan, sale el normal.
+    · La flecha, en tinta con borde blanco, como una pegatina pequeñita.
+    · Sobre lo que se pulsa, una manita naranja dibujada.
+    · Sobre las tarjetas que giran, el ↻ naranja, otra pegatina del admin:
+      una flecha circular sola. Una tarjeta girando era confusa a 32 px.
+    · Donde se escribe, la barra de texto de siempre: cambiarla confunde. */
+@media (hover: hover) and (pointer: fine) {
+  /* La manita, en una variable: las reglas de cada módulo que ponían
+     `cursor: pointer` usan `var(--puntero-mano, pointer)`. */
+  :root { --puntero-mano: url("/cuaderno/puntero-mano.png") 7 1, pointer; }
+
+  /* Con la versión al doble para pantallas densas, solo donde el navegador
+     la entiende: en una variable no hay «si no, la anterior». */
+  @supports (cursor: image-set(url("/cuaderno/puntero-mano.png") 1x) 7 1, pointer) {
+    :root { --puntero-mano: image-set(url("/cuaderno/puntero-mano.png") 1x, url("/cuaderno/puntero-mano@2x.png") 2x) 7 1, pointer; }
+  }
+
+  /* La flecha: pegatina generada por el admin (original en public/), limpia
+     y reducida a 32 px, con su versión al doble para pantallas densas. */
+  html { cursor: url("/cuaderno/puntero-flecha.png") 1 1, auto; }
+  html { cursor: image-set(url("/cuaderno/puntero-flecha.png") 1x, url("/cuaderno/puntero-flecha@2x.png") 2x) 1 1, auto; }
+
+  a[href],
+  button:not(:disabled),
+  [role="button"],
+  summary,
+  label[for],
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="submit"],
+  input[type="button"],
+  .tecla { cursor: var(--puntero-mano); }
+
+  html .giro-zona,
+  html .giro-zona * { cursor: url("/cuaderno/puntero-giro.png") 10 11, pointer; }
+
+  @supports (cursor: image-set(url("/cuaderno/puntero-giro.png") 1x) 10 11, pointer) {
+    html .giro-zona,
+    html .giro-zona * { cursor: image-set(url("/cuaderno/puntero-giro.png") 1x, url("/cuaderno/puntero-giro@2x.png") 2x) 10 11, pointer; }
+  }
+
+  input:not([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="range"]),
+  textarea,
+  [contenteditable="true"] { cursor: text; }
+
+  :disabled,
+  [aria-disabled="true"] { cursor: not-allowed; }
+}
+
+/* ── Nada se selecciona ni se arrastra (18-11-2026) ────────────────────────
+   Pedido por el admin: que al arrastrar el ratón no se sombree el texto ni se
+   arrastren imágenes y enlaces, como en una app. Donde se escribe (campos,
+   áreas de texto y lo editable) sí se puede seleccionar: si no, no se podría
+   corregir lo escrito. Si algún día hace falta que algo se pueda copiar (una
+   dirección, un código), se le pone la clase `se-copia`. */
+html {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable=""],
+[contenteditable="true"],
+.se-copia {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+img,
+svg,
+a {
+  -webkit-user-drag: none;
 }

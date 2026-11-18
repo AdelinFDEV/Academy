@@ -1,12 +1,20 @@
 /* Los últimos vídeos del canal en la portada (YouTubeLatest.tsx).
    Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md,
-   disenos/sistema.html), en el naranja de la marca. Prefijo: ytl-.
+   disenos/sistema.html). Desde el 18-11-2026, en el ROJO de YouTube (pedido
+   por el admin: «más predisposición al color de la plataforma»): el play, las
+   fechas, los enlaces, la etiqueta del último vídeo, los cantos de las
+   tarjetas y la palabra clave del título. Prefijo: ytl-.
 
    El más reciente, en grande; los otros dos, en columna a su lado. Cada vídeo
    es una tarjeta de papel con su canto y la miniatura enmarcada dentro. Todo
    son enlaces: no se incrusta ningún reproductor. */
 
 .ytl {
+  /* El rojo de YouTube, su lado oscuro (texto y cantos, con contraste) y su
+     tono suave (fondos). Solo en esta sección. */
+  --yt: #ff0033;
+  --yt-o: #c4001f;
+  --yt-s: #ffe3e8;
   padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2rem);
   background: var(--fondo);
   color: var(--tinta);
@@ -19,6 +27,58 @@
   margin: 0 auto;
 }
 
+/* «canal», escrito a mano como la palabra clave de los demás títulos de la
+   portada, con un fluorescente rojo YouTube. */
+.ytl-titulo-mano {
+  display: inline-block;
+  padding: 0 0.14em 0 0.06em;
+  font-family: var(--letra-mano);
+  font-size: 1.32em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--tinta);
+  background: linear-gradient(transparent 52%, color-mix(in srgb, var(--yt) 38%, var(--papel)) 52%, color-mix(in srgb, var(--yt) 38%, var(--papel)) 92%, transparent 92%);
+  transform: rotate(-2deg);
+}
+
+/* La gorra de los vídeos (pegatina del cuaderno), dejada caer sobre el final
+   de «canal», ladeada (18-11-2026). En em: crece con el título. Se balancea
+   solo cuando el ratón la toca a ella, no al entrar en la sección. */
+.ytl-titulo-mano { position: relative; }
+
+.ytl-gorra {
+  position: absolute;
+  top: -0.42em;
+  right: -0.5em;
+  width: 0.78em;
+  max-width: none;
+  height: auto;
+  rotate: 16deg;
+  user-select: none;
+  transform-origin: 30% 90%;
+  transition: rotate 0.4s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .ytl-gorra:hover { rotate: 4deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytl-gorra { transition: none; }
+}
+
+/* «Ver el canal»: la tecla con contorno de rotulador, en el rojo suave de
+   YouTube, como «Ver el foro» o «Ver cursos» en su color. */
+.ytl-cabecera .ytl-ver-canal {
+  --c: var(--yt-s);
+  --o: color-mix(in srgb, var(--yt) 55%, var(--papel));
+  --t: var(--yt-o);
+  padding: 7.5px 13.5px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 13px 11px 14px 10px / 11px 14px 10px 13px;
+}
+
 .ytl-cabecera {
   display: flex;
   flex-wrap: wrap;
@@ -26,16 +86,6 @@
   justify-content: space-between;
   gap: 0.8rem 1.5rem;
   margin-bottom: 1.8rem;
-}
-
-.ytl-nota {
-  display: inline-block;
-  margin: 0;
-  font-family: var(--letra-mano);
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--naranja-o);
-  transform: rotate(-2deg);
 }
 
 .ytl-titulo {
@@ -67,7 +117,7 @@
   display: flex;
   border-radius: 28px;
   background: var(--papel);
-  box-shadow: 0 6px 0 var(--gris-o);
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--yt) 35%, var(--papel));
   color: var(--tinta);
   text-decoration: none;
   transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
@@ -91,7 +141,7 @@
   .ytl-principal:hover,
   .ytl-tarjeta:hover {
     transform: translateY(-3px) rotate(-0.4deg);
-    box-shadow: 0 9px 0 var(--gris-o);
+    box-shadow: 0 9px 0 color-mix(in srgb, var(--yt) 45%, var(--papel));
   }
 
   .ytl-principal:hover .ytl-imagen,
@@ -104,7 +154,7 @@
 .ytl-principal:active,
 .ytl-tarjeta:active {
   transform: translateY(6px);
-  box-shadow: 0 0 0 var(--gris-o);
+  box-shadow: 0 0 0 transparent;
   transition-duration: 0.06s;
 }
 
@@ -139,7 +189,7 @@
   transition: scale 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* El play: un botón redondo naranja, con su canto, como una tecla. */
+/* El play: un botón redondo rojo YouTube, con su canto, como una tecla. */
 .ytl-play {
   position: absolute;
   top: 50%;
@@ -151,8 +201,8 @@
   padding-left: 4px;
   border-radius: 50%;
   translate: -50% -50%;
-  background: var(--naranja);
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 7px 0 var(--naranja-o), 0 14px 22px -8px rgba(29, 27, 51, 0.5);
+  background: var(--yt);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 7px 0 var(--yt-o), 0 14px 22px -8px rgba(29, 27, 51, 0.5);
   color: #fff;
   transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
@@ -161,10 +211,10 @@
   width: 42px;
   height: 42px;
   padding-left: 3px;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 4px 0 var(--naranja-o), 0 8px 14px -6px rgba(29, 27, 51, 0.5);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 4px 0 var(--yt-o), 0 8px 14px -6px rgba(29, 27, 51, 0.5);
 }
 
-/* «Último vídeo»: un pósit amarillo pegado en la esquina. */
+/* «Último vídeo»: una etiqueta roja YouTube pegada en la esquina. */
 .ytl-postit {
   position: absolute;
   top: -10px;
@@ -172,13 +222,13 @@
   z-index: 2;
   padding: 5px 13px;
   border-radius: 4px;
-  background: var(--amarillo);
-  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+  background: var(--yt);
+  box-shadow: 0 4px 0 var(--yt-o), 0 10px 14px -8px rgba(0, 0, 0, 0.4);
   font-family: var(--letra-mano);
   font-size: 22px;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--tinta);
+  color: #fff;
   transform: rotate(5deg);
 }
 
@@ -196,12 +246,12 @@
   align-self: flex-start;
   padding: 3px 9px;
   border-radius: 9px;
-  background: var(--gris);
+  background: var(--yt-s);
   font-size: 0.74rem;
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--tinta-2);
+  color: var(--yt-o);
 }
 
 .ytl-principal-titulo {
@@ -232,7 +282,7 @@
   gap: 4px;
   font-size: 0.85rem;
   font-weight: 900;
-  color: var(--naranja-o);
+  color: var(--yt-o);
 }
 
 .ytl-lado {
@@ -262,11 +312,26 @@
   .ytl-principal:hover .ytl-play, .ytl-tarjeta:hover .ytl-play { transform: none; }
 }
 
-/* En escritorio, los vídeos pequeños se reparten el alto del grande: las dos
-   columnas acaban a la misma altura, sin un hueco debajo de la segunda
-   (repaso del 17-11-2026). */
+/* En escritorio (18-11-2026): los vídeos pequeños, VERTICALES, con la
+   miniatura arriba a todo el ancho y el texto debajo. Antes iban en fila y,
+   al estirarse hasta la mitad del alto del grande, la miniatura quedaba
+   pequeña y flotando en medio de la tarjeta (lo señaló el admin). Con la
+   columna grande a 2,35 partes por 1, dos tarjetas verticales miden lo mismo
+   que el vídeo grande; lo que sobre por redondeo lo absorbe el texto (el
+   enlace baja al pie), nunca la miniatura. */
 @media (min-width: 861px) {
+  .ytl-rejilla { grid-template-columns: minmax(0, 2.35fr) minmax(0, 1fr); }
   .ytl-lado { grid-auto-rows: 1fr; align-content: stretch; }
-  .ytl-marco--mini { width: 46%; max-width: 230px; }
-  .ytl-tarjeta-titulo { font-size: 1.15rem; }
+
+  .ytl-tarjeta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 12px 14px;
+  }
+
+  .ytl-marco--mini { width: 100%; max-width: none; }
+  .ytl-tarjeta-texto { flex: 1; padding: 0 4px; }
+  .ytl-tarjeta-titulo { font-size: 1.05rem; -webkit-line-clamp: 2; line-clamp: 2; }
+  .ytl-tarjeta .ytl-ver { margin-top: auto; }
 }

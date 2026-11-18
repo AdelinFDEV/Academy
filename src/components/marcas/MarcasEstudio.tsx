@@ -5,6 +5,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { annotate } from "rough-notation";
 import type { RoughAnnotationConfig } from "rough-notation/lib/model";
 import { alVerse } from "@/lib/alVerse";
+import { anclarTrazo } from "@/lib/anclarTrazo";
 import SimboloEstudio, { Llave, type TipoSimbolo } from "@/components/cuaderno/SimboloEstudio";
 import type { ColorCuaderno } from "@/components/cuaderno/colores";
 import "@/components/cuaderno/postit.css";
@@ -102,8 +103,11 @@ export default function MarcasEstudio({
         anotacion.show();
         alDibujar?.();
       });
+      // Que el trazo siga a la palabra en cualquier pantalla (src/lib/anclarTrazo.ts).
+      const soltar = anclarTrazo(el as HTMLElement);
       deshacer.push(() => {
         cancelar();
+        soltar();
         anotacion.remove();
       });
     };

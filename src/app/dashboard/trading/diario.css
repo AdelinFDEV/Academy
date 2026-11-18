@@ -525,7 +525,7 @@ html:has(.trading-journal) {
   font-size: 15px;
   font-weight: 700;
   color: var(--tinta);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   user-select: none;
 }
 

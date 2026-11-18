@@ -458,7 +458,7 @@
   font-weight: 600;
   line-height: 1.55;
   color: var(--tinta-2);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
 }
 .agi-check-item + .agi-check-item { border-top: 2px dashed var(--gris); }
 .agi-check-item strong { color: var(--tinta); font-weight: 900; }
@@ -475,7 +475,7 @@
   border-radius: 8px;
   background: var(--papel);
   box-shadow: 0 3px 0 var(--gris-o);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 .agi-check-item input[type="checkbox"]:checked { border-color: var(--menta-o); background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); }

@@ -12,7 +12,7 @@
   font: inherit;
   color: inherit;
   text-align: left;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   perspective: 1400px;
   /* Para que la respuesta mida su letra por el ancho de la tarjeta. */
   container-type: inline-size;

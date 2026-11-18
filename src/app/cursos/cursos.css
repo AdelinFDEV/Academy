@@ -1092,7 +1092,7 @@ p.fc-estado { margin-top: 0.7rem; }
   text-transform: uppercase;
   color: var(--tinta);
   list-style: none;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.26s var(--muelle), box-shadow 0.26s var(--muelle);
@@ -1254,7 +1254,7 @@ p.fc-estado { margin-top: 0.7rem; }
   font-weight: 800;
   line-height: 1.3;
   list-style: none;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   -webkit-tap-highlight-color: transparent;
 }
 

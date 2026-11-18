@@ -29,6 +29,45 @@
   transform: rotate(-2deg);
 }
 
+/* Con sesión, tu nombre destaca en el saludo (pedido por el admin el
+   18-11-2026): más grande, en tinta (el naranja vivo no llega al contraste
+   mínimo sobre el papel) y con un subrayado naranja a mano que se
+   dibuja solo al cargar. */
+.hc-nota-nombre {
+  position: relative;
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  color: var(--tinta);
+}
+
+.hc-nota-subrayado {
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  bottom: -6px;
+  width: calc(100% + 6px);
+  height: 9px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--naranja);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.hc-nota-subrayado path {
+  stroke-dasharray: 1;
+  animation: hc-subrayar 0.7s cubic-bezier(0.45, 0, 0.25, 1) 0.4s backwards;
+}
+
+@keyframes hc-subrayar {
+  from { stroke-dashoffset: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-nota-subrayado path { animation: none; }
+}
+
 .hc-titulo {
   margin: 0.4rem 0 0;
   font-family: var(--letra-titular);
@@ -56,6 +95,24 @@
   gap: 14px;
   margin-top: 1.9rem;
 }
+
+/* «Ver cursos» (18-11-2026). Era una tecla blanca y, en pantallas lavadas,
+   se perdía contra el papel del fondo (lo señaló el admin). Ahora lleva el
+   pastel de Cursos, el mismo rosa violeta que su pieza en la barra
+   (site-nav.css, .nav-tono--lila), con el texto y el canto en su tono oscuro,
+   y un contorno de rotulador en tinta, con las esquinas algo desiguales, como
+   dibujado a mano. Sigue siendo secundaria: manda el naranja de «Empezar
+   gratis». El borde se descuenta del relleno para que mida lo mismo. */
+.hc-acciones .hc-ver-cursos {
+  --rosa: color-mix(in srgb, var(--lila) 40%, var(--coral));
+  --c: color-mix(in srgb, var(--rosa) 25%, var(--papel));
+  --o: color-mix(in srgb, var(--rosa) 70%, var(--papel));
+  --t: color-mix(in srgb, var(--lila-o) 46%, var(--coral-o));
+  padding: 17.5px 33.5px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 21px 18px 22px 17px / 18px 22px 17px 21px;
+}
+
 
 /* Las tres tarjetas, como sobre una mesa. */
 .hc-mesa {
@@ -176,94 +233,387 @@
   bottom: -48px;
 }
 
-/* ── El índice del cuaderno ──
-   Una pestaña por cosa que hay en la academia, cada una con el color de su
-   sección (ESTILO.md), su cifra real y su enlace. Son pestañas de separador:
-   papel de su tono suave con un canto, que se hunden al pulsarlas. */
-.hc-indice {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px 14px;
-  max-width: 1180px;
-  margin: clamp(1.75rem, 4vw, 3rem) auto 0;
+/* «Ver guías», con sesión: la misma tecla con contorno de rotulador que «Ver
+   cursos», en el cielo de las guías. */
+.hc-acciones .hc-ver-guias {
+  --rosa: var(--cielo);
+  --t: var(--cielo-o);
 }
 
-.hc-indice-rotulo {
-  margin-right: 4px;
-  font-family: var(--letra-mano);
-  font-size: 24px;
-  color: var(--tinta-2);
-  transform: rotate(-2deg);
+/* ── Con sesión, las tres herramientas en la mesa (18-11-2026) ──
+   Pedido por el admin: acceso rápido al Diario, al Portfolio y a los Cursos.
+   Ocupan el sitio de las tarjetas que giran (mismo tamaño, misma posición y
+   misma forma de papel, `.te` y `.te-cara`), pero son enlaces: no giran. Cada
+   una con el color de su pieza en la barra: el icono en una tecla sólida con
+   su canto, el nombre en la letra de los titulares y, abajo, «ábrelo» (o «mira
+   qué incluye», a quien aún no es Premium, que va a su ficha). */
+.hc-herr { text-decoration: none; color: var(--tinta); }
+
+.hc-herr--azul {
+  --c: color-mix(in srgb, var(--azul) 55%, var(--cielo));
+  --o: color-mix(in srgb, var(--azul-o) 70%, var(--cielo-o));
+  --s: color-mix(in srgb, color-mix(in srgb, var(--azul) 55%, var(--cielo)) 18%, var(--papel));
+  --t: #fff;
+}
+.hc-herr--menta { --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s); --t: var(--tinta); }
+.hc-herr--lila {
+  --c: color-mix(in srgb, var(--lila) 40%, var(--coral));
+  --o: color-mix(in srgb, var(--lila-o) 46%, var(--coral-o));
+  --s: color-mix(in srgb, color-mix(in srgb, var(--lila) 40%, var(--coral)) 25%, var(--papel));
+  --t: #fff;
 }
 
-.hc-pestana {
-  --c: var(--cielo);
-  --o: var(--cielo-o);
-  --s: var(--cielo-s);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 46px;
-  margin-bottom: 5px;
-  padding: 6px 16px 6px 7px;
-  border-radius: 16px;
+/* El papel de cada tarjeta, en el pastel suave de su color (pedido por el
+   admin el 18-11-2026: blancas se parecían demasiado), con el canto de abajo
+   en su tono, como las teclas del menú. */
+/* Con contorno de rotulador en tinta y las esquinas algo desiguales, como
+   «Ver cursos» (18-11-2026: sin borde, pastel sobre el fondo, la tarjeta era
+   una mancha de color y no un objeto). El canto, en su tono. */
+.hc-herr-cara {
+  border: 2.5px solid var(--tinta);
+  border-radius: 26px 22px 27px 21px / 22px 27px 21px 26px;
   background: var(--s);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.6),
-    0 5px 0 color-mix(in srgb, var(--c) 45%, var(--s));
-  font-size: 0.95rem;
-  font-weight: 800;
-  white-space: nowrap;
-  color: var(--o);
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
-    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+    0 7px 0 color-mix(in srgb, var(--c) 70%, var(--s)),
+    0 30px 50px -30px rgba(29, 27, 51, 0.5);
+  justify-content: flex-start;
+  gap: 8px;
+  transition: translate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.hc-pestana b {
+.hc-herr-arriba {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hc-herr-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--papel);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--naranja-o);
+}
+
+.hc-herr-icono {
   display: grid;
   place-items: center;
-  min-width: 34px;
-  height: 34px;
-  padding: 0 8px;
-  border-radius: 11px;
-  background: var(--papel);
-  font-family: var(--letra-titular);
-  font-size: 1.05rem;
-  font-weight: 800;
-  line-height: 1;
+  width: 48px;
+  height: 48px;
+  margin: 6px 0 5px;
+  border-radius: 16px;
+  background: var(--c);
+  color: var(--t);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 5px 0 var(--o);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.hc-pestana--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); --s: var(--amarillo-s); }
-.hc-pestana--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); }
-.hc-pestana--naranja { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); }
+.hc-herr-nombre {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+.hc-herr-texto {
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+
+/* La pegatina de la herramienta, asomando por la esquina de arriba a la
+   derecha, un poco girada. Al pasar el ratón se ladea y crece un pelo. La
+   tarjeta que la lleva baja su contenido para que el título no quede debajo
+   de la pegatina. */
+.hc-herr-pegatina {
+  position: absolute;
+  top: -24px;
+  right: -20px;
+  width: 86px;
+  height: auto;
+  rotate: 8deg;
+  pointer-events: none;
+  user-select: none;
+  transition: rotate 0.35s cubic-bezier(0.34, 1.8, 0.5, 1), scale 0.35s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.hc-herr--pegatina .hc-herr-arriba { padding-right: 56px; }
+.hc-herr--pegatina .hc-herr-nombre { margin-top: 22px; padding-right: 24px; }
+
+/* Vida en reposo (pedido por el admin el 18-11-2026: «un poco más de
+   movimiento, sin exagerar»): flota unos píxeles y se balancea despacio, cada
+   una a su ritmo para que no vayan sincronizadas. Va en translate y
+   transform, así que no pisa el giro de la pegatina ni el del ratón. */
+.hc-herr-pegatina { animation: hc-pegatina-flota 3.6s ease-in-out infinite; }
+.hc-t1 .hc-herr-pegatina { animation-duration: 3.9s; animation-delay: -1.2s; }
+.hc-t3 .hc-herr-pegatina { animation-duration: 3.3s; animation-delay: -2.1s; }
+
+@keyframes hc-pegatina-flota {
+  0%, 100% { translate: 0 0; transform: rotate(0deg); }
+  50% { translate: 0 -4px; transform: rotate(-3deg); }
+}
 
 @media (hover: hover) {
-  .hc-pestana:hover {
-    transform: translateY(2px);
-    box-shadow:
-      inset 0 2px 0 rgba(255, 255, 255, 0.6),
-      0 3px 0 color-mix(in srgb, var(--c) 45%, var(--s));
-  }
+  .hc-herr:hover .hc-herr-pegatina { rotate: -4deg; scale: 1.06; }
 }
 
-.hc-pestana:active {
-  transform: translateY(5px);
-  box-shadow: inset 0 3px 5px rgba(29, 27, 51, 0.12), 0 0 0 transparent;
-  transition-duration: 0.06s;
-}
-
-.hc-pestana:focus-visible {
-  outline: 3px solid var(--azul);
-  outline-offset: 4px;
+@media (max-width: 960px) {
+  .hc-herr-pegatina { top: -20px; right: -14px; width: 72px; }
+  .hc-herr--pegatina .hc-herr-nombre { margin-top: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hc-pestana { transition: none; }
+  .hc-herr-pegatina { transition: none; animation: none; }
+}
+
+/* La cifra real del Portfolio, grande y con su signo (verde si sube, coral
+   si baja: ESTILO.md), con un punto que late: está en directo. */
+.hc-herr-cifra {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--letra-titular);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hc-herr-cifra.is-sube { color: var(--menta-o); }
+.hc-herr-cifra.is-baja { color: var(--coral-o); }
+
+.hc-herr-directo {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 0 currentColor;
+  animation: hc-herr-late 1.8s ease-out infinite;
+}
+
+@keyframes hc-herr-late {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); }
+  100% { box-shadow: 0 0 0 9px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-herr-directo { animation: none; }
+}
+
+.hc-herr-ir {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  color: var(--o);
+}
+
+.hc-herr-ir svg { transition: translate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1); }
+
+@media (hover: hover) {
+  .hc-herr:hover .hc-herr-cara { translate: 0 -8px; }
+  .hc-herr:hover .hc-herr-icono { transform: rotate(-8deg) scale(1.06); }
+  .hc-herr:hover .hc-herr-ir svg { translate: 4px 0; }
+}
+
+.hc-herr:active .hc-herr-cara { translate: 0 3px; transition-duration: 0.07s; }
+
+/* En la tableta y el móvil la tarjeta es algo más baja (230 × 290). */
+@media (max-width: 960px) {
+  .hc-herr-cara { padding: 18px; }
+  .hc-herr-nombre { font-size: 1.2rem; }
+}
+
+.hc-herr:focus-visible { outline: none; }
+.hc-herr:focus-visible .hc-herr-cara { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-herr-cara,
+  .hc-herr-icono,
+  .hc-herr-ir svg { transition: none; }
+}
+
+/* ── El índice del cuaderno (rediseño del 18-11-2026) ──
+   Pedido por el admin: la fila de pastillas iguales «no convencía». Ahora son
+   fichas de índice pegadas en la hoja: papel blanco con una pestaña de su
+   color asomando arriba (los separadores de un cuaderno), su icono en una
+   teclita sólida con canto (como el menú del móvil), la cifra real grande en
+   el color de su sección y el texto debajo. Van un pelo torcidas, alternando,
+   como pegadas a mano; al pasar el ratón se enderezan y se levantan, y al
+   pulsar se hunden. Cuatro en fila en el ordenador; de dos en dos en el móvil. */
+.hc-indice {
+  max-width: 1180px;
+  margin: clamp(2rem, 4.5vw, 3.25rem) auto 0;
+}
+
+/* La cabecera: un título que dice qué hay («en este cuaderno», a solas y en
+   gris, no transmitía nada, señaló el admin) y, a su lado, una nota a mano en
+   naranja con una flecha que baja hacia las fichas: invita a tocarlas. */
+.hc-indice-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 18px;
+  margin: 0 0 14px 4px;
+}
+
+.hc-indice-titulo {
+  font-family: var(--letra-titular);
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+
+.hc-indice-nota {
+  position: relative;
+  display: inline-block;
+  padding-right: 40px;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  line-height: 1;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+.hc-indice-nota .hc-indice-flecha {
+  position: absolute;
+  right: 0;
+  top: 4px;
+}
+
+.hc-indice-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 22px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hc-indice-lista > li { display: flex; }
+
+.hc-ficha {
+  --c: var(--cielo);
+  --o: var(--cielo-o);
+  --s: var(--cielo-s);
+  --t: var(--tinta);
+  --giro: -1.2deg;
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 14px;
+  margin: 10px 0 6px;
+  padding: 16px 18px 14px;
+  border-radius: 6px 18px 18px 18px;
+  background: var(--papel);
+  box-shadow:
+    0 0 0 2px var(--gris),
+    0 6px 0 var(--gris-o),
+    0 16px 24px -16px rgba(29, 27, 51, 0.35);
+  color: var(--tinta);
+  text-decoration: none;
+  transform: rotate(var(--giro));
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.hc-indice-lista > li:nth-child(2n) .hc-ficha { --giro: 1deg; }
+.hc-indice-lista > li:nth-child(3) .hc-ficha { --giro: -0.6deg; }
+
+/* La pestaña del separador, de su color, asomando por arriba a la izquierda. */
+.hc-ficha::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: -12px;
+  width: 54px;
+  height: 14px;
+  border-radius: 7px 7px 0 0;
+  background: var(--c);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+
+.hc-ficha--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); --s: var(--amarillo-s); }
+.hc-ficha--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); --t: #fff; }
+.hc-ficha--naranja { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); --t: #fff; }
+
+.hc-ficha-icono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 4px;
+  border-radius: 14px;
+  background: var(--c);
+  color: var(--t);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 var(--o);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+.hc-ficha-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--tinta-2);
+}
+
+.hc-ficha-texto b {
+  font-family: var(--letra-titular);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--o);
+}
+
+@media (hover: hover) {
+  .hc-ficha:hover {
+    transform: rotate(0deg) translateY(-3px);
+    box-shadow:
+      0 0 0 2px var(--c),
+      0 9px 0 var(--o),
+      0 22px 28px -18px rgba(29, 27, 51, 0.4);
+  }
+
+  .hc-ficha:hover .hc-ficha-icono { transform: rotate(-8deg) scale(1.06); }
+}
+
+.hc-ficha:active {
+  transform: rotate(0deg) translateY(5px);
+  box-shadow: 0 0 0 2px var(--c), 0 1px 0 var(--o), inset 0 3px 6px rgba(29, 27, 51, 0.1);
+  transition-duration: 0.06s;
+}
+
+.hc-ficha:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-ficha,
+  .hc-ficha-icono { transition: none; }
 }
 .hc-t1 { left: 0; top: 46px; transform: rotate(-8deg); }
 .hc-t2 { left: 50%; top: 0; z-index: 2; transform: translateX(-50%) rotate(2deg); }
@@ -306,14 +656,19 @@
     margin-top: -21px;
   }
 
-  .hc-indice { justify-content: flex-start; margin-top: 0.75rem; }
+  .hc-indice { margin-top: 0.75rem; }
 
   .hc-mesa {
     display: flex;
     gap: 16px;
     height: auto;
-    margin: 0 calc(-1 * clamp(1.25rem, 4vw, 2rem));
-    padding: 12px clamp(1.25rem, 4vw, 2rem) 24px;
+    /* Abajo, sitio de sobra para que la sombra de las tarjetas se desvanezca
+       entera: la fila se desliza (overflow) y recorta lo que sobresale, y con
+       24 px la sombra se cortaba en seco y parecía el borde de otra sección
+       (lo vio el admin el 18-11-2026). El margen negativo devuelve ese sitio:
+       nada se mueve. */
+    margin: 0 calc(-1 * clamp(1.25rem, 4vw, 2rem)) -40px;
+    padding: 12px clamp(1.25rem, 4vw, 2rem) 64px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -340,22 +695,23 @@
 @media (max-width: 560px) {
   .hc-acciones .tecla { flex: 1 1 100%; }
 
-  /* Las pestañas, de dos en dos y a todo el ancho: fáciles de acertar con el dedo. */
-  .hc-indice {
-    display: grid;
+  /* Las fichas, de dos en dos: fáciles de acertar con el dedo. El icono, la
+     cifra y el texto se apilan para que quepan en media pantalla. */
+  .hc-indice-lista {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 12px;
+  }
+
+  .hc-ficha {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
+    padding: 14px 14px 12px;
   }
 
-  .hc-indice-rotulo { grid-column: 1 / -1; justify-self: start; }
-
-  .hc-pestana {
-    gap: 8px;
-    padding-right: 10px;
-    font-size: 0.86rem;
-    line-height: 1.15;
-    white-space: normal;
-  }
+  .hc-ficha-icono { width: 40px; height: 40px; border-radius: 12px; }
+  .hc-ficha-texto { font-size: 0.84rem; }
+  .hc-ficha-texto b { font-size: 1.7rem; }
 
 }
 
@@ -364,4 +720,45 @@
 @media (max-width: 400px) {
   .hc-titulo { font-size: 2.2rem; }
   .hc-lead { font-size: 1.08rem; }
+}
+
+/* Solo en el móvil (pedido por el admin el 18-11-2026): la flecha del pósit y
+   la carita, algo más a la derecha, separadas del pósit. */
+@media (max-width: 640px) {
+  .hc-pista .hc-pista-flecha { right: -16px; bottom: -22px; }
+  .hc-pista .hc-carita { left: calc(100% + 30px); }
+}
+
+/* En la tableta y el móvil la fila de tarjetas se desliza y recorta todo lo
+   que sobresale de su caja. Aire de sobra alrededor, devuelto con márgenes
+   negativos para que nada se mueva de sitio: arriba, para la pegatina que
+   asoma por la esquina y para la tarjeta que se levanta al girar (sube 24 px
+   y crece un 7 %). A los lados no hace falta: al girar crece unos 8 px por
+   lado y el margen de la página ya le da 20. Abajo lo tiene la sombra (64 px). */
+@media (max-width: 960px) {
+  .hc-mesa {
+    padding-top: 48px;
+    margin-top: -36px;
+  }
+}
+
+/* En el ordenador y con sesión (18-11-2026): el pósit, más a la izquierda y
+   algo más inclinado, y su flecha en el lado izquierdo. Si no, la flecha caía
+   justo sobre la pegatina del Diario, que asoma por la esquina de la tarjeta
+   del centro. */
+@media (min-width: 961px) {
+  .hc-pista--sesion { transform: translateX(-90px) rotate(-5deg); }
+
+  .hc-pista--sesion .hc-pista-flecha {
+    right: auto;
+    left: 34px;
+  }
+}
+
+/* En el ordenador y con sesión (18-11-2026): la tarjeta del Portfolio,
+   delante de todas. Detrás de la del centro, su pegatina (la hucha) quedaba
+   tapada. Al pasar el ratón por otra, esa sube igual (z-index 3, y va después
+   en el HTML). */
+@media (min-width: 961px) {
+  .hc-mesa .hc-herr--menta { z-index: 3; }
 }

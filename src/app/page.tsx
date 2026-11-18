@@ -82,7 +82,13 @@ export default async function HomePage() {
           final, Premium con las dudas. Cada sección, su color (ESTILO.md). */}
 
       {/* ── Hero: estilo «Cuaderno de estudio». Lleva el único <h1>. ── */}
-      <HeroCuaderno guias={guias.length} terminos={GLOSARIO_CON_PAGINA.length} cursos={cursos.length} />
+      <HeroCuaderno
+        guias={guias.length}
+        terminos={GLOSARIO_CON_PAGINA.length}
+        cursos={cursos.length}
+        sesion={user ? { nombre: userName.split(" ")[0], premium: isPremium } : null}
+        portfolio={user && resumenPortfolio ? { rentabilidadPct: resumenPortfolio.rentabilidadPct, desdeAnio: resumenPortfolio.desdeAnio } : null}
+      />
 
       {/* ── Las guías, justo tras el hero ─────────────────────────────────
           Desde el 10-10-2026 la academia son las guías. */}
@@ -106,9 +112,9 @@ export default async function HomePage() {
         <YouTubeLatestSection />
       </Suspense>
 
-      {/* ── Cierre: Premium y las preguntas frecuentes. Para todos: a quien
-          ya es Premium no se le enseña la oferta, pero sí los accesos a sus
-          herramientas y las dudas. ── */}
+      {/* ── Cierre: Premium y las preguntas frecuentes. A quien ya es
+          Premium solo le quedan las dudas: sus herramientas las tiene en el
+          hero (18-11-2026). ── */}
       <PremiumHome portfolio={resumenPortfolio} cursos={cursos} isPremium={isPremium} />
 
       <Footer />

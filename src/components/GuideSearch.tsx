@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
@@ -24,7 +24,23 @@ function plano(t: string): string {
  * Al enfocarlo sin escribir enseña las criptomonedas explicadas: quien no sabe
  * qué hay, lo ve sin tener que adivinar un nombre.
  */
+/**
+ * En el móvil el texto de ejemplo tiene que leerse entero (pedido por el admin
+ * el 18-11-2026): con los nombres de ejemplo se cortaba. En el ordenador, con
+ * sitio, se quedan. Se lee de la pantalla, no del CSS: el texto de ejemplo no
+ * se puede cambiar con estilos.
+ */
+const MOVIL = "(max-width: 640px)";
+function suscribirMovil(avisar: () => void) {
+  const mq = window.matchMedia(MOVIL);
+  mq.addEventListener("change", avisar);
+  return () => mq.removeEventListener("change", avisar);
+}
+const esMovil = () => window.matchMedia(MOVIL).matches;
+const enServidor = () => false;
+
 export default function GuideSearch() {
+  const movil = useSyncExternalStore(suscribirMovil, esMovil, enServidor);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -85,7 +101,7 @@ export default function GuideSearch() {
           enterKeyHint="search"
           autoComplete="off"
           className="guide-search-input"
-          placeholder="Busca una criptomoneda: XRP, Render, Worldcoin…"
+          placeholder={movil ? "Busca una criptomoneda" : "Busca una criptomoneda: XRP, Render, Worldcoin…"}
           aria-label="Buscar una criptomoneda en las guías"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); cargarPublicadas(); }}

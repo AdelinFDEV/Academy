@@ -286,7 +286,7 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.fa-panel select { min-width: 10rem; cursor: pointer; }
+.fa-panel select { min-width: 10rem; cursor: var(--puntero-mano, pointer); }
 .fa-panel select:focus,
 .fa-panel textarea:focus { border-color: var(--azul); box-shadow: 0 0 0 5px var(--azul-s); }
 

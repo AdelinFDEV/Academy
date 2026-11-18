@@ -96,6 +96,25 @@ function subir(el: HTMLElement, conClic: boolean) {
 }
 
 /**
+ * La chispa del clic (18-11-2026, pedida por el admin): con el ratón, al
+ * pulsar una tecla salen del punto de clic tres rayitas de rotulador, como el
+ * brillo que se dibuja a mano, y se borran en 0,35 s (tecla.css). Va en
+ * <body> con posición fija: no la recorta ni la mueve la tecla al hundirse.
+ * Con «reducir movimiento», no sale.
+ */
+function chispa(x: number, y: number) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const el = document.createElement("span");
+  el.className = "tecla-chispa";
+  el.setAttribute("aria-hidden", "true");
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+  for (let i = 0; i < 3; i++) el.appendChild(document.createElement("span"));
+  document.body.appendChild(el);
+  window.setTimeout(() => el.remove(), 400);
+}
+
+/**
  * La tecla del teclado que la activa: Intro siempre, y Espacio solo en un
  * botón (en un enlace, Espacio baja la página y no lo abre).
  */
@@ -114,7 +133,10 @@ function gestos<E extends HTMLElement>(
   return {
     onPointerDown: (e) => {
       // Solo el botón principal del ratón (o el dedo, o el lápiz).
-      if (activa && e.button === 0) bajar(e.currentTarget, muda);
+      if (activa && e.button === 0) {
+        bajar(e.currentTarget, muda);
+        if (e.pointerType === "mouse") chispa(e.clientX, e.clientY);
+      }
       propios.onPointerDown?.(e);
     },
     onPointerUp: (e) => {

@@ -478,7 +478,7 @@
   text-align: left;
   text-decoration: none;
   color: var(--tinta);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background 0.16s ease, color 0.16s ease;
 }
 

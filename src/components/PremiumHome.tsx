@@ -12,7 +12,6 @@ import { InstagramIcon } from "@/components/SocialLinks";
 import NovaMini from "@/components/NovaMini";
 import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import Tecla from "@/components/cuaderno/Tecla";
-import Anotacion from "@/components/cuaderno/Anotacion";
 import type { ResumenHero } from "@/lib/portfolio-publico";
 import "./premium-home.css";
 
@@ -91,53 +90,11 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
   return (
     <section id="premium" className="pf" aria-labelledby={isPremium ? "pf-faq-titulo" : "pf-titulo"}>
       {/* ── 1 · Premium, en su bloque de tinta ─────────────────────────── */}
-      {isPremium ? (
-        /* A quien ya es Premium no se le vende lo que ya tiene (13-11-2026):
-           en vez del escaparate y la oferta, tres accesos a sus herramientas. */
-        <nav className="pf-tinta pf-tinta--mio" aria-label="Tus herramientas">
-          <div className="pf-tinta-inner">
-            <p className="pf-mio-titulo">
-              <span className="pf-sello"><Crown size={14} aria-hidden="true" /> Tu Premium</span>
-              <span className="pf-mano pf-mano--clara">¿qué toca hoy?</span>
-            </p>
-            <div className="pf-piezas pf-piezas--mio">
-              <article className="pf-pieza pf-pieza--azul">
-                <span className="pf-pieza-ic" aria-hidden="true"><IconoDiario size={26} /></span>
-                <h3 className="pf-pieza-titulo">Diario de Trading</h3>
-                <p className="pf-pieza-texto">Apunta tu próxima operación.</p>
-                <Tecla href={destino(diario)} color="azul" tamano="peq">
-                  Abrir el diario <ArrowRight size={15} strokeWidth={2.6} aria-hidden="true" />
-                </Tecla>
-              </article>
-              <article className="pf-pieza pf-pieza--menta">
-                <span className="pf-pieza-ic" aria-hidden="true"><IconoPortfolio size={26} /></span>
-                <h3 className="pf-pieza-titulo">Portfolio Adelin</h3>
-                {portfolio ? (
-                  <p className="pf-pieza-texto">
-                    <strong className={`pf-signo ${signo(portfolio.rentabilidadPct)}`}>{pct(portfolio.rentabilidadPct)}</strong>
-                    {" "}· {portfolio.posiciones} posiciones
-                  </p>
-                ) : (
-                  <p className="pf-pieza-texto">La cartera, en vivo.</p>
-                )}
-                <Tecla href={destino(cartera)} color="menta" tamano="peq">
-                  Ver la cartera <ArrowRight size={15} strokeWidth={2.6} aria-hidden="true" />
-                </Tecla>
-              </article>
-              <article className="pf-pieza pf-pieza--lila">
-                <span className="pf-pieza-ic" aria-hidden="true"><IconoCursos size={26} /></span>
-                <h3 className="pf-pieza-titulo">Cursos</h3>
-                <p className="pf-pieza-texto">
-                  {cursos.length > 0 ? `${cursos.length} ${cursos.length === 1 ? "curso" : "cursos"} · ${lecciones} lecciones` : "Con examen y certificado."}
-                </p>
-                <Tecla href={destino(aula)} color="lila" tamano="peq">
-                  Ir a mis cursos <ArrowRight size={15} strokeWidth={2.6} aria-hidden="true" />
-                </Tecla>
-              </article>
-            </div>
-          </div>
-        </nav>
-      ) : (
+      {/* A quien ya es Premium no se le vende lo que ya tiene, y desde el
+          18-11-2026 tampoco se le enseñan aquí los accesos a sus herramientas:
+          ya los tiene en el hero, en sus tarjetas (pedido por el admin). Solo
+          le quedan las preguntas frecuentes. */}
+      {!isPremium && (
         <div className="pf-tinta">
           <div className="pf-tinta-inner">
             <header className="pf-cabecera">
@@ -304,9 +261,9 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
             «abierta» lo respetan para no cambiar de golpe al cerrar. */}
         <div className="pf-faq" id="preguntas">
           <div className="pf-faq-lado">
-            <p className="pf-mano pf-mano--naranja">dudas</p>
+            <p className="pf-faq-nota">Dudas frecuentes</p>
             <h2 id="pf-faq-titulo" className="pf-faq-titulo">
-              Lo que más me <Anotacion tipo="underline" color="var(--azul)">preguntan</Anotacion>
+              Lo que más me <span className="pf-faq-mano">preguntan</span>
             </h2>
             <p className="pf-faq-texto">Si la tuya no está, escríbeme. Te contesto yo, de tú a tú.</p>
 
@@ -322,7 +279,7 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
                   <small>@adelinbtc · en Instagram</small>
                 </span>
               </span>
-              <Tecla href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" prefetch={false} ancho>
+              <Tecla href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" prefetch={false} ancho className="pf-ig">
                 <InstagramIcon size={18} /> Escríbeme por Instagram
                 <ArrowUpRight size={16} strokeWidth={2.6} aria-hidden="true" />
               </Tecla>

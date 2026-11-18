@@ -1086,7 +1086,7 @@
   text-decoration: none;
   white-space: nowrap;
   color: var(--tinta);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background 0.16s ease, color 0.16s ease, transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 

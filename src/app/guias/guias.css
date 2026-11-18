@@ -648,7 +648,7 @@
   font: inherit;
   color: inherit;
   text-align: left;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   perspective: 1400px;
   -webkit-tap-highlight-color: transparent;
   animation: gfc-entra 0.55s var(--muelle) backwards;
@@ -1671,7 +1671,7 @@
   border: 0;
   background: transparent;
   box-shadow: none;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   touch-action: pan-y;
   outline: none;
 }

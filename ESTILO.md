@@ -303,6 +303,23 @@ ni brillos.
 - Valen las reglas de los gestos de calidez (arriba): pocas, en momentos amables y nunca junto a un
   riesgo, un error, el descargo de responsabilidad o el dinero.
 
+## Los trazos siempre en su sitio (18-11-2026)
+
+Subrayados, círculos y corchetes de rotulador (rough-notation) se dibujan **solo** con `Anotacion` o con
+`MarcasEstudio`, y los dos pasan por `src/lib/anclarTrazo.ts`: el trazo se ancla al bloque de su palabra y
+se recoloca si algo se reacomoda (una letra que carga tarde, el zoom, girar el móvil). **Nunca** se llama
+a `annotate()` directamente: sin el ancla, el trazo se queda donde estaba la palabra (pasó con «a fondo»
+en el móvil).
+
+## El puntero (decidido el 18-11-2026)
+
+Solo con ratón. Punteros **nativos** de 32 px (`public/cuaderno/puntero*`, pegatinas en PNG o SVG; reglas al final de
+`globals.css`), nunca un dibujo que siga al ratón con JavaScript: flecha en tinta con borde blanco,
+manita naranja sobre lo que se pulsa y el ↻ naranja sobre las tarjetas que giran (una tarjeta girando era confusa a 32 px). Los tres son pegatinas del admin, limpias, a 32 px y con versión @2x. Donde se escribe,
+la barra de texto de siempre. **Toda regla nueva que ponga la mano usa `cursor: var(--puntero-mano, pointer)`**,
+nunca `cursor: pointer` a secas. Al pulsar una tecla con el ratón salen tres rayitas de rotulador
+(`chispa` en `Tecla.tsx`).
+
 ## Pendiente del nuevo diseño
 
 Lo que está decidido y aún no está hecho vive en [`TAREAS.md`](./TAREAS.md) (apartado «Nuevo diseño»).

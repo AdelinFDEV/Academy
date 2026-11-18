@@ -4,6 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { annotate } from "rough-notation";
 import type { BracketType, RoughAnnotationType, RoughPadding } from "rough-notation/lib/model";
 import { alVerse } from "@/lib/alVerse";
+import { anclarTrazo } from "@/lib/anclarTrazo";
 import "./anotacion.css";
 
 /**
@@ -113,9 +114,13 @@ export default function Anotacion({
       { umbral },
     );
 
+    // Que el trazo siga a la palabra en cualquier pantalla (src/lib/anclarTrazo.ts).
+    const soltar = anclarTrazo(el);
+
     return () => {
       cancelar();
       window.clearTimeout(espera);
+      soltar();
       anotacion.remove();
     };
   }, [tipo, color, grosor, retraso, ladosClave, rellenoClave, iteraciones, multilinea, animar, duracion, umbral]);

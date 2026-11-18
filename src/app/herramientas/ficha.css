@@ -614,7 +614,7 @@
   padding: 15px 18px;
   border-radius: 19px;
   list-style: none;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   font-size: 17px;

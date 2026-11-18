@@ -39,7 +39,9 @@
    disenos/version-o-equilibrio.html, «Guías como mazos». */
 
 .gh {
-  padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 4vw, 2rem);
+  /* Abajo, menos: la sección del diccionario y la calculadora va justo
+     debajo y se acerca (18-11-2026). */
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 4vw, 2rem) clamp(2rem, 4vw, 3rem);
   background: var(--fondo);
   color: var(--tinta);
   font-family: var(--letra-texto);
@@ -60,15 +62,23 @@
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 1.5rem 2.5rem;
-  align-items: end;
+  /* Las dos columnas centradas entre sí (repaso del 18-11-2026): con `end`
+     el buscador flotaba arriba a la derecha, lejos del texto. */
+  align-items: center;
   margin-bottom: clamp(2.25rem, 4vw, 3rem);
 }
 
+/* Grande y subiendo hacia el hero (pedido por el admin el 18-11-2026: «da
+   igual si se mete en su espacio, eso crea profundidad»), como una nota
+   escrita encima del límite entre dos hojas. */
 .gh-nota {
+  position: relative;
+  z-index: 1;
   display: inline-block;
-  margin: 0;
+  margin: calc(-1 * clamp(1.5rem, 3.5vw, 2.75rem)) 0 0 -4px;
   font-family: var(--letra-mano);
-  font-size: 26px;
+  font-size: clamp(30px, 3vw, 36px);
+  line-height: 1;
   color: var(--cielo-o);
   transform: rotate(-2deg);
 }
@@ -84,6 +94,24 @@
   color: var(--tinta);
 }
 
+/* «explicadas», escrita a mano (pedido por el admin el 18-11-2026): la
+   letra del saludo del hero, del alto de las letras del titular (la de mano
+   es más pequeña a igual tamaño), en tinta y repasada con el fluorescente
+   amarillo de la web por debajo, como una palabra marcada en la libreta. El
+   titular siempre en dos líneas: «Criptomonedas,» arriba y lo demás abajo. */
+.gh-titulo-mano {
+  display: inline-block;
+  padding: 0 0.14em 0 0.06em;
+  font-family: var(--letra-mano);
+  font-size: 1.32em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--tinta);
+  background: linear-gradient(transparent 52%, var(--amarillo) 52%, var(--amarillo) 92%, transparent 92%);
+  transform: rotate(-2deg);
+}
+
 .gh-sub {
   max-width: 52ch;
   margin: 0.9rem 0 0;
@@ -93,18 +121,138 @@
   color: var(--tinta-2);
 }
 
+/* Lo que trae cada guía: tres etiquetas con su icono, cada una de un color
+   (antes era una lista escondida al final de un párrafo). */
+.gh-trae {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gh-trae > li {
+  --c: var(--cielo);
+  --o: var(--cielo-o);
+  --s: var(--cielo-s);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px 6px 10px;
+  border-radius: 11px;
+  background: var(--s);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 45%, var(--s));
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--o);
+}
+
+.gh-trae > .gh-trae--menta { --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s); }
+.gh-trae > .gh-trae--lila { --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s); }
+
+/* El buscador y la tecla, juntos y del mismo ancho, con una nota a mano
+   encima que dice para qué está el buscador. */
 .gh-cabecera-acciones {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 1.1rem;
+  align-items: stretch;
+  justify-self: end;
+  gap: 1rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* La lupa: una pegatina del cuaderno (ESTILO.md) en el hueco de arriba a la
+   derecha del buscador. Aparece con un saltito cuando se ve y luego se
+   balancea despacio, como si buscara. Se anima la imagen, no la caja: alVerse
+   mide la caja (igual que la carita y el cohete). */
+.gh-lupa {
+  position: absolute;
+  right: 4px;
+  bottom: calc(100% - 22px);
+  width: 108px;
+  line-height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.gh-lupa-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 40% 40%;
+}
+
+.gh-lupa[data-trazo="espera"] .gh-lupa-img { scale: 0; }
+
+.gh-lupa[data-trazo="dibuja"] .gh-lupa-img {
+  animation:
+    gh-lupa-sale 0.55s cubic-bezier(0.34, 1.9, 0.5, 1) both,
+    gh-lupa-busca 4s ease-in-out 0.6s infinite;
+}
+
+@keyframes gh-lupa-sale {
+  from { scale: 0; rotate: -30deg; }
+  to { scale: 1; rotate: 0deg; }
+}
+
+@keyframes gh-lupa-busca {
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  30% { rotate: -6deg; translate: -3px -2px; }
+  60% { rotate: 4deg; translate: 2px -1px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-lupa[data-trazo] .gh-lupa-img { scale: 1; rotate: 0deg; animation: none; }
+}
+
+/* En la tableta y el móvil todo va en una columna y ese hueco no existe: la
+   lupa, más pequeña, a la derecha de la nota «¿buscas una en concreto?». */
+@media (max-width: 960px) {
+  .gh-lupa {
+    bottom: auto;
+    top: -26px;
+    width: 64px;
+  }
+}
+
+.gh-buscar-nota {
+  position: relative;
+  align-self: flex-start;
+  margin: 0 0 -4px 6px;
+  font-family: var(--letra-mano);
+  font-size: 23px;
+  line-height: 1;
+  color: var(--cielo-o);
+  transform: rotate(-2deg);
+  transform-origin: left center;
+}
+
+/* La flecha a mano, al final de la nota, baja hacia el buscador. */
+.gh-buscar-nota .gh-buscar-flecha {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 2px;
 }
 
 .gh-buscar {
   position: relative;
   z-index: 30;
   width: 100%;
-  max-width: 480px;
+}
+
+/* «Ver todas las guías»: la tecla con contorno de rotulador, en el pastel
+   cielo de las guías (como «Ver cursos» en el hero: blanca, se perdía contra
+   el papel del fondo). Del ancho del buscador. */
+.gh-cabecera-acciones .gh-todas {
+  --c: var(--cielo-s);
+  --o: color-mix(in srgb, var(--cielo) 70%, var(--papel));
+  --t: var(--cielo-o);
+  padding: 13.5px 25.5px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 17px 14px 18px 13px / 14px 18px 13px 17px;
 }
 
 /* ── El buscador (GuideSearch.tsx), en claro ──
@@ -114,11 +262,12 @@
 .gh .guide-search { max-width: none; }
 
 .gh .guide-search-box {
-  min-height: 56px;
-  border: 3px solid var(--gris);
+  min-height: 58px;
+  padding-left: 0.55rem;
+  border: 3px solid color-mix(in srgb, var(--cielo) 55%, var(--papel));
   border-radius: 16px;
   background: var(--papel);
-  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05), 0 5px 0 var(--gris-o);
+  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05), 0 5px 0 color-mix(in srgb, var(--cielo) 70%, var(--papel));
 }
 
 .gh .guide-search-box:focus-within {
@@ -126,7 +275,15 @@
   box-shadow: 0 0 0 5px var(--azul-s), 0 5px 0 var(--gris-o);
 }
 
-.gh .guide-search-icon { color: var(--cielo-o); }
+/* La lupa, en una teclita cielo con su canto. */
+.gh .guide-search-icon {
+  box-sizing: content-box;
+  padding: 7px;
+  border-radius: 11px;
+  background: var(--cielo);
+  color: var(--tinta);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 3px 0 var(--cielo-o);
+}
 
 .gh .guide-search-input {
   font-family: var(--letra-texto);
@@ -404,6 +561,15 @@
   margin-top: 0.35rem;
 }
 
+/* En el ordenador, las dos columnas acaban a la misma altura (pedido por el
+   admin el 18-11-2026): la guía grande se estira hasta la de los seis mazos
+   de la derecha y su tecla baja al pie de la tarjeta. */
+@media (min-width: 961px) {
+  .gh-mesa { align-items: stretch; }
+  .gh-nueva-cuerpo { flex: 1; }
+  .gh-empezar { margin-top: auto; }
+}
+
 /* El pósit «¡Nueva!» (sistema.html, «Etiquetas, notas y pegatinas»). */
 .gh-postit {
   position: absolute;
@@ -433,11 +599,29 @@
    papel, canto y un círculo de su color detrás. */
 
 .rg {
-  padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5.5rem);
+  /* Arriba, casi nada: va pegada a las guías (pedido por el admin el
+     18-11-2026, junto con quitar la nota «También gratis, para siempre»). */
+  padding: 0 clamp(1.25rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5.5rem);
   background: var(--fondo);
   color: var(--tinta);
   font-family: var(--letra-texto);
   color-scheme: light;
+}
+
+/* «Entiende», escrita a mano como «explicadas» en las guías (.gh-titulo-mano),
+   pero repasada con fluorescente naranja: el amarillo ya subraya «propios
+   números» en el mismo título (pedido por el admin el 18-11-2026). */
+.rg-titulo-mano {
+  display: inline-block;
+  padding: 0 0.14em 0 0.06em;
+  font-family: var(--letra-mano);
+  font-size: 1.32em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--tinta);
+  background: linear-gradient(transparent 52%, color-mix(in srgb, var(--naranja) 55%, var(--papel)) 52%, color-mix(in srgb, var(--naranja) 55%, var(--papel)) 92%, transparent 92%);
+  transform: rotate(-2deg);
 }
 
 .rg-inner {
@@ -447,47 +631,58 @@
 
 .rg-cabecera { margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem); }
 
-.rg-nota {
-  display: inline-block;
-  margin: 0;
-  font-family: var(--letra-mano);
-  font-size: 26px;
-  color: var(--naranja-o);
-  transform: rotate(-2deg);
-}
-
-.rg-rejilla {
+/* ── La hoja (rediseño del 18-11-2026) ──
+   Una sola hoja de cuaderno con las dos herramientas: papel con renglones
+   suaves y el margen coral de una libreta, contorno y canto. Dentro, dos
+   zonas: la calculadora (ancha, la protagonista) y el diccionario (estrecho),
+   separados por una línea discontinua como un pliegue. Las dos zonas
+   comparten tres filas (subgrid): texto, objeto y pie. */
+.rg-hoja {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.5rem, 3vw, 2.25rem);
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  padding: clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.75rem) clamp(1.75rem, 3vw, 2.5rem) clamp(2.5rem, 4.5vw, 4rem);
+  border-radius: 30px;
+  background:
+    linear-gradient(90deg, transparent 22px, var(--coral-s) 22px 24px, transparent 24px),
+    repeating-linear-gradient(transparent 0 33px, color-mix(in srgb, var(--cielo-s) 75%, var(--papel)) 33px 34px),
+    var(--papel);
+  box-shadow:
+    0 0 0 2px var(--gris),
+    0 8px 0 var(--gris-o),
+    0 30px 50px -36px rgba(29, 27, 51, 0.45);
 }
 
-.rg-lado {
+.rg-zona {
   --s: var(--gris);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1.4rem;
-  overflow: hidden;
-  padding: clamp(1.4rem, 3vw, 2.2rem);
-  border-radius: 32px;
-  background: var(--papel);
-  box-shadow: 0 7px 0 var(--gris-o);
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 1.5rem;
+  min-width: 0;
 }
 
-.rg-lado::before {
-  content: "";
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: var(--s);
+.rg-calc { padding-right: clamp(1.5rem, 3vw, 2.75rem); }
+
+/* El pliegue entre las dos zonas. */
+.rg-dic {
+  padding-left: clamp(1.5rem, 3vw, 2.75rem);
+  border-left: 2px dashed var(--gris);
 }
 
-.rg-lado > * { position: relative; }
+.rg-objeto {
+  align-self: center;
+  min-width: 0;
+}
+
+/* La calculadora no tiene pie (su tecla «= Haz tu cálculo» ya lleva a la
+   herramienta): su objeto ocupa también esa fila. */
+.rg-calc .rg-objeto { grid-row: span 2; align-self: end; }
+
+/* La tecla del diccionario, a la altura de «= Haz tu cálculo» (pedido por el
+   admin el 18-11-2026): las dos zonas acaban en el mismo sitio y la tecla
+   sube lo que queda por debajo de la de la calculadora. */
+.rg-dic .rg-pie { align-self: end; margin-bottom: 11px; }
 
 .rg-dic { --s: var(--amarillo-s); }
 .rg-calc { --s: var(--naranja-s); }
@@ -496,16 +691,18 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.7rem;
+  gap: 0.6rem;
+  max-width: 46ch;
 }
 
 .rg-etiqueta {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 900;
+  letter-spacing: 0.01em;
 }
 
 .rg-etiqueta--amarillo { background: var(--amarillo); color: var(--tinta); }
@@ -536,6 +733,7 @@
 
 /* ── El fichero: dos fichas detrás y la de delante, que se gira ── */
 .rg-fichero {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -556,14 +754,24 @@
     linear-gradient(90deg, transparent 22px, var(--coral-s) 22px 24px, transparent 24px),
     repeating-linear-gradient(transparent 0 27px, var(--cielo-s) 27px 29px) 0 62px / 100% calc(100% - 62px) no-repeat,
     var(--papel);
-  box-shadow: 0 5px 0 var(--gris-o);
+  /* Con más presencia (18-11-2026): la banda de arriba de su color, como la
+     de delante, su canto en ese tono y la palabra en tinta, bien legible. */
+  border-top: 14px solid var(--c);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--c) 35%, var(--papel)),
+    0 6px 0 color-mix(in srgb, var(--c) 55%, var(--papel)),
+    0 18px 26px -18px rgba(29, 27, 51, 0.35);
 }
 
-.rg-ficha--1 { transform: translateX(-74px) rotate(-9deg); }
-.rg-ficha--2 { transform: translateX(74px) rotate(8deg); }
+.rg-ficha--1 { --c: var(--cielo); transform: translateX(-80px) rotate(-10deg); }
+.rg-ficha--2 { --c: var(--menta); transform: translateX(80px) rotate(9deg); }
 
 .rg-ficha-cat {
-  font-size: 12px;
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--c) 22%, var(--papel));
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -572,10 +780,33 @@
 
 .rg-ficha-palabra {
   font-family: var(--letra-titular);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1.1;
-  color: var(--tinta-3);
+  color: var(--tinta);
+}
+
+/* «¡dale la vuelta!»: una nota a mano encima del fichero, inclinada, con
+   una flecha que baja hacia la ficha (antes era una nota junto a la tecla). */
+.rg-gira {
+  position: absolute;
+  z-index: 3;
+  top: -96px;
+  left: 50%;
+  translate: -50% 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--naranja-o);
+  transform: rotate(4deg);
+}
+
+/* La flecha sale de debajo de la nota y baja hacia la esquina de la ficha. */
+.rg-gira .rg-gira-flecha {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: calc(50% - 20px);
 }
 
 /* La de delante es una TarjetaEstudio: aquí solo su tamaño y su letra,
@@ -598,72 +829,116 @@
 
 .rg-ficha-frente .te-pregunta { font-size: 30px; }
 
+/* «gírame» y su ↻, en rojo coral: la invitación se ve de lejos (18-11-2026). */
+.rg-ficha-frente .te-pista { color: var(--coral-o); }
+
+/* El dorso, como una definición de diccionario (18-11-2026): la respuesta
+   en la letra de los titulares y, debajo de una línea discontinua, el matiz
+   en letra pequeña. */
 .rg-ficha-frente .te-respuesta {
-  font-family: var(--letra-texto);
-  font-size: 16.5px;
+  font-family: var(--letra-titular);
+  font-size: 22px;
   font-weight: 800;
-  line-height: 1.4;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+/* La palabra, en titular; la explicación, en letra de texto y sin negrita. */
+.rg-def-clave { display: block; margin-bottom: 6px; font-size: 24px; }
+
+.rg-def-resto {
+  font-family: var(--letra-texto);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0;
 }
 
 .rg-ficha-frente .te-detalle {
-  font-size: 13.5px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 2px dashed color-mix(in srgb, currentColor 35%, transparent);
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
+  opacity: 0.85;
 }
 
-.rg-dic-pie {
+/* Los garabatos de fondo de la calculadora: cuentas a mano, en gris suave y
+   torcidas, detrás de la calculadora y del tique. No significan nada: son los
+   apuntes del margen. Solo en el ordenador, donde hay sitio alrededor. */
+.rg-formulas { display: none; }
+
+@media (min-width: 961px) {
+  .rg-calc .rg-objeto { position: relative; }
+  .rg-calc .rg-calc-objeto { position: relative; z-index: 1; }
+
+  .rg-formulas {
+    display: block;
+    position: absolute;
+    inset: -28px -12px -20px 0;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .rg-formula {
+    position: absolute;
+    font-family: var(--letra-mano);
+    font-size: 24px;
+    line-height: 1;
+    white-space: nowrap;
+    color: color-mix(in srgb, var(--tinta-3) 70%, var(--papel));
+  }
+
+  .rg-formula--1 { top: 0; left: 52%; rotate: -4deg; font-size: 26px; }
+  .rg-formula--2 { top: 11%; left: 60%; rotate: 3deg; font-size: 20px; }
+  .rg-formula--3 { bottom: 4%; left: 56%; rotate: -2deg; font-size: 28px; }
+  .rg-formula--4 { bottom: 15%; left: 74%; rotate: 5deg; font-size: 20px; }
+}
+
+/* El pie: una sola tecla y, a su lado, una nota a mano. */
+.rg-pie {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem 1.2rem;
+  gap: 0.6rem 1.1rem;
 }
 
-.rg-ver {
-  margin: 0 0 9px;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
+/* La tecla del diccionario, centrada bajo su fichero. */
+.rg-dic .rg-pie { justify-content: center; }
 
-.rg-ver a {
-  font-weight: 800;
-  color: var(--azul-o);
-  text-decoration: underline;
-  text-decoration-color: var(--azul);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-}
+/* En el ordenador, la calculadora y su tique, lado a lado: el tique sale de
+   la calculadora hacia la derecha, como recién impreso, y la zona no crece en
+   alto. */
+@media (min-width: 961px) {
+  .rg-calc .rg-calc-objeto {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
 
-/* El canto del fichero: encendidas las letras con términos. */
-.rg-abc {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
+  .rg-calc .rg-calculadora { flex: none; width: 340px; }
 
-.rg-abc i {
-  display: grid;
-  place-items: center;
-  width: 23px;
-  height: 27px;
-  border-radius: 7px;
-  background: var(--fondo);
-  box-shadow: 0 2px 0 var(--gris);
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 900;
-  color: var(--tinta-3);
-}
+  /* La cifra, siempre en una línea: «219 mil millones $» partía el «$». */
+  .rg-calc .rg-lcd-total { font-size: 1.7rem; white-space: nowrap; }
 
-.rg-abc i.is-on {
-  background: var(--amarillo);
-  box-shadow: 0 2px 0 var(--amarillo-o);
-  color: var(--tinta);
-}
+  .rg-calc .rg-tira {
+    order: 0;
+    flex: 1;
+    max-width: 280px;
+    margin: 0 0 0 -14px;
+    padding: 16px 16px 18px 30px;
+    border-radius: 0 4px 4px 0;
+    transform: rotate(2deg);
+  }
 
-.rg-cta {
-  align-self: flex-start;
-  margin-top: auto;
+  /* El diccionario, más pequeño: es la herramienta secundaria. */
+  .rg-dic .rg-fichero { height: 300px; }
+  .rg-dic .rg-ficha { width: 200px; height: 250px; }
+  .rg-dic .rg-ficha--1 { transform: translateX(-56px) rotate(-9deg); }
+  .rg-dic .rg-ficha--2 { transform: translateX(56px) rotate(8deg); }
+  .rg-dic .rg-fichero .te.rg-ficha-frente { width: 224px; height: 278px; }
 }
 
 /* ── La calculadora de colegio ── */
@@ -734,6 +1009,19 @@
 .rg-lcd-linea {
   font-size: 0.95rem;
   font-weight: 800;
+}
+
+/* Cada línea de la pantalla, en una sola línea: al cambiar de moneda o de
+   múltiplo, una cifra más larga no puede partirse y mover lo de alrededor. */
+.rg-lcd > * { white-space: nowrap; }
+
+/* En el móvil (18-11-2026) la calculadora es estrecha: en una sola línea, «Si
+   Ethereum llegara a 34.500 $» se salía de la pantalla. Las líneas pequeñas
+   pueden partirse (la pantalla tiene alto mínimo de sobra: no salta nada) y
+   la cifra grande se ajusta al ancho del móvil para caber siempre entera. */
+@media (max-width: 960px) {
+  .rg-lcd > * { white-space: normal; }
+  .rg-lcd > .rg-lcd-total { white-space: nowrap; font-size: clamp(1rem, 5.2vw, 1.45rem); }
 }
 
 .rg-lcd-linea b {
@@ -888,7 +1176,7 @@
 }
 
 .rg-nota-mano {
-  margin: auto 0 0;
+  margin: 0 0 8px;
   font-family: var(--letra-mano);
   font-size: 22px;
   color: var(--naranja-o);
@@ -902,15 +1190,58 @@
 
 @media (max-width: 960px) {
   .gh-cabecera { grid-template-columns: minmax(0, 1fr); align-items: start; }
-  .gh-cabecera-acciones { align-items: flex-start; }
-  .gh-buscar { max-width: 560px; }
+  .gh-cabecera-acciones { justify-self: start; max-width: 560px; }
   .gh-mesa { grid-template-columns: minmax(0, 1fr); }
-  .rg-rejilla { grid-template-columns: minmax(0, 1fr); }
+  .rg-hoja {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    padding-left: clamp(2.25rem, 6vw, 3rem);
+  }
+
+  .rg-zona { grid-row: auto; grid-template-rows: none; }
+  .rg-calc { padding-right: 0; padding-bottom: 2rem; }
+
+  .rg-dic {
+    padding: 2rem 0 0;
+    border-left: 0;
+    border-top: 2px dashed var(--gris);
+  }
 }
 
 /* Móvil: los mazos pequeños, en fila que se desliza (como las tarjetas del
    hero). El relleno deja sitio a las hojas giradas y a la tarjeta que sube. */
 @media (max-width: 640px) {
+  /* La nota de arriba, a la medida del móvil: a 34 px o más ocupaba dos
+     líneas (el ordenador no cambia). */
+  .gh-nota {
+    margin-top: -0.6rem;
+    font-size: 27px;
+  }
+
+  /* Las tres etiquetas, en una sola fila. */
+  .gh-trae { flex-wrap: nowrap; gap: 6px; }
+
+  .gh-trae > li {
+    gap: 5px;
+    padding: 5px 9px 5px 7px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .gh-trae > li svg { width: 14px; height: 14px; }
+
+  /* Sin la flecha azul: su sitio, justo detrás de la nota, es para la lupa,
+     algo más pequeña (pedido por el admin el 18-11-2026). La nota mide unos
+     215 px a este tamaño de letra. */
+  .gh-buscar-nota .gh-buscar-flecha { display: none; }
+
+  .gh-lupa {
+    top: -16px;
+    right: auto;
+    left: 226px;
+    width: 40px;
+  }
+
   .gh-mazos {
     display: flex;
     gap: 22px;
@@ -930,11 +1261,9 @@
   }
 
   .gh-postit { right: 14px; font-size: 23px; }
-  .rg-lado { border-radius: 26px; }
 }
 
 @media (max-width: 480px) {
-  .gh-cabecera-acciones .gh-todas,
   .rg-cta { align-self: stretch; }
 
   /* Más alta que ancha: el dorso lleva la definición entera y, en 228 px de

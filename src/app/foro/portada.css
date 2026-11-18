@@ -34,11 +34,13 @@
   margin-bottom: 1.8rem;
 }
 
+/* Con presencia (18-11-2026): del tamaño de las notas de las guías. */
 .fpo-nota {
   display: inline-block;
   margin: 0;
   font-family: var(--letra-mano);
-  font-size: 26px;
+  font-size: clamp(30px, 3vw, 36px);
+  line-height: 1;
   font-weight: 600;
   color: var(--coral-o);
   transform: rotate(-2deg);
@@ -52,6 +54,32 @@
   line-height: 1.06;
   letter-spacing: -0.02em;
   color: var(--tinta);
+}
+
+/* «preguntado», escrito a mano como la palabra clave de los demás títulos de
+   la portada, con el fluorescente coral del foro (18-11-2026). */
+.fpo-titulo-mano {
+  display: inline-block;
+  padding: 0 0.14em 0 0.06em;
+  font-family: var(--letra-mano);
+  font-size: 1.32em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--tinta);
+  background: linear-gradient(transparent 52%, color-mix(in srgb, var(--coral) 45%, var(--papel)) 52%, color-mix(in srgb, var(--coral) 45%, var(--papel)) 92%, transparent 92%);
+  transform: rotate(-2deg);
+}
+
+/* «Ver el foro»: la tecla con contorno de rotulador, en el coral suave del
+   foro (como «Ver cursos» y «Ver todas las guías»). */
+.fpo-cabecera .fpo-ver {
+  --c: var(--coral-s);
+  --o: color-mix(in srgb, var(--coral) 60%, var(--papel));
+  --t: var(--coral-o);
+  padding: 7.5px 13.5px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 13px 11px 14px 10px / 11px 14px 10px 13px;
 }
 
 /* Preguntas a la izquierda, invitación a la derecha. */
@@ -211,9 +239,17 @@
 
 .fpo-hilo.is-resuelto .fpo-respuestas b { color: var(--menta-o); }
 
+/* Sin respuestas todavía: una nota a mano en coral que invita a contestar. */
+.fpo-primero {
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  line-height: 1;
+  color: var(--coral-o);
+  transform: rotate(-2deg);
+}
+
 /* ── La invitación ──
-   Un bloque coral suave, con la conversación dibujada que no para: es lo
-   único que se mueve en la sección. */
+   Un bloque coral suave, con la pegatina de la mano levantada. */
 .fpo-invita {
   position: relative;
   display: flex;
@@ -240,110 +276,35 @@
   background: color-mix(in srgb, var(--coral) 28%, var(--coral-s));
 }
 
-/* ── La conversación ── */
-.fpo-chat {
+/* ── La pegatina de la mano levantada ──
+   Centrada en el hueco de arriba de la invitación. Saluda de vez en cuando,
+   como quien pide la palabra. */
+.fpo-mano {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.6rem;
+  display: grid;
+  place-items: center;
   flex: 1;
   min-height: 160px;
   margin-bottom: 0.3rem;
 }
 
-.fpo-burbuja {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.55rem;
-  max-width: 80%;
-  opacity: 0;
-  animation: fpo-llega 10s cubic-bezier(0.34, 1.56, 0.5, 1) infinite;
+.fpo-mano-img {
+  position: relative;
+  z-index: 1;
+  width: min(190px, 70%);
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 30% 90%;
+  animation: fpo-mano-saluda 4s ease-in-out infinite;
 }
 
-.fpo-burbuja--b { align-self: flex-end; animation-name: fpo-llega-b; }
-.fpo-burbuja--c { animation-name: fpo-llega-c; }
-
-.fpo-burbuja > span {
-  display: grid;
-  gap: 7px;
-  padding: 0.75rem 0.9rem;
-  border-radius: 18px 18px 18px 6px;
-  background: var(--papel);
-  box-shadow: 0 4px 0 color-mix(in srgb, var(--coral) 35%, var(--coral-s));
-}
-
-.fpo-burbuja--b > span {
-  border-radius: 18px 18px 6px 18px;
-  background: var(--coral);
-  box-shadow: 0 4px 0 var(--coral-o);
-}
-
-/* Las rayas que hacen de texto. */
-.fpo-burbuja b { display: block; height: 8px; border-radius: 99px; background: var(--gris); }
-.fpo-burbuja--b b { background: rgba(255, 255, 255, 0.75); }
-.fpo-burbuja--a b:nth-child(1) { width: 132px; }
-.fpo-burbuja--a b:nth-child(2) { width: 84px; }
-.fpo-burbuja--b b:nth-child(1) { width: 150px; }
-.fpo-burbuja--b b:nth-child(2) { width: 118px; }
-.fpo-burbuja--b b:nth-child(3) { width: 64px; }
-
-.fpo-chat-cara {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  border: 3px solid var(--papel);
-  border-radius: 50%;
-  background: var(--azul);
-  box-shadow: 0 3px 0 var(--azul-o);
-}
-
-.fpo-chat-cara--b { background: var(--naranja); box-shadow: 0 3px 0 var(--naranja-o); }
-.fpo-chat-cara--c { background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); }
-
-/* «Está escribiendo»: tres puntos que no paran. */
-.fpo-burbuja > .fpo-escribiendo {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  height: 38px;
-  padding: 0 1rem;
-}
-
-.fpo-escribiendo em {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--tinta-3);
-  animation: fpo-punto 1.2s ease-in-out infinite;
-}
-
-.fpo-escribiendo em:nth-child(2) { animation-delay: 0.16s; }
-.fpo-escribiendo em:nth-child(3) { animation-delay: 0.32s; }
-
-@keyframes fpo-punto {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-  30% { transform: translateY(-5px); opacity: 1; }
-}
-
-/* Diez segundos: pregunta, respuesta, alguien escribe, y vuelta a empezar.
-   Cada burbuja llega con un pequeño rebote. */
-@keyframes fpo-llega {
-  0% { opacity: 0; transform: translateY(14px) scale(0.9); }
-  6%, 88% { opacity: 1; transform: none; }
-  96%, 100% { opacity: 0; transform: translateY(-8px); }
-}
-
-@keyframes fpo-llega-b {
-  0%, 22% { opacity: 0; transform: translateY(14px) scale(0.9); }
-  28%, 88% { opacity: 1; transform: none; }
-  96%, 100% { opacity: 0; transform: translateY(-8px); }
-}
-
-@keyframes fpo-llega-c {
-  0%, 46% { opacity: 0; transform: translateY(14px) scale(0.9); }
-  52%, 88% { opacity: 1; transform: none; }
-  96%, 100% { opacity: 0; transform: translateY(-8px); }
+@keyframes fpo-mano-saluda {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  68% { transform: rotate(-6deg); }
+  76% { transform: rotate(4deg); }
+  84% { transform: rotate(-3deg); }
 }
 
 .fpo-invita-titulo {
@@ -375,23 +336,52 @@
   margin-top: 0.5rem;
 }
 
+/* «Ver el ranking» (18-11-2026): una pastilla de papel con su canto coral y
+   el trofeo en una teclita amarilla. Secundaria al lado de «Hacer una
+   pregunta», pero con cuerpo. 44 px de alto: se pulsa con el dedo. */
 .fpo-invita-enlace {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  /* A la altura de la cara de la tecla, no de su recorrido. 44 px de alto:
-     se pulsa con el dedo. */
+  gap: 0.55rem;
   min-height: 44px;
   margin-bottom: 9px;
+  padding: 6px 16px 6px 7px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
   font-size: 0.92rem;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--coral-o);
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+  text-decoration: none;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.fpo-invita-enlace:hover { color: var(--tinta); }
+.fpo-invita-trofeo {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+  color: var(--tinta);
+  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .fpo-invita-enlace:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+  }
+
+  .fpo-invita-enlace:hover .fpo-invita-trofeo { transform: rotate(-10deg) scale(1.08); }
+}
+
+.fpo-invita-enlace:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 transparent;
+  transition-duration: 0.06s;
+}
 
 .fpo-invita-enlace:focus-visible {
   border-radius: 6px;
@@ -411,44 +401,100 @@
   .fpo-hilo::before { left: 1.15rem; }
   .fpo-invita { padding: 1.3rem 1.15rem 1.1rem; }
   .fpo-invita-acciones .tecla { flex: 1 1 100%; }
-  .fpo-burbuja--a b:nth-child(1), .fpo-burbuja--b b:nth-child(1) { width: 112px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fpo-escribiendo em { animation: none; }
-  .fpo-burbuja { animation: none; opacity: 1; }
+  .fpo-mano-img,
+  .fpo-pegatina { animation: none; }
   .fpo-hilo { transition: none; }
   .fpo-hilo:hover, .fpo-hilo:active { transform: none; }
+}
+
+/* ── Los garabatos de fondo (18-11-2026) ──
+   Detrás de cada pegatina, unos apuntes de margen con sentido: dudas y una
+   bombilla apagada detrás del «?»; bocadillos vacíos, puntos suspensivos y
+   destellos detrás de la mano levantada. Trazo de rotulador fino, en el
+   color del foro y muy suave: llenan el hueco sin competir con la pegatina. */
+.fpo-garabatos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.fpo-g {
+  position: absolute;
+  font-family: var(--letra-mano);
+  font-style: normal;
+  line-height: 1;
+  color: color-mix(in srgb, var(--coral) 40%, var(--papel));
+}
+
+.fpo-garabatos svg {
+  position: absolute;
+  overflow: visible;
+  fill: none;
+  stroke: color-mix(in srgb, var(--coral) 40%, var(--papel));
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Detrás del «?» (solo en la pregunta destacada, en el ordenador). */
+.fpo-garabatos--duda { display: none; }
+.fpo-g--1 { top: 34px; right: 150px; font-size: 40px; rotate: -14deg; }
+.fpo-g--2 { top: 128px; right: 158px; font-size: 26px; rotate: 10deg; }
+.fpo-g--3 { top: 150px; right: 18px; font-size: 30px; rotate: 18deg; }
+.fpo-g-bombilla { top: 20px; right: 196px; width: 34px; rotate: -10deg; }
+.fpo-g-camino { top: 96px; right: 190px; width: 110px; stroke-dasharray: 2 7; rotate: 6deg; }
+
+/* Detrás de la mano levantada, sobre el coral suave de la invitación. */
+.fpo-garabatos--charla .fpo-g,
+.fpo-garabatos--charla svg { color: color-mix(in srgb, var(--coral) 55%, var(--coral-s)); stroke: color-mix(in srgb, var(--coral) 55%, var(--coral-s)); }
+.fpo-g-bocadillo--1 { top: 8%; left: 6%; width: 56px; rotate: -8deg; }
+.fpo-g-bocadillo--2 { bottom: 10%; right: 8%; width: 48px; rotate: 6deg; }
+.fpo-g--4 { top: 18%; right: 14%; font-size: 40px; }
+.fpo-g--5 { bottom: 14%; left: 14%; font-size: 34px; rotate: -10deg; }
+.fpo-g--6 { top: 52%; left: 4%; font-size: 18px; }
+.fpo-g--7 { top: 4%; right: 34%; font-size: 14px; }
+
+/* La pegatina del «?», escondida salvo en la pregunta destacada. */
+.fpo-pegatina { display: none; }
+
+@keyframes fpo-pegatina-duda {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-6deg); }
 }
 
 /* ── Con una sola pregunta, en escritorio ──
    Su tarjeta crece hasta la altura de la invitación, y la pregunta se quedaba
    arriba con un gran vacío debajo (repaso del 17-11-2026). Ahora es la
-   pregunta destacada: centrada en la tarjeta, con un signo de interrogación del
-   color de su categoría en la esquina. */
+   pregunta destacada: centrada en la tarjeta, con la pegatina del «?»
+   pensativo en la esquina. */
 @media (min-width: 761px) {
   .fpo-lista--una .fpo-hilo { overflow: hidden; }
 
-  .fpo-lista--una .fpo-hilo::after {
-    content: "?";
-    position: absolute;
-    top: -46px;
-    right: -34px;
-    display: grid;
-    place-items: center;
-    width: 190px;
-    height: 190px;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--cat, var(--cat-fallback)) 16%, var(--papel));
-    font-family: var(--letra-titular);
-    font-size: 96px;
-    font-weight: 800;
-    line-height: 1;
-    color: color-mix(in srgb, var(--cat, var(--cat-fallback)) 34%, var(--papel));
-    pointer-events: none;
-  }
-
   .fpo-lista--una .fpo-hilo > * { position: relative; z-index: 1; }
+
+  /* El «?» pensativo, una pegatina del cuaderno (18-11-2026; antes, un «?»
+     grande en un círculo). Se rasca la cabeza en la esquina y se balancea. */
+  .fpo-lista--una .fpo-hilo > .fpo-garabatos--duda { display: block; position: absolute; z-index: 0; }
+
+  .fpo-lista--una .fpo-hilo > .fpo-pegatina {
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    z-index: 0;
+    width: 104px;
+    max-width: none;
+    height: auto;
+    rotate: 8deg;
+    pointer-events: none;
+    user-select: none;
+    transform-origin: 50% 95%;
+    animation: fpo-pegatina-duda 3.8s ease-in-out infinite;
+  }
   .fpo-lista--una .fpo-pregunta { margin-top: auto; max-width: 30ch; }
   .fpo-lista--una .fpo-extracto { flex: 0 1 auto; max-width: 58ch; }
   .fpo-lista--una .fpo-pie { margin-top: auto; }

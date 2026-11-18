@@ -544,7 +544,7 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
 }
 
 .fp-campo textarea { min-height: 7rem; resize: vertical; }
-.fp-campo select { cursor: pointer; }
+.fp-campo select { cursor: var(--puntero-mano, pointer); }
 
 .fp-campo input::placeholder,
 .fp-campo textarea::placeholder { font-weight: 600; color: var(--tinta-3); }

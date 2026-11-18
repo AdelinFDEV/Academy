@@ -37,7 +37,7 @@
   border-radius: 9px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   color: var(--tone, var(--text-secondary));
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
 }
 
 .tjbot { position: relative; z-index: 30; width: 100%; }
@@ -78,7 +78,7 @@
   background: none;
   color: inherit;
   font: inherit;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
 }
 
 .tjbot-trigger:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 4px; }
@@ -286,7 +286,7 @@
   color: var(--text-secondary);
   font: 600 0.84rem var(--font-family);
   text-align: left;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: color 0.15s, background 0.15s;
 }
 
@@ -497,7 +497,7 @@
   background: color-mix(in srgb, var(--bot-tone) 12%, transparent);
   color: var(--text-primary);
   font: 600 0.74rem var(--font-family);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background 0.15s, transform 0.15s;
 }
 
@@ -548,7 +548,7 @@
   border-radius: 50%;
   background: var(--tj-surface);
   color: var(--text-secondary);
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: background 0.15s, color 0.15s, opacity 0.15s;
 }
 
@@ -577,7 +577,7 @@
   color: var(--text-primary);
   font: inherit;
   text-align: left;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -642,7 +642,7 @@
   background: var(--tj-surface);
   color: var(--text-primary);
   font-size: 1.2rem;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.12s, opacity 0.15s;
 }

@@ -1,4 +1,5 @@
 import type { YouTubeVideo } from "@/lib/youtube";
+import Image from "next/image";
 import { ArrowUpRight, Play } from "lucide-react";
 import { YOUTUBE_URL } from "@/lib/contacto";
 import Tecla from "@/components/cuaderno/Tecla";
@@ -45,12 +46,16 @@ export default function YouTubeLatest({ videos }: { videos: YouTubeVideo[] }) {
       <div className="ytl-inner">
         <header className="ytl-cabecera">
           <div>
-            <p className="ytl-nota">El canal de YouTube</p>
             <h2 id="ytl-titulo" className="ytl-titulo">
-              Lo último del <span className="fluor">canal</span>
+              Lo último del{" "}
+              <span className="ytl-titulo-mano">
+                canal
+                {/* La gorra de los vídeos, dejada caer sobre la palabra (18-11-2026). */}
+                <Image src="/cuaderno/gorra-pegatina.webp" alt="" width={160} height={137} className="ytl-gorra" draggable={false} />
+              </span>
             </h2>
           </div>
-          <Tecla href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" color="blanca" tamano="peq">
+          <Tecla href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" color="blanca" tamano="peq" className="ytl-ver-canal">
             <LogoYouTube size={17} /> Ver el canal <ArrowUpRight size={16} strokeWidth={2.8} aria-hidden="true" />
           </Tecla>
         </header>

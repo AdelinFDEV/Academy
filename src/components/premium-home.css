@@ -40,7 +40,6 @@
 }
 
 .pf-mano--clara { color: var(--amarillo); }
-.pf-mano--naranja { color: var(--naranja-o); font-size: 26px; }
 
 /* El sello naranja de Premium (etiqueta del sistema, en su color de marca). */
 .pf-sello {
@@ -482,20 +481,6 @@
   color: var(--o);
 }
 
-/* ── Quien ya es Premium: sus tres accesos ── */
-.pf-mio-titulo {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-  margin: 0;
-}
-
-.pf-piezas--mio {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 1.75rem;
-}
-
 /* ── La oferta ── */
 .pf-oferta {
   display: grid;
@@ -592,6 +577,20 @@
 
 /* ══ 2 · Preguntas frecuentes y contacto ═══════════════════════════════════ */
 
+/* «Escríbeme por Instagram», con el degradado de Instagram (18-11-2026; antes
+   naranja): se reconoce la plataforma de un vistazo. El canto, en su morado. */
+.pf-contacto .pf-ig {
+  --o: #7a2a8c;
+  --t: #fff;
+  background: linear-gradient(45deg, #f58529 0%, #dd2a7b 45%, #8134af 100%);
+}
+
+/* En el ordenador, la columna de la izquierda acompaña al bajar mientras se
+   abren las preguntas: el contacto siempre queda a mano. */
+@media (min-width: 861px) {
+  .pf-faq-lado { position: sticky; top: 96px; }
+}
+
 .pf-faq {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -605,6 +604,32 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+/* La nota de arriba, con la presencia de las demás de la portada. */
+.pf-faq-nota {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: clamp(30px, 3vw, 36px);
+  line-height: 1;
+  color: var(--naranja-o);
+  transform: rotate(-2deg);
+}
+
+/* «preguntan», a mano con fluorescente cielo: la palabra clave de cada título
+   de la portada va así (18-11-2026). */
+.pf-faq-mano {
+  display: inline-block;
+  padding: 0 0.14em 0 0.06em;
+  font-family: var(--letra-mano);
+  font-size: 1.32em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--tinta);
+  background: linear-gradient(transparent 52%, color-mix(in srgb, var(--cielo) 45%, var(--papel)) 52%, color-mix(in srgb, var(--cielo) 45%, var(--papel)) 92%, transparent 92%);
+  transform: rotate(-2deg);
 }
 
 .pf-faq-titulo {
@@ -633,7 +658,7 @@
   padding: 20px 20px 12px;
   border-radius: 24px;
   background: var(--papel);
-  box-shadow: 0 6px 0 var(--gris-o);
+  box-shadow: 0 6px 0 color-mix(in srgb, #dd2a7b 30%, var(--papel));
 }
 
 .pf-contacto-cab {
@@ -656,8 +681,21 @@
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 0 0 3px var(--naranja-s);
+  /* El aro de las historias de Instagram: un filo de papel y, por fuera, su
+     degradado (.pf-contacto-avatar::before). */
+  position: relative;
+  border: 3px solid var(--papel);
+  background: var(--papel);
 }
+
+.pf-contacto-avatar::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 210deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5, #feda75);
+}
+
 
 .pf-contacto-online {
   position: absolute;
@@ -751,7 +789,7 @@
   padding: 17px 18px;
   border-radius: 19px;
   list-style: none;
-  cursor: pointer;
+  cursor: var(--puntero-mano, pointer);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   font-size: 17px;
@@ -850,7 +888,6 @@
 
 @media (max-width: 900px) {
   .pf-faq { grid-template-columns: minmax(0, 1fr); }
-  .pf-piezas--mio { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ══ Móvil ═════════════════════════════════════════════════════════════════ */

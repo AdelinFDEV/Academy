@@ -1,9 +1,14 @@
 import Link from "next/link";
+import Image from "next/image";
+import TrazoVisible from "@/components/cuaderno/TrazoVisible";
 import type { GuideMeta } from "@/lib/guides";
 import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
 import Tecla from "@/components/cuaderno/Tecla";
+import Anotacion from "@/components/cuaderno/Anotacion";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
+import { ChartLine, PencilLine, ListChecks } from "lucide-react";
 
 const NIVEL_TEXTO: Record<GuideMeta["difficulty"], string> = {
   "básico": "Básico",
@@ -41,13 +46,20 @@ function Chips({ g, secciones = false }: { g: GuideMeta; secciones?: boolean }) 
  * · La más reciente, en grande y con su pósit «¡Nueva!»: descripción, logro
  *   que da y una tecla para empezarla. Toda la tarjeta lleva a la guía.
  * · Arriba, el titular, el buscador de criptomonedas y la tecla al catálogo.
+ *   Repaso del 18-11-2026 (pedido por el admin): «a fondo» subrayado a mano
+ *   en azul (el color de un concepto; el fluorescente amarillo ya lo lleva el
+ *   hero justo encima), lo que trae cada guía en tres etiquetas con icono, y
+ *   el buscador y la tecla vestidos del cielo de las guías, con una nota a
+ *   mano que dice para qué está el buscador.
  *
  * Todo sale de guiasVisiblesRecientes(): al publicar una guía, la nueva pasa a
  * ser la grande y empuja a las demás.
  */
 export default async function GuidesHomeSection() {
   const [nueva, ...resto] = await guiasVisiblesRecientes();
-  const siguientes = resto.slice(0, 4);
+  // Seis a la derecha (18-11-2026, pedido por el admin): con cuatro quedaba un
+  // hueco bajo la columna, más baja que la guía grande.
+  const siguientes = resto.slice(0, 6);
   if (!nueva) return null;
 
   return (
@@ -57,14 +69,30 @@ export default async function GuidesHomeSection() {
           <div className="gh-cabecera-texto">
             <p className="gh-nota">Guías interactivas · 100 % gratis</p>
             <h2 id="gh-titulo" className="gh-titulo">
-              Criptomonedas, <span className="fluor">explicadas a fondo</span>
+              Criptomonedas,
+              <br />
+              <span className="gh-titulo-mano">explicadas</span>{" "}
+              <Anotacion tipo="underline" color="var(--azul)" retraso={300}>a fondo</Anotacion>
             </h2>
             <p className="gh-sub">
-              Qué es cada proyecto, cómo funciona por dentro y qué riesgos tiene. Con gráficas,
-              ejercicios y un quiz final.
+              Qué es cada proyecto, cómo funciona por dentro y qué riesgos tiene.
             </p>
+            <ul className="gh-trae" aria-label="Qué trae cada guía">
+              <li className="gh-trae--cielo"><ChartLine size={16} strokeWidth={2.4} aria-hidden="true" /> Gráficas</li>
+              <li className="gh-trae--menta"><PencilLine size={16} strokeWidth={2.4} aria-hidden="true" /> Ejercicios</li>
+              <li className="gh-trae--lila"><ListChecks size={16} strokeWidth={2.4} aria-hidden="true" /> Quiz final</li>
+            </ul>
           </div>
           <div className="gh-cabecera-acciones">
+            {/* La pegatina de la lupa, en el hueco de arriba a la derecha del
+                buscador (pedida por el admin el 18-11-2026). Decoración. */}
+            <TrazoVisible className="gh-lupa" retraso={200}>
+              <Image src="/cuaderno/lupa-pegatina.webp" alt="" width={330} height={367} className="gh-lupa-img" draggable={false} />
+            </TrazoVisible>
+            <p className="gh-buscar-nota" aria-hidden="true">
+              ¿buscas una en concreto?
+              <SimboloEstudio tipo="flecha" color="azul" giro={95} tamano={34} semilla={4} retraso={500} className="gh-buscar-flecha" />
+            </p>
             <div className="gh-buscar">
               <GuideSearch />
             </div>
@@ -102,7 +130,7 @@ export default async function GuidesHomeSection() {
             </div>
           </article>
 
-          {/* ── Las cuatro anteriores: un mazo cada una ── */}
+          {/* ── Las seis anteriores: un mazo cada una ── */}
           <ol className="gh-mazos">
             {siguientes.map((g, i) => (
               <li key={g.slug}>
