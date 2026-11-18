@@ -1,0 +1,15 @@
+/* El interruptor de sonido (InterruptorSonido.tsx).
+   La nota a mano que confirma el cambio («sonido activado», «en silencio»)
+   está oculta por defecto AQUÍ, en el CSS del propio componente, para que
+   viaje con él a cualquier página. Solo la barra de la web la enseña
+   (site-nav.css, `.nav-sonido .sonido-nota`). Antes esta regla vivía en
+   site-nav.css y, en las pantallas de acceso (que no cargan la barra), la
+   nota salía suelta a la derecha (18-11-2026). */
+.sonido-nota { display: none; }
+
+/* La tecla del altavoz, con contorno de rotulador negro (18-11-2026, pedido
+   por el admin), esté donde esté. */
+.tecla.sonido-tecla {
+  border: 2px solid var(--tinta);
+  border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+}

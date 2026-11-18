@@ -512,8 +512,8 @@
 
 /* La nota a mano que confirma el cambio («sonido activado», «en silencio»):
    aparece al lado de la etiqueta al pulsarla y se va sola (`con-nota`, la pone
-   InterruptorSonido). Solo existe en la barra: fuera de ella no se pinta. */
-.sonido-nota { display: none; }
+   InterruptorSonido). Solo existe en la barra; oculta por defecto en
+   interruptor-sonido.css, que viaja con el componente. */
 
 .nav-sonido .sonido-nota {
   position: absolute;
@@ -1539,3 +1539,12 @@
   color: var(--naranja-o);
   rotate: -3deg;
 }
+
+/* Las teclas de la barra con contorno de rotulador también en el móvil
+   (18-11-2026, pedido por el admin: «Entrar», blanca sin borde, no se
+   distinguía del fondo). */
+.blog-nav .tecla {
+  border: 2px solid var(--tinta);
+  border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+}
+

@@ -111,3 +111,45 @@
 .te--coral { --c: var(--coral); }
 .te--cielo { --c: var(--cielo); }
 
+
+/* El personaje pequeño de la esquina de arriba (18-11-2026,
+   pedido por el admin): dentro de la tarjeta, nunca fuera, porque al girarla
+   se perdería. */
+.te-arriba {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.te-pegatina {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  rotate: -6deg;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* En la esquina de arriba a la DERECHA (18-11-2026, corregido por el admin):
+   el tema se queda a la izquierda, donde estaba, y el personaje al otro lado. */
+.te-arriba { justify-content: space-between; align-items: flex-start; }
+.te-pegatina { order: 2; margin: -6px -6px 0 0; rotate: 6deg; }
+
+/* Los personajes de la esquina, algo más grandes y con un ligero balanceo
+   (18-11-2026, pedido por el admin). Quietos con «reducir movimiento». */
+.te-pegatina {
+  width: 54px;
+  height: 54px;
+  transform-origin: 50% 90%;
+  animation: te-pegatina-balanceo 3.4s ease-in-out infinite;
+}
+
+@keyframes te-pegatina-balanceo {
+  0%, 100% { rotate: 6deg; }
+  50% { rotate: -4deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .te-pegatina { animation: none; }
+}

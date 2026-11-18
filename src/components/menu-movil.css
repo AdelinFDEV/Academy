@@ -1308,3 +1308,121 @@
 @media (max-width: 719px) and (prefers-reduced-motion: reduce) {
   .mm-cohete { animation: none; }
 }
+
+/* Sin sesión, en el móvil: fuera la tarjeta «Tu academia»; «Registrarse» va
+   como tecla cuadrada naranja en el hueco del final de «Aprende cripto», igual
+   que «Dashboard» con sesión (18-11-2026, pedido por el admin). */
+@media (max-width: 719px) {
+  .mm-lado .mm-cuenta { display: none; }
+
+  .mm-tu-foto--icono {
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.24);
+    color: #fff;
+  }
+}
+
+/* ── La tarjeta Premium del menú, en el estilo del cuaderno (18-11-2026,
+   pedido por el admin: el bloque oscuro desentonaba) ── Papel crema con
+   contorno de rotulador y canto dorado, el círculo amarillo asomando por la
+   esquina, el texto en tinta, el precio en naranja oscuro y la tecla naranja
+   con su contorno. */
+.mm-premium {
+  border: 2.5px solid var(--tinta);
+  border-radius: 22px 18px 24px 17px / 18px 24px 17px 22px;
+  background: var(--amarillo-s);
+  color: var(--tinta);
+  box-shadow: 0 5px 0 var(--amarillo-o);
+}
+
+.mm-premium::before { background: color-mix(in srgb, var(--amarillo) 55%, transparent); }
+
+@media (hover: hover) {
+  .mm-premium:hover { box-shadow: 0 3px 0 var(--amarillo-o); }
+}
+
+.mm-premium:active { box-shadow: inset 0 3px 8px rgba(29, 27, 51, 0.15), 0 0 0 var(--amarillo-o); }
+
+.mm-premium-cabecera { border: 2px solid var(--tinta); }
+.mm-premium-titulo { color: var(--tinta); }
+.mm-premium-precio { color: var(--naranja-o); }
+.mm-premium-precio small { color: var(--tinta-2); }
+.mm-premium-nota { color: var(--tinta-2); }
+
+.mm-premium-ir {
+  border: 2px solid var(--tinta);
+  border-radius: 12px 10px 13px 9px / 10px 13px 9px 12px;
+}
+
+/* La escena de las tres piezas coronadas, arriba a la derecha de la tarjeta;
+   la cabecera y el título le dejan sitio (18-11-2026). */
+.mm-premium-pegatina {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+  width: 118px;
+  height: auto;
+  rotate: 4deg;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mm-premium-cabecera,
+.mm-premium-titulo { margin-right: 112px; }
+
+.mm-premium-cabecera { align-self: flex-start; }
+.mm-premium-pie { z-index: 2; }
+
+/* La tarjeta Premium a dos columnas (18-11-2026: la escena quedaba pequeña y
+   tapada por la tecla). A la izquierda, en columna, la etiqueta, el precio
+   y «Ver qué incluye»; a la derecha, la escena más grande, centrada en la
+   altura de la tarjeta. */
+.mm-premium { padding-right: 150px; }
+
+.mm-premium-pegatina {
+  top: 50%;
+  right: 8px;
+  width: 140px;
+  translate: 0 -50%;
+}
+
+.mm-premium-cabecera,
+.mm-premium-titulo { margin-right: 0; }
+
+.mm-premium-pie {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* Repaso final de la tarjeta Premium (18-11-2026, pedido por el admin): un
+   trozo de celo arriba, la etiqueta algo ladeada, el precio repasado con
+   fluorescente y la tecla con su canto. Son reglas sin media query: la
+   misma tarjeta en el móvil y en el menú del ordenador, a cualquier tamaño. */
+.mm-premium { overflow: visible; }
+
+.mm-premium::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 28px;
+  width: 64px;
+  height: 18px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--coral) 45%, transparent);
+  rotate: -4deg;
+  pointer-events: none;
+}
+
+.mm-premium::before { border-radius: 50%; clip-path: inset(48px 48px 0 0 round 0 22px 0 0); }
+
+.mm-premium-cabecera { rotate: -2deg; }
+
+.mm-premium-precio {
+  padding: 0 0.12em;
+  background: linear-gradient(transparent 58%, color-mix(in srgb, var(--amarillo) 80%, transparent) 58%, color-mix(in srgb, var(--amarillo) 80%, transparent) 92%, transparent 92%);
+}
+
+.mm-premium-ir { box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 color-mix(in srgb, var(--naranja-o) 80%, var(--tinta)); }

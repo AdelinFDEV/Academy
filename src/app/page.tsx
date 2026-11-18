@@ -117,7 +117,7 @@ export default async function HomePage() {
       {/* ── Cierre: Premium y las preguntas frecuentes. A quien ya es
           Premium solo le quedan las dudas: sus herramientas las tiene en el
           hero (18-11-2026). ── */}
-      <PremiumHome portfolio={resumenPortfolio} cursos={cursos} isPremium={isPremium} />
+      <PremiumHome isPremium={isPremium} />
 
       <Footer />
     </div>

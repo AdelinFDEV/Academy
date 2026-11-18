@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
 import Tecla from "@/components/cuaderno/Tecla";
-import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import AccesoShell from "@/components/acceso/AccesoShell";
 import { Aviso, Campo, CampoClave, GoogleIcon, RequisitosClave, Separador, useSonidoDeError } from "@/components/acceso/Campos";
 import { passwordChecks } from "@/lib/passwordRules";
 import { MENSAJE_DOMINIO_NO_PERMITIDO, emailPermitido } from "@/lib/emailPolicy";
@@ -40,6 +40,8 @@ function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  // La ventanita que avisa de que solo valen Gmail y Proton Mail.
+  const [avisoDominio, setAvisoDominio] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
@@ -62,7 +64,7 @@ function RegisterForm() {
     // esto es para que el usuario entienda qué pasa en vez de ver un error
     // técnico de base de datos.
     if (!emailPermitido(email)) {
-      setError(MENSAJE_DOMINIO_NO_PERMITIDO);
+      setAvisoDominio(true);
       setLoading(false);
       return;
     }
@@ -160,7 +162,7 @@ function RegisterForm() {
 
   if (success) {
     return (
-      <AccesoShell nota="¡Ya casi está!" titulo={<>Revisa tu <span className="fluor">email</span></>} apunte={APUNTE}>
+      <AccesoShell nota="¡Ya casi está!" titulo={<>Revisa tu <span className="fluor">email</span></>}>
         <Aviso tipo="ok" titulo="Te hemos escrito">
           Te hemos enviado un enlace de confirmación a <strong>{email}</strong>. Ábrelo para activar tu cuenta
           {vieneAPagar ? " y pasarás directamente al pago." : "."}
@@ -175,6 +177,13 @@ function RegisterForm() {
   return (
     <AccesoShell
       nota={vieneAPagar ? "Paso 1 de 2" : "Empieza aquí"}
+      // La misma escena del inicio de sesión (18-11-2026), para que las dos
+      // pantallas se vean iguales; con su flecha al formulario en el móvil.
+      ilustracion="/cuaderno/login-pegatina.webp"
+      // En el ordenador, «Tu contraseña necesita» va a la izquierda, bajo la
+      // escena (18-11-2026, pedido por el admin); en el formulario se oculta.
+      // Copia visual: la que leen los lectores de pantalla es la del formulario.
+      lado={<RequisitosClave id="requisitos-clave-lado" password={password} />}
       titulo={
         vieneAPagar ? (
           <>Crea tu cuenta y pasas <span className="fluor">al pago</span></>
@@ -182,7 +191,7 @@ function RegisterForm() {
           <>Crea tu <span className="fluor">cuenta</span></>
         )
       }
-      apunte={APUNTE}
+     
     >
       {/* Quien viene a pagar ve Google primero: un clic, sin formulario y sin
           esperar el email de confirmación. Es el camino más corto al pago. */}
@@ -221,7 +230,9 @@ function RegisterForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="tu@gmail.com"
           required
-          ayuda="Solo aceptamos Gmail y Proton Mail."
+          // Sin nota fija (18-11-2026, pedido por el admin): si el correo es de
+          // otro proveedor, se avisa en una ventanita al salir del campo.
+          onBlur={() => { if (email.includes("@") && !emailPermitido(email)) setAvisoDominio(true); }}
         />
 
         <CampoClave
@@ -247,7 +258,7 @@ function RegisterForm() {
           required
         />
 
-        <RequisitosClave id="requisitos-clave" password={password} />
+        <div className="acc-req-form"><RequisitosClave id="requisitos-clave" password={password} /></div>
 
         {error && (
           <Aviso tipo="error" titulo="No se ha creado la cuenta">
@@ -281,17 +292,21 @@ function RegisterForm() {
         ¿Ya tienes cuenta?{" "}
         <Link href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}>Inicia sesión</Link>
       </p>
+
+      {avisoDominio && (
+        // El aviso del correo, en una ventanita (18-11-2026): sustituye a la
+        // nota fija bajo el campo.
+        <div className="acc-popup-velo" onClick={() => setAvisoDominio(false)}>
+          <div className="acc-popup" role="alertdialog" aria-modal="true" aria-labelledby="acc-popup-titulo" onClick={(e) => e.stopPropagation()}>
+            <p id="acc-popup-titulo" className="acc-popup-titulo">Ese correo no vale aquí</p>
+            <p className="acc-popup-texto">{MENSAJE_DOMINIO_NO_PERMITIDO}</p>
+            <Tecla tamano="peq" ancho onClick={() => setAvisoDominio(false)} autoFocus>
+              Entendido
+            </Tecla>
+          </div>
+        </div>
+      )}
     </AccesoShell>
   );
 }
 
-/** El apunte de la derecha: qué hace fuerte una contraseña. */
-const APUNTE: Apunte = {
-  tema: "Seguridad",
-  pregunta: "¿Qué hace fuerte una contraseña?",
-  respuesta: "La longitud",
-  detalle: "Cuantos más caracteres, más cuesta adivinarla. Y que sea única: no la repitas en otra web.",
-  color: "naranja",
-  postit: "Gratis",
-  nota: "Las guías son gratis, todas",
-};

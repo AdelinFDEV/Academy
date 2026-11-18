@@ -6,10 +6,9 @@
   min-height: 100vh;
   min-height: 100dvh;
   padding: 0 clamp(1rem, 4vw, 2rem) clamp(2.5rem, 6vw, 4rem);
-  /* Papel de cuaderno: una cuadrícula de puntos muy suave sobre el lavanda. */
-  background-color: var(--fondo);
-  background-image: radial-gradient(circle, var(--gris) 1.6px, transparent 1.8px);
-  background-size: 26px 26px;
+  /* Toda la página en blanco, como el formulario (18-11-2026, pedido por el
+     admin; antes, lavanda con cuadrícula de puntos). */
+  background: var(--papel);
   color: var(--tinta);
   font-family: var(--letra-texto);
 }
@@ -53,36 +52,21 @@
   border-radius: 8px;
 }
 
-/* ── La mesa: la hoja a la izquierda, el apunte a la derecha ── */
+/* ── La mesa: el formulario, centrado ── */
 .acc-mesa {
   display: grid;
-  grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
-  max-width: 1080px;
+  grid-template-columns: minmax(0, 520px);
+  justify-content: center;
   margin: clamp(1rem, 3vw, 2rem) auto 0;
 }
 
-/* La hoja: papel blanco con los agujeros de la anilla arriba. */
+/* El formulario, sin efecto de hoja (18-11-2026, pedido por el admin): ni
+   canto, ni sombra, ni agujeros de anilla; se funde con la página blanca. */
 .acc-hoja {
   position: relative;
-  padding: 3.1rem clamp(1.4rem, 4vw, 2.6rem) clamp(1.8rem, 4vw, 2.4rem);
-  border-radius: 32px;
+  padding: 1.4rem clamp(0.5rem, 2vw, 1rem) clamp(1.8rem, 4vw, 2.4rem);
   background: var(--papel);
-  box-shadow:
-    0 7px 0 var(--gris-o),
-    0 34px 60px -40px rgba(29, 27, 51, 0.45);
   animation: acc-entra 0.55s cubic-bezier(0.34, 1.5, 0.5, 1) both;
-}
-
-.acc-hoja::before {
-  content: "";
-  position: absolute;
-  top: 16px;
-  left: 28px;
-  right: 28px;
-  height: 14px;
-  background: radial-gradient(circle at 7px 7px, var(--fondo) 6px, var(--gris) 6.5px, var(--gris) 7px, transparent 7.5px) left center / 34px 14px repeat-x;
 }
 
 @keyframes acc-entra {
@@ -420,75 +404,10 @@
   color: var(--tinta-2);
 }
 
-/* ── El apunte: la tarjeta de estudio con su pósit ── */
-.acc-lado {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 1.6rem;
-  padding: 2.5rem 1rem;
-}
-
-/* Un círculo de color detrás, como una mancha de rotulador. */
-.acc-lado::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(380px, 90%);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--naranja-s);
-  transform: translate(-50%, -54%);
-}
-
-.acc-tarjeta {
-  position: relative;
-  transform: rotate(3deg);
-}
-
-.acc-postit {
-  position: absolute;
-  z-index: 2;
-  top: 1.2rem;
-  left: calc(50% - 170px);
-  padding: 8px 16px;
-  background: var(--amarillo);
-  font-family: var(--letra-mano);
-  font-size: 25px;
-  font-weight: 700;
-  color: var(--tinta);
-  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
-  transform: rotate(-6deg);
-}
-
-.acc-apunte {
-  position: relative;
-  max-width: 30ch;
-  margin: 0;
-  font-family: var(--letra-mano);
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-  color: var(--tinta-2);
-  transform: rotate(-1.5deg);
-}
-
-/* ── Tableta y móvil: solo la hoja, el apunte estorbaría ── */
-@media (max-width: 900px) {
-  .acc-mesa {
-    grid-template-columns: minmax(0, 520px);
-    justify-content: center;
-  }
-
-  .acc-lado { display: none; }
-}
 
 @media (max-width: 480px) {
   .acc { padding-left: 0.75rem; padding-right: 0.75rem; }
-  .acc-hoja { border-radius: 26px; padding-left: 1.1rem; padding-right: 1.1rem; }
-  .acc-hoja::before { left: 18px; right: 18px; }
+  .acc-hoja { padding-left: 0.4rem; padding-right: 0.4rem; }
   .acc-marca { font-size: 1.5rem; }
   .acc-codigo { font-size: 24px; letter-spacing: 0.32em; padding-left: calc(10px + 0.32em); padding-right: 10px; }
 }
@@ -498,4 +417,361 @@
   .acc-aviso { animation: none; }
   .acc-marca,
   .acc-req-caja { transition: none; }
+}
+
+/* ══ El acceso cabe en la pantalla, sin scroll (18-11-2026, pedido por el
+   admin) ══ En el ordenador, a dos columnas: a la izquierda la nota, el
+   titular y la entradilla; a la derecha el formulario, todo centrado en la
+   altura que queda bajo la cabecera. En el móvil, una columna más apretada:
+   cabecera baja, campos de 48 px y menos aire entre piezas. */
+.acc-cabeza { min-height: 0; padding-block: 0.6rem; }
+.acc-marca { font-size: 1.45rem; }
+.acc-mesa { margin-top: 0; }
+.acc-hoja { padding: 0.4rem 0.4rem 1rem; }
+.acc-cuerpo { gap: 0.8rem; margin-top: 1.1rem; }
+.acc-form { gap: 0.85rem; }
+.acc-campo { gap: 6px; }
+.acc-input { min-height: 48px; padding-block: 11px; }
+.acc-separador { margin: 0; font-size: 20px; }
+.acc-pie { margin: 0; }
+
+@media (min-width: 900px) {
+  .acc { display: flex; flex-direction: column; }
+
+  .acc-mesa {
+    flex: 1;
+    grid-template-columns: minmax(0, 980px);
+    align-items: center;
+    padding-bottom: 1rem;
+  }
+
+  .acc-hoja {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+    grid-auto-rows: min-content;
+    column-gap: clamp(2.5rem, 6vw, 5rem);
+    align-content: center;
+    padding: 0;
+  }
+
+  .acc-hoja > :not(.acc-cuerpo) { grid-column: 1; }
+  .acc-hoja > .acc-sello { justify-self: start; }
+
+  .acc-hoja > .acc-cuerpo {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .acc-titulo { font-size: clamp(2.4rem, 4vw, 3.2rem); }
+}
+
+@media (max-width: 899px) {
+  .acc-nota { font-size: 21px; }
+  .acc-titulo { font-size: 1.9rem; }
+  .acc-lead { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.5; }
+}
+
+/* La marca, igual que en la barra de la web (site-nav.css, 18-11-2026):
+   «BTC» repasado con fluorescente amarillo, algo ladeado, en naranja oscuro. */
+.acc-marca em {
+  display: inline-block;
+  margin-left: 0.04em;
+  padding: 0 0.1em;
+  background: linear-gradient(transparent 55%, var(--amarillo) 55%, var(--amarillo) 92%, transparent 92%);
+  color: var(--naranja-o);
+  rotate: -3deg;
+}
+
+/* Móvil, aún más apretado (18-11-2026: en un móvil real, con las barras del
+   navegador, quedan unos 620-660 px de alto y aún había scroll). Sin la nota
+   a mano de arriba (el titular ya lo dice), teclas y campos más bajos y menos
+   aire entre piezas y abajo. */
+@media (max-width: 899px) {
+  .acc { padding-bottom: 0.6rem; }
+  .acc-cabeza { padding-block: 0.35rem; }
+  .acc-marca { font-size: 1.3rem; }
+  .acc-hoja { padding: 0 0.2rem 0.4rem; }
+  .acc-nota { display: none; }
+  .acc-titulo { margin-top: 0.3rem; font-size: 1.7rem; }
+  .acc-cuerpo { gap: 0.6rem; margin-top: 0.8rem; }
+  .acc-form { gap: 0.6rem; }
+  .acc-campo { gap: 4px; }
+  .acc-input { min-height: 44px; padding-block: 9px; }
+  .acc .tecla--ancho { --h: 6px; padding-block: 12px; }
+  .acc-separador { font-size: 18px; }
+  .acc-pie { font-size: 14px; }
+}
+
+/* ── El acceso en el móvil, rediseñado (18-11-2026, pedido por el admin) ──
+   La marca, centrada arriba y con aire debajo; el titular, centrado y bien
+   separado de ella; el ojo de la contraseña, del mismo alto que su campo
+   (un cuadrado al lado, sin sobresalir); la verificación de Cloudflare,
+   centrada; y el pie, centrado. Todo sigue cabiendo sin scroll. */
+.acc .acc-ojo.tecla {
+  --h: 4px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0;
+}
+
+@media (max-width: 899px) {
+  .acc-cabeza { justify-content: center; padding-top: 0.9rem; }
+  .acc-marca { font-size: 1.45rem; }
+
+  .acc-hoja { text-align: left; }
+
+  .acc-titulo {
+    margin-top: 1.3rem;
+    text-align: center;
+    font-size: 1.75rem;
+    line-height: 1.15;
+  }
+
+  .acc-lead { text-align: center; }
+
+  .acc-cuerpo { margin-top: 1.3rem; }
+
+  .acc .acc-ojo.tecla { width: 44px; height: 44px; border-radius: 12px; }
+
+  .acc .turnstile-widget { display: flex; justify-content: center; }
+}
+
+/* El ojo, exactamente del alto del campo: el campo mide 46 px y la tecla 42
+   más su canto de 4. */
+@media (max-width: 899px) {
+  .acc-input { box-sizing: border-box; height: 46px; min-height: 46px; padding-block: 0; }
+  .acc .acc-ojo.tecla { width: 42px; height: 42px; }
+  .acc .turnstile-widget { margin-top: 0.3rem; }
+}
+
+/* La pegatina del acceso (por ahora, la del inicio de sesión: el candado que
+   escribe su contraseña, la llave que no mira y el escudo que para a la lupa
+   cotilla; 18-11-2026). Llena el hueco bajo el titular en el ordenador; en
+   el móvil no sale, para que todo quepa sin scroll. */
+.acc-ilustracion { display: none; }
+
+@media (min-width: 900px) {
+  .acc-ilustracion {
+    display: block;
+    width: min(100%, 420px);
+    height: auto;
+    margin-top: 1.4rem;
+    rotate: -2deg;
+    filter: drop-shadow(0 4px 0 rgba(29, 27, 51, 0.06));
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+/* En el móvil también (18-11-2026, pedido por el admin), pequeña y centrada
+   bajo el titular; se recortan unos píxeles de aire para seguir sin scroll. */
+@media (max-width: 899px) {
+  .acc-ilustracion {
+    display: block;
+    width: 150px;
+    height: auto;
+    margin: 0.5rem auto 0;
+    rotate: -2deg;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .acc-hoja:has(.acc-ilustracion) .acc-titulo { margin-top: 0.8rem; }
+  .acc-hoja:has(.acc-ilustracion) .acc-cuerpo { margin-top: 0.6rem; }
+}
+
+/* Con más prioridad: el campo, 46 px exactos en el móvil, como el ojo. */
+@media (max-width: 899px) {
+  .acc .acc-campo .acc-input { box-sizing: border-box; height: 46px; min-height: 46px; padding-block: 0; }
+}
+
+/* Móvil: campos y teclas un poco más pequeños, para que con la escena
+   tampoco haya scroll (18-11-2026, pedido por el admin). */
+@media (max-width: 899px) {
+  .acc .acc-campo .acc-input { height: 42px; min-height: 42px; font-size: 16px; }
+  .acc .acc-ojo.tecla { width: 38px; height: 38px; border-radius: 11px; }
+  .acc .tecla--ancho { --h: 5px; padding-block: 10px; font-size: 14px; }
+  .acc .acc-campo-cabeza, .acc .acc-campo label { font-size: 14px; }
+  .acc-ilustracion { width: 130px; }
+}
+
+/* La caja de la escena y, en el móvil, la flecha a mano que sale de su
+   derecha y gira hacia abajo, al formulario (18-11-2026, pedido por el
+   admin). En el ordenador no sale. */
+.acc-ilustracion-caja { display: contents; }
+.acc-ilustracion-flecha { display: none; }
+
+@media (max-width: 899px) {
+  .acc-ilustracion-caja {
+    position: relative;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .acc-ilustracion-flecha {
+    position: absolute;
+    top: 18%;
+    left: calc(100% + 2px);
+    display: block;
+    width: 52px;
+    height: auto;
+    overflow: visible;
+    fill: none;
+    stroke: var(--naranja);
+    stroke-width: 3.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    rotate: 4deg;
+    pointer-events: none;
+  }
+}
+
+/* Móvil sin la marca de arriba (18-11-2026, pedido por el admin): ese alto
+   se reparte entre el aire de arriba, una escena algo mayor y campos y
+   teclas un punto más cómodos, sin volver a tener scroll. */
+@media (max-width: 899px) {
+  .acc-cabeza { display: none; }
+  .acc-hoja:has(.acc-ilustracion) .acc-titulo,
+  .acc-titulo { margin-top: 1.5rem; }
+  .acc-ilustracion { width: 150px; }
+  .acc .acc-campo .acc-input { height: 44px; min-height: 44px; }
+  .acc .acc-ojo.tecla { width: 40px; height: 40px; }
+  .acc .tecla--ancho { padding-block: 11px; }
+  .acc-hoja:has(.acc-ilustracion) .acc-cuerpo { margin-top: 0.9rem; }
+}
+
+/* La flecha, redibujada (18-11-2026): sale pegada a la escena, se curva a la
+   derecha y baja, con la punta bien abierta mirando al formulario. */
+@media (max-width: 899px) {
+  .acc-ilustracion-flecha {
+    top: 30%;
+    left: calc(100% - 6px);
+    width: 46px;
+    stroke-width: 3.2;
+    rotate: 0deg;
+  }
+}
+
+/* Móvil: arriba vuelve la marca AdelinBTC y el titular deja de verse
+   (18-11-2026, pedido por el admin). El <h1> sigue en la página, solo oculto
+   a la vista: lo necesitan Google y los lectores de pantalla. */
+@media (max-width: 899px) {
+  .acc-cabeza { display: flex; justify-content: center; padding-top: 1.1rem; }
+  .acc-marca { font-size: 1.8rem; }
+
+  .acc-titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .acc-hoja:has(.acc-ilustracion) .acc-ilustracion-caja { margin-top: 0.4rem; }
+}
+
+/* La flecha es ahora el símbolo a mano del cuaderno (SimboloEstudio): solo se
+   coloca; el trazo lo pone él (18-11-2026). */
+@media (max-width: 899px) {
+  .acc-ilustracion-caja .acc-ilustracion-flecha {
+    top: 22%;
+    left: calc(100% - 4px);
+    width: auto;
+    stroke: none;
+    rotate: none;
+  }
+}
+@media (max-width: 899px) {
+  .acc-ilustracion-caja .acc-ilustracion-flecha { width: 58px; height: 58px; }
+}
+@media (max-width: 899px) {
+  /* Más abajo, junto al pie de la escena (18-11-2026, pedido por el admin). */
+  .acc-ilustracion-caja .acc-ilustracion-flecha { top: 52%; }
+}
+
+/* El aviso del correo no permitido, en una ventanita centrada (18-11-2026):
+   ficha de cuaderno con contorno de rotulador sobre un velo suave. */
+.acc-popup-velo {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(29, 27, 51, 0.45);
+}
+
+.acc-popup {
+  width: min(100%, 360px);
+  padding: 22px 20px 18px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 20px 16px 22px 15px / 16px 22px 15px 20px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--naranja-o);
+  text-align: center;
+  rotate: -1deg;
+}
+
+.acc-popup-titulo {
+  margin: 0 0 8px;
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.acc-popup-texto {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+/* Los requisitos de la contraseña, en el ordenador, bajo la escena de la
+   izquierda (18-11-2026, pedido por el admin); en el móvil, en su sitio. */
+.acc-lado-pc { display: none; }
+
+@media (min-width: 900px) {
+  .acc-lado-pc { display: block; grid-column: 1; margin-top: 1.2rem; max-width: 420px; }
+  .acc-req-form { display: none; }
+}
+
+/* En el ordenador, todo el acceso cabe sin scroll (18-11-2026, pedido por el
+   admin), también el registro, que tiene más campos: campos de 44 px, menos
+   aire entre piezas, y con los requisitos al lado, la escena más pequeña. */
+@media (min-width: 900px) {
+  .acc-cabeza { padding-block: 0.4rem; }
+  .acc .acc-campo .acc-input { box-sizing: border-box; height: 44px; min-height: 44px; padding-block: 0; }
+  .acc-campo { gap: 4px; }
+  .acc-form { gap: 0.6rem; }
+  .acc-cuerpo { gap: 0.6rem; }
+  .acc .tecla--ancho { padding-block: 12px; }
+  .acc .acc-ojo.tecla { width: 40px; height: 40px; }
+  .acc-titulo { font-size: clamp(2.2rem, 3.4vw, 2.8rem); }
+
+  .acc-hoja:has(.acc-lado-pc) .acc-ilustracion { width: min(100%, 300px); margin-top: 0.8rem; }
+  .acc-lado-pc .acc-req { padding: 12px 14px; }
+}
+
+/* Aire entre el logo y el formulario (19-11-2026, pedido por el admin: el
+   formulario quedaba pegado al logo). En el ordenador, ese aire sale del
+   relleno de abajo, que sobraba y obligaba a hacer scroll. */
+@media (max-width: 640px) {
+  .acc-mesa { padding-top: 1rem; }
+}
+@media (min-width: 641px) and (max-width: 899px) {
+  .acc-mesa { padding-top: 2.2rem; }
+}
+@media (min-width: 900px) {
+  .acc { padding-bottom: 0; }
+  .acc-mesa { padding-top: 1.4rem; padding-bottom: 0.6rem; }
+  .acc-hoja:has(.acc-lado-pc) .acc-ilustracion { width: min(100%, 270px); }
 }

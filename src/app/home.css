@@ -1840,3 +1840,44 @@
   .gh-cabecera-acciones { gap: 1.3rem; }
   .gh-buscar-nota { margin-bottom: 2px; }
 }
+
+/* Móvil: «Gráficas · Ejercicios · Quiz final», centradas y unidas por una
+   rayita discontinua dibujada a mano, como los pasos del foro (18-11-2026,
+   pedido por el admin). */
+@media (max-width: 640px) {
+  .gh-trae { justify-content: center; gap: 16px; }
+  .gh-trae > li { position: relative; }
+
+  .gh-trae > li + li::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 2px);
+    width: 13px;
+    height: 10px;
+    margin-top: -5px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7C8 2 13 10 20 6s12-4 18 1' fill='none' stroke='%235f5c7d' stroke-width='2.6' stroke-linecap='round' stroke-dasharray='4 4.5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    rotate: 0deg;
+  }
+}
+
+/* Móvil: la lupa, más grande y más abajo, asomando un poco sobre el buscador
+   (18-11-2026, pedido por el admin: el buscador abre su propia hoja, así que
+   no importa que lo tape un poco). */
+@media (max-width: 640px) {
+  .gh-lupa { top: 2px; left: auto; right: 6px; width: 68px; z-index: 31; }
+}
+
+/* Las hojas amarillas de la guía principal, también en el móvil (18-11-2026,
+   pedido por el admin): igual con sesión que sin ella, en cualquier tamaño. */
+.gh-mazo--nueva .gh-mazo-hoja--1 { background: var(--amarillo-s); }
+.gh-mazo--nueva .gh-mazo-hoja--2 { background: var(--amarillo); box-shadow: 0 5px 0 var(--amarillo-o); }
+
+/* El logro, siempre en una línea (18-11-2026, pedido por el admin): el nombre
+   del logro no se parte, y la frase se aprieta un poco en el móvil. */
+.gh-logro { white-space: nowrap; }
+.gh-logro b { white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .gh-logro { font-size: 0.8rem; }
+}

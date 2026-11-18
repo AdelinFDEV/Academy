@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import type { ReactNode } from "react";
-import InterruptorSonido from "@/components/cuaderno/InterruptorSonido";
-import TarjetaEstudio, { type ColorTarjeta } from "@/components/cuaderno/TarjetaEstudio";
 import EnviarALaVista from "./EnviarALaVista";
 import "./acceso.css";
 
@@ -9,36 +9,23 @@ import "./acceso.css";
  * La mesa de las pantallas de acceso (estilo «Cuaderno de estudio», 17-11-2026):
  * /login, /register, /forgot-password, /auth/reset-password y /mfa-challenge.
  *
- * · A la izquierda, la hoja del cuaderno con el formulario. Lleva el único <h1>.
- * · A la derecha, un apunte de seguridad: una tarjeta de estudio que se gira y un
- *   pósit. Es contenido de verdad (qué es el 2FA, qué hace fuerte una
- *   contraseña…), no una promesa del producto. En el móvil se esconde: ahí
- *   solo estorbaría al formulario.
- * · Estas pantallas no llevan la barra de la web, así que traen su propia marca
- *   y el altavoz: los sonidos vienen encendidos y silenciarlos tiene que estar
- *   siempre a mano (ESTILO.md, «Los sonidos»).
+ * · El formulario, centrado. Lleva el único <h1>.
+ * · Sin apunte al lado ni efecto de hoja (18-11-2026, pedido por el admin): la
+ *   página entera es blanca, como el formulario, y este va centrado.
+ * · Estas pantallas no llevan la barra de la web, así que traen su propia marca.
+ *   Sin el altavoz (18-11-2026, pedido por el admin): se silencia desde la barra
+ *   del resto de la web, y la elección se recuerda.
  *
  * Neutro de papel con acentos naranja de marca: el acceso no es ninguna sección.
  */
-
-export interface Apunte {
-  tema: string;
-  pregunta: string;
-  respuesta: string;
-  detalle: string;
-  color: ColorTarjeta;
-  /** El pósit pegado sobre la tarjeta. */
-  postit: string;
-  /** La nota a mano de debajo. */
-  nota: string;
-}
 
 export default function AccesoShell({
   nota,
   titulo,
   lead,
   icono,
-  apunte,
+  ilustracion,
+  lado,
   children,
 }: {
   /** La línea a mano sobre el titular. */
@@ -47,7 +34,11 @@ export default function AccesoShell({
   lead?: ReactNode;
   /** Un sello sobre el titular (el escudo del 2FA). */
   icono?: ReactNode;
-  apunte: Apunte;
+  /** Una pegatina del cuaderno bajo el titular, solo en el ordenador (acceso.css). */
+  ilustracion?: string;
+  /** Algo más bajo la ilustración, solo en el ordenador (p. ej. los requisitos
+   *  de la contraseña en el registro). */
+  lado?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -57,7 +48,6 @@ export default function AccesoShell({
         <Link href="/" className="acc-marca" aria-label="AdelinBTC Academy: ir a la portada">
           Adelin<em>BTC</em>
         </Link>
-        <InterruptorSonido />
       </header>
 
       <div className="acc-mesa">
@@ -66,21 +56,18 @@ export default function AccesoShell({
           <p className="acc-nota">{nota}</p>
           <h1 id="acc-titulo" className="acc-titulo">{titulo}</h1>
           {lead && <p className="acc-lead">{lead}</p>}
+          {ilustracion && (
+            <span className="acc-ilustracion-caja">
+              <Image src={ilustracion} alt="" width={840} height={627} className="acc-ilustracion" draggable={false} priority />
+              {/* En el móvil, una flecha a mano que sale a la derecha y baja al formulario. */}
+              {/* La flecha a mano del cuaderno (la misma del pósit del hero):
+                  sale a la derecha y se curva hacia abajo. */}
+              <SimboloEstudio tipo="flecha" color="naranja" giro={22} tamano={58} semilla={9} retraso={500} className="acc-ilustracion-flecha" />
+            </span>
+          )}
+          {lado && <div className="acc-lado-pc" aria-hidden="true">{lado}</div>}
           <div className="acc-cuerpo">{children}</div>
         </section>
-
-        <aside className="acc-lado" aria-label="Apunte de seguridad">
-          <span className="acc-postit" aria-hidden="true">{apunte.postit}</span>
-          <TarjetaEstudio
-            className="acc-tarjeta"
-            color={apunte.color}
-            tema={apunte.tema}
-            pregunta={apunte.pregunta}
-            respuesta={apunte.respuesta}
-            detalle={apunte.detalle}
-          />
-          <p className="acc-apunte">{apunte.nota}</p>
-        </aside>
       </div>
     </main>
   );

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
 import Tecla from "@/components/cuaderno/Tecla";
-import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import AccesoShell from "@/components/acceso/AccesoShell";
 import { Aviso, Campo, useSonidoDeError } from "@/components/acceso/Campos";
 
 export default function ForgotPasswordPage() {
@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
       nota="Le pasa a cualquiera"
       titulo={<>Recupera tu <span className="fluor">contraseña</span></>}
       lead={sent ? undefined : "Escribe tu correo y te enviamos un enlace para elegir una nueva."}
-      apunte={APUNTE}
+     
     >
       {sent ? (
         <>
@@ -113,13 +113,3 @@ export default function ForgotPasswordPage() {
   );
 }
 
-/** El apunte de la derecha: cómo no volver a olvidarla. */
-const APUNTE: Apunte = {
-  tema: "Truco",
-  pregunta: "¿Cómo no volver a olvidarla?",
-  respuesta: "Un gestor",
-  detalle: "Un gestor de contraseñas las recuerda por ti, y las crea largas y distintas para cada web.",
-  color: "naranja",
-  postit: "Sin agobios",
-  nota: "Si no lo ves, mira en la carpeta de spam",
-};

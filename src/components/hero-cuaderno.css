@@ -1052,3 +1052,956 @@
 .hc-hd-hecho { fill: var(--c); stroke: var(--tinta); stroke-width: 2; }
 .hc-hd-falta { fill: var(--papel); stroke: var(--tinta); stroke-width: 2; }
 .hc-hd-roseta { fill: var(--amarillo); stroke: var(--tinta); stroke-width: 1.8; }
+
+/* ── El texto del hero sin sesión, con color (18-11-2026, pedido por el
+   admin) ── Como un apunte repasado: las dos promesas grandes (guías
+   gratuitas y cursos) y la meta (el certificado), con fluorescente de su
+   color; lo que traen las guías (ejercicios y quiz), en su color de tinta;
+   y el camino, con un subrayado discontinuo a mano. */
+.hc-marca {
+  padding: 0 0.15em;
+  color: var(--tinta);
+  font-weight: 800;
+  background: linear-gradient(transparent 55%, var(--hm) 55%, var(--hm) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.hc-marca--menta { --hm: color-mix(in srgb, var(--menta) 55%, transparent); }
+.hc-marca--lila { --hm: color-mix(in srgb, var(--lila) 45%, transparent); }
+.hc-marca--amarillo { --hm: color-mix(in srgb, var(--amarillo) 75%, transparent); }
+
+.hc-marca-txt { font-weight: 800; }
+.hc-marca-txt--cielo { color: var(--cielo-o); }
+.hc-marca-txt--coral { color: var(--coral-o); }
+
+.hc-marca-raya {
+  color: var(--tinta);
+  text-decoration: underline dashed color-mix(in srgb, var(--naranja) 75%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* «Crea tu cuenta gratis» con su nota a mano debajo (18-11-2026): lo que se
+   gana al registrarse, sin insistir. */
+.hc-cta-cuenta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hc-cta-nota {
+  font-family: var(--letra-mano);
+  font-size: 19px;
+  line-height: 1;
+  color: var(--naranja-o);
+  rotate: -2deg;
+}
+
+@media (max-width: 560px) {
+  .hc-cta-cuenta { flex: 1 1 100%; align-items: stretch; text-align: center; }
+  .hc-cta-cuenta .tecla { width: 100%; }
+}
+
+/* La nota, mejor como pegatina sobre la esquina de la tecla (18-11-2026: a
+   solas entre las dos teclas quedaba suelta). Un pósit amarillo ladeado, con
+   contorno de rotulador, que asoma por arriba a la derecha. */
+.hc-cta-cuenta { position: relative; }
+
+.hc-cta-nota {
+  position: absolute;
+  top: -14px;
+  right: -8px;
+  z-index: 2;
+  padding: 3px 9px 4px;
+  border: 2px solid var(--tinta);
+  border-radius: 6px 5px 7px 4px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+  font-size: 16px;
+  color: var(--tinta);
+  white-space: nowrap;
+  rotate: 4deg;
+  pointer-events: none;
+}
+
+@media (max-width: 560px) {
+  .hc-cta-nota { top: -13px; right: 6px; font-size: 15px; }
+  .hc-acciones { gap: 16px; }
+}
+
+/* ══ Las tarjetas del hero sin sesión, rediseñadas como las de las
+   herramientas (18-11-2026, pedido por el admin: «más llamativas, como las
+   de con sesión») ══ El frente: papel pastel de su color con renglones y el
+   margen de libreta, contorno de rotulador, canto de su tono, el tema como
+   etiqueta de su color sólido, la pregunta con el fluorescente de su color y
+   «gírame» a mano. El dorso: su color sólido con contorno, la respuesta
+   grande y la explicación en una nota de papel. */
+.hc .te:not(.hc-herr) {
+  --o: color-mix(in srgb, var(--c) 62%, var(--tinta));
+  --s: color-mix(in srgb, var(--c) 18%, var(--papel));
+}
+
+.hc .te:not(.hc-herr) .te-cara {
+  border: 2.5px solid var(--tinta);
+  border-radius: 26px 22px 27px 21px / 22px 27px 21px 26px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.6),
+    0 7px 0 color-mix(in srgb, var(--c) 70%, var(--tinta)),
+    0 30px 50px -30px rgba(29, 27, 51, 0.5);
+}
+
+.hc .te:not(.hc-herr) .te-frente {
+  background:
+    linear-gradient(90deg, transparent 15px, color-mix(in srgb, var(--coral) 35%, transparent) 15px 17px, transparent 17px),
+    repeating-linear-gradient(transparent 0 25px, color-mix(in srgb, var(--c) 24%, transparent) 25px 26px),
+    var(--s);
+}
+
+.hc .te:not(.hc-herr) .te-frente .te-tema {
+  align-self: flex-start;
+  padding: 3px 9px 4px;
+  border: 2px solid var(--tinta);
+  border-radius: 8px 7px 9px 6px;
+  background: var(--c);
+  box-shadow: 0 2px 0 var(--o);
+  color: var(--tinta);
+  rotate: -2deg;
+}
+
+.hc .te:not(.hc-herr) .te-pregunta {
+  align-self: flex-start;
+  padding: 0 0.1em;
+  background: linear-gradient(transparent 60%, color-mix(in srgb, var(--c) 50%, transparent) 60%, color-mix(in srgb, var(--c) 50%, transparent) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.hc .te:not(.hc-herr) .te-pista {
+  color: var(--o);
+  font-size: 24px;
+}
+
+.hc .te:not(.hc-herr) .te-dorso {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.22) 0 70px, transparent 71px),
+    var(--c);
+}
+
+.hc .te:not(.hc-herr) .te-dorso .te-detalle {
+  padding: 9px 11px;
+  border: 2px dashed color-mix(in srgb, var(--tinta) 30%, transparent);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--tinta);
+  font-size: 14px;
+}
+
+/* ══ «Lo que te espera dentro», en el móvil, rediseñado de cero (18-11-2026,
+   pedido por el admin) ══ El índice de un cuaderno: una ficha de papel con
+   contorno de rotulador, pegada con celo, y dentro una fila por cosa, como
+   las líneas de un índice: el icono en su teclita de color, la palabra, una
+   línea de puntitos de su color y la cifra grande, en su tono. Cada fila
+   lleva a su sección. */
+@media (max-width: 640px) {
+  .hc-indice {
+    position: relative;
+    margin-top: 1.6rem;
+    padding: 20px 14px 8px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 20px 16px 22px 15px / 16px 22px 15px 20px;
+    background:
+      repeating-linear-gradient(transparent 0 33px, color-mix(in srgb, var(--cielo) 22%, transparent) 33px 34px),
+      var(--papel);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--lila) 45%, var(--papel));
+    rotate: -0.8deg;
+  }
+
+  /* El celo. */
+  .hc-indice::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 84px;
+    height: 22px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--coral) 45%, transparent);
+    translate: -50% 0;
+    rotate: -3deg;
+  }
+
+  .hc-indice-cabecera { margin-bottom: 6px; }
+  .hc-indice-titulo { font-size: 1.2rem; }
+
+  .hc-indice .hc-indice-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+  }
+
+  .hc-indice .hc-indice-lista > li { display: block; }
+
+  .hc-indice .hc-ficha {
+    display: grid;
+    grid-template-columns: 30px auto minmax(14px, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 0;
+    padding: 10px 2px;
+    border: 0;
+    border-top: 2px dashed color-mix(in srgb, var(--lila) 35%, transparent);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    rotate: none;
+    transform: none;
+  }
+
+  .hc-indice .hc-indice-lista > li:first-child .hc-ficha { border-top: 0; }
+  .hc-indice .hc-ficha::before { display: none; }
+
+  .hc-indice .hc-ficha-icono {
+    grid-column: 1;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .hc-indice .hc-ficha-texto { display: contents; }
+
+  .hc-indice .hc-ficha-palabra {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 0.86rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    color: var(--tinta);
+    white-space: nowrap;
+  }
+
+  /* La línea de puntitos, entre la palabra y la cifra. */
+  .hc-indice .hc-ficha::after {
+    content: "";
+    grid-column: 3;
+    grid-row: 1;
+    align-self: end;
+    margin-bottom: 8px;
+    border-bottom: 2.5px dotted color-mix(in srgb, var(--c) 70%, var(--papel));
+  }
+
+  .hc-indice .hc-ficha-texto b {
+    grid-column: 4;
+    grid-row: 1;
+    font-family: var(--letra-titular);
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--o);
+  }
+}
+
+/* ── El índice del móvil, con pestañas (18-11-2026: «soso, sin creatividad»)
+   ── Cada fila es una línea del índice con su notita a mano, y la cifra va
+   en una PESTAÑA de separador de su color que asoma por el borde derecho de
+   la ficha, como las de un archivador; cada pestaña, un poco a otra altura y
+   ladeada. Sin los puntitos ni los trazos entre filas. */
+.hc-ficha-nota { display: none; }
+
+@media (max-width: 640px) {
+  .hc-indice { padding: 20px 14px 12px 16px; overflow: visible; }
+
+  .hc-indice .hc-indice-lista { gap: 10px; }
+  .hc-indice .hc-indice-lista > li { margin: 0; }
+
+  .hc-indice .hc-ficha {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 4px 0;
+    border-top: 0;
+  }
+
+  .hc-indice .hc-ficha::after { display: none; }
+
+  .hc-indice .hc-ficha-icono { width: 34px; height: 34px; border-radius: 10px; rotate: -4deg; }
+  .hc-indice .hc-indice-lista > li:nth-child(even) .hc-ficha-icono { rotate: 4deg; }
+
+  .hc-indice .hc-ficha-palabra {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    white-space: normal;
+    font-size: 0.9rem;
+  }
+
+  .hc-indice .hc-ficha-nota {
+    display: block;
+    font-family: var(--letra-mano);
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1;
+    color: var(--o);
+  }
+
+  /* La pestaña: sale por el borde derecho de la ficha. */
+  .hc-indice .hc-ficha-texto b {
+    grid-column: 3;
+    min-width: 66px;
+    margin-right: -22px;
+    padding: 8px 14px 8px 12px;
+    border: 2.5px solid var(--tinta);
+    border-left: 0;
+    border-radius: 0 14px 14px 0;
+    background: var(--c);
+    box-shadow: 0 4px 0 var(--o);
+    font-size: 1.45rem;
+    text-align: right;
+    color: var(--t, var(--tinta));
+    rotate: 2deg;
+  }
+
+  .hc-indice .hc-indice-lista > li:nth-child(even) .hc-ficha-texto b { rotate: -2deg; margin-right: -19px; }
+}
+
+/* La pestaña, cerrada por los cuatro lados (18-11-2026: sin el borde de la
+   izquierda parecía cortada). Ahora es una pastilla entera pegada sobre el
+   borde de la ficha. */
+@media (max-width: 640px) {
+  .hc-indice .hc-ficha-texto b {
+    border-left: 2.5px solid var(--tinta);
+    border-radius: 12px 14px 15px 11px / 11px 15px 14px 12px;
+    padding: 7px 12px;
+  }
+}
+
+/* Las tarjetas de herramientas (con sesión), algo más largas y con aire
+   bajo «ábrelo» (18-11-2026, pedido por el admin: iba pegado al borde). */
+.te.hc-herr .hc-herr-cara { padding-bottom: 24px; }
+.hc-herr-dibujo + .hc-herr-ir { margin-top: 10px; }
+
+.hc-mesa .te.hc-herr { height: 340px; }
+
+@media (max-width: 960px) {
+  .hc-mesa .te.hc-herr { height: 318px; }
+}
+
+/* Índice del hero en el móvil: la misma flecha irregular de cada apartado a
+   su pastilla (18-11-2026). */
+@media (max-width: 640px) {
+  .hc-indice .hc-ficha { grid-template-columns: 34px auto minmax(18px, 1fr) auto; }
+  .hc-indice .hc-ficha-texto b { grid-column: 4; }
+
+  .hc-indice .hc-ficha::after {
+    content: "";
+    display: block;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    height: 14px;
+    margin: 0 4px 0 2px;
+    border: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M2 2.5l8 4.6-7.4 5' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right center / 11px 13px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8C10 4 16 11 24 7s14-5 22 0 9 2 12 0' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") left center / calc(100% - 6px) 100% no-repeat;
+  }
+}
+
+/* Sin punta: solo la línea discontinua irregular (18-11-2026). */
+@media (max-width: 640px) {
+  .hc-indice .hc-ficha::after { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8C10 4 16 11 24 7s14-5 22 0 9 2 12 0' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
+}
+
+/* Índice del hero en el móvil, terminado (18-11-2026): cada apartado en una
+   sola línea (con su nota debajo, también en una), pastillas algo más
+   estrechas y menos aire entre filas, para que la línea discontinua tenga
+   sitio de verdad entre el apartado y su pastilla. */
+@media (max-width: 640px) {
+  .hc-indice .hc-indice-lista { gap: 4px; }
+  .hc-indice .hc-ficha { gap: 10px; padding: 6px 0; }
+
+  .hc-indice .hc-ficha-palabra {
+    font-size: 0.84rem;
+    white-space: nowrap;
+  }
+
+  .hc-indice .hc-ficha-nota { font-size: 15px; white-space: nowrap; }
+
+  .hc-indice .hc-ficha-texto b {
+    min-width: 54px;
+    padding: 5px 10px;
+    font-size: 1.25rem;
+  }
+}
+
+/* «y además…»: una fila más del índice, solo en el móvil (18-11-2026): la
+   nota a mano y tres teclitas de colores, algo ladeadas como pegatinas,
+   que llevan al Diario, al foro y a los logros. */
+.hc-indice-ademas { display: none; }
+
+@media (max-width: 640px) {
+  .hc-indice .hc-indice-lista > li.hc-indice-ademas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 2px dashed color-mix(in srgb, var(--lila) 35%, transparent);
+  }
+
+  .hc-ademas-nota {
+    font-family: var(--letra-mano);
+    font-size: 21px;
+    line-height: 1;
+    color: var(--naranja-o);
+    rotate: -3deg;
+  }
+
+  .hc-ademas-lista { display: flex; gap: 8px; }
+
+  .hc-ademas {
+    --c: var(--cielo);
+    --o: var(--cielo-o);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px 5px 8px;
+    border: 2px solid var(--tinta);
+    border-radius: 10px 8px 11px 7px / 8px 11px 7px 10px;
+    background: color-mix(in srgb, var(--c) 22%, var(--papel));
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 70%, var(--tinta));
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--tinta);
+    text-decoration: none;
+    rotate: -2deg;
+  }
+
+  .hc-ademas:nth-child(2) { rotate: 2deg; }
+  .hc-ademas svg { color: var(--o); }
+  .hc-ademas--azul { --c: var(--azul); --o: var(--azul-o); }
+  .hc-ademas--coral { --c: var(--coral); --o: var(--coral-o); }
+  .hc-ademas--menta { --c: var(--menta); --o: var(--menta-o); }
+}
+
+/* «y además…» con cuatro baldositas (18-11-2026, pedido por el admin): en
+   el móvil sustituye a la fila «3 piezas Premium». Cada una, el icono en su
+   teclita de color y la palabra debajo, como pegatinas algo ladeadas. */
+@media (max-width: 640px) {
+  .hc-indice .hc-indice-lista > li:has(.hc-ficha--premium) { display: none; }
+
+  .hc-indice .hc-indice-lista > li.hc-indice-ademas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .hc-ademas-lista {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .hc-ademas {
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px 7px;
+    font-size: 0.74rem;
+    text-align: center;
+  }
+
+  .hc-ademas:nth-child(odd) { rotate: -2.5deg; }
+  .hc-ademas:nth-child(even) { rotate: 2.5deg; }
+
+  .hc-ademas-icono {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid var(--tinta);
+    border-radius: 9px;
+    background: var(--c);
+    box-shadow: 0 2px 0 var(--o);
+    color: var(--tinta);
+  }
+
+  .hc-ademas .hc-ademas-icono svg { color: var(--tinta); }
+  .hc-ademas--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); }
+}
+
+/* Garabatos de estudio por detrás del índice, en el móvil (18-11-2026): una
+   copa, un lápiz, una estrella y una bombilla, en trazo lila suave, que
+   asoman por los lados y por debajo de la ficha. Sin exagerar. */
+.hc-indice-garabatos { display: none; }
+
+@media (max-width: 640px) {
+  .hc-indice { position: relative; z-index: 1; }
+
+  .hc-indice-garabatos {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 640px;
+    z-index: 0;
+    display: block;
+    pointer-events: none;
+  }
+
+  .hc-ig {
+    position: absolute;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--lila) 45%, var(--fondo));
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hc-ig--lapiz { top: 42%; right: -14px; width: 54px; rotate: 18deg; }
+  .hc-ig--estrella { bottom: 4px; right: 18%; width: 30px; rotate: 12deg; }
+  .hc-ig--bombilla { bottom: 18px; left: -6px; width: 46px; rotate: -10deg; }
+}
+
+/* En el ordenador, la tarjeta de la izquierda va delante, como con sesión:
+   así se ve entera su pegatina de la esquina (18-11-2026, pedido por el
+   admin). La que tiene el ratón encima sigue subiendo por encima de todas. */
+@media (min-width: 961px) {
+  .hc-mesa .te.hc-t1 { z-index: 3; }
+  .hc-mesa .te:hover,
+  .hc-mesa .te:focus-visible { z-index: 4; }
+}
+
+/* ══ «Lo que te espera dentro» en el ordenador, construido de cero sobre el
+   diseño del móvil (18-11-2026, pedido por el admin) ══ La misma ficha de
+   cuaderno con celo y renglones, a dos columnas: a la izquierda, las tres
+   filas del índice (icono, palabra con su nota a mano, línea discontinua y
+   la cifra en su pastilla); a la derecha, separada por un trazo, «y
+   además…» con sus cuatro baldositas. Sin la fila de «piezas Premium». */
+@media (min-width: 641px) {
+  .hc-indice {
+    position: relative;
+    max-width: 980px;
+    margin: 2.6rem auto 0;
+    padding: 26px 34px 22px 30px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 24px 20px 26px 19px / 20px 26px 19px 24px;
+    background:
+      repeating-linear-gradient(transparent 0 37px, color-mix(in srgb, var(--cielo) 22%, transparent) 37px 38px),
+      var(--papel);
+    box-shadow: 0 6px 0 color-mix(in srgb, var(--lila) 45%, var(--papel));
+    rotate: -0.5deg;
+  }
+
+  .hc-indice::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 96px;
+    height: 24px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--coral) 45%, transparent);
+    translate: -50% 0;
+    rotate: -3deg;
+  }
+
+  .hc-indice-cabecera { margin-bottom: 12px; }
+
+  .hc-indice .hc-indice-lista {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    column-gap: 40px;
+    row-gap: 6px;
+    margin: 0;
+  }
+
+  .hc-indice .hc-indice-lista > li { display: block; grid-column: 1; margin: 0; }
+  .hc-indice .hc-indice-lista > li:has(.hc-ficha--premium) { display: none; }
+
+  .hc-indice .hc-ficha,
+  .hc-indice .hc-ficha:hover {
+    display: grid;
+    grid-template-columns: 38px auto minmax(24px, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    min-height: 0;
+    padding: 6px 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    rotate: none;
+    transform: none;
+  }
+
+  .hc-indice .hc-ficha::before { display: none; }
+
+  .hc-indice .hc-ficha::after {
+    content: "";
+    display: block;
+    grid-column: 3;
+    grid-row: 1;
+    height: 14px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8C10 4 16 11 24 7s14-5 22 0 9 2 12 0' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  }
+
+  .hc-indice .hc-ficha-icono { grid-column: 1; width: 38px; height: 38px; border-radius: 11px; rotate: -4deg; }
+  .hc-indice .hc-indice-lista > li:nth-child(even) .hc-ficha-icono { rotate: 4deg; }
+
+  .hc-indice .hc-ficha-texto { display: contents; }
+
+  .hc-indice .hc-ficha-palabra {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--tinta);
+    white-space: nowrap;
+  }
+
+  .hc-indice .hc-ficha-nota {
+    display: block;
+    font-family: var(--letra-mano);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--o);
+    white-space: nowrap;
+  }
+
+  .hc-indice .hc-ficha-texto b {
+    grid-column: 4;
+    grid-row: 1;
+    min-width: 70px;
+    padding: 6px 14px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 12px 14px 15px 11px / 11px 15px 14px 12px;
+    background: var(--c);
+    box-shadow: 0 4px 0 var(--o);
+    font-family: var(--letra-titular);
+    font-size: 1.55rem;
+    line-height: 1;
+    text-align: right;
+    color: var(--t, var(--tinta));
+    rotate: 2deg;
+    transition: rotate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
+
+  .hc-indice .hc-indice-lista > li:nth-child(even) .hc-ficha-texto b { rotate: -2deg; }
+
+  @media (hover: hover) {
+    .hc-indice .hc-ficha:hover .hc-ficha-texto b { rotate: -5deg; }
+    .hc-indice .hc-ficha:hover .hc-ficha-palabra { text-decoration: underline 2px; text-underline-offset: 4px; }
+  }
+
+  /* «y además…», a la derecha, separado por un trazo discontinuo. */
+  .hc-indice .hc-indice-lista > li.hc-indice-ademas {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    padding-left: 34px;
+    border-left: 2px dashed color-mix(in srgb, var(--lila) 40%, transparent);
+  }
+
+  .hc-ademas-nota {
+    font-family: var(--letra-mano);
+    font-size: 26px;
+    line-height: 1;
+    color: var(--naranja-o);
+    rotate: -3deg;
+    transform-origin: left center;
+  }
+
+  .hc-ademas-lista {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .hc-ademas {
+    --c: var(--cielo);
+    --o: var(--cielo-o);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 4px 10px;
+    border: 2px solid var(--tinta);
+    border-radius: 12px 10px 13px 9px / 10px 13px 9px 12px;
+    background: color-mix(in srgb, var(--c) 22%, var(--papel));
+    box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 70%, var(--tinta));
+    font-size: 0.86rem;
+    font-weight: 900;
+    color: var(--tinta);
+    text-decoration: none;
+    transition: translate 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
+
+  .hc-ademas:nth-child(odd) { rotate: -2.5deg; }
+  .hc-ademas:nth-child(even) { rotate: 2.5deg; }
+
+  @media (hover: hover) {
+    .hc-ademas:hover { translate: 0 -4px; }
+  }
+
+  .hc-ademas-icono {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--tinta);
+    border-radius: 10px;
+    background: var(--c);
+    box-shadow: 0 2px 0 var(--o);
+    color: var(--tinta);
+  }
+
+  .hc-ademas--azul { --c: var(--azul); --o: var(--azul-o); }
+  .hc-ademas--menta { --c: var(--menta); --o: var(--menta-o); }
+  .hc-ademas--amarillo { --c: var(--amarillo); --o: var(--amarillo-o); }
+  .hc-ademas--coral { --c: var(--coral); --o: var(--coral-o); }
+}
+
+/* El índice del ordenador, más rico (18-11-2026, pedido por el admin: «más
+   creativo, sin tanto vacío»). «y además…» pasa a cuatro fichas de 2 × 2,
+   cada una con la pegatina de su personaje, su nombre y una frase a mano; y
+   el cohete asoma por la esquina de arriba a la derecha de la ficha. En el
+   móvil, como estaba (con su icono y sin frase ni pegatina). */
+.hc-ademas-pegatina,
+.hc-ademas-frase,
+.hc-indice-cohete { display: none; }
+
+@media (min-width: 961px) {
+  .hc-indice { padding-right: 40px; }
+
+  .hc-indice-cohete {
+    position: absolute;
+    top: -46px;
+    right: -30px;
+    z-index: 2;
+    display: block;
+    width: 104px;
+    height: auto;
+    rotate: 12deg;
+    pointer-events: none;
+    animation: hc-cohete-flota 3.8s ease-in-out infinite;
+  }
+
+  @keyframes hc-cohete-flota {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -6px; }
+  }
+
+  .hc-indice .hc-indice-lista { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+
+  .hc-ademas-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+  }
+
+  .hc-ademas {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    justify-items: start;
+    column-gap: 10px;
+    row-gap: 0;
+    padding: 10px 12px 10px 8px;
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .hc-ademas .hc-ademas-icono { display: none; }
+
+  .hc-ademas-pegatina {
+    display: block;
+    grid-row: 1 / span 2;
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    rotate: -6deg;
+    transition: rotate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), scale 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
+
+  .hc-ademas-frase {
+    display: block;
+    grid-column: 2;
+    font-family: var(--letra-mano);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--o);
+  }
+
+  @media (hover: hover) {
+    .hc-ademas:hover .hc-ademas-pegatina { rotate: 6deg; scale: 1.08; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hc-indice-cohete { animation: none; }
+  }
+}
+
+/* ── La parte izquierda del índice en el ordenador, rehecha (18-11-2026,
+   pedido por el admin) ── Cada apartado, una tira de papel de su color con
+   contorno de rotulador, algo ladeada: la pegatina de lo que es, la cifra
+   muy grande en su tono y la palabra con su nota a mano. El título, más
+   grande y con «dentro» en fluorescente. */
+.hc-ficha-pegatina { display: none; }
+
+.hc-indice-titulo-marca {
+  padding: 0 0.12em;
+  background: linear-gradient(transparent 58%, color-mix(in srgb, var(--amarillo) 80%, transparent) 58%, color-mix(in srgb, var(--amarillo) 80%, transparent) 92%, transparent 92%);
+}
+
+@media (min-width: 961px) {
+  .hc-indice-titulo { font-size: 1.9rem; }
+  .hc-indice-cabecera { margin-bottom: 18px; }
+
+  .hc-indice .hc-indice-lista { row-gap: 14px; }
+
+  .hc-indice .hc-ficha,
+  .hc-indice .hc-ficha:hover {
+    grid-template-columns: 58px auto minmax(0, 1fr);
+    gap: 16px;
+    padding: 10px 18px 10px 12px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 16px 13px 17px 12px / 13px 17px 12px 16px;
+    background: color-mix(in srgb, var(--c) 20%, var(--papel));
+    box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 70%, var(--tinta));
+    rotate: -0.8deg;
+    transition: rotate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), translate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
+
+  .hc-indice .hc-indice-lista > li:nth-child(even) .hc-ficha { rotate: 0.8deg; }
+
+  @media (hover: hover) {
+    .hc-indice .hc-ficha:hover { translate: 6px 0; }
+    .hc-indice .hc-ficha:hover .hc-ficha-palabra { text-decoration: none; }
+    .hc-indice .hc-ficha:hover .hc-ficha-pegatina { rotate: 8deg; scale: 1.08; }
+  }
+
+  .hc-indice .hc-ficha::after { display: none; }
+  .hc-indice .hc-ficha .hc-ficha-icono { display: none; }
+
+  .hc-ficha-pegatina {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    rotate: -6deg;
+    transition: rotate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), scale 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
+
+  /* La cifra, muy grande y sin pastilla, en su tono con su fluorescente. */
+  .hc-indice .hc-ficha-texto b,
+  .hc-indice .hc-indice-lista > li:nth-child(even) .hc-ficha-texto b {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    padding: 0 0.08em;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(transparent 62%, color-mix(in srgb, var(--c) 45%, transparent) 62%, color-mix(in srgb, var(--c) 45%, transparent) 90%, transparent 90%);
+    box-shadow: none;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--o);
+    text-align: left;
+    rotate: none;
+  }
+
+  .hc-indice .hc-ficha-palabra {
+    grid-column: 3;
+    font-size: 1.05rem;
+    white-space: normal;
+  }
+
+  .hc-indice .hc-ficha-nota { font-size: 19px; }
+}
+
+/* «sigue» + flecha hacia abajo, a mano, en el hueco a la izquierda de la
+   ficha del índice (18-11-2026, pedido por el admin): invita a seguir
+   bajando. Solo en pantallas anchas, donde ese hueco existe. */
+.hc-indice-sigue { display: none; }
+
+@media (min-width: 1200px) {
+  .hc-indice-sigue {
+    position: absolute;
+    top: 50%;
+    left: -132px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-family: var(--letra-mano);
+    font-size: 34px;
+    line-height: 1;
+    color: var(--naranja-o);
+    translate: 0 -50%;
+    rotate: -8deg;
+    pointer-events: none;
+  }
+
+  .hc-indice-sigue .hc-indice-sigue-flecha { margin-left: 18px; }
+}
+
+/* «sigue», más grande y con una flecha que baja clara, ondulada, a mano. */
+@media (min-width: 1200px) {
+  .hc-indice-sigue { left: -150px; font-size: 48px; gap: 6px; rotate: -6deg; }
+
+  .hc-indice-sigue .hc-indice-sigue-flecha {
+    width: 44px;
+    height: 120px;
+    margin-left: 0;
+    overflow: visible;
+    fill: none;
+    stroke: var(--naranja);
+    stroke-width: 3.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+/* Las dos notas del índice, con más vida y distintas entre sí (18-11-2026,
+   pedido por el admin), en el ordenador: «toca una y vas directo», un pósit
+   amarillo ladeado con contorno; «y además…», grande, en lila y con un
+   subrayado ondulado coral, como algo que se apunta con prisa. */
+@media (min-width: 961px) {
+  .hc-indice-nota {
+    padding: 4px 14px 6px;
+    border: 2px solid var(--tinta);
+    border-radius: 6px 5px 7px 4px;
+    background: var(--amarillo);
+    box-shadow: 0 3px 0 var(--amarillo-o);
+    font-size: 23px;
+    color: var(--tinta);
+    rotate: -4deg;
+  }
+
+  .hc-ademas-nota {
+    align-self: flex-start;
+    font-size: 36px;
+    color: var(--lila-o);
+    text-decoration: underline wavy color-mix(in srgb, var(--coral) 80%, transparent);
+    text-decoration-thickness: 2.5px;
+    text-underline-offset: 8px;
+    rotate: -6deg;
+  }
+}
+
+/* El pósit «toca una y vas directo», sin flecha (18-11-2026, pedido por el
+   admin). */
+@media (min-width: 961px) {
+  .hc-indice-nota .hc-indice-flecha { display: none; }
+}

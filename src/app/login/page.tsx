@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
 import Tecla from "@/components/cuaderno/Tecla";
-import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import AccesoShell from "@/components/acceso/AccesoShell";
 import { Aviso, Campo, CampoClave, GoogleIcon, Separador, useSonidoDeError } from "@/components/acceso/Campos";
 import { MENSAJE_DOMINIO_NO_PERMITIDO } from "@/lib/emailPolicy";
 
@@ -108,6 +108,9 @@ function LoginForm() {
   return (
     <AccesoShell
       nota="Hola de nuevo"
+      // El candado escribe su contraseña, la llave no mira y el escudo para a
+      // la lupa cotilla (18-11-2026). Solo en el ordenador.
+      ilustracion="/cuaderno/login-pegatina.webp"
       titulo={
         vieneAPagar ? (
           <>Inicia sesión y pasas <span className="fluor">directo al pago</span></>
@@ -115,7 +118,7 @@ function LoginForm() {
           <>Accede a tu <span className="fluor">academia</span></>
         )
       }
-      apunte={APUNTE}
+     
     >
       {/* Sale de /auth/callback: cuenta de Google fuera de política o enlace
           de confirmación caducado. Antes se redirigía con ?error= y no se
@@ -191,13 +194,3 @@ function LoginForm() {
   );
 }
 
-/** El apunte de la derecha: qué es el 2FA, la segunda llave de la cuenta. */
-const APUNTE: Apunte = {
-  tema: "Seguridad",
-  pregunta: "¿Qué es la verificación en dos pasos?",
-  respuesta: "Doble llave",
-  detalle: "Tu contraseña y, además, un código de tu móvil que cambia cada 30 segundos.",
-  color: "naranja",
-  postit: "¡Bienvenido!",
-  nota: "Puedes activarla desde tu perfil",
-};

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { passwordChecks } from "@/lib/passwordRules";
 import Tecla from "@/components/cuaderno/Tecla";
 import { sonar } from "@/lib/sonidos";
-import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import AccesoShell from "@/components/acceso/AccesoShell";
 import { Aviso, CampoClave, RequisitosClave } from "@/components/acceso/Campos";
 
 export default function ResetPasswordPage() {
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
   );
 
   return (
-    <AccesoShell nota="Contraseña nueva" titulo={titulo} apunte={APUNTE}>
+    <AccesoShell nota="Contraseña nueva" titulo={titulo}>
       {done ? (
         <Aviso tipo="ok" titulo="Guardada">
           Tu contraseña se ha guardado correctamente. Redirigiendo...
@@ -159,13 +159,3 @@ export default function ResetPasswordPage() {
   );
 }
 
-/** El apunte de la derecha: no reutilizar la contraseña. */
-const APUNTE: Apunte = {
-  tema: "Seguridad",
-  pregunta: "¿Puedo volver a usar la de antes?",
-  respuesta: "Mejor no",
-  detalle: "Elige una nueva y única: si otra web filtra una contraseña repetida, esta sigue a salvo.",
-  color: "naranja",
-  postit: "Último paso",
-  nota: "Al guardarla, cerramos tus sesiones abiertas en otros dispositivos",
-};

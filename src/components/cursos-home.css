@@ -1767,3 +1767,115 @@
 @media (hover: hover) {
   .ch-curso:hover .ch-curso-foto-img { rotate: -2deg; scale: 1.06; }
 }
+
+/* Las cifras de los cursos en el móvil, con las pestañas del índice del hero
+   (18-11-2026, pedido por el admin): sin los puntitos; la cifra va en una
+   pastilla de su color, con contorno de rotulador, que asoma por el borde
+   derecho de la ficha, algo ladeada y cada una a su aire. */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba { overflow: visible; }
+
+  .ch-datos-movil--arriba .ch-dato,
+  .ch-datos-movil--arriba .ch-dato--fila {
+    grid-template-columns: 26px minmax(0, 1fr) auto;
+    border-top: 0;
+    padding: 6px 0;
+  }
+
+  .ch-datos-movil--arriba .ch-dato::after { display: none; }
+
+  .ch-datos-movil--arriba .ch-dato b {
+    grid-column: 3;
+    min-width: 62px;
+    margin-right: -26px;
+    padding: 6px 12px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 12px 14px 15px 11px / 11px 15px 14px 12px;
+    background: var(--d);
+    box-shadow: 0 4px 0 var(--do);
+    font-size: 1.3rem;
+    text-align: right;
+    color: var(--tinta);
+    rotate: 2deg;
+  }
+
+  .ch-datos-movil--arriba .ch-dato:nth-child(even) b { rotate: -2deg; margin-right: -22px; }
+}
+
+/* Una flecha irregular, a mano, que lleva de cada apartado a su pastilla
+   (18-11-2026, pedido por el admin): el trazo ondulado se estira lo que haga
+   falta y la punta va aparte, para no deformarse. */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba .ch-dato,
+  .ch-datos-movil--arriba .ch-dato--fila { grid-template-columns: 26px auto minmax(18px, 1fr) auto; }
+
+  .ch-datos-movil--arriba .ch-dato b { grid-column: 4; }
+
+  .ch-datos-movil--arriba .ch-dato::after {
+    content: "";
+    display: block;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    height: 14px;
+    margin: 0 4px 0 2px;
+    border: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M2 2.5l8 4.6-7.4 5' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right center / 11px 13px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8C10 4 16 11 24 7s14-5 22 0 9 2 12 0' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") left center / calc(100% - 6px) 100% no-repeat;
+  }
+}
+
+/* El título de la ficha de cifras, compacto (18-11-2026, pedido por el
+   admin: partido en dos líneas quedaba incoherente). El «8», en una pegatina
+   redonda lila a la izquierda; a su lado, «cursos para aprender» y, debajo,
+   «paso a paso» a mano. */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba .ch-resumen-titulo {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 0;
+    margin-bottom: 10px;
+    font-size: 1.12rem;
+    line-height: 1.1;
+  }
+
+  .ch-datos-movil--arriba .ch-resumen-cifra {
+    display: grid;
+    place-items: center;
+    grid-row: 1 / span 2;
+    width: 50px;
+    height: 50px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 50%;
+    background: var(--lila);
+    box-shadow: 0 3px 0 var(--lila-o);
+    font-size: 1.7rem;
+    color: #fff;
+    rotate: -6deg;
+  }
+
+  .ch-datos-movil--arriba .ch-resumen-mano {
+    grid-column: 2;
+    justify-self: start;
+    font-size: 1.15em;
+    line-height: 1;
+  }
+}
+
+/* Sin punta: solo la línea discontinua irregular (18-11-2026). */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba .ch-dato::after { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8C10 4 16 11 24 7s14-5 22 0 9 2 12 0' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
+}
+
+/* «paso a paso», más grande y torcido, con su fluorescente (18-11-2026). */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba .ch-resumen-mano {
+    margin-top: 2px;
+    padding: 0 0.15em;
+    font-size: 1.6em;
+    rotate: -5deg;
+    transform-origin: left center;
+    background: linear-gradient(transparent 55%, color-mix(in srgb, var(--amarillo) 80%, transparent) 55%, color-mix(in srgb, var(--amarillo) 80%, transparent) 92%, transparent 92%);
+  }
+}

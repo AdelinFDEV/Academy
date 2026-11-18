@@ -4,7 +4,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { bloquearScroll } from "@/lib/bloquearScroll";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserRound, type LucideIcon, MessagesSquare } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserPlus, UserRound, type LucideIcon, MessagesSquare } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 import AvatarUsuario from "./AvatarUsuario";
 import GuideSearch from "./GuideSearch";
@@ -299,7 +300,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   // en naranja sólido, distinta del resto (pedido por el admin el
                   // 17-11-2026). Solo en el móvil (menu-movil.css), donde tu
                   // cuenta ya no va en el menú, y solo con sesión.
-                  user && (
+                  user ? (
                     <li className="mm-tu-li" style={{ "--i": PREMIUM.length + gratis.length } as React.CSSProperties}>
                       <Link href="/dashboard" onClick={close} className="mm-item mm-tu" onPointerDown={() => sonar("tecla")}>
                         <span className="mm-tu-foto" aria-hidden="true">
@@ -307,6 +308,20 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                         </span>
                         <span className="mm-item-texto">
                           <span className="mm-item-nombre">Dashboard</span>
+                        </span>
+                      </Link>
+                    </li>
+                  ) : (
+                    // Sin sesión, en ese mismo hueco y con el mismo estilo,
+                    // «Registrarse» (18-11-2026, pedido por el admin: en lugar de
+                    // la tarjeta «Tu academia» con sus dos teclas).
+                    <li className="mm-tu-li" style={{ "--i": PREMIUM.length + gratis.length } as React.CSSProperties}>
+                      <Link href="/register" onClick={close} className="mm-item mm-tu" onPointerDown={() => sonar("tecla")}>
+                        <span className="mm-tu-foto mm-tu-foto--icono" aria-hidden="true">
+                          <UserPlus size={19} strokeWidth={2.2} />
+                        </span>
+                        <span className="mm-item-texto">
+                          <span className="mm-item-nombre">Registrarse</span>
                         </span>
                       </Link>
                     </li>
@@ -402,6 +417,10 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
               {!isPremium && (
                 <Link href="/premium" onClick={close} className="mm-premium">
+                  {/* Las tres piezas Premium, coronadas: el cerdito del Portfolio en
+                      el trono, el cuaderno del Diario y el birrete de los Cursos
+                      (18-11-2026). Decoración. */}
+                  <Image src="/cuaderno/premium-coronas-pegatina.webp" alt="" width={560} height={408} className="mm-premium-pegatina" draggable={false} />
                   <span className="mm-premium-cabecera">
                     <Crown size={15} aria-hidden="true" /> Premium
                   </span>

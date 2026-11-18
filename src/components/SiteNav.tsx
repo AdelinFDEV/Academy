@@ -134,14 +134,12 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
             nombre se abre el menú con «Mi dashboard» y «Mi perfil». */}
         {user && nombre && <NavSaludo nombre={nombre} plan={perfil.plan} avatar={perfil.avatar} />}
 
-        {/* Y para quien todavía no tiene cuenta, lo que sí le sirve: entrar o
-            registrarse, a la vista y no dentro de un desplegable. «Entrar» en
-            blanco y «Registrarse» en naranja: son dos acciones distintas y la
-            que interesa es una. */}
+        {/* Para quien todavía no tiene cuenta, solo «Entrar» (18-11-2026, pedido
+            por el admin): crear la cuenta lo hace la tecla grande del hero de la
+            portada y el menú, así la barra respira. */}
         {!user && (
           <span className="nav-acceso">
             <Tecla href="/login" color="blanca" tamano="peq" className="nav-acceso-entrar">Entrar</Tecla>
-            <Tecla href="/register" tamano="peq" className="nav-acceso-registro">Registrarse</Tecla>
           </span>
         )}
 

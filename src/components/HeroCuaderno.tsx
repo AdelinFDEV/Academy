@@ -5,7 +5,7 @@ import TrazoVisible from "@/components/cuaderno/TrazoVisible";
 import TarjetaEstudio from "@/components/cuaderno/TarjetaEstudio";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, BookA, GraduationCap, Crown, ArrowRight } from "lucide-react";
+import { BookOpen, BookA, GraduationCap, Crown, ArrowRight, NotebookPen, MessagesSquare, Trophy, PiggyBank } from "lucide-react";
 import { herramienta, destinoPorRuta } from "@/lib/herramientas";
 import "./hero-cuaderno.css";
 
@@ -149,13 +149,25 @@ export default function HeroCuaderno({ guias, terminos, cursos, sesion, portfoli
           ) : (
             <>
               <p className="hc-lead">
-                Guías gratuitas con ejercicios y un quiz final, y cursos con un camino claro: módulo a
-                módulo, examen a examen, hasta tu certificado.
+                {/* Con color (18-11-2026, pedido por el admin): cada promesa, en
+                    el color de su pieza, como se subraya un apunte. */}
+                <span className="hc-marca hc-marca--menta">Guías gratuitas</span> con{" "}
+                <span className="hc-marca-txt hc-marca-txt--cielo">ejercicios</span> y un{" "}
+                <span className="hc-marca-txt hc-marca-txt--coral">quiz final</span>, y{" "}
+                <span className="hc-marca hc-marca--lila">cursos</span> con un camino claro:{" "}
+                <span className="hc-marca-raya">módulo a módulo, examen a examen</span>, hasta tu{" "}
+                <span className="hc-marca hc-marca--amarillo">certificado</span>.
               </p>
               <div className="hc-acciones">
                 <PositGrafico />
-                <Tecla href="/guias" tamano="grande">Empezar gratis</Tecla>
-                <Tecla href="/cursos" color="blanca" tamano="grande" className="hc-ver-cursos">Ver cursos</Tecla>
+                {/* Sin sesión (18-11-2026, pedido por el admin): la principal invita a
+                    crear la cuenta, con una nota de lo que se gana; la segunda, a lo
+                    gratuito, las guías. «Entrar» (iniciar sesión) vive en la barra. */}
+                <span className="hc-cta-cuenta">
+                  <Tecla href="/register" tamano="grande">Crea tu cuenta gratis</Tecla>
+                  <span className="hc-cta-nota" aria-hidden="true">guarda tus quiz y tus logros</span>
+                </span>
+                <Tecla href="/guias" color="blanca" tamano="grande" className="hc-ver-cursos hc-ver-guias">Ver guías gratis</Tecla>
               </div>
             </>
           )}
@@ -285,6 +297,7 @@ export default function HeroCuaderno({ guias, terminos, cursos, sesion, portfoli
                 className="hc-t1"
                 color="cielo"
                 tema="Bitcoin"
+                pegatina="/cuaderno/mini-bitcoin-pegatina.webp"
                 pregunta="¿Cuántos bitcoin habrá como máximo?"
                 respuesta="21 millones"
                 detalle="Lo fija el propio código de Bitcoin."
@@ -293,6 +306,7 @@ export default function HeroCuaderno({ guias, terminos, cursos, sesion, portfoli
                 className="hc-t2"
                 color="naranja"
                 tema="Conceptos"
+                pegatina="/cuaderno/mini-halving-pegatina.webp"
                 pregunta="¿Qué es el halving?"
                 respuesta="Mitad de bitcoin nuevo"
                 detalle="Cada unos cuatro años, los mineros reciben la mitad de premio por bloque: salen menos bitcoin nuevos."
@@ -301,6 +315,7 @@ export default function HeroCuaderno({ guias, terminos, cursos, sesion, portfoli
                 className="hc-t3"
                 color="menta"
                 tema="Estrategia"
+                pegatina="/cuaderno/mini-dca-pegatina.webp"
                 pregunta="¿Qué es hacer DCA?"
                 respuesta="Comprar poco a poco"
                 detalle="La misma cantidad cada cierto tiempo, pase lo que pase con el precio."
@@ -316,10 +331,26 @@ export default function HeroCuaderno({ guias, terminos, cursos, sesion, portfoli
           y el hero te lleva directo a tus herramientas (pedido por el admin el
           18-11-2026). */}
       {!sesion && (
+        <>
+        {/* Garabatos de estudio que asoman por detrás del índice, solo en el
+            móvil (18-11-2026, pedido por el admin): un
+            lápiz (los ejercicios y el diario), una estrella y una bombilla. */}
+        <span className="hc-indice-garabatos" aria-hidden="true">
+          <svg className="hc-ig hc-ig--lapiz" viewBox="0 0 40 40"><path d="M8 32l2-8L28 6l6 6-18 18zM24 10l6 6M10 24l6 6" /></svg>
+          <svg className="hc-ig hc-ig--estrella" viewBox="0 0 40 40"><path d="M20 4l4.5 10 10.5 1-8 7 2.5 10.5L20 27l-9.5 5.5L13 22l-8-7 10.5-1z" /></svg>
+          <svg className="hc-ig hc-ig--bombilla" viewBox="0 0 40 40"><path d="M20 4c-7 0-12 5-12 11 0 5 3 7 5 10v4h14v-4c2-3 5-5 5-10 0-6-5-11-12-11zM15 33h10M16 37h8" /></svg>
+        </span>
         <nav className="hc-indice" aria-label="Qué hay en la academia">
           {/* La cabecera del índice: qué hay y qué hacer con ello. */}
+          <Image src="/cuaderno/cohete-pegatina.webp" alt="" width={200} height={200} className="hc-indice-cohete" aria-hidden="true" />
+          {/* «sigue», a mano y con su flecha hacia abajo, en el hueco de la
+              izquierda de la ficha: hay mucho más si bajas (18-11-2026). */}
+          <span className="hc-indice-sigue" aria-hidden="true">
+            sigue
+            <svg className="hc-indice-sigue-flecha" viewBox="0 0 40 110"><path d="M20 4c-6 12 6 22 0 34s6 22 0 34-2 18 0 30" /><path d="M8 88l12 16 12-16" /></svg>
+          </span>
           <div className="hc-indice-cabecera">
-            <span className="hc-indice-titulo">Lo que te espera dentro</span>
+            <span className="hc-indice-titulo">Lo que te espera <span className="hc-indice-titulo-marca">dentro</span></span>
             <span className="hc-indice-nota" aria-hidden="true">
               toca una y vas directo
               <SimboloEstudio tipo="flecha" color="naranja" giro={100} tamano={34} semilla={3} retraso={600} className="hc-indice-flecha" />
@@ -328,32 +359,38 @@ export default function HeroCuaderno({ guias, terminos, cursos, sesion, portfoli
           <ul className="hc-indice-lista">
             <li>
               <a href="#guias" className="hc-ficha hc-ficha--cielo">
-                <span className="hc-ficha-icono" aria-hidden="true"><BookOpen size={20} strokeWidth={2.2} /></span>
-                <span className="hc-ficha-texto"><b>{guias}</b> guías gratis</span>
+                <span className="hc-ficha-icono" aria-hidden="true"><BookOpen size={20} strokeWidth={2.2} /></span><Image src="/cuaderno/lupa-pegatina.webp" alt="" width={120} height={134} className="hc-ficha-pegatina" />
+                <span className="hc-ficha-texto"><b>{guias}</b> <span className="hc-ficha-palabra">guías gratis<span className="hc-ficha-nota">con ejercicios y quiz</span></span></span>
               </a>
             </li>
             <li>
               <a href="#diccionario" className="hc-ficha hc-ficha--amarillo">
-                <span className="hc-ficha-icono" aria-hidden="true"><BookA size={20} strokeWidth={2.2} /></span>
-                <span className="hc-ficha-texto"><b>{terminos}</b> términos explicados</span>
+                <span className="hc-ficha-icono" aria-hidden="true"><BookA size={20} strokeWidth={2.2} /></span><Image src="/cuaderno/pregunta-pegatina.webp" alt="" width={90} height={120} className="hc-ficha-pegatina" />
+                <span className="hc-ficha-texto"><b>{terminos}</b> <span className="hc-ficha-palabra">términos explicados<span className="hc-ficha-nota">sin jerga, al grano</span></span></span>
               </a>
             </li>
             {cursos > 0 && (
               <li>
                 <a href="#cursos" className="hc-ficha hc-ficha--lila">
-                  <span className="hc-ficha-icono" aria-hidden="true"><GraduationCap size={20} strokeWidth={2.2} /></span>
-                  <span className="hc-ficha-texto"><b>{cursos}</b> {cursos === 1 ? "curso con certificado" : "cursos con certificado"}</span>
+                  <span className="hc-ficha-icono" aria-hidden="true"><GraduationCap size={20} strokeWidth={2.2} /></span><Image src="/cuaderno/cursos-pegatina.webp" alt="" width={120} height={120} className="hc-ficha-pegatina" />
+                  <span className="hc-ficha-texto"><b>{cursos}</b> <span className="hc-ficha-palabra">{cursos === 1 ? "curso con certificado" : "cursos con certificado"}<span className="hc-ficha-nota">módulo a módulo</span></span></span>
                 </a>
               </li>
             )}
-            <li>
-              <a href="#premium" className="hc-ficha hc-ficha--naranja">
-                <span className="hc-ficha-icono" aria-hidden="true"><Crown size={20} strokeWidth={2.2} /></span>
-                <span className="hc-ficha-texto"><b>3</b> piezas Premium</span>
-              </a>
+            {/* «y además…» (18-11-2026, pedido por el admin, solo en el móvil):
+                cuatro teclitas más, cada una a su página: Diario, Portfolio, Logros y Foro. */}
+            <li className="hc-indice-ademas">
+              <span className="hc-ademas-nota" aria-hidden="true">y además…</span>
+              <span className="hc-ademas-lista">
+                <Link href="/herramientas/diario" className="hc-ademas hc-ademas--azul"><span className="hc-ademas-icono"><NotebookPen size={16} strokeWidth={2.4} aria-hidden="true" /></span><Image src="/cuaderno/diario-pegatina.webp" alt="" width={120} height={120} className="hc-ademas-pegatina" />Diario<span className="hc-ademas-frase">apunta y mejora tus operaciones</span></Link>
+                <Link href="/herramientas/portfolio" className="hc-ademas hc-ademas--menta"><span className="hc-ademas-icono"><PiggyBank size={16} strokeWidth={2.4} aria-hidden="true" /></span><Image src="/cuaderno/portfolio-pegatina.webp" alt="" width={120} height={120} className="hc-ademas-pegatina" />Portfolio<span className="hc-ademas-frase">la cartera de Adelin, al día</span></Link>
+                <Link href="/logros" className="hc-ademas hc-ademas--amarillo"><span className="hc-ademas-icono"><Trophy size={16} strokeWidth={2.4} aria-hidden="true" /></span><Image src="/cuaderno/certificado-pegatina.webp" alt="" width={120} height={120} className="hc-ademas-pegatina" />Logros<span className="hc-ademas-frase">medallas por aprender</span></Link>
+                <Link href="/foro" className="hc-ademas hc-ademas--coral"><span className="hc-ademas-icono"><MessagesSquare size={16} strokeWidth={2.4} aria-hidden="true" /></span><Image src="/cuaderno/burbujas-pegatina.webp" alt="" width={120} height={120} className="hc-ademas-pegatina" />Foro<span className="hc-ademas-frase">pregunta y ayuda a otros</span></Link>
+              </span>
             </li>
           </ul>
         </nav>
+        </>
       )}
     </section>
   );

@@ -81,7 +81,8 @@ export function CampoClave(props: Omit<PropsCampo, "type" | "accion">) {
           aria-controls={props.id}
           onClick={() => setVisible((v) => !v)}
         >
-          {visible ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
+          {/* Tachado mientras la contraseña está oculta; abierto cuando se ve (18-11-2026). */}
+          {visible ? <Eye size={20} aria-hidden="true" /> : <EyeOff size={20} aria-hidden="true" />}
         </Tecla>
       }
     />

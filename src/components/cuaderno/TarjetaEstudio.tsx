@@ -22,6 +22,7 @@ export default function TarjetaEstudio({
   respuesta,
   detalle,
   color = "naranja",
+  pegatina,
   className,
 }: {
   tema: string;
@@ -30,6 +31,9 @@ export default function TarjetaEstudio({
   respuesta: ReactNode;
   detalle?: string;
   color?: ColorTarjeta;
+  /** Un personaje pequeño en la esquina de arriba a la izquierda del frente,
+   *  dentro de la tarjeta (gira con ella). Decoración. */
+  pegatina?: string;
   className?: string;
 }) {
   const { girada, alternar, claseGiro } = useGiro();
@@ -43,7 +47,15 @@ export default function TarjetaEstudio({
     >
       <span className={`te-giro ${claseGiro}`}>
         <span className="te-cara te-frente">
-          <span className="te-tema">{tema}</span>
+          {pegatina ? (
+            <span className="te-arriba">
+              {/* eslint-disable-next-line @next/next/no-img-element -- decoración pequeña dentro de un botón que gira */}
+              <img src={pegatina} alt="" className="te-pegatina" draggable={false} />
+              <span className="te-tema">{tema}</span>
+            </span>
+          ) : (
+            <span className="te-tema">{tema}</span>
+          )}
           <span className="te-pregunta">{pregunta}</span>
           <span className="te-pista" aria-hidden="true">↻ gírame</span>
         </span>

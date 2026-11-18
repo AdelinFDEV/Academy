@@ -130,7 +130,7 @@ export default function ChangePasswordModal({ open, onClose }: Props) {
                       required
                     />
                     <Tecla color="blanca" icono aria-label="Mostrar la contraseña" aria-pressed={showPw} aria-controls="cp-password" onClick={() => setShowPw((v) => !v)}>
-                      {showPw ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                      {showPw ? <Eye size={18} aria-hidden="true" /> : <EyeOff size={18} aria-hidden="true" />}
                     </Tecla>
                   </div>
                 </div>
@@ -160,7 +160,7 @@ export default function ChangePasswordModal({ open, onClose }: Props) {
                       required
                     />
                     <Tecla color="blanca" icono aria-label="Mostrar la contraseña repetida" aria-pressed={showConfirm} aria-controls="cp-confirm" onClick={() => setShowConfirm((v) => !v)}>
-                      {showConfirm ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                      {showConfirm ? <Eye size={18} aria-hidden="true" /> : <EyeOff size={18} aria-hidden="true" />}
                     </Tecla>
                   </div>
                 </div>

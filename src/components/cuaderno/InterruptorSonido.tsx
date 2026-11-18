@@ -4,6 +4,7 @@ import { useRef, useSyncExternalStore } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { alCambiarSonido, fijarSonido, sonar, sonidoActivo } from "@/lib/sonidos";
 import Tecla from "@/components/cuaderno/Tecla";
+import "./interruptor-sonido.css";
 
 /**
  * El altavoz para silenciar (o volver a encender) los sonidos de toda la web.
@@ -25,6 +26,7 @@ export default function InterruptorSonido({ tamano = "peq" }: { tamano?: "peq" |
     <>
       <Tecla
         color="blanca"
+        className="sonido-tecla"
         tamano={tamano}
         icono
         // Hace su propio sonido (distinto al encender y al apagar): sin el clic de tecla.

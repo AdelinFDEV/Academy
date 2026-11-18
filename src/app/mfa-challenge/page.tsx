@@ -7,7 +7,7 @@ import { ShieldCheck } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import LogoutButton from "@/components/LogoutButton";
 import { sonar } from "@/lib/sonidos";
-import AccesoShell, { type Apunte } from "@/components/acceso/AccesoShell";
+import AccesoShell from "@/components/acceso/AccesoShell";
 import { Aviso, Campo } from "@/components/acceso/Campos";
 
 export default function MfaChallengePage() {
@@ -87,7 +87,7 @@ export default function MfaChallengePage() {
       titulo={<>Verificación en <span className="fluor">dos pasos</span></>}
       lead="Introduce el código de 6 dígitos de tu app de autenticación (Google Authenticator o similar)."
       icono={<ShieldCheck size={28} strokeWidth={2.2} />}
-      apunte={APUNTE}
+     
     >
       {loading ? (
         <p className="acc-cargando" role="status">
@@ -132,13 +132,3 @@ export default function MfaChallengePage() {
   );
 }
 
-/** El apunte de la derecha: por qué el código cambia solo. */
-const APUNTE: Apunte = {
-  tema: "Seguridad",
-  pregunta: "¿Por qué el código cambia cada poco?",
-  respuesta: "Cada 30 s",
-  detalle: "Tu app genera uno nuevo cada medio minuto: si alguien ve uno, enseguida deja de servirle.",
-  color: "naranja",
-  postit: "Casi dentro",
-  nota: "Tu cuenta, con doble llave",
-};

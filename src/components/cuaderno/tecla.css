@@ -177,3 +177,12 @@
   55% { opacity: 1; }
   to { opacity: 0; transform: rotate(var(--g)) translateY(-16px) scaleY(1); }
 }
+
+/* Las teclas blancas de los formularios y las ventanas, con contorno de
+   rotulador (18-11-2026, pedido por el admin): blancas sobre el papel blanco
+   no se distinguían del fondo (p. ej. «Continuar con Google» y el ojo de la
+   contraseña). Mismo trazo que las demás teclas con contorno de la web. */
+:is(form, .acc-hoja, [role="dialog"]) .tecla--blanca {
+  border: 2px solid var(--tinta);
+  border-radius: calc(var(--r) + 1px) calc(var(--r) - 2px) calc(var(--r) + 2px) calc(var(--r) - 3px) / calc(var(--r) - 2px) calc(var(--r) + 2px) calc(var(--r) - 3px) calc(var(--r) + 1px);
+}
