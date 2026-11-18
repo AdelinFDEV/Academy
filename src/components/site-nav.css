@@ -1328,7 +1328,15 @@
     pointer-events: none;
   }
 
-  .nav-saludo-garabato--moneda { left: 18px; rotate: -12deg; }
+  /* La moneda, bastante más abajo y con el trazo más marcado (18-11-2026,
+     pedido por el admin): arriba quedaba tapada y apenas se entendía. */
+  .nav-saludo-garabato--moneda {
+    bottom: -8px;
+    left: 14px;
+    stroke: color-mix(in srgb, var(--naranja-o) 85%, var(--naranja-s));
+    stroke-width: 2.4;
+    rotate: -12deg;
+  }
   .nav-saludo-garabato--grafica { right: 18px; rotate: 6deg; }
 
   .nav-saludo-nombre-caja { position: relative; }
