@@ -42,7 +42,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Origen e historia", "Cómo funciona", "Estado actual 2026", "Amenaza cuántica"],
     tags: ["EXPLICACIONES"],
-    portada: "/guias/que-es-la-blockchain.webp",
+    portada: "/guias/que-es-la-blockchain-cuaderno.webp",
   },
   {
     slug: "worldcoin",
@@ -57,7 +57,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["El Orb y World ID", "Proof of Personhood", "Tokenomics de WLD", "Controversias y prohibiciones"],
     tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/worldcoin.webp",
+    portada: "/guias/worldcoin-cuaderno.webp",
   },
   {
     slug: "render",
@@ -72,7 +72,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["GPUs ociosas en red", "Proof of Render", "Burn-and-Mint Equilibrium", "DePIN e IA"],
     tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/render.webp",
+    portada: "/guias/render-cuaderno.webp",
   },
   {
     slug: "hyperliquid",
@@ -87,7 +87,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Libro de órdenes on-chain", "HyperBFT y HyperEVM", "El vault HLP", "Token HYPE y buybacks"],
     tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/hyperliquid.webp",
+    portada: "/guias/hyperliquid-cuaderno.webp",
   },
   {
     slug: "xrp",
@@ -102,7 +102,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Ripple vs XRP vs XRPL", "Consenso sin minería (RPCA/UNL)", "Moneda puente y ODL", "El caso SEC y el escrow"],
     tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/xrp.webp",
+    portada: "/guias/xrp-cuaderno.webp",
   },
   {
     slug: "fiscalidad-cripto-espana",
@@ -117,7 +117,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Hechos imponibles", "FIFO y tramos del ahorro", "Staking, airdrops y minería", "Modelo 721 y Patrimonio"],
     tags: ["EXPLICACIONES"],
-    portada: "/guias/fiscalidad-cripto-espana.webp",
+    portada: "/guias/fiscalidad-cripto-espana-cuaderno.webp",
     imagenPropia: true,
   },
   {
@@ -133,7 +133,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Qué apuntar", "Win rate, R y esperanza", "Emociones", "Rutina de revisión"],
     tags: ["EXPLICACIONES"],
-    portada: "/guias/como-hacer-un-diario-de-trading.webp",
+    portada: "/guias/como-hacer-un-diario-de-trading-cuaderno.webp",
   },
   {
     slug: "ethereum",
@@ -148,7 +148,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Contratos inteligentes", "El gas, con números", "Staking y capas 2", "Errores caros"],
     tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/ethereum.webp",
+    portada: "/guias/ethereum-cuaderno.webp",
   },
   {
     slug: "solana",
@@ -163,7 +163,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Por qué es tan rápida", "Comisiones y depósitos", "Las caídas, una a una", "El staking de SOL"],
     tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/solana.webp",
+    portada: "/guias/solana-cuaderno.webp",
   },
 ];
 

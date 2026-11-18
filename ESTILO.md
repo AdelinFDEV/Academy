@@ -327,9 +327,9 @@ nunca `cursor: pointer` a secas. Al pulsar una tecla con el ratón salen tres ra
 
 ## 🔴 Portadas y pegatinas de cursos y guías (decidido el 18-11-2026)
 
-Desde el 18-11-2026 las portadas de los cursos (y, una a una, las de las guías) se dibujan en el estilo
+Desde el 18-11-2026 las portadas de los **cursos** y de las **guías** se dibujan en el estilo
 del cuaderno, como las pegatinas: personajes kawaii a rotulador, pastel plano y borde blanco. Sustituyen
-a los renders 3D oscuros y a las miniaturas con titulares grandes. **Los prompts se dan siempre en
+a los renders 3D oscuros. **Los prompts se dan siempre en
 inglés, completos y desde cero**, con estas plantillas (solo cambian la escena y el color).
 
 **Cada curso lleva DOS imágenes:**
@@ -339,8 +339,7 @@ inglés, completos y desde cero**, con estas plantillas (solo cambian la escena 
 | Portada grande | `/cursos` (recortada a 20:8, con etiquetas arriba a la izquierda) y la ficha del curso | Apaisada 5:2, fondo de cuaderno en el color del curso, dibujo en la mitad derecha | `public/cursos/<slug>/portada-cuaderno.webp` (1600 px) |
 | Pegatina | El cuadrado de su ficha en la portada de la web (`CursosHome.tsx`) | Cuadrada 1:1, **fondo transparente**, borde blanco troquelado | `public/cursos/<slug>/pegatina.webp` (330 px) |
 
-Cómo se convierten y se dan de alta: [`CURSOS.md`](./CURSOS.md) § «Lo único que se hace a mano». Las
-guías llevan solo la portada grande (ver abajo).
+Cómo se convierten y se dan de alta: [`CURSOS.md`](./CURSOS.md) § «Lo único que se hace a mano».
 
 **Plantilla de la portada grande** (rellena ESCENA, el fondo y el color del curso):
 
@@ -388,9 +387,25 @@ personaje principal de la portada en un gesto sencillo y «it will be shown at a
 | DeFi y stablecoins | Una moneda sobre un cofre sólido; una máquina de engranajes riega una plantita | `#22d3ee` |
 | Fiscalidad cripto en España | Una moneda tranquila con su lista toda marcada, sobre carpetas ordenadas; un calendario y un sello aprueban | `#e6b455` |
 
-**Las guías** llevan solo la portada grande (`portada` en `src/lib/guides.ts`, 1600 px de ancho), con la
-misma plantilla pero en **16:9** («a wide illustrated guide cover, 16:9 ratio») y el dibujo **centrado**,
-porque en las tarjetas se ve entera. Sin titulares dentro: el título ya lo pone la tarjeta.
+**Las guías** llevan solo la portada grande (`portada` en `src/lib/guides.ts`, 1600 × 845, unos 1,9:1),
+y se van cambiando una a una (decidido por el admin el 18-11-2026). Conservan la idea de sus miniaturas
+naranjas, pasada al cuaderno:
+
+- **El titular**, a la izquierda, **muy grande** (ocupa casi toda la altura de su mitad) y rotulado a mano
+  en tinta, con la palabra clave repasada con
+  fluorescente amarillo (#ffd23f). Es el mismo titular de la portada anterior.
+- **El dibujo**, a la derecha, **espectacular e impactante**: grande, en plena acción, con movimiento,
+  ráfagas y explosiones de estrellas, que cuenta lo más importante de la guía y, si es de un
+  proyecto, **su logo** en una moneda.
+- **La etiqueta** pequeña (+26 M, DePIN, 6 CAÍDAS…), como un pósit pegado.
+- **«LEER GUÍA COMPLETA»**, en la esquina superior izquierda, encima del titular: una tecla pequeña
+  con contorno de rotulador y una flechita (pedido por el admin el 18-11-2026).
+- **Fondo blanco**, puro o casi (como mucho, una cuadrícula muy tenue): así el titular y el dibujo
+  destacan y todas las guías se reconocen como familia (pedido por el admin el 18-11-2026).
+
+El prompt pide el texto **exacto, en español y con sus tildes**; hay que revisar que salgan bien la Ñ,
+las tildes y el logo, y regenerar si no. Se convierte a `public/guias/<slug>-cuaderno.webp` (1600 px de
+ancho, nombre nuevo para no servir la anterior) y se cambia su `portada`.
 
 ## Pendiente del nuevo diseño
 

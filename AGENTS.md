@@ -26,7 +26,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 | Una **historia de Instagram** (o cualquier imagen vertical para redes) para anunciar algo de la web | La skill [`historia-instagram`](./.claude/skills/historia-instagram/SKILL.md): estilo aprobado el 15-11-2026, con su modelo |
 | Un **dibujo o pegatina** generado como imagen para la web (o el prompt para pedirlo) | [`ESTILO.md`](./ESTILO.md) § «🔴 Las pegatinas del cuaderno»: el prompt base, **siempre entero y en inglés**, y cómo se sube |
-| La **portada de un curso o de una guía** (y la pegatina de su ficha) | [`ESTILO.md`](./ESTILO.md) § «🔴 Portadas y pegatinas de cursos y guías»: plantillas, escenas usadas y formatos. El paso a paso, en [`CURSOS.md`](./CURSOS.md) |
+| La **portada de un curso o de una guía** (y la pegatina de la ficha de un curso) | [`ESTILO.md`](./ESTILO.md) § «🔴 Portadas y pegatinas de cursos y guías»: plantillas, escenas usadas y formatos. El paso a paso, en [`CURSOS.md`](./CURSOS.md) |
 | Apuntar o consultar **cursos y guías que queremos lanzar** en el futuro (ideas aún sin empezar) | [`CURSOS-PENDIENTES.md`](./CURSOS-PENDIENTES.md) · [`GUIAS-PENDIENTES.md`](./GUIAS-PENDIENTES.md) |
 
 Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan. El panel de SEO es el «cómo y por qué», para cualquier página; `AUDITORIA-SEO.md` es el protocolo que se ejecuta fase a fase sobre una guía terminada.

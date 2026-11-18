@@ -66,3 +66,4 @@ scripts/anuncio-manual.mensaje*.txt
 
 # Copias locales antes de borrar datos (llevan ids de usuarios: nunca al repo)
 backups/
+/referencias-logos/
