@@ -106,7 +106,7 @@
   {
     "clave": "pt-f-09",
     "leccion": "el-efecto-disposicion",
-    "enunciado": "Nova te dice: «Cierras las ganadoras antes de tiempo: te quedas de media con el 40 % del objetivo». ¿Qué sesgo describe?",
+    "enunciado": "En tu Diario, la cifra «Objetivo conseguido» marca un 40 %: de media cierras tus ganadoras con menos de la mitad de lo que buscabas. ¿Qué sesgo describe?",
     "opciones": [
       "El anclaje",
       "La ilusión de control",
@@ -483,7 +483,7 @@
   {
     "clave": "pt-f-38",
     "leccion": "euforia-rachas-y-drawdown",
-    "enunciado": "Llevas cuatro ganadas seguidas y Nova te avisa de cuidado con subir el tamaño por euforia. ¿Qué dice tu plan de fase?",
+    "enunciado": "Llevas cuatro ganadas seguidas y notas la tentación de subir el tamaño por euforia. ¿Qué dice tu plan de fase?",
     "opciones": [
       "Aprovechar la racha y subir el riesgo",
       "Operar sin lista porque estás en racha",

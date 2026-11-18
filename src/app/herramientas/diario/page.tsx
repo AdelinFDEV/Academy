@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   ArrowRight, ShieldCheck, NotebookPen, BarChart3, Search,
   LineChart, CalendarRange, Crosshair, EyeOff, Trophy, Check, X,
-  CreditCard, RefreshCw, Crown, Sparkles, Gauge, ListChecks, MousePointerClick, Cpu, HeartPulse, Scale,
+  CreditCard, RefreshCw, Crown, Gauge, Camera, SlidersHorizontal, HeartPulse, Scale,
   Laugh, Smile, Meh, Frown, type LucideIcon,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
@@ -13,11 +13,8 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema, webAppSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { ANIMOS } from "@/components/trading/tjDias";
-import { MILESTONES, VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
-import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
+import { MILESTONES, RISK_LIMIT_PCT, VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
-import NovaSaludo from "./NovaSaludo";
-import NovaMini from "@/components/NovaMini";
 import Tecla from "@/components/cuaderno/Tecla";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import "../ficha.css";
@@ -26,27 +23,30 @@ import "./diario.css";
 /**
  * Ficha pública del Diario de Trading — punto 13 del plan SEO.
  *
- * Rehecha el 08-11-2026, a petición del admin, para vender: Nova en grande en
- * la cabecera con su saludo, una sección para Nova y su objetivo semanal, otra para las
- * sensaciones, el SÚPER HITO como protagonista y la llamada a suscribirse en la
- * cabecera, en el súper hito y en el cierre (la barra fija del móvil se quitó el
- * 17-11-2026: el admin no quiere nada anclado al hacer scroll). Lo común con la ficha del
- * Portfolio sigue en `../ficha.css`; lo propio de esta, en `./diario.css`.
+ * Hecha para vender: una hoja del diario en la cabecera, una sección para el
+ * riesgo y la ejecución, otra para las sensaciones, el SÚPER HITO como
+ * protagonista y la llamada a suscribirse en la cabecera, en el súper hito y en
+ * el cierre (la barra fija del móvil se quitó el 17-11-2026: el admin no quiere
+ * nada anclado al hacer scroll). Lo común con la ficha del Portfolio sigue en
+ * `../ficha.css`; lo propio de esta, en `./diario.css`.
  *
  * Escrita sobre lo que la herramienta hace DE VERDAD, revisado en
- * `src/components/trading/`: capital inicial, diez estadísticas, curva de
- * capital, rendimiento por periodo, calendario, desglose por par/estrategia/
- * día/hora, análisis del riesgo en múltiplos de R, sensaciones por día (ánimo y
- * nota, `tjDias.ts`), Nova con sus mensajes priorizados y el objetivo de la
- * semana (`tjNova.ts`, reglas sobre los datos, no IA; el «pulso» de 0 a 100 se
- * retiró el 10-11-2026), diecisiete hitos con
- * niveles y el súper hito «Conseguiste vivir del trading» (`tjStats.ts`: sus
- * reglas salen de las mismas constantes, para que no se desincronicen).
+ * `src/components/TradingJournal.tsx` y `src/components/trading/`: capital
+ * inicial, diez estadísticas, curva de capital y drawdown, rendimiento por
+ * periodo, calendario, desglose por par/estrategia/dirección/día/hora, riesgo
+ * y ejecución en múltiplos de R (`TjAnalysis.tsx`), sensaciones por día (ánimo
+ * y nota, `tjDias.ts` y `TjEmotions.tsx`), capturas de antes y después
+ * (`TjCapturas.tsx`), filtros, hitos con niveles y el súper hito «Conseguiste
+ * vivir del trading» (`tjStats.ts`: sus reglas salen de las mismas constantes,
+ * para que no se desincronicen).
+ *
+ * **El diario calcula y enseña; no avisa ni interpreta.** No hay avisos,
+ * consejos ni lecturas automáticas de los datos: no los anuncies.
  *
  * **Hitos, no retos.** No hay "retos" (objetivos que se aceptan o se
  * proponen): no los anuncies.
  *
- * Las maquetas (ventana del panel, mensajes de Nova, objetivo, ánimos, racha del
+ * Las maquetas (hoja, ventana del panel, riesgo y ejecución, ánimos, racha del
  * súper hito) son decorativas (`aria-hidden`): el diario es de cada usuario,
  * así que no hay datos reales que enseñar. Sin rótulo de «ejemplo» por
  * decisión del admin (04-11-2026); las cifras son redondas y no se atribuyen a
@@ -54,14 +54,10 @@ import "./diario.css";
  *
  * Estilo «Cuaderno de estudio» desde el 17-11-2026 (ESTILO.md): el Diario es
  * azul; Premium y el pago, naranja; los hitos, amarillo (logros). Todos los
- * botones son `<Tecla>`. Nova está oculta mientras llega la mascota
- * (`MOSTRAR_NOVA`, nova-visible.ts): con el interruptor apagado, la cabecera
- * enseña una hoja del diario en vez de a Nova en su sala, y su cara no sale en
- * ningún sitio. Los hitos salen de `MILESTONES` (tjStats.ts): ni la lista ni la
- * cuenta se escriben a mano.
+ * botones son `<Tecla>`. Los hitos salen de `MILESTONES` (tjStats.ts): ni la
+ * lista ni la cuenta se escriben a mano.
  */
-// Título y descripción rehechos el 10-11-2026: «Nova» no lo busca nadie, y
-// gastaba la parte del título que Google enseña. Delante, lo que se busca.
+// Título y descripción (10-11-2026): delante, lo que se busca.
 const DESCRIPCION =
   "Diario de trading online en español: apunta cada operación y cómo te sentías, y ve tu win rate, tu curva de capital y tu riesgo calculados solos.";
 
@@ -104,28 +100,46 @@ const ANILLO = 2 * Math.PI * 15.9;
 /** La cara de cada ánimo (sin emojis en la web pública: ESTILO.md). */
 const CARA_ANIMO: Record<number, LucideIcon> = { 4: Laugh, 3: Smile, 2: Meh, 1: Frown };
 
-/** Lo que trae, en una línea, bajo el botón de la cabecera. */
-const INCLUYE_CORTO = ["Nova y tu objetivo semanal", "10 estadísticas", "Sensaciones", "17 hitos + el súper hito"];
-
-/** Los mensajes de Nova de la maqueta: los tres tonos que usa (bien, aviso, dato). */
-const NOVA_MENSAJES = [
-  { tono: "es-bien", texto: "Riesgo bajo control: ninguna operación pasa del 2 % de la cuenta." },
-  { tono: "es-aviso", texto: "Cierras las ganadoras antes de tiempo: te quedas con el 45 % del objetivo." },
-  { tono: "", texto: "Racha de 4 ganadas: cuidado con subir el tamaño por euforia." },
+/**
+ * Riesgo y ejecución: lo que mide la vista «Análisis» (TjAnalysis.tsx y
+ * TjBreakdown.tsx). El límite de riesgo sale de la constante del diario.
+ */
+const RIESGO_PUNTOS: { icon: LucideIcon; title: string; text: string; termino?: { texto: string; href: string } }[] = [
+  {
+    icon: Scale,
+    title: "Cuánto arriesgas de verdad",
+    text: `El riesgo de cada operación como porcentaje de la cuenta que tenías antes de entrar, y cuántas pasaron del ${RISK_LIMIT_PCT} %.`,
+  },
+  {
+    icon: Gauge,
+    title: "Tu ratio y el acierto que necesitas",
+    text: "Tu ratio riesgo/beneficio medio, tal como lo planeaste, y el acierto mínimo para no perder dinero con él.",
+  },
+  {
+    icon: Crosshair,
+    title: "El plan frente a lo que pasó",
+    text: "Qué parte del objetivo te llevas en las ganadoras y cuánto pierdes frente al stop-loss que habías puesto.",
+    termino: { texto: "stop-loss", href: "/glosario/stop-loss" },
+  },
+  {
+    icon: Search,
+    title: "Dónde ganas y dónde pierdes",
+    text: "Tu resultado desglosado por par, estrategia, dirección, día de la semana y franja horaria.",
+  },
 ];
 
-const NOVA_PUNTOS = [
-  { icon: Gauge, title: "Tu objetivo de la semana", text: "Cada lunes mira lo que más flojo va (riesgo, resultados, emociones o constancia) y te pone un solo objetivo medible, que avanza con lo que apuntas." },
-  { icon: ListChecks, title: "Lo importante, primero", text: "Lo urgente sale antes y destacado. Nada de leer veinte gráficos para enterarte de lo que importa." },
-  { icon: MousePointerClick, title: "Consejos con botón", text: "Cuando tiene sentido, el consejo trae un botón que te lleva a hacer justo lo que propone." },
-  { icon: Cpu, title: "Sin inventarse nada", text: "Reglas sobre tus propios datos, no una IA que se lo imagina: instantáneo, y siempre sobre lo que has apuntado." },
+/** La maqueta de «Riesgo y ejecución»: tres de sus medidas, con cifras redondas. */
+const RIESGO_DEMO = [
+  { tono: "es-bien", nombre: "Riesgo por operación", pie: "de tu cuenta, de media", valor: "1,2 %" },
+  { tono: "", nombre: "Ratio riesgo/beneficio", pie: "necesitas acertar más del 33 %", valor: "1:2" },
+  { tono: "es-aviso", nombre: "Objetivo conseguido", pie: "de media en tus ganadoras", valor: "45 %" },
 ];
 
 /** Cómo funciona, en el orden en que pasa. */
-const PASOS: { icon: typeof Sparkles; nova?: boolean; title: string; text: string }[] = [
+const PASOS: { icon: LucideIcon; title: string; text: string }[] = [
   { icon: NotebookPen, title: "Apuntas la operación", text: "Par, dirección, riesgo, resultado, por qué entraste y cómo te sentías. Un minuto." },
   { icon: BarChart3, title: "El diario hace las cuentas", text: "Diez estadísticas, tu curva de capital y tu riesgo, al día con cada operación." },
-  { icon: Sparkles, nova: true, title: "Nova te lo cuenta", text: "Lo que va bien, lo que se tuerce y qué hacer, en frases cortas." },
+  { icon: Search, title: "Revisas y corriges", text: "En Análisis ves dónde ganas, dónde pierdes y si cumples tu plan. Qué cambiar lo decides tú." },
 ];
 
 /** Las diez métricas reales del panel, con lo que dicen en una línea. */
@@ -142,27 +156,25 @@ const METRICAS: [string, string][] = [
   ["Racha perdiendo", "La mala más larga"],
 ];
 
-const ADEMAS = [
-  { icon: LineChart, title: "Curva de capital", text: "Desde el capital que indiques, operación a operación." },
+const ADEMAS: { icon: LucideIcon; title: string; text: string; termino?: { texto: string; href: string } }[] = [
+  { icon: LineChart, title: "Curva de capital", text: "Desde el capital que indiques, operación a operación, con tu mayor caída desde un máximo." },
   { icon: CalendarRange, title: "Calendario y periodos", text: "El resultado de cada día, y tu rendimiento por mes, trimestre y año." },
   {
-    icon: Scale,
-    title: "Tu riesgo, medido",
-    text: "Qué parte de tu capital arriesgas en cada operación, tus resultados en múltiplos de R y el acierto mínimo para no perder con tu ratio.",
+    icon: BarChart3,
+    title: "Resultados en R",
+    text: "Cuántas operaciones cerraron en cada tramo, medidas en múltiplos de R, y lo que deja de media cada una.",
     termino: { texto: "múltiplos de R", href: "/glosario/r-multiplo" },
   },
-  {
-    icon: Crosshair,
-    title: "El plan frente a lo que pasó",
-    text: "Si cerraste antes o el stop-loss se deslizó, el diario mide la diferencia.",
-    termino: { texto: "stop-loss", href: "/glosario/stop-loss" },
-  },
-  { icon: Search, title: "Dónde se te va el dinero", text: "Tu P&L desglosado por par, estrategia, día de la semana y hora." },
+  { icon: Camera, title: "El gráfico, antes y después", text: "Puedes guardar con cada operación una captura de antes de entrar y otra de después." },
+  { icon: SlidersHorizontal, title: "Filtros", text: "El análisis y la lista de operaciones se filtran por periodo, par, estrategia y dirección." },
   { icon: EyeOff, title: "Privado de verdad", text: "Nadie más ve tus operaciones: ni otros suscriptores ni un ranking." },
 ];
 
 /** Los hitos con niveles, de la misma lista que usa el diario (sin el súper hito). */
 const HITOS = MILESTONES.filter((m) => m.group !== "leyenda").map((m) => m.title);
+
+/** Lo que trae, en una línea, bajo el botón de la cabecera. */
+const INCLUYE_CORTO = ["10 estadísticas", "Riesgo y ejecución", "Sensaciones", `${HITOS.length} hitos + el súper hito`];
 
 /** La racha de la maqueta del súper hito: 9 meses válidos (uno en rojo) y 3 por llegar. */
 const RACHA: ("ok" | "red" | "pend")[] = ["ok", "ok", "ok", "red", "ok", "ok", "ok", "ok", "ok", "pend", "pend", "pend"];
@@ -172,7 +184,7 @@ const COMPARA: { otros: string; aqui: string }[] = [
   { otros: "Recuerdas los aciertos, olvidas las pérdidas", aqui: "Todas las operaciones, también las malas" },
   { otros: "Un win rate alto que no dice nada", aqui: "Win rate junto a ganancia y pérdida medias" },
   { otros: "Operas igual de nervioso que tranquilo", aqui: "Ves qué le pasa a tu dinero según tu ánimo" },
-  { otros: "Nadie te avisa cuando te tuerces", aqui: "Nova te lo dice, con lo que puedes hacer" },
+  { otros: "No sabes si cumples tu propio plan", aqui: "Lo planeado frente a lo que pasó, medido" },
 ];
 
 const NO_ES = [
@@ -193,15 +205,7 @@ const FAQ = [
   },
   {
     q: "¿Por qué no usar una plantilla de Excel?",
-    a: "Un Excel bien llevado funciona, y es mucho mejor que no apuntar nada. La diferencia está en el trabajo. Aquí las estadísticas, la curva de capital, el riesgo en múltiplos de R y el cruce con tu ánimo se calculan solos con cada operación. Y Nova te avisa de lo importante sin que tengas que buscarlo entre fórmulas.",
-  },
-  {
-    q: "¿Usa inteligencia artificial?",
-    a: "No, y es a propósito. Nova funciona con reglas sobre tus propios datos: lo que te dice sale de las operaciones que has apuntado, al instante y sin inventarse nada. Un modelo de IA puede sonar convincente diciendo algo que tus números no respaldan.",
-  },
-  {
-    q: "¿Qué es Nova?",
-    a: "La asistente que vive dentro del diario. Lee lo que apuntas (operaciones, sensaciones e hitos) y te cuenta lo más importante en frases cortas, con una nota de 0 a 100 de cómo vas ahora, repartida en riesgo, resultados, emociones y constancia. Son reglas sobre tus propios datos, no una IA que se inventa respuestas: no opera por ti ni te dice qué comprar.",
+    a: "Un Excel bien llevado funciona, y es mucho mejor que no apuntar nada. La diferencia está en el trabajo. Aquí las estadísticas, la curva de capital, el riesgo en múltiplos de R y el cruce con tu ánimo se calculan solos con cada operación, sin fórmulas que mantener.",
   },
   {
     q: "¿Tengo que apuntar las operaciones a mano?",
@@ -264,9 +268,9 @@ function Cta({ premium, grande = false, texto = "Empezar mi diario" }: { premium
 }
 
 /**
- * La cabecera mientras Nova está oculta: una hoja del diario con una operación
- * a medio apuntar y lo que el diario calcula solo. Decorativa: las cifras son
- * las redondas de `DEMO`, no de nadie.
+ * La cabecera: una hoja del diario con una operación a medio apuntar y lo que
+ * el diario calcula solo. Decorativa: las cifras son las redondas de `DEMO`,
+ * no de nadie.
  */
 function HojaDiario() {
   return (
@@ -341,7 +345,7 @@ export default async function FichaDiarioPage() {
           <span>Diario de Trading</span>
         </nav>
 
-        {/* ── Cabecera: la promesa, el botón y la hoja del diario (o Nova) ── */}
+        {/* ── Cabecera: la promesa, el botón y la hoja del diario ── */}
         <section className="fh-hero dj-hero">
           <div className="fh-hero-texto">
             <span className="fh-eyebrow">
@@ -351,12 +355,12 @@ export default async function FichaDiarioPage() {
 
             <h1 className="fh-titulo">
               Diario de <span className="fluor">Trading</span>
-              <span className="fh-titulo-2">Con Nova, que lee tus números por ti.</span>
+              <span className="fh-titulo-2">Tú apuntas la operación. Él hace las cuentas.</span>
             </h1>
 
             <p className="fh-lead">
               Apunta cada operación y cómo te sentías. Este diario de trading calcula diez estadísticas, tu curva de capital y tu
-              riesgo, y Nova te dice cada día lo más importante, en frases cortas.
+              riesgo, y te enseña dónde ganas y dónde pierdes.
             </p>
 
             <div className="fh-cta">
@@ -382,7 +386,7 @@ export default async function FichaDiarioPage() {
             </ul>
           </div>
 
-          {MOSTRAR_NOVA ? <NovaSaludo /> : <HojaDiario />}
+          <HojaDiario />
         </section>
 
         {/* ── La respuesta, arriba (10-11-2026): quien busca «diario de trading»
@@ -405,26 +409,24 @@ export default async function FichaDiarioPage() {
           </p>
         </section>
 
-        {/* ── Nova ── */}
-        <section className="fh-bloque dj-nova">
-          <div className="dj-nova-texto">
-            <span className="fh-kicker">
-              {MOSTRAR_NOVA ? <NovaMini size={20} /> : <Sparkles size={14} aria-hidden="true" />} Tu asistente de trading
-            </span>
-            <h2 className="fh-h2">Nova lee tu diario y te dice lo que importa</h2>
+        {/* ── Riesgo y ejecución ── */}
+        <section className="fh-bloque dj-riesgo">
+          <div>
+            <span className="fh-kicker"><Scale size={14} aria-hidden="true" /> Riesgo y ejecución</span>
+            <h2 className="fh-h2">Cómo planeas y cómo cumples el plan</h2>
             <p className="dj-p">
-              Un diario lleno de números no sirve si nadie los lee. Nova los lee por ti cada vez que apuntas algo, y
-              te lo cuenta como lo haría un compañero que se fija en todo.
+              Un diario lleno de operaciones sirve de poco si hay que sacar las cuentas a mano. Este mide tu riesgo y
+              tu ejecución con cada operación que apuntas, y te lo pone en cifras.
             </p>
-            <div className="dj-nova-puntos">
-              {NOVA_PUNTOS.map((p) => {
+            <div className="dj-riesgo-puntos">
+              {RIESGO_PUNTOS.map((p) => {
                 const Icon = p.icon;
                 return (
-                  <div key={p.title} className="dj-nova-punto">
+                  <div key={p.title} className="dj-riesgo-punto">
                     <span className="fh-icono" aria-hidden="true"><Icon size={18} strokeWidth={2.2} /></span>
                     <div>
                       <h3>{p.title}</h3>
-                      <p>{p.text}</p>
+                      <p><ConTermino text={p.text} termino={p.termino} /></p>
                     </div>
                   </div>
                 );
@@ -432,17 +434,19 @@ export default async function FichaDiarioPage() {
             </div>
           </div>
 
-          <div className="dj-nova-panel" aria-hidden="true">
-            <span className="dj-nova-panel-cab">
-              <strong>Lo más importante</strong>
-              <small>Hoy, según tus últimas operaciones</small>
+          <div className="dj-riesgo-panel" aria-hidden="true">
+            <span className="dj-riesgo-panel-cab">
+              <strong>Riesgo y ejecución</strong>
+              <small>Cómo planeas y cómo cumples el plan</small>
             </span>
-            <ul className="dj-nova-mensajes">
-              {NOVA_MENSAJES.map((m) => (
-                <li key={m.texto} className={m.tono}>{m.texto}</li>
+            <span className="dj-riesgo-filas">
+              {RIESGO_DEMO.map((r) => (
+                <span key={r.nombre} className={`dj-riesgo-fila ${r.tono}`.trim()}>
+                  <span><strong>{r.nombre}</strong><small>{r.pie}</small></span>
+                  <b>{r.valor}</b>
+                </span>
               ))}
-            </ul>
-            <span className="dj-nova-accion">Revisar mis operaciones <ArrowRight size={14} strokeWidth={2.6} /></span>
+            </span>
           </div>
         </section>
 
@@ -599,9 +603,7 @@ export default async function FichaDiarioPage() {
               return (
                 <article key={d.title} className="fh-paso">
                   <span className="fh-paso-num" aria-hidden="true">{i + 1}</span>
-                  <span className="fh-icono" aria-hidden="true">
-                    {d.nova && MOSTRAR_NOVA ? <NovaMini size={30} /> : <Icon size={20} strokeWidth={2.2} />}
-                  </span>
+                  <span className="fh-icono" aria-hidden="true"><Icon size={20} strokeWidth={2.2} /></span>
                   <h3>{d.title}</h3>
                   <p>{d.text}</p>
                 </article>
@@ -710,8 +712,8 @@ export default async function FichaDiarioPage() {
             <span className="fh-sello"><Crown size={14} aria-hidden="true" /> Premium · todo incluido</span>
             <h2 className="fh-precio-titulo">Tu mejor operación empieza por apuntar la próxima</h2>
             <ul className="fh-incluye">
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El Diario de Trading completo, con Nova y tu objetivo semanal</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Sensaciones, análisis del riesgo, diecisiete hitos y el súper hito</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El Diario de Trading completo: estadísticas, calendario, riesgo y ejecución</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Sensaciones, capturas de antes y después, {HITOS.length} hitos y el súper hito</li>
               <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA en directo</li>
               <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
             </ul>

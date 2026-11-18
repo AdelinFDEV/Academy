@@ -252,7 +252,7 @@
 }
 
 /* ==========================================================================
-   Las llamadas al Diario de Trading y a Nova (GuiaDiarioCta.tsx, 11-11-2026).
+   Las llamadas al Diario de Trading (GuiaDiarioCta.tsx, 11-11-2026).
    Van después de responder y como bloques aparte: se ven, pero no se mezclan
    con el texto de la guía. Color AZUL: el del Diario de Trading.
    ========================================================================== */
@@ -269,11 +269,6 @@
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-/* Nova, vestida desde aquí (NovaMini es común): sombra de canto, no de brillo. */
-.gbc-wrap :is(.dtg-cta-aviso, .dtg-cta-banner, .dtg-cta-escaparate, .dtg-cta-cierre) .nova-mini .nh {
-  filter: drop-shadow(0 4px 0 rgba(29, 27, 51, 0.14));
 }
 
 /* Las teclas son enlaces: que el estilo común de los enlaces de la guía no las pise. */
@@ -325,7 +320,7 @@
   box-shadow: 0 6px 0 var(--gris-o);
 }
 
-.dtg-cta-banner-nova {
+.dtg-cta-banner-icono {
   display: grid;
   place-items: center;
   width: 96px;
@@ -340,7 +335,7 @@
 .dtg-cta-banner-texto p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.55; color: var(--tinta-2); }
 .dtg-cta-banner-acciones { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 
-/* ── «escaparate»: Nova en grande, lo que hace y sus avisos ── */
+/* ── «escaparate»: el cuaderno, lo que hace el Diario y dos cifras de ejemplo ── */
 .dtg-cta-escaparate {
   position: relative;
   display: grid;
@@ -354,21 +349,8 @@
   box-shadow: 0 8px 0 var(--azul-o);
 }
 
-.dtg-cta-escaparate-nova { position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px; }
-/* El plato de papel sobre el que se asoma Nova. */
-.dtg-cta-escaparate-halo {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  width: 190px;
-  height: 190px;
-  margin-left: -95px;
-  border-radius: 50%;
-  background: var(--papel);
-  box-shadow: 0 6px 0 var(--azul-o);
-  pointer-events: none;
-}
-/* Con Nova oculta (MOSTRAR_NOVA): el mismo plato de papel, con el cuaderno del Diario. */
+.dtg-cta-escaparate-lado { position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+/* El plato de papel con el cuaderno del Diario. */
 .dtg-cta-escaparate-icono {
   display: grid;
   place-items: center;
@@ -379,12 +361,11 @@
   box-shadow: 0 6px 0 var(--azul-o);
   color: var(--azul);
 }
-.dtg-cta-escaparate-nova .nova-mini { margin-bottom: 20px; }
 
-/* Los avisos de ejemplo, como bocadillos de Nova. */
-.dtg-cta-avisos { position: relative; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+/* Las cifras de ejemplo, como papeles sueltos bajo el cuaderno. */
+.dtg-cta-ejemplos { position: relative; display: flex; flex-direction: column; gap: 12px; width: 100%; }
 
-.dtg-cta-aviso-msg {
+.dtg-cta-ejemplo {
   margin: 0;
   padding: 14px 16px;
   border-radius: 6px 18px 18px 18px;
@@ -395,9 +376,9 @@
   line-height: 1.5;
   color: var(--tinta);
 }
-.dtg-cta-aviso-msg:nth-child(2) { margin-left: 18px; }
+.dtg-cta-ejemplo:nth-child(2) { margin-left: 18px; }
 
-.dtg-cta-aviso-msg span {
+.dtg-cta-ejemplo span {
   display: inline-block;
   margin-bottom: 6px;
   padding: 3px 9px;
@@ -409,9 +390,9 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-/* Ojo = aviso (amarillo); bien = acierto (menta). */
-.dtg-cta-aviso-msg.is-ojo { --tono-s: var(--amarillo-s); --tono-o: #7a5d00; }
-.dtg-cta-aviso-msg.is-bien { --tono-s: var(--menta-s); --tono-o: var(--menta-o); }
+/* Ojo = a vigilar (amarillo); bien = en orden (menta). */
+.dtg-cta-ejemplo.is-ojo { --tono-s: var(--amarillo-s); --tono-o: #7a5d00; }
+.dtg-cta-ejemplo.is-bien { --tono-s: var(--menta-s); --tono-o: var(--menta-o); }
 
 .dtg-cta-escaparate-texto { display: flex; flex-direction: column; min-width: 0; }
 .gbc-wrap .dtg-cta-escaparate-texto h3 {
@@ -464,7 +445,7 @@
 .dtg-cta-cierre::after { bottom: -70px; left: -60px; width: 160px; height: 160px; }
 .dtg-cta-cierre > * { position: relative; z-index: 1; }
 .dtg-cta-cierre .dtg-cta-ey { align-self: center; }
-.dtg-cta-cierre-nova {
+.dtg-cta-cierre-icono {
   display: grid;
   place-items: center;
   width: 124px;
@@ -501,7 +482,7 @@
   .gbc-wrap .dtg-cta-link { white-space: normal; text-align: center; }
   .gbc-wrap .dtg-cta-btn.tecla--grande { padding: 18px 22px; font-size: 15px; }
   .dtg-cta-escaparate { padding: 24px 16px; border-radius: 28px; }
-  .dtg-cta-aviso-msg:nth-child(2) { margin-left: 0; }
+  .dtg-cta-ejemplo:nth-child(2) { margin-left: 0; }
   .dtg-cta-cierre { padding: 34px 18px 28px; border-radius: 28px; }
 }
 

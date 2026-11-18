@@ -39,7 +39,6 @@ export default function TjWelcome({
   capital,
   now,
   balance,
-  bot,
 }: {
   name: string;
   /** La foto que eligió en «Mi perfil»: sale junto a su nombre si la eligió. */
@@ -49,8 +48,6 @@ export default function TjWelcome({
   now: Date;
   /** El balance de la cuenta (TjBalance), a la derecha del saludo. */
   balance: React.ReactNode;
-  /** Nova, la asistente (TjBot). Hoy oculta: llega null (ver nova-visible.ts). */
-  bot: React.ReactNode;
 }) {
   const { texto: saludo, Icono: IconoMomento, momento } = useGreeting();
   const hoy = useFechaDeHoy();
@@ -79,8 +76,6 @@ export default function TjWelcome({
         </div>
         {balance}
       </div>
-
-      {bot}
 
       {trades.length > 0 && (
         <dl className="djp-periodos" aria-label="Tu operativa por periodos">

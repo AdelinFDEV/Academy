@@ -227,6 +227,7 @@ export default function TjTradeLog({ trades, ctx, dias, onEdit, onDelete }: Prop
     setError("");
     try {
       await onDelete(id);
+      sonar("borrar");
     } catch (err) {
       sonar("error");
       setError(err instanceof Error ? err.message : "No se pudo borrar la operación");
@@ -295,7 +296,7 @@ export default function TjTradeLog({ trades, ctx, dias, onEdit, onDelete }: Prop
               />
             </label>
             <TjSelect compact value={sort} onChange={v => setSort(v as SortId)} options={SORTS} />
-            <Tecla color="azul" tamano="peq" onClick={() => exportCsv(list, ctx)} disabled={!list.length} title="Descargar lo que ves en CSV (Excel)">
+            <Tecla color="azul" tamano="peq" sonido="guardado" onClick={() => exportCsv(list, ctx)} disabled={!list.length} title="Descargar lo que ves en CSV (Excel)">
               <Download size={15} strokeWidth={2.6} aria-hidden="true" /> CSV
             </Tecla>
           </div>

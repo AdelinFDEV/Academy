@@ -12,7 +12,7 @@ import type { ResumenHero } from "@/lib/portfolio-publico";
 import HeroCuaderno from "@/components/HeroCuaderno";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
-import { cursosPublicados } from "@/lib/cursos";
+import { cursosPublicados, preguntasDeCursos } from "@/lib/cursos";
 import { guiasVisibles } from "@/lib/guiasVisibles";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 import "./home.css";
@@ -38,13 +38,15 @@ export default async function HomePage() {
   // La cartera pública no depende de quién mire: se pide A LA VEZ que la
   // sesión, no después (antes eran tres esperas en fila: sesión, perfil y
   // cartera). La cartera tiene su propia caché; aquí solo se deja de esperar.
-  const [{ data: { user } }, resumenCompleto, cursos, guias] = await Promise.all([
+  const [{ data: { user } }, resumenCompleto, cursos, guias, preguntasCursos] = await Promise.all([
     supabase.auth.getUser(),
     resumenPortfolioPublico(),
     cursosPublicados(),
     // Solo para contarlas en el índice del hero; la sección de guías las
     // vuelve a pedir, y la consulta de las publicadas va con `cache`.
     guiasVisibles(),
+    // Para la tarjeta de resumen de los cursos (solo un recuento).
+    preguntasDeCursos(),
   ]);
 
   const profileRes = user
@@ -99,7 +101,7 @@ export default async function HomePage() {
 
       {/* ── Los cursos: el camino de un curso real y la lista de los publicados.
           Sin cursos publicados, no sale. ── */}
-      <CursosHome cursos={cursos} />
+      <CursosHome cursos={cursos} preguntas={preguntasCursos} />
 
       {/* ── Lo último del foro ──
           Solo sale si el foro existe para quien mira y hay preguntas. */}

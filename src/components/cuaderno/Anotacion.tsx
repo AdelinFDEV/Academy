@@ -4,7 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { annotate } from "rough-notation";
 import type { BracketType, RoughAnnotationType, RoughPadding } from "rough-notation/lib/model";
 import { alVerse } from "@/lib/alVerse";
-import { anclarTrazo } from "@/lib/anclarTrazo";
+import { prepararTrazo } from "@/lib/anclarTrazo";
 import "./anotacion.css";
 
 /**
@@ -37,7 +37,7 @@ export default function Anotacion({
   iteraciones = 2,
   multilinea,
   animar = true,
-  duracion = 900,
+  duracion,
   umbral = 0.6,
   junta = false,
   className,
@@ -63,7 +63,10 @@ export default function Anotacion({
   multilinea?: boolean;
   /** Con `false`, aparece ya dibujado al entrar en pantalla (marcas secundarias). */
   animar?: boolean;
-  /** Duración del trazo, en milisegundos. */
+  /**
+   * Duración del trazo, en milisegundos. Sin ella (lo normal) sale de lo largo
+   * que es el trazo: una palabra, cerca de un segundo; un párrafo, más.
+   */
   duracion?: number;
   /** Qué parte del texto tiene que verse para empezar a dibujar (0 a 1). */
   umbral?: number;
@@ -92,16 +95,21 @@ export default function Anotacion({
       : tipo === "circle"
         ? [6, 12]
         : 4;
+    const porLinea = multilinea ?? tipo !== "bracket";
     const anotacion = annotate(el, {
       type: tipo,
       color: real,
       strokeWidth: grosor,
       padding,
       iterations: iteraciones,
-      multiline: multilinea ?? tipo !== "bracket",
+      multiline: porLinea,
       animate: animar && !quieto,
-      animationDuration: duracion,
       ...(brackets ? { brackets } : {}),
+    });
+
+    // Que quepa, que siga a su palabra y que se dibuje a su ritmo (src/lib/anclarTrazo.ts).
+    const trazo = prepararTrazo(el, anotacion, {
+      tipo, relleno: padding, grosor, iteraciones, porLinea, animar: animar && !quieto, duracion,
     });
 
     let espera = 0;
@@ -109,18 +117,15 @@ export default function Anotacion({
     const cancelar = alVerse(
       el,
       () => {
-        espera = window.setTimeout(() => anotacion.show(), animar ? retraso : 0);
+        espera = window.setTimeout(() => trazo.mostrar(), animar ? retraso : 0);
       },
       { umbral },
     );
 
-    // Que el trazo siga a la palabra en cualquier pantalla (src/lib/anclarTrazo.ts).
-    const soltar = anclarTrazo(el);
-
     return () => {
       cancelar();
       window.clearTimeout(espera);
-      soltar();
+      trazo.soltar();
       anotacion.remove();
     };
   }, [tipo, color, grosor, retraso, ladosClave, rellenoClave, iteraciones, multilinea, animar, duracion, umbral]);

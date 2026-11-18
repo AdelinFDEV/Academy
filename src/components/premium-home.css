@@ -303,23 +303,6 @@
 
 @keyframes pf-trazar { to { stroke-dashoffset: 0; } }
 
-.pf-nova {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: var(--papel);
-  box-shadow: 0 3px 0 var(--gris-o);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.45;
-  color: var(--tinta-2);
-}
-
-.pf-nova strong { color: var(--azul-o); font-weight: 900; }
-
 .pf-chips {
   display: flex;
   flex-wrap: wrap;
@@ -943,4 +926,12 @@
     min-height: 84px;
     height: auto;
   }
+}
+
+/* En el móvil, «Instagram» a secas (18-11-2026, pedido por el admin). */
+.pf-ig-corto { display: none; }
+
+@media (max-width: 640px) {
+  .pf-ig-largo { display: none; }
+  .pf-ig-corto { display: inline; }
 }

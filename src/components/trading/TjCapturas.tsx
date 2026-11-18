@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, Camera, ChevronLeft, ChevronRight, ImagePlus, RefreshCw, Trash2, X } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import type { Trade } from "./tjStats";
 import { useSonidoVentana } from "./useSonidoVentana";
 import { bloquearScroll } from "./useVentanaMovil";
@@ -164,7 +165,9 @@ function Hueco({
     try {
       const lista = await preparar(archivo);
       onChange({ ...lista, quitar: false });
+      sonar("elegir");
     } catch (err) {
+      sonar("error");
       setError(err instanceof Error ? err.message : "No se pudo usar la imagen.");
     }
   }
@@ -194,7 +197,7 @@ function Hueco({
               <RefreshCw size={14} strokeWidth={2.8} aria-hidden="true" /> Cambiar
             </Tecla>
             <Tecla
-              color="coral" tamano="peq" icono aria-label={`Quitar la captura: ${titulo}`} title="Quitar"
+              color="coral" tamano="peq" icono sonido="borrar" aria-label={`Quitar la captura: ${titulo}`} title="Quitar"
               onClick={() => onChange({ archivo: null, vista: null, quitar: guardada })}
             >
               <Trash2 size={16} strokeWidth={2.6} aria-hidden="true" />
@@ -321,10 +324,10 @@ function Ampliada({ fotos, inicio, onClose }: { fotos: Foto[]; inicio: number; o
             <div className="djk-ampliada-teclas">
               {n > 1 && (
                 <>
-                  <Tecla color="blanca" tamano="peq" icono aria-label="Captura anterior" onClick={() => setI((x) => (x + n - 1) % n)}>
+                  <Tecla color="blanca" tamano="peq" icono sonido="pestana" aria-label="Captura anterior" onClick={() => setI((x) => (x + n - 1) % n)}>
                     <ChevronLeft size={20} strokeWidth={2.8} aria-hidden="true" />
                   </Tecla>
-                  <Tecla color="blanca" tamano="peq" icono aria-label="Captura siguiente" onClick={() => setI((x) => (x + 1) % n)}>
+                  <Tecla color="blanca" tamano="peq" icono sonido="pestana" aria-label="Captura siguiente" onClick={() => setI((x) => (x + 1) % n)}>
                     <ChevronRight size={20} strokeWidth={2.8} aria-hidden="true" />
                   </Tecla>
                 </>

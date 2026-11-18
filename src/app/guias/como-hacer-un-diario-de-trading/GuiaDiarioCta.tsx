@@ -1,19 +1,17 @@
 import Link from "next/link";
 import { ArrowRight, Check, Lock, NotebookPen } from "lucide-react";
-import NovaMini from "@/components/NovaMini";
-import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import Tecla from "@/components/cuaderno/Tecla";
 
 /**
  * Las llamadas al Diario de Trading dentro de la guía «Cómo hacer un diario de
  * trading» (11-11-2026, pedidas por el admin: quien llega aquí tiene que saber
- * que existen el Diario y Nova, y registrarse).
+ * que existe el Diario, y registrarse).
  *
  * Cuatro tamaños, de menos a más:
  *   · «aviso»: una línea bajo el hero, para que se sepa desde arriba.
- *   · «banner»: tras los 5 pasos, una franja con Nova y un botón.
- *   · «escaparate»: en «Dónde llevarlo», Nova en grande, lo que hace y un
- *     ejemplo de sus avisos.
+ *   · «banner»: tras los 5 pasos, una franja con el cuaderno y un botón.
+ *   · «escaparate»: en «Dónde llevarlo», lo que hace el Diario y dos
+ *     cifras de ejemplo de las que calcula.
  *   · «cierre»: tras el quiz, la última llamada, a todo lo ancho.
  *
  * El botón depende de quién mira: con Premium abre su diario; con cuenta sin
@@ -21,11 +19,9 @@ import Tecla from "@/components/cuaderno/Tecla";
  * la ficha del Diario). Nunca se esconde que el Diario es de Premium.
  *
  * Todo lo que se promete aquí lo hace la herramienta de verdad
- * (src/components/trading/): no añadas nada sin comprobarlo antes.
- *
- * El personaje de Nova obedece al interruptor MOSTRAR_NOVA (nova-visible.ts):
- * mientras esté apagado, en su sitio sale el cuaderno del Diario (un icono
- * decorativo). Los textos que la nombran no cambian.
+ * (src/components/trading/): no añadas nada sin comprobarlo antes. El Diario
+ * calcula y enseña cifras; no da avisos ni consejos en frases, así que aquí
+ * no se promete ninguno.
  */
 
 export type EstadoLector = "premium" | "cuenta" | "anonimo";
@@ -33,19 +29,22 @@ export type EstadoLector = "premium" | "cuenta" | "anonimo";
 const FICHA = "/herramientas/diario";
 const REGISTRO = `/register?next=${encodeURIComponent(FICHA)}`;
 
-/** Lo que hace el Diario, sin adornos. Revisado contra el código el 11-11-2026. */
+/** Lo que hace el Diario, sin adornos. Revisado contra el código el 18-11-2026. */
 const HACE = [
   "Calcula solo tu win rate, tus múltiplos de R y tu esperanza con cada operación",
   "Curva de capital, calendario y desglose por par, estrategia, día y hora",
   "Cruza cómo te sientes cada día con lo que ganas o pierdes",
-  "Nova lee tu diario y te avisa de riesgo alto, revancha, stops movidos y rachas",
-  "Cada lunes, un objetivo para la semana según lo que más te cueste",
+  "Mide tu riesgo en % de la cuenta y marca cada operación que pasa del 2 %",
+  "Compara lo que planeaste con lo que hiciste: objetivo conseguido y pérdida frente al stop",
 ];
 
-/** Avisos tal como los da Nova (reglas de tjNova.ts, con cifras de ejemplo). */
-const AVISOS = [
-  { tono: "is-ojo", texto: "Tras una pérdida volviste a entrar a los 12 minutos. La próxima vez, date al menos 60 minutos de aire." },
-  { tono: "is-bien", texto: "Hace una semana te hablé del stop, y lo has corregido: tus últimas pérdidas se quedan en lo planeado." },
+/**
+ * Dos cifras de «Riesgo y ejecución» tal como salen en la pestaña Análisis
+ * (TjAnalysis.tsx: mismos nombres y mismas frases), con valores de ejemplo.
+ */
+const EJEMPLOS = [
+  { tono: "is-ojo", nombre: "Objetivo conseguido", texto: "62 % del objetivo te llevas de media en tus ganadoras." },
+  { tono: "is-bien", nombre: "Pérdida frente al stop", texto: "1,00×: pierdes lo que planeaste, ni un dólar más." },
 ];
 
 /** La acción principal: una tecla naranja (ESTILO.md: una por bloque). */
@@ -76,7 +75,7 @@ function Nota({ estado, precio }: { estado: EstadoLector; precio: string }) {
   if (estado === "premium") return <p className="dtg-cta-nota">Ya lo tienes incluido en tu Premium.</p>;
   return (
     <p className="dtg-cta-nota">
-      La cuenta es gratis y sin tarjeta. El Diario y Nova van con Premium: {precio} al mes, sin permanencia, junto al
+      La cuenta es gratis y sin tarjeta. El Diario va con Premium: {precio} al mes, sin permanencia, junto al
       Portfolio Adelin y todos los cursos.
     </p>
   );
@@ -90,9 +89,9 @@ export default function GuiaDiarioCta({ variante, estado, precio }: {
   if (variante === "aviso") {
     return (
       <Link href={estado === "premium" ? "/dashboard/trading" : FICHA} className="dtg-cta-aviso">
-        {MOSTRAR_NOVA ? <NovaMini size={30} face="happy" /> : <span className="dtg-cta-aviso-icono" aria-hidden="true"><NotebookPen size={16} /></span>}
+        <span className="dtg-cta-aviso-icono" aria-hidden="true"><NotebookPen size={16} /></span>
         <span>
-          <strong>¿Prefieres que las cuentas se hagan solas?</strong> Conoce a Nova y el Diario de Trading de la academia
+          <strong>¿Prefieres que las cuentas se hagan solas?</strong> Conoce el Diario de Trading de la academia
         </span>
         <ArrowRight size={16} aria-hidden="true" />
       </Link>
@@ -102,11 +101,11 @@ export default function GuiaDiarioCta({ variante, estado, precio }: {
   if (variante === "banner") {
     return (
       <aside className="dtg-cta-banner" aria-label="El Diario de Trading de la academia">
-        <span className="dtg-cta-banner-nova" aria-hidden={MOSTRAR_NOVA ? undefined : true}>{MOSTRAR_NOVA ? <NovaMini size={64} face="happy" sigue /> : <NotebookPen size={40} strokeWidth={2.2} />}</span>
+        <span className="dtg-cta-banner-icono" aria-hidden="true"><NotebookPen size={40} strokeWidth={2.2} /></span>
         <div className="dtg-cta-banner-texto">
           <span className="dtg-cta-ey">Hazlo con el Diario de la academia</span>
           <strong>Estos cinco pasos, hechos solos desde el primer día</strong>
-          <p>Apuntas cada operación en un minuto. El Diario calcula las cifras y Nova, tu asistente, te dice qué corregir.</p>
+          <p>Apuntas cada operación en un minuto. El Diario calcula las cifras y te enseña dónde ganas, dónde pierdes y si cumples tu plan.</p>
         </div>
         <div className="dtg-cta-banner-acciones">
           <Boton estado={estado} precio={precio} />
@@ -118,32 +117,25 @@ export default function GuiaDiarioCta({ variante, estado, precio }: {
 
   if (variante === "escaparate") {
     return (
-      <aside className="dtg-cta-escaparate" aria-label="Nova y el Diario de Trading">
-        <div className="dtg-cta-escaparate-nova">
-          {MOSTRAR_NOVA ? (
-            <>
-              <span className="dtg-cta-escaparate-halo" aria-hidden="true" />
-              <NovaMini size={150} face="happy" sigue />
-            </>
-          ) : (
-            <span className="dtg-cta-escaparate-icono" aria-hidden="true"><NotebookPen size={72} strokeWidth={2} /></span>
-          )}
-          <div className="dtg-cta-avisos" aria-hidden="true">
-            {AVISOS.map(a => (
-              <p key={a.texto} className={`dtg-cta-aviso-msg ${a.tono}`}>
-                <span>Nova</span>
-                {a.texto}
+      <aside className="dtg-cta-escaparate" aria-label="El Diario de Trading por dentro">
+        <div className="dtg-cta-escaparate-lado">
+          <span className="dtg-cta-escaparate-icono" aria-hidden="true"><NotebookPen size={72} strokeWidth={2} /></span>
+          <div className="dtg-cta-ejemplos" aria-hidden="true">
+            {EJEMPLOS.map(e => (
+              <p key={e.nombre} className={`dtg-cta-ejemplo ${e.tono}`}>
+                <span>{e.nombre}</span>
+                {e.texto}
               </p>
             ))}
           </div>
         </div>
         <div className="dtg-cta-escaparate-texto">
           <span className="dtg-cta-ey">La herramienta de la academia</span>
-          <h3>Conoce a Nova: tu diario, leído por ti cada día</h3>
+          <h3>Tu diario de trading, con las cuentas ya hechas</h3>
           <p>
-            El Diario de Trading de AdelinBTC Academy hace todo lo que explica esta guía sin una sola fórmula. Y
-            dentro vive Nova, una asistente que repasa tus operaciones cada vez que apuntas algo y te cuenta lo
-            importante en frases cortas. Son reglas sobre tus propios datos, no una IA que se lo imagina.
+            El Diario de Trading de AdelinBTC Academy hace todo lo que explica esta guía sin una sola fórmula. Tú
+            apuntas la operación y él pone las cifras al momento: tu acierto, tu esperanza, tu riesgo y cuánto te
+            alejas de tu plan. Son cálculos sobre tus propios datos, no una IA que se lo imagina.
           </p>
           <ul>
             {HACE.map(h => <li key={h}><Check size={16} strokeWidth={2.6} aria-hidden="true" />{h}</li>)}
@@ -160,13 +152,13 @@ export default function GuiaDiarioCta({ variante, estado, precio }: {
 
   return (
     <aside className="dtg-cta-cierre" aria-label="Empieza tu diario">
-      <span className="dtg-cta-cierre-nova" aria-hidden={MOSTRAR_NOVA ? undefined : true}>{MOSTRAR_NOVA ? <NovaMini size={96} face="celebrate" sigue /> : <NotebookPen size={56} strokeWidth={2.2} />}</span>
+      <span className="dtg-cta-cierre-icono" aria-hidden="true"><NotebookPen size={56} strokeWidth={2.2} /></span>
       <span className="dtg-cta-ey">Ya sabes cómo hacerlo</span>
       <h2>Tu próxima operación, ya en tu diario</h2>
       <p>
         {estado === "premium"
-          ? "Ya sabes cómo hacer un diario de trading, y el tuyo te espera con Nova. Apunta la próxima operación y deja que las cifras hablen."
-          : "Ya sabes cómo hacer un diario de trading. Crea tu cuenta y empieza a llevarlo con el Diario de la academia: las cifras se calculan solas y Nova te avisa de lo que importa desde la primera operación."}
+          ? "Ya sabes cómo hacer un diario de trading, y el tuyo te espera. Apunta la próxima operación y deja que las cifras hablen."
+          : "Ya sabes cómo hacer un diario de trading. Crea tu cuenta y empieza a llevarlo con el Diario de la academia: las cifras se calculan solas desde la primera operación."}
       </p>
       <div className="dtg-cta-acciones is-centro">
         <Boton estado={estado} precio={precio} grande />

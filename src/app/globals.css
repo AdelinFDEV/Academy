@@ -134,7 +134,7 @@ body {
 html {
   scrollbar-color: color-mix(in srgb, var(--naranja) 60%, var(--naranja-s)) var(--fondo);
   /* El hueco de la barra se reserva siempre (13-11-2026). Al abrir algo que
-     bloquea el scroll (Nova en el centro, un aviso, una captura ampliada) la
+     bloquea el scroll (un aviso, una captura ampliada) la
      barra desaparecía, la ventana ganaba sus 12 px y toda la web daba un salto
      de lado. Con el hueco reservado, la barra se va y el contenido no se mueve.
      Vale para cualquier ventana emergente, presente o futura: no hay que
@@ -1621,3 +1621,15 @@ svg,
 a {
   -webkit-user-drag: none;
 }
+
+/* ── El pulso de los trazos (18-11-2026) ───────────────────────────────────
+   Pedido por el admin: que los subrayados, círculos y corchetes se dibujen
+   de forma fluida y agradable, nunca con prisa. rough-notation parte cada
+   trazo en tramos y a cada uno le pone su propio frenazo (ease-out): el boli
+   se paraba y volvía a arrancar en cada tramo. Aquí se le da un solo gesto:
+   el primer tramo arranca suave, los de en medio van a velocidad constante y
+   el último posa despacio. Cuánto dura lo decide src/lib/anclarTrazo.ts. */
+svg.rough-annotation path { animation-timing-function: linear !important; }
+svg.rough-annotation path:first-child { animation-timing-function: cubic-bezier(0.45, 0, 0.75, 0.75) !important; }
+svg.rough-annotation path:last-child { animation-timing-function: cubic-bezier(0.25, 0.25, 0.35, 1) !important; }
+svg.rough-annotation path:only-child { animation-timing-function: cubic-bezier(0.4, 0, 0.25, 1) !important; }

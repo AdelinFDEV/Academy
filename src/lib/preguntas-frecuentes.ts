@@ -27,7 +27,7 @@ export const PREGUNTAS_FRECUENTES: PreguntaFrecuente[] = [
   },
   {
     q: "¿Qué incluye Premium?",
-    a: "El Diario de Trading con Nova, el Portfolio Adelin con la cartera spot y el DCA de bitcoin, y todos los cursos con examen y certificado. Lo que se añada después entra sin pagar más.",
+    a: "El Diario de Trading, el Portfolio Adelin con la cartera spot y el DCA de bitcoin, y todos los cursos con examen y certificado. Lo que se añada después entra sin pagar más.",
     portada: true,
     soloPortada: true,
   },
@@ -49,10 +49,6 @@ export const PREGUNTAS_FRECUENTES: PreguntaFrecuente[] = [
   {
     q: "¿El precio me subirá más adelante?",
     a: "A ti no. El precio al que te suscribes queda fijado mientras mantengas la suscripción activa, aunque suba para quien entre después. Si cancelas y vuelves más adelante, entrarías con la tarifa que haya entonces.",
-  },
-  {
-    q: "¿Qué es Nova?",
-    a: "La asistente de tu Diario de Trading. Lee lo que apuntas —operaciones, emociones y capital— y te avisa de lo importante: riesgo, rachas, si cierras las ganadoras antes de tiempo o si operas por revancha. Son reglas sobre tus datos: no inventa nada ni te da señales.",
   },
   {
     q: "¿Mi diario lo ve alguien más?",

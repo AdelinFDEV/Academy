@@ -413,19 +413,6 @@
 
 @keyframes pm-trazar { to { stroke-dashoffset: 0; } }
 
-.pm-carta-nova {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 8px 10px;
-  border-radius: 12px;
-  background: var(--azul-s);
-  color: var(--azul-o);
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
 .pm-carta-pestanas { display: flex; gap: 6px; margin-bottom: 12px; }
 
 .pm-carta-pestanas span {
@@ -586,39 +573,7 @@
 
 .pm-pieza--inversa .pm-panel { transform: rotate(-1.5deg); }
 
-/* Diario con Nova (solo con MOSTRAR_NOVA) */
-.pm-nova-cab { display: flex; align-items: center; gap: 12px; }
-
-.pm-nova-cara {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background: var(--azul-s);
-}
-
-.pm-nova-cab > span:last-child { display: flex; flex-direction: column; }
-.pm-nova-cab strong { font-family: var(--letra-titular); font-size: 20px; font-weight: 800; }
-.pm-nova-cab small { font-size: 13px; font-weight: 700; color: var(--tinta-2); }
-
-.pm-nova-msg {
-  display: block;
-  padding: 11px 13px;
-  border-left: 5px solid var(--gris-o);
-  border-radius: 14px;
-  background: var(--papel);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.45;
-  color: var(--tinta-2);
-  box-shadow: 0 3px 0 var(--gris-o);
-}
-
-.pm-nova-msg.is-bien { border-left-color: var(--menta); }
-.pm-nova-msg.is-ojo { border-left-color: var(--naranja); }
-
-/* Diario sin Nova: una hoja del diario */
+/* El Diario: una hoja con lo que se apunta y lo que sale solo */
 .pm-hoja {
   background-color: var(--papel);
   background-image: repeating-linear-gradient(transparent 0 33px, var(--azul-s) 33px 35px);

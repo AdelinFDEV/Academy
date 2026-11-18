@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BookA, ExternalLink, X } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import { sonar } from "@/lib/sonidos";
+import { bloquearScroll } from "@/lib/bloquearScroll";
 import "./glosario-popup.css";
 
 /**
@@ -75,17 +76,12 @@ export default function GlosarioPopupGlobal({ terminos }: { terminos: Record<str
     tarjetaRef.current?.querySelector<HTMLButtonElement>(".gpop-x")?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && cerrar();
     window.addEventListener("keydown", onKey);
-    // Se bloquea el <html> y no solo el <body>: con `overflow-x` en los dos
-    // (globals.css), bloquear solo el body dejaba la página desplazable
-    // detrás de la ficha, con dos barras de desplazamiento.
-    const raiz = document.documentElement;
-    const antes = [raiz.style.overflow, document.body.style.overflow];
-    raiz.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
+    // La página no se desplaza detrás de la ficha: el bloqueo común, con
+    // contador (src/lib/bloquearScroll.ts).
+    const soltar = bloquearScroll();
     return () => {
       window.removeEventListener("keydown", onKey);
-      raiz.style.overflow = antes[0];
-      document.body.style.overflow = antes[1];
+      soltar();
     };
   }, [abierto, cerrar]);
 

@@ -81,7 +81,7 @@ export default function GuiasInstruccionesPage() {
       <Seccion id="objetivo" n="01" titulo="Para qué sirve una guía">
         <div className="agi-card">
           <p>
-            La academia vive de tres piezas de pago: el <strong>Diario de Trading con Nova</strong>, el{" "}
+            La academia vive de tres piezas de pago: el <strong>Diario de Trading</strong>, el{" "}
             <strong>Portfolio Adelin</strong> y los <strong>Cursos</strong>. Nadie busca esas piezas en Google: busca
             «qué es XRP» o «cómo declarar criptomonedas». <strong>La guía es la respuesta a esa búsqueda, y el camino
             hacia lo demás.</strong>

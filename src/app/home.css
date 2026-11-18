@@ -223,7 +223,7 @@
   align-self: flex-start;
   margin: 0 0 -4px 6px;
   font-family: var(--letra-mano);
-  font-size: 23px;
+  font-size: 31px; /* Más grande (18-11-2026, pedido por el admin); antes 23 px. */
   line-height: 1;
   color: var(--cielo-o);
   transform: rotate(-2deg);
@@ -1300,3 +1300,543 @@
    (repaso del 17-11-2026). Ahora se reparte encima y debajo de las fichas. */
 .rg-dic .rg-fichero { margin-block: auto; }
 .rg-dic .rg-cta { margin-top: 0; }
+
+/* ── Móvil (18-11-2026): «¡dale la vuelta!» ──
+   Con el texto del diccionario justo encima, a -96 px pisaba su título y su
+   párrafo. En el móvil baja al hueco libre entre el texto y la ficha, y su
+   flecha apunta a la ficha desde ahí. */
+@media (max-width: 960px) {
+  .rg-dic .rg-fichero { margin-top: 64px; }
+  .rg-gira { top: -78px; }
+  /* La flecha, separada del texto y con la punta en el borde de la ficha. */
+  .rg-gira .rg-gira-flecha { top: calc(100% + 10px); }
+}
+
+/* ── Móvil estrecho (18-11-2026) ──
+   La columna de cada zona de la hoja se estiraba hasta el ancho de la ficha
+   y arrastraba el texto fuera de la pantalla (en 320 px, 54 px de más): la
+   columna nunca pasa del ancho de su zona. Por debajo de 400 px la hoja
+   recorta su relleno (sin pisar el margen coral de la libreta) y la tecla
+   «= Haz tu cálculo» encoge su letra para caber en la calculadora. */
+@media (max-width: 960px) {
+  .rg-zona { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 400px) {
+  .rg-hoja { padding-left: 32px; padding-right: 14px; }
+  .rg-calculadora .rg-igual { padding-inline: 10px; font-size: 13px; letter-spacing: 0.02em; white-space: normal; }
+}
+
+/* Móvil (18-11-2026, pedido por el admin): sin las etiquetas «Predicción de
+   Precio» y «Diccionario cripto»; el título de cada zona ya dice qué es, y el
+   móvil gana ese alto. En el ordenador se quedan. */
+@media (max-width: 960px) {
+  .rg-zona .rg-etiqueta { display: none; }
+}
+
+/* Móvil (18-11-2026, pedido por el admin): la ficha del diccionario, más
+   pequeña (era demasiado grande para el móvil), con sus dos fichas de detrás
+   y su letra a la medida. Va al final para mandar sobre las medidas de
+   móvil de más arriba. */
+@media (max-width: 960px) {
+  .rg-dic .rg-fichero { height: 290px; }
+  .rg-dic .rg-ficha { width: 176px; height: 226px; padding: 16px 16px 16px 28px; }
+  .rg-dic .rg-ficha--1 { transform: translateX(-58px) rotate(-9deg); }
+  .rg-dic .rg-ficha--2 { transform: translateX(58px) rotate(8deg); }
+  .rg-dic .rg-ficha-palabra { font-size: 23px; }
+  .rg-dic .rg-fichero .te.rg-ficha-frente { width: 204px; height: 258px; }
+  .rg-dic .rg-ficha-frente .te-cara { padding: 18px; }
+  .rg-dic .rg-ficha-frente .te-pregunta { font-size: 24px; }
+  .rg-dic .rg-ficha-frente .te-tema { font-size: 11.5px; }
+  .rg-dic .rg-def-clave { font-size: 20px; }
+  .rg-dic .rg-def-resto { font-size: 15px; }
+  .rg-dic .rg-ficha-frente .te-detalle { font-size: 13px; }
+}
+
+/* «Abrir el diccionario»: en el móvil, «Ir al diccionario» y una tecla más
+   pequeña (pedido por el admin el 18-11-2026). En el ordenador, igual. */
+.rg-cta-corto { display: none; }
+
+@media (max-width: 960px) {
+  .rg-cta-largo { display: none; }
+  .rg-cta-corto { display: inline; }
+
+  /* Como las demás teclas secundarias de la portada: pastel, contorno de
+     rotulador y la letra en su tono oscuro. */
+  .rg-dic .rg-cta {
+    --c: var(--amarillo-s);
+    --o: color-mix(in srgb, var(--amarillo) 75%, var(--papel));
+    --t: var(--amarillo-o);
+    --h: 6px;
+    padding: 8.5px 14.5px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 13px 11px 14px 10px / 11px 14px 10px 13px;
+    font-size: 13px;
+  }
+}
+
+/* ── El dorso de la ficha, en el móvil (18-11-2026) ──
+   Como una entrada de diccionario: papel amarillo suave con su banda,
+   «Respuesta» en una etiquetita, la palabra con su fluorescente, la fórmula
+   en un recuadro de papel con borde discontinuo y el matiz, a mano, como una
+   nota al margen (antes, todo sobre amarillo sólido y casi todo en negrita). */
+.rg-dic .rg-ficha-frente .te-dorso {
+  background: var(--amarillo-s);
+  border-top: 12px solid var(--amarillo);
+  color: var(--tinta);
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.rg-dic .rg-ficha-frente .te-dorso .te-tema {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: var(--papel);
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amarillo-o);
+}
+
+.rg-dic .rg-ficha-frente .te-dorso .te-respuesta { line-height: 1.15; }
+
+.rg-dic .rg-def-clave {
+  display: inline;
+  margin: 0;
+  padding: 0 2px;
+  background: linear-gradient(transparent 55%, color-mix(in srgb, var(--amarillo) 70%, var(--papel)) 55%);
+  font-size: 19px;
+}
+
+.rg-dic .rg-def-resto {
+  display: block;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border: 2px dashed color-mix(in srgb, var(--amarillo-o) 35%, var(--amarillo-s));
+  border-radius: 10px;
+  background: var(--papel);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--tinta);
+}
+
+.rg-dic .rg-ficha-frente .te-detalle {
+  margin-top: auto;
+  padding-top: 0;
+  border-top: 0;
+  font-family: var(--letra-mano);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--amarillo-o);
+  opacity: 1;
+  transform: rotate(-2deg);
+}
+
+/* El tique de la calculadora, en el móvil (18-11-2026): los nombres con la
+   sigla («SOL a 360 $», «BTC hoy») para que no se partan en dos líneas, y
+   sin la línea del pie (fuente y aviso). */
+
+@media (max-width: 960px) {
+  /* Sin la línea del pie del tique: el móvil gana ese alto (pedido por el
+     admin el 18-11-2026). */
+  .rg-tira .rg-fuente { display: none; }
+}
+
+/* ── El tique de la calculadora, en el móvil (18-11-2026) ──
+   Más de tique y con más color: papel crema, el título a mano, la fila de tu
+   cálculo resaltada en naranja, las demás separadas por una línea a trazos y
+   cada moneda con su color (BTC naranja suave, ETH lila, SOL menta). */
+.rg-tira {
+  padding: 14px 14px 30px;
+  background: color-mix(in srgb, var(--amarillo-s) 45%, var(--papel));
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--amarillo) 35%, var(--gris)),
+    0 12px 22px -14px rgba(29, 27, 51, 0.45);
+}
+
+.rg-tira::before {
+  background: radial-gradient(circle at 6px 0, transparent 6px, color-mix(in srgb, var(--amarillo-s) 45%, var(--papel)) 6.5px) 0 0 / 12px 12px repeat-x;
+}
+
+.rg-tira-tit {
+  margin-bottom: 10px;
+  font-family: var(--letra-mano);
+  font-size: 21px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--naranja-o);
+  transform: rotate(-1.5deg);
+}
+
+.rg-barras { gap: 0; }
+
+.rg-barras li {
+  padding: 8px 2px;
+  border-top: 2px dashed color-mix(in srgb, var(--gris-o) 45%, transparent);
+  font-size: 13px;
+}
+
+.rg-barras li:first-child { border-top: 0; }
+
+/* Tu cálculo: resaltado, como el total de un tique. */
+.rg-barras li.is-objetivo {
+  margin-bottom: 4px;
+  padding: 8px 10px 10px;
+  border-radius: 12px;
+  background: var(--naranja-s);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--naranja) 35%, var(--naranja-s));
+  color: var(--naranja-o);
+}
+
+.rg-barras li.is-objetivo .rg-barra-valor { color: var(--naranja-o); }
+.rg-barras li.is-objetivo + li { border-top: 0; }
+
+.rg-barra-pista { height: 11px; background: color-mix(in srgb, var(--gris) 70%, var(--papel)); }
+
+.rg-fila--bitcoin .rg-barra { background: color-mix(in srgb, var(--naranja) 55%, var(--amarillo)); }
+.rg-fila--ethereum .rg-barra { background: var(--lila); }
+.rg-fila--solana .rg-barra { background: var(--menta); }
+
+/* El tique, compacto en el móvil (18-11-2026, pedido por el admin): cada fila
+   en UNA línea (nombre, barra y cifra abreviada), en vez de nombre y cifra
+   arriba con la barra debajo. Mide la mitad de alto. */
+@media (max-width: 960px) {
+  .rg-barras li {
+    grid-template-columns: 4.6em minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0 8px;
+    padding: 6px 2px;
+  }
+
+  .rg-barra-nombre { grid-row: 1; grid-column: 1; }
+  .rg-barra-pista { grid-row: 1; grid-column: 2; height: 9px; }
+  .rg-barra-valor { grid-row: 1; grid-column: 3; }
+
+  /* La fila de tu cálculo, con sitio para «ETH a 34.500 $». */
+  .rg-barras li.is-objetivo { grid-template-columns: auto minmax(0, 1fr) auto; padding: 7px 9px; }
+}
+
+/* «MC» sobre la columna de cifras del tique y más color en todo él, en el
+   móvil (18-11-2026, pedido por el admin). Cada moneda lleva su color también
+   en el nombre y en la cifra, no solo en la barra; las líneas a trazos van en
+   naranja suave, y el papel tiene un toque cálido. */
+
+.rg-tira {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--naranja-s) 55%, var(--papel)), var(--papel) 70%);
+}
+
+.rg-tira-cab {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.rg-tira-cab .rg-tira-tit { margin-bottom: 0; }
+
+.rg-tira-mc {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 7px;
+  background: var(--lila-s);
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: var(--lila-o);
+  cursor: help;
+}
+
+.rg-barras li { border-top-color: color-mix(in srgb, var(--naranja) 28%, transparent); }
+
+.rg-fila--bitcoin,
+.rg-fila--bitcoin .rg-barra-valor { color: color-mix(in srgb, var(--naranja-o) 70%, var(--amarillo-o)); }
+.rg-fila--ethereum,
+.rg-fila--ethereum .rg-barra-valor { color: var(--lila-o); }
+.rg-fila--solana,
+.rg-fila--solana .rg-barra-valor { color: var(--menta-o); }
+
+.rg-fila--bitcoin .rg-barra-pista { background: color-mix(in srgb, var(--naranja) 14%, var(--papel)); }
+.rg-fila--ethereum .rg-barra-pista { background: var(--lila-s); }
+.rg-fila--solana .rg-barra-pista { background: var(--menta-s); }
+.rg-barras li.is-objetivo .rg-barra-pista { background: color-mix(in srgb, var(--naranja) 18%, var(--papel)); }
+
+/* Lo de forma del tique en el móvil: cada fila en una línea, que no se parta
+   ni empuje lo de debajo. En el ordenador hay sitio y no hace falta. */
+@media (max-width: 960px) {
+  /* Cada fila, siempre en una línea (como la pantalla de la calculadora): al
+     cambiar de moneda o de múltiplo, una cifra más larga no la parte en dos ni
+     empuja lo de debajo. La letra se ajusta al ancho del móvil y el tique es
+     algo más ancho para que quepa entera; el nombre, si aun así no cupiera,
+     se corta con puntos suspensivos antes que la cifra. */
+  .rg-tira { width: 94%; }
+  .rg-barras li { font-size: clamp(11px, 3.4vw, 13px); }
+  .rg-barras li > span { white-space: nowrap; }
+  .rg-barra-nombre { overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* ── Calculadora y diccionario: lo estético del móvil, también en el
+   ordenador (18-11-2026, pedido por el admin) ── El tique (papel cálido,
+   título a mano, «MC», tu cálculo resaltado en naranja y cada moneda en su
+   color) y el dorso de la ficha ya son globales más arriba. Aquí: el tique sin
+   la línea del pie, y «Abrir el diccionario» como las demás teclas
+   secundarias, en pastel con contorno de rotulador. La estructura del
+   ordenador no cambia: etiquetas de cada zona, filas del tique en dos líneas y
+   fichas del tamaño de siempre. */
+.rg-tira .rg-fuente { display: none; }
+
+.rg-dic .rg-cta {
+  --c: var(--amarillo-s);
+  --o: color-mix(in srgb, var(--amarillo) 75%, var(--papel));
+  --t: var(--amarillo-o);
+  border: 2.5px solid var(--tinta);
+  border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+}
+
+/* En el ordenador, la ficha es más grande: el dorso, con la letra a su medida. */
+@media (min-width: 961px) {
+  .rg-dic .rg-def-clave { font-size: 22px; }
+  .rg-dic .rg-def-resto { font-size: 15px; }
+  .rg-dic .rg-ficha-frente .te-detalle { font-size: 20px; }
+}
+
+/* ══ Calculadora y diccionario en el ordenador, como en el móvil (18-11-2026,
+   pedido por el admin) ══
+   · Sin las etiquetas «Predicción de Precio» y «Diccionario cripto»: el
+     título de cada zona ya dice qué es.
+   · El tique, igual que el del móvil en textos y composición: nombres con la
+     sigla («SOL a 370 $», «BTC hoy»), cifras abreviadas y cada fila en una
+     línea (nombre, barra y cifra).
+   · La raya que separa las dos zonas, roja y a rotulador, con su temblor de
+     mano (antes, una línea gris discontinua). */
+.rg-zona .rg-etiqueta { display: none; }
+
+.rg-tira .rg-largo { display: none; }
+.rg-tira .rg-corto { display: inline; }
+
+.rg-barras li {
+  grid-template-columns: 4.6em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 8px;
+  padding: 6px 2px;
+}
+
+.rg-barra-nombre { grid-row: 1; grid-column: 1; }
+.rg-barra-pista { grid-row: 1; grid-column: 2; height: 9px; }
+.rg-barra-valor { grid-row: 1; grid-column: 3; }
+.rg-barras li.is-objetivo { grid-template-columns: auto minmax(0, 1fr) auto; padding: 7px 9px; }
+.rg-barras li > span { white-space: nowrap; }
+.rg-barra-nombre { overflow: hidden; text-overflow: ellipsis; }
+
+@media (min-width: 961px) {
+  .rg-calc .rg-tira { max-width: 300px; }
+  .rg-barras li { font-size: 13px; }
+}
+
+/* La raya roja a rotulador entre las dos zonas: un dibujo estirado a lo alto
+   (en el ordenador) o a lo ancho (en el móvil), con trazos irregulares. */
+.rg-dic { position: relative; border-left: 0; }
+
+.rg-dic::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -7px;
+  width: 14px;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 400' preserveAspectRatio='none'%3E%3Cpath d='M7 3C4 38 10 70 6.5 104S9 168 6 206s4 72 1.5 108-3 52 0.5 83' fill='none' stroke='%23e5484d' stroke-width='3' stroke-linecap='round' stroke-dasharray='16 8 9 10 22 9' vector-effect='non-scaling-stroke' opacity='.85'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+@media (max-width: 960px) {
+  .rg-dic { border-top: 0; }
+
+  .rg-dic::before {
+    top: -7px;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 14' preserveAspectRatio='none'%3E%3Cpath d='M3 7C38 4 70 10 104 6.5S168 9 206 6s72 4 108 1.5 52-3 83 0.5' fill='none' stroke='%23e5484d' stroke-width='3' stroke-linecap='round' stroke-dasharray='16 8 9 10 22 9' vector-effect='non-scaling-stroke' opacity='.85'/%3E%3C/svg%3E");
+  }
+}
+
+/* ── El bolígrafo de la izquierda (18-11-2026, pedido por el admin) ──
+   La pegatina del bolígrafo con la gotita de tinta tirando del capuchón,
+   apoyada en el borde izquierdo de la hoja, por fuera, junto a la
+   calculadora, inclinado hacia ella (si se inclinara hacia fuera, se saldría
+   de la pantalla). Solo en pantallas de 1500 px o más: por debajo no hay sitio
+   fuera de la hoja y no sale. Se balancea muy despacio. */
+.rg-boli { display: none; }
+
+@media (min-width: 1500px) {
+  .rg-hoja { position: relative; }
+
+  .rg-boli {
+    position: absolute;
+    bottom: 10px;
+    left: max(-178px, calc(14px - (100vw - 1180px) / 2));
+    z-index: 2;
+    display: block;
+    width: 150px;
+    max-width: none;
+    height: auto;
+    rotate: 6deg;
+    transform-origin: 50% 100%;
+    pointer-events: none;
+    user-select: none;
+    animation: rg-boli 5s ease-in-out infinite;
+  }
+}
+
+@keyframes rg-boli {
+  0%, 100% { rotate: 6deg; }
+  50% { rotate: 3deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rg-boli { animation: none; }
+}
+
+/* ── La sección de guías, en su hoja (18-11-2026, pedido por el admin: «le
+   falta algo, un fondo unificado») ── En el ordenador, como Cursos y el foro:
+   una hoja con su canto, del mismo ancho y esquinas. Aquí en azul cielo muy
+   suave (el color de las guías) con su cuadrícula de puntitos, y no en
+   blanco: las tarjetas de las guías son blancas y se perderían. En el móvil,
+   como estaba. */
+@media (min-width: 641px) {
+  .gh { padding-inline: clamp(0.6rem, 2vw, 1.25rem); }
+
+  .gh-inner {
+    max-width: 1240px;
+    padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 2.75rem);
+    border-radius: 40px;
+    background:
+      radial-gradient(circle, color-mix(in srgb, var(--cielo) 22%, transparent) 1.3px, transparent 1.6px) 0 0 / 22px 22px,
+      color-mix(in srgb, var(--cielo) 13%, var(--papel));
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--cielo) 30%, var(--papel)),
+      0 6px 0 color-mix(in srgb, var(--cielo) 45%, var(--papel));
+  }
+}
+
+@media (min-width: 641px) and (max-width: 960px) {
+  .gh-inner { border-radius: 32px; }
+}
+
+/* En el móvil, la nota del buscador se queda como estaba: la lupa va justo
+   detrás de la frase y, más grande, la pisaba. */
+@media (max-width: 640px) {
+  .gh-buscar-nota { font-size: 23px; }
+}
+
+/* ── «Gráficas · Ejercicios · Quiz final», con presencia (18-11-2026, pedido
+   por el admin: «están muy escondidas y son muy importantes») ── Más grandes,
+   con contorno de rotulador y el canto de su color, el icono en una teclita
+   de su color sólido y cada una algo ladeada, como pegatinas. Delante, a
+   mano, «cada guía trae:» (en el ordenador). */
+.gh-trae > li {
+  border: 2px solid var(--tinta);
+  border-radius: 12px 10px 13px 9px / 10px 13px 9px 12px;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 70%, var(--tinta));
+  color: var(--tinta);
+}
+
+.gh-trae > li svg {
+  box-sizing: content-box;
+  flex: none;
+  padding: 4px;
+  border-radius: 7px;
+  background: var(--c);
+  box-shadow: 0 2px 0 var(--o);
+  color: #fff;
+}
+
+.gh-trae > li:nth-child(odd) { rotate: -1.5deg; }
+.gh-trae > li:nth-child(even) { rotate: 1.5deg; }
+
+@media (min-width: 641px) {
+  .gh-trae {
+    align-items: center;
+    gap: 10px 14px;
+    margin-top: 1.4rem;
+  }
+
+  .gh-trae::before {
+    content: "cada guía trae:";
+    margin-right: 2px;
+    font-family: var(--letra-mano);
+    font-size: 24px;
+    line-height: 1;
+    color: var(--cielo-o);
+    rotate: -3deg;
+  }
+
+  .gh-trae > li {
+    gap: 9px;
+    padding: 7px 15px 7px 8px;
+    font-size: 1.02rem;
+    font-weight: 900;
+  }
+
+  .gh-trae > li svg { width: 17px; height: 17px; }
+}
+
+@media (max-width: 640px) {
+  .gh-trae > li { padding: 4px 8px 4px 5px; }
+  .gh-trae > li svg { width: 12px; height: 12px; padding: 3px; border-radius: 6px; }
+}
+
+/* La guía principal, con las hojas de detrás en el amarillo del fluorescente
+   de «explicadas» (18-11-2026, pedido por el admin): destaca sobre la hoja
+   azul de la sección y sobre las seis pequeñas, que siguen en azul. En el
+   ordenador; en el móvil, como estaba. */
+@media (min-width: 641px) {
+  .gh-mazo--nueva .gh-mazo-hoja--1 { background: var(--amarillo-s); }
+  .gh-mazo--nueva .gh-mazo-hoja--2 { background: var(--amarillo); box-shadow: 0 5px 0 var(--amarillo-o); }
+}
+
+/* «cada guía trae:» en rojo, y una flecha roja dibujada a mano que le apunta
+   desde fuera de la hoja (18-11-2026, pedido por el admin: «bien visible,
+   grande»). Solo en el ordenador, donde va la nota. */
+@media (min-width: 641px) {
+  .gh-trae { position: relative; }
+  .gh-trae::before { color: #e5484d; }
+
+  .gh-trae::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -64px;
+    width: 60px;
+    height: 46px;
+    margin-top: -26px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 46'%3E%3Cpath d='M4 33C12 18 22 38 33 25s16-6 25-3' fill='none' stroke='%23e5484d' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M48 12.5l11 9.5-12.5 6.5' fill='none' stroke='%23e5484d' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    rotate: -6deg;
+    pointer-events: none;
+  }
+}
+
+/* Con más sitio fuera de la hoja, la flecha crece y sale más de fuera. */
+@media (min-width: 1440px) {
+  .gh-trae::after { left: -104px; width: 96px; height: 64px; margin-top: -34px; }
+}
+
+/* Móvil: más aire entre los elementos de la cabecera de las guías
+   (18-11-2026, pedido por el admin). */
+@media (max-width: 640px) {
+  .gh-cabecera { row-gap: 2.1rem; margin-bottom: 3.2rem; }
+  .gh-titulo { margin-top: 0.5rem; }
+  .gh-sub { margin-top: 1.2rem; }
+  .gh-trae { margin-top: 1.4rem; }
+  .gh-cabecera-acciones { gap: 1.3rem; }
+  .gh-buscar-nota { margin-bottom: 2px; }
+}

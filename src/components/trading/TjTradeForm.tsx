@@ -249,7 +249,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
     e.preventDefault();
     if (paso < ULTIMO) {
       if (actual.ok) {
-        sonar("avance");
+        sonar("pestana");
         setPaso(paso + 1);
       }
       return;
@@ -312,6 +312,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                   tamano="peq"
                   color={i === paso ? "azul" : i < paso ? "menta" : "blanca"}
                   className="djf-indice-tecla"
+                  sonido={i === paso ? undefined : "pestana"}
                   onClick={() => setPaso(i)}
                   disabled={i > tope}
                   aria-current={i === paso ? "step" : undefined}
@@ -351,6 +352,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                             key={valor} role="radio" aria-checked={on}
                             color={on ? (valor === "long" ? "azul" : "lila") : "blanca"}
                             className={`djf-opcion is-${valor}${on ? " is-on" : ""}`}
+                            sonido="elegir"
                             onClick={() => set("direction", valor)}
                           >
                             <span className="djf-opcion-icono" aria-hidden="true"><Icono size={22} strokeWidth={2.6} /></span>
@@ -408,6 +410,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                           key={valor} role="radio" aria-checked={on}
                           color="blanca"
                           className={`djf-opcion djf-res is-${tono}${on ? " is-on" : ""}`}
+                          sonido="elegir"
                           onClick={() => set("result", valor)}
                           disabled={hasReal}
                           title={hasReal ? "Se deduce del signo del P&L real" : undefined}
@@ -429,7 +432,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                       {/* El teclado numérico del iPhone no tiene la tecla del menos:
                           esta pone o quita el signo de la cifra escrita. */}
                       <Tecla
-                        color="blanca" tamano="peq" className="djf-signo"
+                        color="blanca" tamano="peq" className="djf-signo" sonido="interruptor"
                         onClick={cambiarSigno} disabled={!hasReal || real === 0}
                         aria-label={hasReal && real < 0 ? "Pasar a ganancia (quitar el signo menos)" : "Pasar a pérdida (poner el signo menos)"}
                         title="Cambiar el signo"
@@ -529,7 +532,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                   <span><b>No se pudo guardar</b>{error}</span>
                 </div>
               )}
-              <Tecla color="blanca" className="djf-atras" onClick={() => (paso === 0 ? onClose() : setPaso(paso - 1))}>
+              <Tecla color="blanca" className="djf-atras" sonido={paso === 0 ? undefined : "pestana"} onClick={() => (paso === 0 ? onClose() : setPaso(paso - 1))}>
                 {paso === 0 ? "Cancelar" : <><ArrowLeft size={18} strokeWidth={2.8} aria-hidden="true" /> Atrás</>}
               </Tecla>
               <span className="djf-pie-nota" aria-live="polite">

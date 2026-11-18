@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Check, PenLine, Trophy } from "lucide-react";
+import { ArrowRight, Check, HandHelping, MessageCircleQuestionMark, PenLine, Trophy } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
 import { aspectoDe, colorDe } from "@/components/foro/categorias";
@@ -40,17 +40,56 @@ export default async function ForoEnPortada({ conSesion }: { conSesion: boolean 
 export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
   return (
     <section className="fpo" aria-labelledby="fpo-titulo">
+      {/* Un tachón de rotulador coral encima de los botones, que cruza el
+          borde de la hoja y se va hasta el borde de la web, con una
+          estrellita donde empieza. Solo en el ordenador (portada.css;
+          18-11-2026, pedido por el admin). */}
+      <svg className="fpo-tachon" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M6 38C30 18 44 52 70 34s34-26 54-6 32 22 54 0 36-20 56 2 34 18 54-2 40-16 62-6 30 8 44 4" />
+      </svg>
+      <svg className="fpo-tachon-estrella" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2.5l2.2 6.6 6.8.2-5.4 4.2 2 6.6L12 16.2l-5.6 3.9 2-6.6L3 9.3l6.8-.2z" />
+      </svg>
       <div className="fpo-inner">
         <header className="fpo-cabecera">
-          <div>
+          {/* El título invita a participar (18-11-2026, pedido por el admin):
+              antes decía «Lo último que se ha preguntado», que solo describía.
+              Debajo, los tres gestos del foro en tres pasos: preguntar,
+              responder y, con lo que ayudas, subir en el ranking del mes (que
+              cuenta respuestas elegidas y gracias: foro/ranking). */}
+          <div className="fpo-cabecera-texto">
             <p className="fpo-nota">Foro de la comunidad</p>
             <h2 id="fpo-titulo" className="fpo-titulo">
-              Lo último que se ha <span className="fpo-titulo-mano">preguntado</span>
+              Aquí nadie se queda <span className="fpo-titulo-mano">con la duda</span>
             </h2>
+            <p className="fpo-lead">
+              Pregunta lo que no te haya quedado claro, echa una mano a quien empieza y sube en el ranking del mes.
+            </p>
+            <ol className="fpo-pasos" aria-label="Cómo se participa en el foro">
+              <li className="fpo-paso fpo-paso--pregunta">
+                <MessageCircleQuestionMark size={15} strokeWidth={2.6} aria-hidden="true" /> Pregunta
+              </li>
+              {/* Las rayitas a mano que unen un paso con el siguiente. */}
+              <li className="fpo-raya" aria-hidden="true" />
+              <li className="fpo-paso fpo-paso--responde">
+                <HandHelping size={15} strokeWidth={2.6} aria-hidden="true" /> Ayuda
+              </li>
+              <li className="fpo-raya" aria-hidden="true" />
+              <li className="fpo-paso fpo-paso--ranking">
+                <Trophy size={15} strokeWidth={2.6} aria-hidden="true" /> <span className="fpo-paso-largo">Sube en el ranking</span><span className="fpo-paso-corto">Ranking</span>
+              </li>
+            </ol>
           </div>
-          <Tecla href="/foro" color="blanca" tamano="peq" className="fpo-ver">
-            Ver el foro <ArrowRight size={16} strokeWidth={2.8} aria-hidden="true" />
-          </Tecla>
+          {/* «Ver el ranking», al lado de «Ver el foro» (18-11-2026, pedido por
+              el admin; antes iba en la invitación de la derecha). */}
+          <div className="fpo-cabecera-acciones">
+            <Tecla href="/foro/ranking" color="blanca" tamano="peq" className="fpo-ver fpo-ver--ranking fpo-ver--arriba">
+              <Trophy size={16} strokeWidth={2.6} aria-hidden="true" /> Ver el ranking
+            </Tecla>
+            <Tecla href="/foro" color="blanca" tamano="peq" className="fpo-ver">
+              Ver el foro <ArrowRight size={16} strokeWidth={2.8} aria-hidden="true" />
+            </Tecla>
+          </div>
         </header>
 
         <div className="fpo-cuerpo">
@@ -126,24 +165,44 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
               <Image src="/cuaderno/burbujas-pegatina.webp" alt="" width={360} height={339} className="fpo-mano-img" draggable={false} />
             </div>
 
-            <p className="fpo-invita-titulo">¿Se te ha quedado una duda?</p>
-            <p className="fpo-invita-texto">
-              El foro es el sitio para preguntar lo que no te haya quedado claro de una guía o de un curso, y para
-              ayudar a quien viene detrás.
+            {/* Título con «una duda» a mano y fluorescente, y el texto en dos
+                notas con su icono: para qué sirve el foro, de un vistazo
+                (18-11-2026, pedido por el admin). */}
+            <p className="fpo-invita-titulo">
+              ¿Se te ha quedado <span className="fpo-invita-mano">una duda</span>?
             </p>
+            <ul className="fpo-invita-lista">
+              <li>
+                <span className="fpo-invita-icono" aria-hidden="true">
+                  <MessageCircleQuestionMark size={16} strokeWidth={2.6} />
+                </span>
+                <span>
+                  <b>Pregunta</b> lo que no te haya quedado claro de una guía o de un curso.
+                </span>
+              </li>
+              <li>
+                <span className="fpo-invita-icono fpo-invita-icono--ayuda" aria-hidden="true">
+                  <HandHelping size={16} strokeWidth={2.6} />
+                </span>
+                <span>
+                  <b>Ayuda</b> a quien viene detrás con lo que ya sabes.
+                </span>
+              </li>
+            </ul>
             <div className="fpo-invita-acciones">
               <Tecla href="/foro/preguntar" color="coral">
                 <PenLine size={17} strokeWidth={2.6} aria-hidden="true" /> Hacer una pregunta
               </Tecla>
-              <Link href="/foro/ranking" className="fpo-invita-enlace">
-                <span className="fpo-invita-trofeo" aria-hidden="true">
-                  <Trophy size={15} strokeWidth={2.4} />
-                </span>
-                Ver el ranking
-              </Link>
             </div>
           </aside>
         </div>
+
+        {/* En el móvil, «Ver el ranking» va al final de la sección y arriba solo
+            queda «Ver el foro» (18-11-2026, pedido por el admin). En el
+            ordenador no sale: allí va en la cabecera. */}
+        <Tecla href="/foro/ranking" color="blanca" ancho className="fpo-ver fpo-ver--ranking fpo-ranking-abajo">
+          <Trophy size={18} strokeWidth={2.6} aria-hidden="true" /> Ver el ranking
+        </Tecla>
       </div>
     </section>
   );

@@ -63,7 +63,7 @@ const PRECIO_DIA = precioEur(Math.round((PREMIUM_PRICE_EUR / 30) * 100) / 100);
  */
 const INCLUYE = [
   "Todos los cursos, con examen y certificado, también los que se publiquen",
-  "Diario de Trading con Nova",
+  "Diario de Trading",
   "Portfolio Adelin: spot y DCA en directo",
   "Insignia de Miembro Fundador en tu perfil",
 ];

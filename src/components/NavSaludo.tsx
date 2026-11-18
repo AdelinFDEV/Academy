@@ -7,6 +7,7 @@ import LogoutButton from "@/components/LogoutButton";
 import AvatarUsuario from "@/components/AvatarUsuario";
 import Tecla from "@/components/cuaderno/Tecla";
 import { sonar } from "@/lib/sonidos";
+import { bloquearScroll } from "@/lib/bloquearScroll";
 
 export type PlanUsuario = "admin" | "premium" | "free";
 
@@ -61,6 +62,9 @@ export default function NavSaludo({
   // zona que no es un enlace, y el menú no se cerraba al tocar fuera.
   useEffect(() => {
     if (!abierto) return;
+    // Con el desplegable abierto, la página no se desplaza (18-11-2026; el
+    // bloqueo común, src/lib/bloquearScroll.ts).
+    const soltar = bloquearScroll();
     const fuera = (e: PointerEvent) => {
       if (caja.current?.contains(e.target as Node)) return;
       sonar("cerrar");
@@ -75,6 +79,7 @@ export default function NavSaludo({
     document.addEventListener("pointerdown", fuera);
     window.addEventListener("keydown", tecla);
     return () => {
+      soltar();
       document.removeEventListener("pointerdown", fuera);
       window.removeEventListener("keydown", tecla);
     };

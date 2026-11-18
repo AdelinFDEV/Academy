@@ -28,8 +28,8 @@ import "./como-hacer-un-diario-de-trading.css";
  * —sirve con cuaderno o con Excel—. No la conviertas en un anuncio: si deja
  * de responder a la pregunta, deja de posicionar.
  *
- * Desde el 11-11-2026 (pedido por el admin) lleva LLAMADAS al Diario y a Nova
- * para que quien llegue sepa que existen y se registre (GuiaDiarioCta.tsx).
+ * Desde el 11-11-2026 (pedido por el admin) lleva LLAMADAS al Diario de Trading
+ * para que quien llegue sepa que existe y se registre (GuiaDiarioCta.tsx).
  * La regla para que convivan con el SEO: van DESPUÉS de responder, como
  * bloques aparte, y el texto de la guía no cambia por ellas. Una línea bajo el
  * hero, una franja tras los 5 pasos, el escaparate en «Dónde llevarlo» y el
@@ -603,7 +603,7 @@ export default async function DiarioTradingGuidePage() {
         </div>
       </section>
 
-      {/* ── LA ÚLTIMA LLAMADA: el Diario y Nova, antes del cierre fijo de toda guía ── */}
+      {/* ── LA ÚLTIMA LLAMADA: el Diario de Trading, antes del cierre fijo de toda guía ── */}
       <section className="gbc-section">
         <div className="gbc-gc">
           <GuiaDiarioCta variante="cierre" estado={lector} precio={precio} />

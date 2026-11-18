@@ -387,7 +387,7 @@
 .ch-parada:has(.ch-certificado) .ch-paso { top: 58px; }
 .ch-parada:has(.ch-reto) .ch-paso { top: 58px; }
 
-.ch-parada:has(.ch-nodo--examen) .ch-paso { color: var(--lila-o); }
+.ch-parada:has(.ch-nodo--examen) .ch-paso { color: var(--coral-o); }
 .ch-parada:has(.ch-reto) .ch-paso { color: var(--azul-o); }
 
 .ch-bocadillo {
@@ -575,7 +575,1195 @@
 
   .ch-camino-caja::-webkit-scrollbar { display: none; }
   .ch-camino { width: 680px; }
+  /* La fila del camino se desliza y recorta lo que sobresale: aire arriba
+     para el bocadillo del villano al pulsarlo (se cortaba 8 px), devuelto
+     con margen negativo para que nada se mueva. */
+  .ch-camino-caja { padding-top: 40px; margin-top: calc(clamp(0.75rem, 2vw, 1.25rem) - 40px); }
   .ch-cursos { grid-template-columns: minmax(0, 1fr); }
   .ch-ver { flex: 1 1 100%; }
   .ch-horas { margin: 0; }
+}
+
+/* Móvil (18-11-2026, pedido por el admin): más aire entre los elementos de la
+   cabecera y hasta el camino, y la etiqueta de las horas, más pequeña. */
+@media (max-width: 640px) {
+  .ch-cabecera { row-gap: 1.35rem; }
+  .ch-lead { margin-top: 0.9rem; }
+
+  .ch-horas {
+    gap: 8px;
+    padding: 6px 12px 6px 9px;
+    border-width: 2px;
+    border-radius: 13px 11px 14px 10px / 11px 14px 10px 13px;
+    box-shadow: 0 4px 0 color-mix(in srgb, var(--lila) 55%, var(--papel));
+  }
+
+  .ch-horas-cifra { font-size: 1.65rem; }
+  .ch-horas-texto { font-size: 18px; }
+  .ch-horas-sub { font-size: 0.68rem; }
+
+  /* El camino, con más sitio por arriba para el bocadillo «Empieza aquí». */
+  .ch-camino-caja { margin-top: calc(2rem - 40px); }
+}
+
+/* «Ver los cursos» (18-11-2026; en el ordenador también desde el mismo día):
+   como las demás teclas secundarias de la portada, en pastel lila con
+   contorno de rotulador, en lugar del bloque lila. */
+.ch-cabecera .ch-ver {
+  --c: var(--lila-s);
+  --o: color-mix(in srgb, var(--lila) 65%, var(--papel));
+  --t: var(--lila-o);
+  border: 2.5px solid var(--tinta);
+  border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+}
+
+@media (max-width: 640px) {
+  .ch-cabecera .ch-ver {
+    flex: none;
+    --h: 6px;
+    padding: 10.5px 16.5px;
+    font-size: 13.5px;
+  }
+}
+
+/* Las horas de clase, como un sello que llama la atención (18-11-2026,
+   pedido por el admin; primero en el móvil y el mismo día en el ordenador):
+   lila sólido con su canto, la cifra y el texto en blanco y un relojito en
+   una teclita amarilla. */
+.ch-horas {
+  background: var(--lila);
+  border-color: var(--tinta);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    0 5px 0 var(--lila-o);
+  rotate: -2deg;
+}
+
+.ch-horas-reloj {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--amarillo);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+  color: var(--tinta);
+}
+
+/* En blanco con canto lila oscuro: el amarillo sobre lila apenas se leía. */
+.ch-horas-cifra { color: #fff; text-shadow: 0 2px 0 var(--lila-o); }
+.ch-horas-texto { color: #fff; }
+.ch-horas-sub { color: color-mix(in srgb, var(--lila-s) 85%, #fff); }
+
+@media (max-width: 640px) {
+  .ch-horas {
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.3),
+      0 4px 0 var(--lila-o);
+  }
+
+  .ch-horas-reloj { width: 28px; height: 28px; border-radius: 9px; }
+}
+
+/* ── La carretera y sus etiquetas (18-11-2026, ordenador y móvil) ──
+   Pedido por el admin: «mejora el diseño de toda la carretera». La vía tiene
+   ahora arcén (un trazo más ancho y más oscuro por debajo), asfalto lila suave
+   y la línea discontinua blanca del centro. Los nombres de las paradas son
+   etiquetas de papel con su canto, en el color de su parada: Módulo 1 naranja,
+   Examen lila, Módulo 2 gris (aún cerrado), Examen final azul y Certificado
+   amarillo. «Módulo 2», encima de su círculo. */
+.ch-trazo-arcen {
+  fill: none;
+  stroke: color-mix(in srgb, var(--lila) 38%, var(--papel));
+  stroke-width: 32px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ch-trazo-camino { stroke: color-mix(in srgb, var(--lila) 16%, var(--papel)); stroke-width: 22px; }
+
+.ch-paso {
+  --e: var(--tinta-2);
+  --es: var(--gris);
+  padding: 3px 10px 4px;
+  border-radius: 9px;
+  background: var(--es);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--e) 40%, var(--es));
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  color: var(--e);
+}
+
+.ch-paso--actual { --e: var(--naranja-o); --es: var(--naranja-s); }
+.ch-paso--examen { --e: var(--lila-o); --es: var(--lila-s); top: 36px; }
+.ch-paso--bloq { --e: var(--tinta-2); --es: color-mix(in srgb, var(--gris) 70%, var(--papel)); }
+.ch-paso--final { --e: var(--azul-o); --es: var(--azul-s); }
+.ch-paso--meta { --e: var(--amarillo-o); --es: var(--amarillo-s); }
+
+/* Los colores por clase mandan sobre los antiguos por parada. */
+.ch-parada .ch-paso { color: var(--e); }
+
+/* «Módulo 2», encima de su círculo. */
+.ch-parada .ch-paso--arriba { top: auto; bottom: 44px; }
+
+/* ── Las fichas de los cursos (18-11-2026, pedido por el admin) ──
+   Más trabajadas, en el ordenador y en el móvil: contorno y degradado en el
+   color del curso, el número como una teclita ladeada y una flecha a la
+   derecha que dice que la ficha se abre. En el ordenador salen todas; en el
+   móvil, solo las dos primeras y, debajo, «Ver los N cursos» lleva a la
+   página de cursos (antes un acordeón, que alargaba demasiado la portada). */
+.ch-curso {
+  gap: 12px;
+  padding: 13px 12px 13px 13px;
+  border: 2px solid color-mix(in srgb, var(--c) 45%, var(--papel));
+  background: linear-gradient(115deg, color-mix(in srgb, var(--c) 22%, var(--papel)), color-mix(in srgb, var(--c) 6%, var(--papel)) 75%);
+}
+
+.ch-curso-n {
+  width: 44px;
+  height: 44px;
+  rotate: -4deg;
+  font-size: 1rem;
+}
+
+.ch-curso-cuerpo { flex: 1; gap: 5px; }
+.ch-curso-titulo { font-size: 1.05rem; }
+
+.ch-curso-ir {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--papel);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 55%, var(--papel));
+  color: color-mix(in srgb, var(--c) 55%, var(--tinta));
+  transition: translate 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .ch-curso:hover {
+    background: linear-gradient(115deg, color-mix(in srgb, var(--c) 30%, var(--papel)), color-mix(in srgb, var(--c) 10%, var(--papel)) 75%);
+  }
+
+  .ch-curso:hover .ch-curso-ir { translate: 3px 0; }
+}
+
+.ch-mas { display: none; }
+
+@media (max-width: 640px) {
+  .ch-cursos { margin-top: 1.4rem; gap: 12px; }
+  .ch-cursos > li:nth-child(n + 3) { display: none; }
+
+  /* El enlace a todos los cursos, centrado bajo los dos primeros. */
+  .ch-mas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: fit-content;
+    margin: 0.9rem auto 0;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--lila-s);
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--lila) 55%, var(--lila-s));
+    font-size: 0.86rem;
+    font-weight: 900;
+    color: var(--lila-o);
+    text-decoration: none;
+  }
+
+  .ch-mas:active {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 transparent;
+  }
+}
+
+/* En el ordenador (18-11-2026, pedido por el admin), «Ver los cursos» va al
+   lado del sello de las horas, a la derecha del título, en vez de caer
+   debajo de él. */
+@media (min-width: 961px) {
+  .ch-cabecera {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: 1.75rem;
+  }
+
+  .ch-horas { margin: 0; }
+}
+
+/* ── El ordenador: cuatro fichas y la tarjeta de resumen (18-11-2026) ──
+   Pedido por el admin: en vez de las ocho fichas, las cuatro primeras de dos
+   en dos a la izquierda y, a la derecha, una tarjeta con las cifras de todos
+   los cursos (lecciones, exámenes, preguntas, horas y certificados, de la base
+   de datos) y la tecla «Ver todos los cursos». En la tableta y el móvil, la
+   tarjeta no sale y las fichas siguen como estaban. */
+.ch-resumen { display: none; }
+
+@media (min-width: 961px) {
+  .ch-zona {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  .ch-zona .ch-cursos { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; }
+  .ch-cursos > li:nth-child(n + 5) { display: none; }
+
+  .ch-resumen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 6px;
+    padding: 20px 20px 16px;
+    overflow: hidden;
+    border: 2.5px solid var(--tinta);
+    border-radius: 24px 20px 26px 19px / 20px 26px 19px 24px;
+    background:
+      radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--lila) 28%, transparent) 0 70px, transparent 71px),
+      var(--lila-s);
+    box-shadow: 0 6px 0 color-mix(in srgb, var(--lila) 60%, var(--papel));
+    rotate: 0.6deg;
+  }
+
+  .ch-resumen-titulo {
+    margin: 0;
+    font-family: var(--letra-titular);
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--tinta);
+  }
+
+  .ch-resumen-cifra {
+    font-size: 2.1rem;
+    line-height: 0.9;
+    color: var(--lila-o);
+  }
+
+  .ch-resumen-mano {
+    font-family: var(--letra-mano);
+    font-size: 1.25em;
+    font-weight: 400;
+    background: linear-gradient(transparent 55%, var(--papel) 55%, var(--papel) 92%, transparent 92%);
+  }
+
+  .ch-resumen-datos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ch-dato {
+    --d: var(--lila);
+    --do: var(--lila-o);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 7px 9px;
+    border-radius: 12px;
+    background: var(--papel);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--lila) 35%, var(--papel));
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--tinta-2);
+  }
+
+  .ch-dato b {
+    font-family: var(--letra-titular);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--tinta);
+  }
+
+  .ch-dato-icono {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    background: var(--d);
+    box-shadow: 0 2px 0 var(--do);
+    color: #fff;
+  }
+
+  .ch-dato--lecciones { --d: var(--azul); --do: var(--azul-o); }
+  .ch-dato--examenes { --d: var(--naranja); --do: var(--naranja-o); }
+  .ch-dato--preguntas { --d: var(--coral); --do: var(--coral-o); }
+  .ch-dato--horas { --d: var(--lila); --do: var(--lila-o); }
+  .ch-dato--certificado { --d: var(--amarillo); --do: var(--amarillo-o); }
+  .ch-dato--certificado .ch-dato-icono { color: var(--tinta); }
+
+  /* El último dato, si queda solo en su fila, ocupa las dos columnas. */
+  .ch-dato:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+  .ch-resumen-tecla { margin-top: auto; }
+}
+
+/* Los exámenes del camino, en rosa (18-11-2026, pedido por el admin): el
+   círculo en coral con su canto y la etiqueta en su pastel. Así se distinguen
+   de la carretera, que es lila. */
+.ch-nodo--examen {
+  background: var(--coral);
+  box-shadow: 0 5px 0 var(--coral-o);
+}
+
+.ch-paso--examen { --e: var(--coral-o); --es: var(--coral-s); }
+
+/* «Módulo 1 · Empieza aquí», en verde (18-11-2026, pedido por el admin): el
+   círculo en menta con su canto y el número en tinta (sobre menta, el blanco
+   no llega al contraste), el aro que late en verde, la etiqueta en su pastel
+   y el bocadillo en verde oscuro. */
+.ch-nodo--actual {
+  background: var(--menta);
+  box-shadow: 0 7px 0 var(--menta-o);
+  color: var(--tinta);
+}
+
+.ch-nodo--actual::after { box-shadow: 0 0 0 10px color-mix(in srgb, var(--menta) 25%, transparent); }
+
+.ch-paso--actual { --e: var(--menta-o); --es: var(--menta-s); }
+
+.ch-nodo--actual .ch-bocadillo { background: var(--menta-o); }
+.ch-nodo--actual .ch-bocadillo::after { border-top-color: var(--menta-o); }
+
+/* Entre 961 y 1180 px la tarjeta es estrecha: los datos, uno por fila, para
+   que «1.012 preguntas» no se salga de su pastilla. */
+@media (min-width: 961px) and (max-width: 1180px) {
+  .ch-resumen-datos { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .ch-dato { padding-block: 5px; }
+}
+
+/* ══ Las fichas de los cursos en el ordenador, rediseñadas (18-11-2026) ══
+   Pedido por el admin: con las cuatro fichas de dos en dos hay sitio, así que
+   cada una enseña datos reales de su curso y un hueco cuadrado para la
+   ilustración que se hará de cada uno. A la izquierda, la «foto»: de momento,
+   el color del curso con su número grande, sujeta con un celo; a la derecha,
+   el nivel, el título, el subtítulo y sus cifras (módulos, lecciones,
+   exámenes y horas, de la base de datos). La flecha, arriba a la derecha. En
+   la tableta y el móvil, todo esto no sale y la ficha sigue como estaba. */
+.ch-curso-foto,
+.ch-curso-nivel,
+.ch-curso-sub,
+.ch-curso-cifras { display: none; }
+
+@media (min-width: 961px) {
+  .ch-curso {
+    position: relative;
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px 16px 15px;
+  }
+
+  .ch-curso > .ch-curso-n,
+  .ch-curso-datos { display: none; }
+
+  /* La foto: un cuadrado del color del curso, con trama de puntitos, el
+     número a lo grande y un celo arriba. */
+  .ch-curso-foto {
+    position: relative;
+    display: grid;
+    place-items: center;
+    align-self: start;
+    width: 112px;
+    aspect-ratio: 1;
+    border: 2.5px solid var(--tinta);
+    border-radius: 16px;
+    background:
+      radial-gradient(circle, color-mix(in srgb, var(--c) 55%, var(--papel)) 1.4px, transparent 1.6px) 0 0 / 12px 12px,
+      color-mix(in srgb, var(--c) 30%, var(--papel));
+    box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 60%, var(--tinta));
+    rotate: -2.5deg;
+    transition: rotate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), scale 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
+
+  .ch-curso-foto::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    width: 46px;
+    height: 16px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--papel) 70%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tinta) 8%, transparent);
+    translate: -50% 0;
+    rotate: 4deg;
+  }
+
+  .ch-curso-foto-n {
+    font-family: var(--letra-titular);
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1;
+    color: color-mix(in srgb, var(--c) 45%, var(--tinta));
+    text-shadow: 0 3px 0 var(--papel);
+  }
+
+  .ch-curso-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding-right: 34px;
+  }
+
+  .ch-curso-nivel {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 2px 8px 3px;
+    border-radius: 7px;
+    background: var(--papel);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 45%, var(--papel));
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--c) 50%, var(--tinta));
+  }
+
+  .ch-curso-titulo {
+    font-size: 1.12rem;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .ch-curso-sub {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--tinta-2);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* Las cifras del curso: pastillas de papel, abajo del todo. */
+  .ch-curso-cifras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  .ch-curso-cifras > span {
+    padding: 3px 7px;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--papel) 80%, transparent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--tinta-2);
+    white-space: nowrap;
+  }
+
+  .ch-curso-cifras b {
+    font-weight: 900;
+    color: color-mix(in srgb, var(--c) 45%, var(--tinta));
+  }
+
+  .ch-curso-ir {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+
+  @media (hover: hover) {
+    .ch-curso:hover .ch-curso-foto { rotate: -5deg; scale: 1.04; }
+  }
+}
+
+/* Ordenadores más estrechos: la foto, algo más pequeña. */
+@media (min-width: 961px) and (max-width: 1180px) {
+  .ch-curso { grid-template-columns: 84px minmax(0, 1fr); gap: 13px; }
+  .ch-curso-foto { width: 84px; border-radius: 13px; }
+  .ch-curso-foto-n { font-size: 2rem; }
+}
+
+/* ── La tarjeta de resumen, rediseñada (18-11-2026, pedido por el admin) ──
+   Sin la nota «Todos los cursos»; los datos, como baldosas: el icono en su
+   teclita, la cifra grande y la palabra debajo, cada una en el pastel de su
+   color con su canto. La de los certificados, a lo ancho. */
+@media (min-width: 961px) {
+  .ch-resumen { gap: 16px; padding-top: 22px; }
+
+  .ch-resumen-datos { gap: 10px; }
+
+  .ch-dato {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 11px 12px 10px;
+    border: 2px solid color-mix(in srgb, var(--d) 40%, var(--papel));
+    border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+    background: color-mix(in srgb, var(--d) 12%, var(--papel));
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--d) 45%, var(--papel));
+  }
+
+  .ch-dato b {
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--do);
+  }
+
+  .ch-dato > span:last-child {
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .ch-dato-icono { width: 30px; height: 30px; }
+
+  /* La última, sola en su fila: icono, cifra y palabra en línea. */
+  .ch-dato:last-child:nth-child(odd) {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ch-dato:last-child:nth-child(odd) b { font-size: 1.4rem; }
+}
+
+@media (min-width: 961px) and (max-width: 1180px) {
+  .ch-resumen-datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ch-dato { padding: 9px 10px 8px; }
+  .ch-dato b { font-size: 1.35rem; }
+  .ch-dato > span:last-child { font-size: 0.66rem; }
+}
+
+/* Ajuste (18-11-2026): más ancho para las fichas. El cuerpo usa todo el ancho
+   y solo la fila del nivel deja sitio a la flecha de la esquina: el título
+   empieza ya por debajo de ella. */
+@media (min-width: 961px) {
+  .ch-zona { grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr); }
+}
+
+@media (min-width: 1181px) {
+  .ch-curso { grid-template-columns: 100px minmax(0, 1fr); gap: 14px; }
+  .ch-curso-foto { width: 100px; }
+}
+
+@media (min-width: 961px) {
+  .ch-curso-cuerpo { padding-right: 0; }
+  .ch-curso-nivel { margin-bottom: 6px; }
+}
+
+/* ── Las fichas, con más juego de color y de letra (18-11-2026, pedido por el
+   admin) ── En el ordenador. Cada ficha vive en su color: un círculo de ese
+   color asoma por la esquina, el nivel es una etiqueta de su color sólido con
+   sus puntitos, el título lleva el fluorescente de su color, el subtítulo va
+   a mano y las cifras son cuatro pastillas distintas (sólida, pastel, con
+   contorno y oscura). Las fotos se ladean unas a un lado y otras al otro. */
+@media (min-width: 961px) {
+  .ch-curso {
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--c) 30%, transparent) 0 64px, transparent 65px),
+      linear-gradient(135deg, color-mix(in srgb, var(--c) 26%, var(--papel)), color-mix(in srgb, var(--c) 7%, var(--papel)) 70%);
+  }
+
+  .ch-curso > :not(.ch-curso-ir) { position: relative; }
+
+  .ch-cursos > li:nth-child(even) .ch-curso-foto { rotate: 2.5deg; }
+
+  @media (hover: hover) {
+    .ch-cursos > li:nth-child(even) .ch-curso:hover .ch-curso-foto { rotate: 5deg; }
+  }
+
+  /* El nivel: su color sólido, la palabra en tinta y tres puntitos. */
+  .ch-curso-nivel {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 8px 3px 9px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px 7px 9px 6px;
+    background: var(--c);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 55%, var(--tinta));
+    color: var(--tinta);
+    rotate: -1.5deg;
+  }
+
+  .ch-curso-nivel-puntos { display: inline-flex; gap: 3px; }
+
+  .ch-curso-nivel-puntos i {
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid var(--tinta);
+    border-radius: 50%;
+    background: var(--papel);
+  }
+
+  .ch-curso-nivel-puntos i.is-lleno { background: var(--tinta); }
+
+  /* El título con el fluorescente de su color, línea a línea. */
+  .ch-curso-titulo { font-size: 1.18rem; line-height: 1.22; }
+
+  .ch-curso-titulo-txt {
+    padding: 0 0.12em;
+    background: linear-gradient(transparent 58%, color-mix(in srgb, var(--c) 55%, transparent) 58%, color-mix(in srgb, var(--c) 55%, transparent) 92%, transparent 92%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* El subtítulo, a mano y en el tono oscuro de su color. */
+  .ch-curso-sub {
+    font-family: var(--letra-mano);
+    font-size: 1.12rem;
+    font-weight: 400;
+    line-height: 1.15;
+    color: color-mix(in srgb, var(--c) 45%, var(--tinta));
+  }
+
+  /* Las cifras: cuatro pastillas, cada una de un estilo. */
+  .ch-cifra {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    border: 1.5px solid transparent;
+  }
+
+  .ch-curso-cifras > .ch-cifra--modulos {
+    background: var(--c);
+    color: var(--tinta);
+  }
+
+  .ch-curso-cifras > .ch-cifra--modulos b { color: var(--tinta); }
+
+  .ch-curso-cifras > .ch-cifra--lecciones {
+    background: color-mix(in srgb, var(--c) 30%, var(--papel));
+  }
+
+  .ch-curso-cifras > .ch-cifra--examenes {
+    border-color: color-mix(in srgb, var(--c) 60%, var(--tinta));
+    background: var(--papel);
+  }
+
+  .ch-curso-cifras > .ch-cifra--horas {
+    background: var(--tinta);
+    color: #fff;
+  }
+
+  .ch-curso-cifras > .ch-cifra--horas b { color: color-mix(in srgb, var(--c) 60%, #fff); }
+
+  /* La flecha, en su color sólido. */
+  .ch-curso-ir {
+    border: 2px solid var(--tinta);
+    background: var(--c);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 55%, var(--tinta));
+    color: var(--tinta);
+  }
+}
+
+/* ── Garabatos de estudio detrás de la hoja (18-11-2026, pedido por el
+   admin) ── En el fondo de la sección, por detrás de la hoja blanca: un libro,
+   un lápiz, una estrella, una bombilla, un birrete, una regla, un visto bueno
+   y una espiral, en el trazo lila suave de los garabatos del hero. Asoman por
+   los dos lados de la hoja, algunos medio escondidos tras su borde. Solo
+   donde hay sitio fuera de la hoja (1500 px o más). */
+.ch-garabatos { display: none; }
+
+@media (min-width: 1500px) {
+  .ch { position: relative; overflow: hidden; }
+  .ch-papel { position: relative; z-index: 1; }
+
+  .ch-garabatos {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    pointer-events: none;
+  }
+
+  .ch-g {
+    position: absolute;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--lila) 42%, var(--fondo));
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+
+}
+
+/* Menos garabatos y más irregulares (18-11-2026, pedido por el admin): cinco,
+   de tamaños muy distintos y girados a su aire; los grandes salen de detrás
+   de la hoja, con buena parte escondida tras su borde. */
+@media (min-width: 1500px) {
+  .ch-g--libro { top: 6%; left: calc(50% - 620px - 78px); width: 132px; rotate: -14deg; stroke-width: 1.8; }
+  .ch-g--estrella { top: 40%; left: calc(50% - 620px - 64px); width: 30px; rotate: 18deg; stroke-width: 2.6; }
+  .ch-g--lapiz { bottom: 8%; left: calc(50% - 620px - 104px); width: 86px; rotate: 24deg; stroke-width: 2; }
+  .ch-g--birrete { top: 14%; right: calc(50% - 620px - 92px); width: 150px; rotate: 11deg; stroke-width: 1.7; }
+  .ch-g--bombilla { bottom: 12%; right: calc(50% - 620px - 70px); width: 58px; rotate: -16deg; stroke-width: 2.4; }
+}
+
+/* ── La tarjeta de cifras, partida en dos en el móvil (18-11-2026, pedido
+   por el admin) ── Encima de la carretera, el título y lecciones, exámenes y
+   preguntas, en tres baldosas; debajo, horas y certificados con la tecla
+   «Ver todos los cursos». Esa tecla pasa a ser la única de la sección en el
+   móvil: «Ver los cursos» de la cabecera y «Ver los 8 cursos» de abajo no
+   salen. En el ordenador, la tarjeta entera a la derecha (más arriba). */
+.ch-datos-movil { display: none; }
+
+.ch-dato--lecciones { --d: var(--azul); --do: var(--azul-o); }
+.ch-dato--examenes { --d: var(--naranja); --do: var(--naranja-o); }
+.ch-dato--preguntas { --d: var(--coral); --do: var(--coral-o); }
+.ch-dato--horas { --d: var(--lila); --do: var(--lila-o); }
+.ch-dato--certificado { --d: var(--amarillo); --do: var(--amarillo-o); }
+
+@media (max-width: 640px) {
+  .ch-cabecera .ch-ver,
+  .ch-mas { display: none; }
+
+  .ch-datos-movil { display: block; }
+  .ch-datos-movil--arriba { margin: 1.5rem 0 1.4rem; }
+  .ch-datos-movil--abajo { margin: 1.2rem 0 1.6rem; }
+
+  .ch-datos-movil .ch-resumen-titulo {
+    margin: 0 0 12px;
+    font-family: var(--letra-titular);
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--tinta);
+  }
+
+  .ch-datos-movil .ch-resumen-cifra { font-size: 1.9rem; line-height: 0.9; color: var(--lila-o); }
+
+  .ch-datos-movil .ch-resumen-mano {
+    font-family: var(--letra-mano);
+    font-size: 1.25em;
+    font-weight: 400;
+    background: linear-gradient(transparent 55%, color-mix(in srgb, var(--lila) 35%, var(--papel)) 55%, color-mix(in srgb, var(--lila) 35%, var(--papel)) 92%, transparent 92%);
+  }
+
+  .ch-datos-movil .ch-resumen-datos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ch-datos-movil--abajo .ch-resumen-datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .ch-datos-movil .ch-dato {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+    padding: 9px 9px 8px;
+    border: 2px solid color-mix(in srgb, var(--d) 40%, var(--papel));
+    border-radius: 13px 11px 14px 10px / 11px 14px 10px 13px;
+    background: color-mix(in srgb, var(--d) 12%, var(--papel));
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--d) 45%, var(--papel));
+  }
+
+  .ch-datos-movil .ch-dato b {
+    font-family: var(--letra-titular);
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--do);
+  }
+
+  .ch-datos-movil .ch-dato > span:last-child {
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .ch-datos-movil .ch-dato-icono {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--d);
+    box-shadow: 0 2px 0 var(--do);
+    color: #fff;
+  }
+
+  .ch-datos-movil .ch-dato--certificado .ch-dato-icono { color: var(--tinta); }
+
+  /* Abajo, las dos baldosas en línea: icono, cifra y palabra. */
+  .ch-datos-movil--abajo .ch-dato { flex-direction: row; align-items: center; gap: 8px; }
+
+  .ch-datos-movil .ch-resumen-tecla { margin-top: 14px; }
+}
+
+/* En el móvil, sin el sello de las horas de la cabecera (18-11-2026, pedido
+   por el admin): las horas ya salen en su baldosa, debajo de la carretera. */
+@media (max-width: 640px) {
+  .ch-horas { display: none; }
+}
+
+/* Horas y certificados, subidos con las demás baldosas encima de la carretera
+   (18-11-2026, pedido por el admin): una rejilla de seis columnas para que la
+   primera fila lleve tres baldosas y la segunda dos más anchas, en línea. */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba .ch-resumen-datos { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .ch-datos-movil--arriba .ch-dato { grid-column: span 2; }
+  .ch-datos-movil--arriba .ch-dato--fila {
+    grid-column: span 3;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Si falta una (sin horas), la otra ocupa la fila entera. */
+  .ch-datos-movil--arriba .ch-dato--fila:only-of-type,
+  .ch-datos-movil--arriba .ch-dato:not(.ch-dato--fila) + .ch-dato--certificado { grid-column: 1 / -1; }
+
+  .ch-datos-movil--abajo { margin-top: 1rem; }
+  .ch-datos-movil .ch-resumen-tecla { margin-top: 0; }
+}
+
+/* ══ Las cifras de los cursos en el móvil, reinventadas (18-11-2026, pedido
+   por el admin) ══ En vez de baldosas: una ficha de cuaderno lila pegada con
+   celo, con el título arriba y debajo la lista de lo que traen los cursos,
+   como la cuenta de un tique: el icono en su teclita, la palabra, una línea
+   de puntitos y la cifra en grande, en su color. Cada fila, separada por un
+   trazo discontinuo. */
+@media (max-width: 640px) {
+  .ch-datos-movil--arriba {
+    position: relative;
+    margin: 1.8rem 4px 1.6rem;
+    padding: 20px 16px 10px;
+    border: 2.5px solid var(--tinta);
+    border-radius: 18px 14px 20px 13px / 14px 20px 13px 18px;
+    background:
+      radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--lila) 22%, transparent) 0 56px, transparent 57px),
+      var(--lila-s);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--lila) 60%, var(--papel));
+    rotate: -1deg;
+  }
+
+  /* El celo. */
+  .ch-datos-movil--arriba::before {
+    content: "";
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    width: 72px;
+    height: 20px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--amarillo) 55%, transparent);
+    translate: -50% 0;
+    rotate: 3deg;
+  }
+
+  .ch-datos-movil--arriba .ch-resumen-titulo { margin-bottom: 8px; font-size: 1.15rem; }
+
+  .ch-datos-movil--arriba .ch-resumen-mano {
+    background: linear-gradient(transparent 55%, var(--papel) 55%, var(--papel) 92%, transparent 92%);
+  }
+
+  /* La lista, fila a fila. */
+  .ch-datos-movil--arriba .ch-resumen-datos {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ch-datos-movil--arriba .ch-dato,
+  .ch-datos-movil--arriba .ch-dato--fila {
+    display: grid;
+    grid-template-columns: 26px auto minmax(12px, 1fr) auto;
+    grid-column: auto;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 2px;
+    border: 0;
+    border-top: 2px dashed color-mix(in srgb, var(--lila) 40%, transparent);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .ch-datos-movil--arriba .ch-dato:first-child { border-top: 0; }
+
+  .ch-datos-movil--arriba .ch-dato-icono { grid-column: 1; grid-row: 1; }
+
+  .ch-datos-movil--arriba .ch-dato > span:last-child {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    color: var(--tinta);
+  }
+
+  /* La línea de puntitos entre la palabra y la cifra. */
+  .ch-datos-movil--arriba .ch-dato::after {
+    content: "";
+    grid-column: 3;
+    grid-row: 1;
+    align-self: end;
+    margin-bottom: 7px;
+    border-bottom: 2.5px dotted color-mix(in srgb, var(--d) 55%, var(--lila-s));
+  }
+
+  .ch-datos-movil--arriba .ch-dato b {
+    grid-column: 4;
+    grid-row: 1;
+    font-size: 1.45rem;
+  }
+}
+
+/* ══ Las fichas de los cursos en el móvil, rediseñadas de cero (18-11-2026,
+   pedido por el admin) ══ En vez de dos filas y un enlace: los ocho cursos en
+   una fila que se desliza de lado, cada uno en una ficha vertical como las
+   del ordenador (la foto cuadrada con su número, el nivel con sus puntitos,
+   el título con fluorescente, el subtítulo a mano y sus cifras). Encima, una
+   nota a mano que invita a deslizar; debajo, la tecla «Ver todos los cursos»
+   cierra la sección. */
+.ch-desliza { display: none; }
+
+@media (max-width: 640px) {
+  .ch-papel { display: flex; flex-direction: column; }
+  .ch-datos-movil--abajo { order: 1; margin: 0.4rem 0 0; }
+
+  .ch-desliza {
+    display: block;
+    align-self: flex-end;
+    margin: 1.4rem 4px -0.2rem 0;
+    font-family: var(--letra-mano);
+    font-size: 20px;
+    line-height: 1;
+    color: var(--lila-o);
+    rotate: -2deg;
+  }
+
+  /* La fila que se desliza, de borde a borde de la hoja. */
+  .ch-zona .ch-cursos {
+    display: flex;
+    gap: 12px;
+    margin: 0.4rem calc(-1 * clamp(1.25rem, 4vw, 3rem)) 0;
+    padding: 16px clamp(1.25rem, 4vw, 3rem) 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: clamp(1.25rem, 4vw, 3rem);
+    scrollbar-width: none;
+  }
+
+  .ch-zona .ch-cursos::-webkit-scrollbar { display: none; }
+
+  .ch-cursos > li,
+  .ch-cursos > li:nth-child(n + 3) {
+    display: flex;
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+  }
+
+  /* La ficha, en vertical. */
+  .ch-curso {
+    position: relative;
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    gap: 12px 12px;
+    padding: 14px 14px 13px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--c) 30%, transparent) 0 54px, transparent 55px),
+      linear-gradient(135deg, color-mix(in srgb, var(--c) 26%, var(--papel)), color-mix(in srgb, var(--c) 7%, var(--papel)) 70%);
+  }
+
+  .ch-curso > :not(.ch-curso-ir) { position: relative; }
+  .ch-curso > .ch-curso-n,
+  .ch-curso-datos { display: none; }
+
+  .ch-curso-foto {
+    display: grid;
+    place-items: center;
+    grid-column: 1;
+    grid-row: 1;
+    width: 74px;
+    aspect-ratio: 1;
+    border: 2.5px solid var(--tinta);
+    border-radius: 13px;
+    background:
+      radial-gradient(circle, color-mix(in srgb, var(--c) 55%, var(--papel)) 1.3px, transparent 1.5px) 0 0 / 10px 10px,
+      color-mix(in srgb, var(--c) 30%, var(--papel));
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 60%, var(--tinta));
+    rotate: -3deg;
+  }
+
+  .ch-curso-foto-n {
+    font-family: var(--letra-titular);
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    color: color-mix(in srgb, var(--c) 45%, var(--tinta));
+    text-shadow: 0 2px 0 var(--papel);
+  }
+
+  .ch-curso-cuerpo {
+    display: contents;
+  }
+
+  /* Junto a la foto, el nivel. */
+  .ch-curso-nivel {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    justify-self: start;
+    grid-column: 2;
+    grid-row: 1;
+    gap: 6px;
+    margin-right: 34px;
+    padding: 2px 7px 3px 8px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px 7px 9px 6px;
+    background: var(--c);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 55%, var(--tinta));
+    font-size: 0.64rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    rotate: -2deg;
+  }
+
+  .ch-curso-nivel-puntos { display: inline-flex; gap: 3px; }
+
+  .ch-curso-nivel-puntos i {
+    width: 6px;
+    height: 6px;
+    border: 1.5px solid var(--tinta);
+    border-radius: 50%;
+    background: var(--papel);
+  }
+
+  .ch-curso-nivel-puntos i.is-lleno { background: var(--tinta); }
+
+  /* Debajo, a todo el ancho: título, subtítulo y cifras. */
+  .ch-curso-titulo,
+  .ch-curso-sub,
+  .ch-curso-cifras { grid-column: 1 / -1; }
+
+  .ch-curso-titulo { grid-row: 2; font-size: 1.12rem; line-height: 1.22; }
+
+  .ch-curso-titulo-txt {
+    padding: 0 0.12em;
+    background: linear-gradient(transparent 58%, color-mix(in srgb, var(--c) 55%, transparent) 58%, color-mix(in srgb, var(--c) 55%, transparent) 92%, transparent 92%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .ch-curso-sub {
+    display: -webkit-box;
+    grid-row: 3;
+    margin-top: -6px;
+    overflow: hidden;
+    font-family: var(--letra-mano);
+    font-size: 1.05rem;
+    line-height: 1.15;
+    color: color-mix(in srgb, var(--c) 45%, var(--tinta));
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .ch-curso-cifras {
+    display: flex;
+    flex-wrap: wrap;
+    align-self: end;
+    grid-row: 4;
+    gap: 5px;
+  }
+
+  .ch-curso-cifras > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 7px;
+    border: 1.5px solid transparent;
+    border-radius: 7px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--tinta-2);
+    white-space: nowrap;
+  }
+
+  .ch-curso-cifras b { font-weight: 900; }
+  .ch-curso-cifras > .ch-cifra--modulos { background: var(--c); color: var(--tinta); }
+  .ch-curso-cifras > .ch-cifra--lecciones { background: color-mix(in srgb, var(--c) 30%, var(--papel)); }
+  .ch-curso-cifras > .ch-cifra--examenes { border-color: color-mix(in srgb, var(--c) 60%, var(--tinta)); background: var(--papel); }
+  .ch-curso-cifras > .ch-cifra--horas { background: var(--tinta); color: #fff; }
+  .ch-curso-cifras > .ch-cifra--horas b { color: color-mix(in srgb, var(--c) 60%, #fff); }
+
+  /* La flecha, arriba a la derecha, en su color. */
+  .ch-curso-ir {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--tinta);
+    background: var(--c);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 55%, var(--tinta));
+    color: var(--tinta);
+  }
+}
+
+/* Cada cosa en su hueco (18-11-2026, pedido por el admin): en el móvil, el
+   nivel baja al pie de la foto y la flecha se queda arriba a la derecha, así
+   no se tocan aunque el nivel sea largo («INTERMEDIO ●●○»). */
+@media (max-width: 640px) {
+  .ch-curso-nivel {
+    align-self: end;
+    margin: 0 0 4px;
+  }
+}
+
+/* «Ver todos los cursos», con contorno de rotulador como las demás teclas de
+   la portada (18-11-2026, pedido por el admin). En el ordenador y en el móvil. */
+.ch-resumen-tecla.tecla {
+  border: 2.5px solid var(--tinta);
+  border-radius: 16px 13px 17px 12px / 13px 17px 12px 16px;
+}
+
+/* La pegatina del curso, dentro de su «foto» (18-11-2026): asoma un poco por
+   los bordes del cuadrado, como pegada encima, y se ladea al pasar el ratón.
+   Con pegatina, el número del curso no sale (el hueco ya tiene dibujo). */
+.ch-curso-foto-img {
+  width: 118%;
+  max-width: none;
+  height: auto;
+  rotate: 4deg;
+  filter: drop-shadow(0 2px 0 rgba(29, 27, 51, 0.12));
+  transition: rotate 0.3s cubic-bezier(0.34, 1.8, 0.5, 1), scale 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .ch-curso:hover .ch-curso-foto-img { rotate: -2deg; scale: 1.06; }
 }

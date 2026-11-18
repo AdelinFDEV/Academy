@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { destinoPorRuta } from "@/lib/herramientas";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
-import NovaNav from "@/components/trading/NovaNav";
-import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import { sonar } from "@/lib/sonidos";
 
 /**
@@ -30,11 +28,9 @@ const PIEZAS = [
   { id: "diario", ruta: "/dashboard/trading", label: "Diario de Trading", tono: "azul", Icono: IconoDiario },
 ] as const;
 
-export default function NavPrincipal({ logueado, premium, conNova = false }: {
+export default function NavPrincipal({ logueado, premium }: {
   logueado: boolean;
   premium: boolean;
-  /** Tiene el Diario de Trading. Sin él, Nova sale igual en la barra, pero bloqueada. */
-  conNova?: boolean;
 }) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
@@ -72,10 +68,6 @@ export default function NavPrincipal({ logueado, premium, conNova = false }: {
             </span>
             <span className="nav-principal-texto">{e.label}</span>
           </Link>
-          {/* Nova, la asistente del Diario, al lado de su enlace. La ve todo el
-              mundo; quien no tiene el Diario la ve bloqueada (08-11-2026). */}
-          {/* Oculta mientras llega la mascota (17-11-2026): ver nova-visible.ts. */}
-          {MOSTRAR_NOVA && e.id === "diario" && <NovaNav href={e.href} bloqueada={!conNova} />}
         </li>
       ))}
     </ul>

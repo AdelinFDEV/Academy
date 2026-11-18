@@ -54,15 +54,15 @@
   {
     "clave": "pt-m6-05",
     "leccion": "el-diario-como-herramienta-psicologica",
-    "enunciado": "¿Qué es Nova, la asistente del Diario de Trading?",
+    "enunciado": "¿Qué hace el Diario de Trading con lo que apuntas?",
     "opciones": [
-      "Un conjunto de reglas sobre tus datos que te avisa de riesgo, rachas, emociones e hitos",
-      "Una inteligencia artificial que lee tus notas y predice el mercado",
-      "Un servicio de señales",
-      "Un asesor financiero"
+      "Cálculos sobre tus propios datos: cifras de riesgo y de rachas, el cruce de tu ánimo con tus resultados y los hitos",
+      "Los lee una inteligencia artificial que interpreta tus notas y predice el mercado",
+      "Los convierte en señales de compra y de venta",
+      "Los revisa un asesor financiero que te dice qué operar"
     ],
     "correcta": 0,
-    "explicacion": "No inventa nada ni predice el mercado: lee lo que registras y lo cuenta en avisos y en su pulso."
+    "explicacion": "No inventa nada ni predice el mercado: calcula con lo que registras y te lo enseña en cifras. Leerlas y decidir te toca a ti."
   },
   {
     "clave": "pt-m6-06",
@@ -106,15 +106,15 @@
   {
     "clave": "pt-m6-09",
     "leccion": "la-revision-semanal",
-    "enunciado": "¿Qué apartado de Nova propone el curso leer al empezar la revisión semanal?",
+    "enunciado": "¿Con qué empieza la revisión semanal que propone el curso?",
     "opciones": [
       "El calendario de festivos",
       "El ranking de otros usuarios",
       "El precio de bitcoin",
-      "«Lo más importante»"
+      "La foto de la semana en el Resumen del Diario"
     ],
     "correcta": 3,
-    "explicacion": "Es lo que Nova considera prioritario entre todos sus avisos."
+    "explicacion": "Primero la vista general (el calendario, la esperanza y el ratio «Ganancia / pérdida») y después el detalle: los números de ejecución, las excepciones y el error más caro."
   },
   {
     "clave": "pt-m6-10",

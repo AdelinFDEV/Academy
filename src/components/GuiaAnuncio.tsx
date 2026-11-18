@@ -53,7 +53,7 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
   diario: {
     etiqueta: "Diario de Trading",
     titulo: "Lleva la cuenta de tus operaciones sin una sola fórmula",
-    texto: "Apuntas cada operación en un minuto. El Diario calcula tus cifras y Nova, su asistente, te avisa de lo que repites.",
+    texto: "Apuntas cada operación en un minuto. El Diario calcula tus cifras por ti.",
     puntos: [
       "Win rate, múltiplos de R y curva de capital, calculados solos",
       "Avisos de riesgo alto, revancha y stops movidos",
@@ -117,7 +117,7 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
     titulo: "Todo lo de la academia, en una sola suscripción",
     texto: "Las guías son gratis y lo seguirán siendo. Premium añade las herramientas y la formación completa.",
     puntos: [
-      "Diario de Trading con Nova",
+      "Diario de Trading",
       "Portfolio Adelin, mi cartera real",
       "Todos los cursos, con certificado",
     ],

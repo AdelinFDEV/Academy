@@ -298,8 +298,8 @@
 @media (max-width: 560px) {
   .ytl-cabecera .tecla { flex: 1 1 100%; }
   .ytl-principal { border-radius: 24px; }
-  .ytl-play { width: 60px; height: 60px; }
-  .ytl-play svg { width: 22px; height: 22px; }
+  .ytl-play { width: 50px; height: 50px; }
+  .ytl-play svg { width: 19px; height: 19px; }
   .ytl-tarjeta { gap: 12px; padding: 10px 12px 10px 10px; }
   .ytl-tarjeta .ytl-ver { display: none; }
   .ytl-tarjeta-titulo { font-size: 0.98rem; }
@@ -334,4 +334,91 @@
   .ytl-tarjeta-texto { flex: 1; padding: 0 4px; }
   .ytl-tarjeta-titulo { font-size: 1.05rem; -webkit-line-clamp: 2; line-clamp: 2; }
   .ytl-tarjeta .ytl-ver { margin-top: auto; }
+}
+
+/* «Último vídeo» en el móvil, más pequeña (18-11-2026, pedido por el admin):
+   a 22 px tapaba media miniatura. */
+@media (max-width: 640px) {
+  .ytl-postit {
+    top: -8px;
+    right: 12px;
+    padding: 3px 9px 4px;
+    border-radius: 3px;
+    box-shadow: 0 3px 0 var(--yt-o), 0 8px 12px -8px rgba(0, 0, 0, 0.4);
+    font-size: 16px;
+    transform: rotate(4deg);
+  }
+}
+
+/* Los plays en el móvil, más pequeños (18-11-2026, pedido por el admin): el
+   de las miniaturas pequeñas cogía el tamaño del grande (la regla de arriba
+   pisaba la de `--mini`) y tapaba casi toda la imagen. */
+@media (max-width: 560px) {
+  .ytl-play.ytl-play--mini {
+    width: 32px;
+    height: 32px;
+    padding-left: 2px;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 3px 0 var(--yt-o), 0 6px 10px -5px rgba(29, 27, 51, 0.5);
+  }
+
+  .ytl-play.ytl-play--mini svg { width: 13px; height: 13px; }
+}
+
+/* ── El garabato del logo de YouTube (18-11-2026, pedido por el admin) ──
+   Un cuadrado redondeado con el play en medio, dibujado a rotulador en rojo
+   suave, que se esconde por detrás de la esquina de abajo a la izquierda de
+   la tarjeta grande. Solo en el ordenador ancho: necesita sitio fuera. */
+.ytl-garabato { display: none; }
+
+@media (min-width: 1400px) {
+  .ytl-rejilla { position: relative; }
+  .ytl-principal { z-index: 1; }
+
+  .ytl-garabato {
+    position: absolute;
+    left: -96px;
+    bottom: -58px;
+    z-index: 0;
+    display: block;
+    width: 170px;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--yt) 38%, var(--fondo));
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    rotate: -9deg;
+    pointer-events: none;
+  }
+
+  .ytl-garabato path:last-child { fill: color-mix(in srgb, var(--yt) 14%, var(--fondo)); }
+}
+
+/* El garabato del logo de YouTube también en el móvil (18-11-2026, pedido por
+   el admin): más pequeño, girado a su aire y escondido a medias tras la
+   esquina de abajo a la derecha de la última tarjeta, en el hueco antes de
+   las dudas frecuentes. */
+@media (max-width: 640px) {
+  .ytl-rejilla { position: relative; }
+  .ytl-principal,
+  .ytl-tarjeta { z-index: 1; }
+
+  .ytl-garabato {
+    position: absolute;
+    right: 18px;
+    bottom: -34px;
+    z-index: 0;
+    display: block;
+    width: 108px;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--yt) 38%, var(--fondo));
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    rotate: 13deg;
+    pointer-events: none;
+  }
+
+  .ytl-garabato path:last-child { fill: color-mix(in srgb, var(--yt) 14%, var(--fondo)); }
 }

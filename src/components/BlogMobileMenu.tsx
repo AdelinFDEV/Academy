@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { bloquearScroll } from "@/lib/bloquearScroll";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserRound, type LucideIcon, MessagesSquare } from "lucide-react";
@@ -228,9 +229,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
   // primer enlace, como en cualquier diálogo.
   useEffect(() => {
     if (!open) return;
-    const raiz = document.documentElement;
-    raiz.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
+    // El bloqueo común, con contador (src/lib/bloquearScroll.ts).
+    const soltar = bloquearScroll();
     // Sin desplazar la página al darle el foco.
     primerEnlace.current?.focus({ preventScroll: true });
     const alPulsar = (e: KeyboardEvent) => {
@@ -241,8 +241,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
     };
     window.addEventListener("keydown", alPulsar);
     return () => {
-      raiz.style.overflow = "";
-      document.body.style.overflow = "";
+      soltar();
       window.removeEventListener("keydown", alPulsar);
     };
   }, [open]);
@@ -277,7 +276,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
         >
           <div className="mm-hoja" ref={hoja}>
           <div className="mm-buscar">
-            <GuideSearch />
+            {/* Sugerencias a partir de 3 letras (pedido por el admin el 18-11-2026). */}
+            <GuideSearch sugerenciasDesde={3} />
             {/* En el móvil la etiqueta colgante no se ve con el menú abierto:
                 el altavoz pasa aquí, junto al buscador (site-nav.css). */}
             <span className="mm-sonido"><InterruptorSonido /></span>

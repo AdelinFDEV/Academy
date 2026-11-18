@@ -139,7 +139,7 @@ const FAQ = [
   },
   {
     q: "¿Qué más incluye la suscripción?",
-    a: `El Diario de Trading con Nova y todos los cursos, con examen y certificado. Todo va en la misma cuota de ${PRECIO} al mes, sin permanencia: cancelas cuando quieras desde tu cuenta.`,
+    a: `El Diario de Trading y todos los cursos, con examen y certificado. Todo va en la misma cuota de ${PRECIO} al mes, sin permanencia: cancelas cuando quieras desde tu cuenta.`,
   },
 ];
 
@@ -664,7 +664,7 @@ export default async function FichaPortfolioPage() {
             <ul className="fh-incluye">
               <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Portfolio Adelin: spot y DCA de Bitcoin</li>
               <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Precios de mercado en cada posición</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/diario">Diario de Trading</Link> con Nova</li>
+              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/diario">Diario de Trading</Link></li>
               <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
             </ul>
           </div>

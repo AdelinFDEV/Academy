@@ -1,0 +1,212 @@
+/* La hoja de búsqueda del móvil (GuideSearch.tsx, `ventanaEnMovil`;
+   18-11-2026). Al tocar el buscador de la portada o de /guias sube desde
+   abajo una hoja de papel, como en las apps: su asa, un título a mano con la
+   lupa en pegatina, el campo grande ya enfocado y, debajo, las criptomonedas
+   como teclitas o, al escribir, los resultados. Solo existe en el móvil.
+
+   La hoja está siempre en la página, escondida debajo de la pantalla: así su
+   campo se puede enfocar en el mismo toque que la abre, que es la única forma
+   de que el iPhone saque el teclado. */
+
+.gs-ventana {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+}
+
+.gs-ventana.is-abierta { pointer-events: auto; }
+
+/* El velo: oscurece la página de detrás. Tocarlo cierra la hoja. */
+.gs-velo {
+  position: absolute;
+  inset: 0;
+  background: rgba(29, 27, 51, 0.45);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gs-ventana.is-abierta .gs-velo { opacity: 1; }
+
+.gs-hoja {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Casi a pantalla completa, anclada arriba: con el teclado abierto, el
+     campo y los primeros resultados quedan siempre a la vista (pegada solo
+     al fondo, el teclado del iPhone la tapaba). Lo que no quepa se desliza
+     dentro de la lista. */
+  top: 7dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px 18px calc(18px + env(safe-area-inset-bottom));
+  border-radius: 28px 28px 0 0;
+  background: var(--papel);
+  box-shadow: 0 -12px 40px rgba(29, 27, 51, 0.28);
+  color: var(--tinta);
+  font-family: var(--letra-texto);
+  transform: translateY(105%);
+  transition: transform 0.45s cubic-bezier(0.32, 1.15, 0.5, 1);
+}
+
+.gs-ventana.is-abierta .gs-hoja { transform: none; }
+
+/* El asa de arriba, como en las hojas de las apps. */
+.gs-asa {
+  align-self: center;
+  width: 44px;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--gris);
+}
+
+.gs-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gs-lupa {
+  flex: none;
+  width: 46px;
+  height: auto;
+  rotate: -8deg;
+  pointer-events: none;
+}
+
+.gs-titulo {
+  flex: 1;
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 26px;
+  line-height: 1.05;
+  color: var(--tinta);
+}
+
+/* Cerrar: una teclita coral con su canto. */
+.gs-cerrar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--coral-s);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--coral) 50%, var(--coral-s));
+  color: var(--coral-o);
+  cursor: var(--puntero-mano, pointer);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gs-cerrar:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 transparent;
+}
+
+/* El campo grande, en el cielo de las guías. La letra a 17 px: por debajo de
+   16, el iPhone amplía la página al escribir. */
+.gs-hoja .gs-caja {
+  min-height: 58px;
+  padding: 0 0.9rem;
+  border: 3px solid color-mix(in srgb, var(--cielo) 55%, var(--papel));
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--cielo) 70%, var(--papel));
+}
+
+.gs-hoja .gs-caja:focus-within {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 4px var(--azul-s), 0 4px 0 color-mix(in srgb, var(--cielo) 70%, var(--papel));
+}
+
+.gs-hoja .guide-search-icon { color: var(--cielo-o); }
+
+.gs-hoja .guide-search-input {
+  font-family: var(--letra-texto);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.gs-hoja .guide-search-input::placeholder { font-weight: 600; color: var(--tinta-3); }
+
+/* La lista: lo que no quepa, se desliza dentro de la hoja. */
+.gs-lista {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0 -4px;
+  padding: 2px 4px 6px;
+}
+
+.gs-hoja .guide-search-sugerencias-titulo {
+  margin: 4px 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--tinta-3);
+}
+
+/* Las criptomonedas, como teclitas del cuaderno con su punto de color. */
+.gs-hoja .gs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.gs-hoja .guide-search-chip {
+  min-height: 44px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--fondo);
+  box-shadow: 0 3px 0 var(--gris-o);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.gs-hoja .guide-search-chip .guide-search-result-dot { width: 10px; height: 10px; }
+
+.gs-hoja .guide-search-chip:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 transparent;
+}
+
+/* Los resultados, como fichas de papel con su canto. */
+.gs-hoja .guide-search-result {
+  margin-bottom: 9px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--fondo);
+  box-shadow: 0 3px 0 var(--gris-o);
+}
+
+.gs-hoja .guide-search-result-title {
+  font-family: var(--letra-titular);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.gs-hoja .guide-search-result-desc {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.gs-hoja .guide-search-empty {
+  padding: 1.25rem 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-velo,
+  .gs-hoja { transition: none; }
+}

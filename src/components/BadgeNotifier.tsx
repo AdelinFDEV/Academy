@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { bloquearScroll } from "@/lib/bloquearScroll";
 import confetti from "canvas-confetti";
 import Tecla from "@/components/cuaderno/Tecla";
 import { sonar } from "@/lib/sonidos";
@@ -79,16 +80,7 @@ function Popup({ badge, onClose }: { badge: UnlockNotice; onClose: () => void })
   // barra de desplazamiento, la del propio aviso (si no cabe, en el móvil
   // apaisado). Se bloquea el <html> y no solo el <body>: con `overflow-x`
   // en los dos (globals.css), bloquear solo el body dejaba dos barras.
-  useEffect(() => {
-    const raiz = document.documentElement;
-    const antes = [raiz.style.overflow, document.body.style.overflow];
-    raiz.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-    return () => {
-      raiz.style.overflow = antes[0];
-      document.body.style.overflow = antes[1];
-    };
-  }, []);
+  useEffect(() => bloquearScroll(), []);
 
   return (
     <div className="bn-fondo" onClick={cerrar}>

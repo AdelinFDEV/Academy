@@ -115,6 +115,28 @@ export const cursosPublicados = cache(async (): Promise<CursoResumen[]> => {
   });
 });
 
+/**
+ * Cuántas preguntas tienen, entre todos, los bancos de examen de los cursos
+ * publicados (módulos y final). Para la tarjeta de resumen de la portada
+ * (CursosHome.tsx). Solo el recuento: `curso_preguntas` no tiene policies, así
+ * que se cuenta con la clave de servicio y sin traer ninguna fila (las
+ * respuestas no salen nunca del servidor). Sin la clave, o si falla, `null`, y
+ * la tarjeta no enseña esa cifra.
+ */
+export const preguntasDeCursos = cache(async (): Promise<number | null> => {
+  const admin = createAdminClientOpcional();
+  if (!admin) return null;
+  const { count, error } = await admin
+    .from("curso_preguntas")
+    .select("id, cursos!inner(published)", { count: "exact", head: true })
+    .eq("cursos.published", true);
+  if (error) {
+    console.error("[cursos] No se pudieron contar las preguntas:", error.message);
+    return null;
+  }
+  return count;
+});
+
 const COLUMNAS_CURSO =
   "id, slug, titulo, subtitulo, descripcion, objetivos, nivel, portada, color, aviso, logro, preguntas_final, revisado, published, updated_at";
 

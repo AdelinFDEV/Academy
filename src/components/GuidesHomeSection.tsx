@@ -94,7 +94,7 @@ export default async function GuidesHomeSection() {
               <SimboloEstudio tipo="flecha" color="azul" giro={95} tamano={34} semilla={4} retraso={500} className="gh-buscar-flecha" />
             </p>
             <div className="gh-buscar">
-              <GuideSearch />
+              <GuideSearch ventanaEnMovil />
             </div>
             <Tecla href="/guias" color="blanca" className="gh-todas">
               Ver todas las guías

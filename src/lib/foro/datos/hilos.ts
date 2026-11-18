@@ -316,7 +316,9 @@ export async function ultimosHilos(cuantos: number): Promise<HiloEnListado[]> {
     slug: String(f.slug),
     titulo: String(f.titulo),
     categoria: { slug: String(f.categoria), nombre: nombreDe.get(String(f.categoria)) ?? String(f.categoria) },
-    extracto: extracto(f.cuerpo, 140),
+    // Largo (18-11-2026): en el ordenador, la pregunta destacada enseña
+    // varias líneas del mensaje; el CSS recorta lo que no cabe.
+    extracto: extracto(f.cuerpo, 480),
     autor: f.autor_id ? (quien.get(String(f.autor_id)) ?? null) : null,
     fecha: String(f.creada_at),
     ultimaActividad: String(f.ultima_actividad_at),

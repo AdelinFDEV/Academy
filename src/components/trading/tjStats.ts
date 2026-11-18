@@ -406,7 +406,7 @@ export const BREAKDOWNS: Record<BreakdownId, { label: string; keyOf: (t: Trade) 
 // ─────────────────────────── Observaciones ───────────────────────────
 
 export interface Insight {
-  /** Qué lectura es: Nova la usa para darle prioridad y no repetir lo que ya cuenta ella. */
+  /** Qué lectura es. */
   id: string;
   tone: "win" | "loss" | "be";
   text: string;

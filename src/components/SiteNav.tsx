@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { cache } from "react";
 import NavPrincipal from "@/components/NavPrincipal";
 import NavForo, { NavForoMovil } from "@/components/NavForo";
@@ -78,12 +77,8 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
       <Link href="/" className="blog-brand">
         Adelin<em>BTC</em>
       </Link>
-      {/* Con el menú abierto en el móvil, la pegatina del toro persiguiendo
-          al oso llena el hueco entre la marca y la X (site-nav.css). */}
-      <Image src="/cuaderno/toro-oso-pegatina.webp" alt="" width={360} height={124} className="nav-toro-oso" draggable={false} />
       <div className="blog-nav-center">
-        {/* Nova se decide por el plan leído aquí y no por `isPremium`: hay páginas que no lo pasan. */}
-        <NavPrincipal logueado={user} premium={premium} conNova={perfil.plan !== "free"} />
+        <NavPrincipal logueado={user} premium={premium} />
         {/* El foro va fuera de la cápsula: dentro están las tres piezas de
             pago, que salen del catálogo de herramientas, y el foro no es una. */}
         {foro && <NavForo />}

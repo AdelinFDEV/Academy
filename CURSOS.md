@@ -66,7 +66,7 @@ Nunca: blogs de brokers, cifras redondas sin estudio detrás («el 90 % pierde e
 1. Título y promesa honesta, con lo que el curso **no** hace.
 2. Público y nivel (`básico`, `intermedio` o `avanzado`).
 3. Temario por módulos y lecciones: el **objetivo** de cada lección y las **fuentes** que la sostienen.
-4. Ejercicios prácticos por módulo, apoyados en las herramientas de la web que encajen (Diario de Trading, Nova, Portfolio, calculadoras).
+4. Ejercicios prácticos por módulo, apoyados en las herramientas de la web que encajen (Diario de Trading, Portfolio, calculadoras).
 5. Exámenes: preguntas por módulo, banco del final y cuántas salen.
 6. El logro: nombre e icono propio.
 7. La paleta propuesta (ver el punto 4).
@@ -132,34 +132,23 @@ Rehecha el 08-11-2026 a petición del admin, que pidió que **todos los cursos f
 
 Detrás del listado, una aurora con **los colores de todos los cursos** (se rehace sola) y un grano fino; cada tarjeta lleva borde con degradado de su color, un foco de su color por debajo y un brillo que sigue al ratón (`TarjetaCurso.tsx`, solo con ratón). Todo estático en el móvil. Los estilos, en `src/app/cursos/catalogo.css`.
 
-**Lo único que se hace a mano por cada curso nuevo — la ilustración de la portada** (paso obligatorio de la Fase 2):
+**Lo único que se hace a mano por cada curso nuevo — sus dos dibujos** (paso obligatorio de la Fase 2). Desde el 18-11-2026, en el estilo «Cuaderno de estudio» (antes eran renders 3D oscuros):
 
-1. Escribe el prompt **completo y desde cero** con la base de abajo, con el objeto y el color del curso, y dáselo al admin, que genera la imagen.
-2. Conviértela tú a WebP de 1600 px de ancho (proporción 20:7, unos 20 KB), sin recortar si el objeto ya está en el centro-derecha:
+1. **La portada grande** (`/cursos` y la ficha del curso) y **la pegatina** (el cuadrado de su ficha en la portada de la web). Los dos prompts, completos y en inglés, salen de las plantillas de [`ESTILO.md`](./ESTILO.md) § «🔴 Portadas y pegatinas de cursos y guías». Se le dan al admin, que genera las imágenes y las deja en `public/`.
+2. Conviértelas tú (Node con `sharp`, a la carpeta del curso):
    ```bash
-   node -e "require('sharp')('RUTA/imagen.jpg').resize({width:1600}).webp({quality:82,effort:6}).toFile('public/cursos/<slug>/portada.webp')"
+   node -e "require('sharp')('public/ORIGINAL-GRANDE.jpg').resize({width:1600}).webp({quality:84}).toFile('public/cursos/<slug>/portada-cuaderno.webp')"
+   node -e "require('sharp')('public/ORIGINAL-PEQUENO.png').trim().resize({width:330,height:330,fit:'inside'}).webp({quality:88}).toFile('public/cursos/<slug>/pegatina.webp')"
    ```
-3. Dala de alta en `PORTADA_IMAGEN` (`src/app/cursos/PortadaCurso.tsx`). Si aún no hay imagen, la tarjeta sale con el arte SVG (un motivo propio en `MOTIVO` o el genérico) y nunca vacía, pero **el curso no se da por terminado sin su ilustración**.
-4. Comprueba la imagen antes de darla de alta: objeto en el centro-derecha, tercio izquierdo despejado (ahí van las etiquetas y el sello), sin texto ni marcas.
+   La pegatina tiene que traer **fondo transparente**: compruébalo antes (un PNG puede venir con extensión `.jpg`).
+3. Dalas de alta: la portada en `PORTADA_IMAGEN` (`src/app/cursos/PortadaCurso.tsx`) y la pegatina en `PEGATINA_CURSO` (`src/lib/cursosPegatinas.ts`). Si una imagen cambia, **otro nombre de archivo**: Next y el navegador guardan la anterior por nombre.
+4. Mírala antes de darla de alta: el dibujo a la derecha y la mitad izquierda despejada (ahí van las etiquetas), sin texto, y el fondo de cuadrícula entero (a la de DeFi le salió un corte).
 
-El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no se usa): la ilustración del catálogo va en `public/` y en `PORTADA_IMAGEN`.
+Sin portada, la tarjeta pinta el arte SVG (`MOTIVO`); sin pegatina, la ficha enseña su número. Nunca sale vacía, pero **el curso no se da por terminado sin sus dos dibujos**.
 
-**La base del prompt** (sustituye lo que va entre corchetes y escríbelo entero, nunca como edición de otro):
+El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no se usa).
 
-> Ilustración horizontal panorámica de 1600 × 560 píxeles (proporción 20:7) para la portada de un curso online premium sobre [TEMA]. Fondo: azul noche muy oscuro, casi negro (#0a1628), liso y limpio. En la esquina superior izquierda, un degradado muy suave hacia [COLOR DEL CURSO, nombre y HEX] con poca intensidad, que se funde con el fondo. Objeto principal, situado en el centro-derecha de la imagen, ocupando aproximadamente un tercio del ancho: [OBJETO, de cristal translúcido esmerilado y/o metal satinado, girado tres cuartos], con una luz interior del color del curso. [DETALLE SECUNDARIO tenue detrás o alrededor]. Iluminación: de estudio, cinematográfica, con luz principal suave desde arriba a la izquierda y un resplandor del color del curso que sale del objeto. Reflejos sutiles, profundidad de campo ligera, sombras suaves. Estilo: render 3D minimalista y editorial, elegante y sobrio, de calidad premium, paleta reducida a azul noche y el color del curso. Composición: el tercio izquierdo prácticamente vacío, solo fondo con el degradado, y la franja inferior izquierda despejada. Prohibido: texto, letras, números, logotipos, marcas de agua, firmas, personas, caras, manos, [LO QUE SE CONFUNDA CON EL TEMA].
-
-| Curso | Objeto | Detalle | Color |
-|---|---|---|---|
-| Psicología del trading | Un cerebro de cristal translúcido | Una línea de pulso que lo atraviesa y anillos finos como órbitas | `#5ec8c4` |
-| Seguridad cripto | Un escudo geométrico de cristal con una cerradura de metal | Una malla hexagonal tenue detrás | `#a78bfa` |
-| Cómo leer CoinMarketCap y CoinGecko | Una lupa de cristal y metal satinado sobre unas barras de datos de cristal | Una rejilla tenue de tabla de datos detrás | `#ff8a7a` |
-| Bitcoin y DCA a largo plazo | Una escalera de peldaños de cristal, iguales, que sube hacia la derecha, con una moneda lisa de metal satinado, sin símbolo, apoyada en el peldaño más alto | Una rejilla tenue de calendario detrás | `#fbbf24` |
-| Futuros y apalancamiento | Una balanza de precisión de cristal y metal satinado, muy desequilibrada, con una pesa pequeña en un plato y una grande en el otro | Una línea de precio tenue que cae en escalones por detrás | `#f472b6` |
-| Análisis técnico sin humo | Una única vela japonesa de cristal translúcido, alta, con su mecha de metal satinado, de la que se desprende una voluta fina de humo que se deshace | Una rejilla tenue de gráfico detrás | `#a3e635` |
-| DeFi y stablecoins | Dos cilindros de cristal comunicados por un tubo fino, con un líquido luminoso al mismo nivel en los dos, sobre una base de metal satinado | Una red tenue de nodos conectados detrás | `#22d3ee` |
-| Fiscalidad cripto en España | Un archivador de sobremesa de cristal con tres carpetas de metal satinado, ordenadas, y un sello redondo de metal apoyado delante | Una rejilla tenue de casillas de formulario detrás | `#e6b455` |
-
-Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
+Que la escena de un curso nuevo **no se parezca** a las de la tabla de `ESTILO.md`, igual que la paleta.
 
 ---
 

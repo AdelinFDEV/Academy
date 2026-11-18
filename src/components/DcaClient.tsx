@@ -148,8 +148,10 @@ export default function DcaClient({ compras: iniciales, precioInicial, isAdmin }
     if (!confirm("¿Borrar esta compra? El precio medio se recalcula.")) return;
     setBorrarError("");
     const res = await fetch(`/api/dca?id=${id}`, { method: "DELETE" }).catch(() => null);
-    if (res?.ok) setCompras((prev) => prev.filter((c) => c.id !== id));
-    else {
+    if (res?.ok) {
+      sonar("borrar");
+      setCompras((prev) => prev.filter((c) => c.id !== id));
+    } else {
       sonar("error");
       setBorrarError(res ? "El servidor no dejó borrarla. Vuelve a intentarlo." : "Sin conexión. Vuelve a intentarlo.");
     }

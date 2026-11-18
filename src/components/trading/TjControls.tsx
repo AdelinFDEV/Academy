@@ -3,6 +3,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info, Plus } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
+import { sonar } from "@/lib/sonidos";
 import { WEEKDAYS, MONTHS } from "./tjFormat";
 import { useSonidoVentana } from "./useSonidoVentana";
 
@@ -92,6 +93,7 @@ export function TjSegmented<T extends string>({
           key={o.value}
           role="tab"
           tamano="peq"
+          sonido={o.value === value ? undefined : "pestana"}
           color={o.value === value ? "azul" : "blanca"}
           aria-selected={o.value === value}
           className={o.value === value ? "is-activa" : undefined}
@@ -169,7 +171,7 @@ export function TjSelect({
               tabIndex={-1}
               aria-selected={opt.value === value}
               className={`dj-menu-op${opt.value === value ? " is-activa" : ""}`}
-              onClick={() => elegir(opt.value)}
+              onClick={() => { sonar("elegir"); elegir(opt.value); }}
               onKeyDown={e => conTeclado(e, opt.value)}
             >
               {opt.label}
@@ -353,11 +355,11 @@ export function TjDateTimePicker({
           onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } }}
         >
           <div className="dj-fecha-cab">
-            <Tecla color="blanca" tamano="peq" icono onClick={() => shiftMonth(-1)} aria-label="Mes anterior">
+            <Tecla color="blanca" tamano="peq" icono sonido="pestana" onClick={() => shiftMonth(-1)} aria-label="Mes anterior">
               <ChevronLeft size={16} strokeWidth={2.6} />
             </Tecla>
             <span>{MONTHS[viewMonth]} {viewYear}</span>
-            <Tecla color="blanca" tamano="peq" icono onClick={() => shiftMonth(1)} aria-label="Mes siguiente">
+            <Tecla color="blanca" tamano="peq" icono sonido="pestana" onClick={() => shiftMonth(1)} aria-label="Mes siguiente">
               <ChevronRight size={16} strokeWidth={2.6} />
             </Tecla>
           </div>
@@ -374,6 +376,7 @@ export function TjDateTimePicker({
                 key={i}
                 color={isSelectedDay(day) ? "azul" : "blanca"}
                 className="dj-mini"
+                sonido="elegir"
                 aria-pressed={isSelectedDay(day)}
                 onClick={() => pickDay(day)}
               >

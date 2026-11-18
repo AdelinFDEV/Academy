@@ -40,6 +40,12 @@ function capital(v: number): string {
   return `${(v / 1e9).toLocaleString("es-ES", { maximumFractionDigits: 0 })} mil millones $`;
 }
 
+/** La misma cifra, abreviada para el tique del móvil: «213 mil M $», «1,3 bill. $». */
+function capitalCorto(v: number): string {
+  if (v >= 1e12) return `${(v / 1e12).toLocaleString("es-ES", { maximumFractionDigits: 1 })} bill. $`;
+  return `${(v / 1e9).toLocaleString("es-ES", { maximumFractionDigits: 0 })} mil M $`;
+}
+
 export default function CalculadoraEscolar({ mercado }: { mercado: Mercado }) {
   const [moneda, setMoneda] = useState<Moneda>("solana");
   const [veces, setVeces] = useState(5);
@@ -54,8 +60,9 @@ export default function CalculadoraEscolar({ mercado }: { mercado: Mercado }) {
   const ancho = (v: number) => `${Math.max(2, (v / max) * 100).toFixed(1)}%`;
 
   const tira = [
-    { clave: "objetivo", nombre: `${elegida.nombre} a ${precio(objetivo)}`, valor: capObjetivo, objetivo: true },
-    ...MONEDAS.map((m) => ({ clave: m.id, nombre: `${m.nombre} hoy`, valor: mercado[m.id].usd_market_cap, objetivo: false })),
+    // `corto`, para el móvil: con la sigla, que cabe en una línea.
+    { clave: "objetivo", nombre: `${elegida.nombre} a ${precio(objetivo)}`, corto: `${elegida.tecla} a ${precio(objetivo)}`, valor: capObjetivo, objetivo: true },
+    ...MONEDAS.map((m) => ({ clave: m.id, nombre: `${m.nombre} hoy`, corto: `${m.tecla} hoy`, valor: mercado[m.id].usd_market_cap, objetivo: false })),
   ];
 
   return (
@@ -116,19 +123,34 @@ export default function CalculadoraEscolar({ mercado }: { mercado: Mercado }) {
 
       {/* La tira de papel que sale por arriba, como en las calculadoras que imprimen. */}
       <div className="rg-tira">
-        <span className="rg-tira-tit">Comparada con hoy</span>
+        {/* En el móvil, sobre la columna de cifras, «MC»: la capitalización de
+            mercado (home.css). En el ordenador las cifras ya lo dicen enteras. */}
+        <span className="rg-tira-cab">
+          <span className="rg-tira-tit">Comparada con hoy</span>
+          <abbr className="rg-tira-mc" title="Capitalización de mercado (market cap)">MC</abbr>
+        </span>
         <ul className="rg-barras">
           {tira.map((b) => (
-            <li key={b.clave} className={b.objetivo ? "is-objetivo" : undefined}>
-              <span className="rg-barra-nombre">{b.nombre}</span>
+            <li key={b.clave} className={`rg-fila--${b.clave}${b.objetivo ? " is-objetivo" : ""}`}>
+              <span className="rg-barra-nombre">
+                <span className="rg-largo">{b.nombre}</span>
+                <span className="rg-corto">{b.corto}</span>
+              </span>
               <span className="rg-barra-pista">
                 <span className="rg-barra" style={{ width: ancho(b.valor) }} />
               </span>
-              <span className="rg-barra-valor">{capital(b.valor)}</span>
+              <span className="rg-barra-valor">
+                <span className="rg-largo">{capital(b.valor)}</span>
+                <span className="rg-corto">{capitalCorto(b.valor)}</span>
+              </span>
             </li>
           ))}
         </ul>
-        <span className="rg-fuente">Datos en vivo de CoinGecko · un ejemplo, no una previsión</span>
+        {/* En el móvil, sin la fuente: solo el aviso de que es un ejemplo. */}
+        <span className="rg-fuente">
+          <span className="rg-largo">Datos en vivo de CoinGecko · un ejemplo, no una previsión</span>
+          <span className="rg-corto">Un ejemplo, no una previsión</span>
+        </span>
       </div>
     </div>
   );

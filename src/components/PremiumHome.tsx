@@ -9,8 +9,6 @@ import { AVATAR_ADMIN } from "@/lib/perfilPublico";
 import { PREGUNTAS_FRECUENTES } from "@/lib/preguntas-frecuentes";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 import { InstagramIcon } from "@/components/SocialLinks";
-import NovaMini from "@/components/NovaMini";
-import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import Tecla from "@/components/cuaderno/Tecla";
 import type { ResumenHero } from "@/lib/portfolio-publico";
 import "./premium-home.css";
@@ -45,10 +43,6 @@ import "./premium-home.css";
  *    nadie.
  * Ni reseñas ni contadores de usuarios: se quitaron de /premium el 06-11-2026
  * por inventados, y no vuelven por aquí.
- *
- * Nova está oculta mientras llega la mascota (ESTILO.md): su cara solo se pinta
- * en el panel del Diario si `MOSTRAR_NOVA` lo dice. Los textos que la nombran
- * se quedan: cambiarlos lo decide el admin.
  */
 
 const PRECIO = precioEur(PREMIUM_PRICE_EUR);
@@ -59,7 +53,7 @@ const pct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(1).replace(".", ",")
 const signo = (n: number) => (n >= 0 ? "is-sube" : "is-baja");
 
 const INCLUYE = [
-  "Diario de Trading con Nova",
+  "Diario de Trading",
   "Portfolio Adelin: spot y DCA de bitcoin",
   "Todos los cursos, con examen y certificado",
   "Insignia de Miembro Fundador",
@@ -120,8 +114,7 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
                 <span className="pf-pieza-ic" aria-hidden="true"><IconoDiario size={26} /></span>
                 <h3 className="pf-pieza-titulo">Diario de Trading</h3>
                 <p className="pf-pieza-texto">
-                  Deja de operar de memoria. Apuntas cada operación en un minuto y el diario hace las cuentas. Nova lee
-                  tus datos y te avisa.
+                  Deja de operar de memoria. Apuntas cada operación en un minuto y el diario hace las cuentas.
                 </p>
 
                 {/* Un dibujo del panel, no datos reales: lo dice la etiqueta. */}
@@ -140,10 +133,6 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
                     <path className="pf-curva-relleno" d="M0 78 L28 72 L56 75 L84 62 L112 66 L140 52 L168 56 L196 41 L224 45 L252 30 L280 33 L320 14 L320 90 L0 90 Z" />
                     <path className="pf-curva-linea" d="M0 78 L28 72 L56 75 L84 62 L112 66 L140 52 L168 56 L196 41 L224 45 L252 30 L280 33 L320 14" pathLength={1} />
                   </svg>
-                  <span className="pf-nova">
-                    {MOSTRAR_NOVA && <NovaMini size={30} />}
-                    <span><strong>Nova</strong> · Cierras las ganadoras antes de tiempo: te quedas con el 45 % del objetivo.</span>
-                  </span>
                 </div>
 
                 <span className="pf-chips">
@@ -279,8 +268,9 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
                   <small>@adelinbtc · en Instagram</small>
                 </span>
               </span>
-              <Tecla href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" prefetch={false} ancho className="pf-ig">
-                <InstagramIcon size={18} /> Escríbeme por Instagram
+              <Tecla href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" prefetch={false} ancho className="pf-ig" aria-label="Escríbeme por Instagram">
+                {/* En el móvil, «Instagram» a secas: en dos líneas no se leía (premium-home.css). */}
+                <InstagramIcon size={18} /> <span className="pf-ig-largo">Escríbeme por Instagram</span><span className="pf-ig-corto">Instagram</span>
                 <ArrowUpRight size={16} strokeWidth={2.6} aria-hidden="true" />
               </Tecla>
             </div>

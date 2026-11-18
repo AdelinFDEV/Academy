@@ -318,14 +318,6 @@
   color: var(--tinta);
 }
 
-.fpo-invita-texto {
-  position: relative;
-  margin: 0;
-  font-size: 0.98rem;
-  font-weight: 600;
-  line-height: 1.6;
-  color: var(--tinta-2);
-}
 
 .fpo-invita-acciones {
   position: relative;
@@ -334,59 +326,6 @@
   align-items: center;
   gap: 0.6rem 1.2rem;
   margin-top: 0.5rem;
-}
-
-/* «Ver el ranking» (18-11-2026): una pastilla de papel con su canto coral y
-   el trofeo en una teclita amarilla. Secundaria al lado de «Hacer una
-   pregunta», pero con cuerpo. 44 px de alto: se pulsa con el dedo. */
-.fpo-invita-enlace {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: 44px;
-  margin-bottom: 9px;
-  padding: 6px 16px 6px 7px;
-  border-radius: 14px;
-  background: var(--papel);
-  box-shadow: 0 4px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
-  font-size: 0.92rem;
-  font-weight: 900;
-  color: var(--coral-o);
-  text-decoration: none;
-  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1), box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
-}
-
-.fpo-invita-trofeo {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  background: var(--amarillo);
-  box-shadow: 0 3px 0 var(--amarillo-o);
-  color: var(--tinta);
-  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
-}
-
-@media (hover: hover) {
-  .fpo-invita-enlace:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
-  }
-
-  .fpo-invita-enlace:hover .fpo-invita-trofeo { transform: rotate(-10deg) scale(1.08); }
-}
-
-.fpo-invita-enlace:active {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 transparent;
-  transition-duration: 0.06s;
-}
-
-.fpo-invita-enlace:focus-visible {
-  border-radius: 6px;
-  outline: 3px solid var(--azul);
-  outline-offset: 3px;
 }
 
 @media (max-width: 760px) {
@@ -472,7 +411,8 @@
    pregunta destacada: centrada en la tarjeta, con la pegatina del «?»
    pensativo en la esquina. */
 @media (min-width: 761px) {
-  .fpo-lista--una .fpo-hilo { overflow: hidden; }
+  /* Sin recorte (18-11-2026): el celo de arriba sobresale de la ficha. */
+  .fpo-lista--una .fpo-hilo { overflow: visible; }
 
   .fpo-lista--una .fpo-hilo > * { position: relative; z-index: 1; }
 
@@ -498,4 +438,485 @@
   .fpo-lista--una .fpo-pregunta { margin-top: auto; max-width: 30ch; }
   .fpo-lista--una .fpo-extracto { flex: 0 1 auto; max-width: 58ch; }
   .fpo-lista--una .fpo-pie { margin-top: auto; }
+}
+
+/* ── La ficha de una pregunta, más trabajada (18-11-2026, pedido por el admin) ──
+   Ficha de cuaderno con contorno de rotulador y canto en el color de su
+   categoría; arriba, un trozo de celo en ese color en vez de la pestaña, y la
+   pegatina del «?» asomando por la esquina. La categoría, como etiqueta con
+   contorno; el extracto, como cita con su raya; y la invitación a responder,
+   en una notita coral. Primero solo en el móvil; el mismo día, también en el
+   ordenador. */
+  .fpo-hilo {
+  --tono: var(--cat, var(--cat-fallback));
+  gap: 0.75rem;
+  margin-top: 0;
+  padding: 1.45rem 1.15rem 1.1rem;
+  border: 2.5px solid var(--tinta);
+  border-radius: 22px 18px 24px 17px / 18px 24px 17px 22px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tono) 9%, var(--papel)), var(--papel) 55%);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--tono) 50%, var(--papel));
+}
+
+.fpo-hilo:active {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 transparent;
+}
+
+/* El celo que sujeta la ficha. */
+.fpo-hilo::before {
+  top: -11px;
+  left: 50%;
+  width: 78px;
+  height: 20px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--tono) 50%, transparent);
+  translate: -50% 0;
+  rotate: -3deg;
+}
+
+/* La pegatina del «?», pequeña, asomando por la esquina de arriba. */
+.fpo-hilo > .fpo-pegatina {
+  display: block;
+  position: absolute;
+  top: -24px;
+  right: 10px;
+  width: 54px;
+  height: auto;
+  max-width: none;
+  rotate: 8deg;
+  filter: drop-shadow(0 3px 0 rgba(29, 27, 51, 0.12));
+  pointer-events: none;
+}
+
+.fpo-meta { padding-right: 56px; }
+
+.fpo-cat {
+  padding: 4px 10px;
+  border: 2px solid color-mix(in srgb, var(--tono) 55%, var(--tinta));
+  border-radius: 9px 8px 10px 7px;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--tono) 45%, var(--papel));
+  font-size: 0.76rem;
+}
+
+.fpo-pregunta,
+.fpo-lista--una .fpo-pregunta {
+  font-size: 1.28rem;
+  line-height: 1.18;
+}
+
+.fpo-extracto,
+.fpo-lista--una .fpo-extracto {
+  padding-left: 11px;
+  border-left: 3px solid color-mix(in srgb, var(--tono) 45%, var(--papel));
+  font-size: 0.92rem;
+  line-height: 1.5;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.fpo-pie {
+  gap: 0.75rem;
+  padding-top: 0.9rem;
+  border-top-color: color-mix(in srgb, var(--tono) 30%, var(--gris));
+}
+
+/* «¡Sé el primero en responder!», en una notita coral ladeada. */
+.fpo-primero {
+  padding: 6px 12px 7px;
+  border-radius: 10px 8px 11px 7px;
+  background: var(--coral-s);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+  font-size: 19px;
+}
+
+/* «Ver el foro», en el ordenador, del tamaño normal de tecla (18-11-2026,
+   pedido por el admin: la pequeña se quedaba corta al lado del título). El
+   relleno descuenta el contorno. */
+@media (min-width: 641px) {
+  .fpo-cabecera .fpo-ver {
+    --h: 9px;
+    --r: 16px;
+    gap: 10px;
+    padding: 17px 26px;
+    border-radius: 16px 13px 17px 12px / 13px 17px 12px 16px;
+    font-size: 15px;
+  }
+}
+
+/* La ficha en el ordenador: más holgada, y al pasar el ratón el canto sigue
+   en el color de su categoría. */
+@media (min-width: 641px) {
+  .fpo-hilo { padding: 1.75rem 1.6rem 1.3rem; }
+  .fpo-hilo::before { width: 92px; height: 22px; }
+}
+
+@media (hover: hover) {
+  .fpo-hilo:hover { box-shadow: 0 8px 0 color-mix(in srgb, var(--tono) 50%, var(--papel)); }
+}
+
+/* ── El título, que invita a participar (18-11-2026, pedido por el admin) ──
+   «Aquí nadie se queda con la duda», una frase que explica para qué es el
+   foro, y debajo tres pasos como etiquetas del cuaderno, cada una en su
+   color: Pregunta (coral, el del foro), Ayuda (menta) y Sube en el ranking
+   (amarillo, el de los logros), unidas por una rayita a mano. */
+.fpo-cabecera-texto { min-width: 0; }
+
+.fpo-lead {
+  max-width: 54ch;
+  margin: 0.85rem 0 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.fpo-pasos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 26px;
+  margin: 1.05rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fpo-paso {
+  --e: var(--coral-o);
+  --es: var(--coral-s);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 7px 10px;
+  border: 2px solid var(--tinta);
+  border-radius: 11px 9px 12px 8px / 9px 12px 8px 11px;
+  background: var(--es);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--e) 45%, var(--es));
+  font-size: 0.84rem;
+  font-weight: 900;
+  color: var(--e);
+  white-space: nowrap;
+}
+
+.fpo-paso { rotate: -1.5deg; }
+.fpo-paso--responde { rotate: 1.5deg; }
+
+.fpo-paso--responde { --e: var(--menta-o); --es: var(--menta-s); }
+.fpo-paso--ranking { --e: var(--amarillo-o); --es: var(--amarillo-s); }
+
+/* En el ordenador, la tecla «Ver el foro», abajo a la par de los pasos. */
+@media (min-width: 641px) {
+  .fpo-cabecera { align-items: flex-end; }
+}
+
+@media (max-width: 640px) {
+  .fpo-lead { font-size: 0.95rem; }
+}
+
+/* En el móvil, «Ranking» a secas: así caben los tres pasos en una línea. */
+.fpo-paso-corto { display: none; }
+
+@media (max-width: 640px) {
+  .fpo-paso-largo { display: none; }
+  .fpo-paso-corto { display: inline; }
+}
+
+
+/* Las dos teclas de la cabecera, juntas: «Ver el ranking» (blanca, con su
+   contorno de rotulador y la copa en amarillo; 18-11-2026, pedido por el
+   admin) y «Ver el foro». En el móvil, a medias, una al
+   lado de la otra. */
+.fpo-cabecera-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.fpo-cabecera .fpo-ver--ranking {
+  --c: var(--papel);
+  --o: var(--gris-o);
+  --t: var(--tinta);
+}
+
+/* La copa, en amarillo: rellena del amarillo y con el trazo en su tono
+   oscuro, que sobre el blanco se lee. */
+.fpo-ver--ranking svg {
+  fill: var(--amarillo);
+  color: var(--amarillo-o);
+}
+
+@media (max-width: 560px) {
+  .fpo-cabecera-acciones { flex: 1 1 100%; flex-wrap: nowrap; gap: 10px; }
+  .fpo-cabecera .fpo-cabecera-acciones .tecla { flex: 1 1 0; min-width: 0; padding-inline: 10px; }
+}
+
+/* La pregunta destacada en el ordenador (18-11-2026, pedido por el admin: «el
+   mensaje debe verse mejor, más grande y con más detalle»). El título sube
+   bajo la categoría en vez de caer al fondo, y el mensaje ocupa el sitio que
+   queda: letra más grande y hasta siete líneas. */
+@media (min-width: 761px) {
+  .fpo-lista--una .fpo-pregunta {
+    margin-top: 0.35rem;
+    /* Que no se meta debajo de la pegatina del «?», arriba a la derecha. */
+    max-width: min(26ch, calc(100% - 150px));
+    font-size: 1.85rem;
+    line-height: 1.12;
+  }
+
+  .fpo-lista--una .fpo-extracto {
+    flex: 1 1 auto;
+    max-width: 62ch;
+    margin-top: 0.3rem;
+    padding: 0.2rem 0 0.2rem 1rem;
+    border-left-width: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.65;
+    color: var(--tinta);
+    -webkit-line-clamp: 7;
+    line-clamp: 7;
+  }
+}
+
+/* ── Los tres pasos, siempre en una fila (18-11-2026, pedido por el admin) ──
+   Unidos por una rayita discontinua dibujada a mano (una onda suave, no una
+   raya recta). En el ordenador, rayitas de largo fijo; en el móvil, las
+   rayitas se estiran o encogen para que los tres pasos llenen la fila sin
+   saltar nunca a otra línea. */
+.fpo-pasos { flex-wrap: nowrap; gap: 6px; }
+
+.fpo-raya {
+  flex: none;
+  width: 30px;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7C8 2 13 10 20 6s12-4 18 1' fill='none' stroke='%235f5c7d' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='4 4.5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+@media (max-width: 640px) {
+  .fpo-pasos { gap: 4px; }
+  .fpo-raya { flex: 1 1 10px; width: auto; min-width: 8px; max-width: 34px; }
+
+  .fpo-paso {
+    flex: none;
+    gap: 5px;
+    padding: 5px 9px 6px 8px;
+    font-size: 0.76rem;
+  }
+
+  .fpo-paso svg { width: 14px; height: 14px; }
+}
+
+@media (max-width: 359px) {
+  .fpo-paso { padding-inline: 7px 8px; font-size: 0.72rem; }
+}
+
+/* «Ver el ranking» abajo del todo en el móvil; arriba, solo «Ver el foro». */
+.fpo-ranking-abajo { display: none; }
+
+@media (max-width: 640px) {
+  .fpo-ver--arriba { display: none; }
+
+  .fpo .fpo-ranking-abajo {
+    display: flex;
+    margin-top: 1.4rem;
+    border: 2.5px solid var(--tinta);
+    border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+  }
+}
+
+/* ── El texto de la invitación (18-11-2026, pedido por el admin) ──
+   «una duda», a mano con el fluorescente blanco sobre el coral; debajo, dos
+   notas en papel con su icono en una teclita: Pregunta (coral) y Ayuda
+   (menta), como los pasos de la cabecera. */
+.fpo-invita-mano {
+  display: inline-block;
+  padding: 0 0.12em 0 0.06em;
+  font-family: var(--letra-mano);
+  font-size: 1.28em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--coral-o);
+  background: linear-gradient(transparent 55%, var(--papel) 55%, var(--papel) 92%, transparent 92%);
+  transform: rotate(-2deg);
+}
+
+.fpo-invita-lista {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fpo-invita-lista li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 13px 10px 10px;
+  border: 2px solid color-mix(in srgb, var(--coral) 35%, var(--papel));
+  border-radius: 14px 12px 15px 11px / 12px 15px 11px 14px;
+  background: color-mix(in srgb, var(--papel) 82%, transparent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.fpo-invita-lista li:nth-child(1) { rotate: -0.6deg; }
+.fpo-invita-lista li:nth-child(2) { rotate: 0.6deg; }
+
+.fpo-invita-lista b { font-weight: 900; color: var(--tinta); }
+
+.fpo-invita-icono {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--coral);
+  box-shadow: 0 3px 0 var(--coral-o);
+  color: #fff;
+}
+
+.fpo-invita-icono--ayuda {
+  background: var(--menta);
+  box-shadow: 0 3px 0 var(--menta-o);
+  color: var(--tinta);
+}
+
+/* Móvil: un poco más de aire entre la pregunta y la invitación, y entre la
+   invitación y «Ver el ranking». */
+@media (max-width: 640px) {
+  .fpo-cuerpo { gap: 34px; }
+  .fpo .fpo-ranking-abajo { margin-top: 1.8rem; }
+  .fpo-invita-lista li { font-size: 0.9rem; }
+}
+
+/* El sitio para el celo y la pegatina que asoman por arriba, en la propia
+   fila de la lista: con un margen en la ficha, esta se salía de su fila y
+   se comía el aire de debajo. */
+.fpo-lista > li { padding-top: 14px; }
+
+/* ── El foro, en su hoja blanca (18-11-2026, pedido por el admin) ──
+   Igual que Cursos (cursos-home.css, .ch-papel): una hoja de papel blanca con
+   su canto, sobre el fondo de puntitos. Mismas medidas y esquinas, para que
+   las dos secciones se lean como hojas del mismo cuaderno. */
+.fpo {
+  padding: clamp(1rem, 3vw, 2rem) clamp(0.6rem, 2vw, 1.25rem) clamp(2.5rem, 6vw, 4rem);
+}
+
+.fpo-inner {
+  max-width: 1240px;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 2.75rem);
+  border-radius: 40px;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--gris);
+}
+
+@media (max-width: 960px) {
+  .fpo-inner { border-radius: 32px; }
+}
+
+@media (max-width: 640px) {
+  .fpo-inner { border-radius: 26px; }
+}
+
+/* ── El tachón de rotulador de la esquina (18-11-2026, pedido por el admin) ──
+   Sencillo: una raya ondulada de rotulador coral encima de los botones, que
+   sale de la hoja y se va hasta el borde de la web, y una estrellita amarilla
+   donde arranca. Solo en el ordenador. */
+.fpo-tachon,
+.fpo-tachon-estrella { display: none; }
+
+@media (min-width: 961px) {
+  .fpo { position: relative; overflow-x: clip; }
+
+  .fpo-tachon {
+    position: absolute;
+    top: calc(clamp(1rem, 3vw, 2rem) + 96px);
+    left: calc(50% + 300px);
+    /* El ancho explícito: un svg con proporción no se estira con left y right. */
+    width: calc(50% - 294px);
+    z-index: 2;
+    display: block;
+    height: 46px;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--coral) 80%, transparent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    rotate: -3deg;
+    pointer-events: none;
+  }
+
+  .fpo-tachon path { vector-effect: non-scaling-stroke; }
+
+  .fpo-tachon-estrella {
+    position: absolute;
+    top: calc(clamp(1rem, 3vw, 2rem) + 84px);
+    left: calc(50% + 268px);
+    z-index: 2;
+    display: block;
+    width: 30px;
+    fill: var(--amarillo);
+    stroke: var(--tinta);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    rotate: -12deg;
+    pointer-events: none;
+  }
+}
+
+/* ── Quien pregunta, con presencia (18-11-2026, pedido por el admin) ──
+   En el ordenador, en la pregunta de la portada: la foto más grande, con
+   contorno de rotulador, un aro del color de la categoría y algo ladeada
+   como una foto pegada; encima del nombre, a mano, «escrito por» (no todo
+   hilo es una pregunta: el primero es la bienvenida); el nombre,
+   en la letra de los titulares y más grande. */
+@media (min-width: 761px) {
+  .fpo .fo-firma { gap: 0.9rem; }
+
+  .fpo .fo-firma--compacta .fo-firma-foto {
+    width: 58px;
+    height: 58px;
+    border: 3px solid var(--papel);
+    box-shadow:
+      0 0 0 2.5px var(--tinta),
+      0 0 0 6px color-mix(in srgb, var(--tono) 55%, var(--papel)),
+      0 5px 0 4px color-mix(in srgb, var(--tono) 30%, var(--papel));
+    font-size: 1.3rem;
+    rotate: -4deg;
+  }
+
+  .fpo .fo-firma-texto { gap: 3px; }
+
+  .fpo .fo-firma-alias::before {
+    content: "escrito por";
+    flex-basis: 100%;
+    margin-bottom: -2px;
+    font-family: var(--letra-mano);
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1;
+    color: color-mix(in srgb, var(--tono) 55%, var(--tinta));
+    rotate: -2deg;
+    transform-origin: left center;
+  }
+
+  .fpo .fo-firma-alias {
+    font-family: var(--letra-titular);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .fpo .fo-firma-meta { font-size: 0.86rem; }
 }

@@ -9,7 +9,7 @@ Cambios frente a este informe: el 08-11-2026 el admin retiró la categoría Temp
 
 1. **Ya hay un curso en el repo: `fiscalidad-cripto-espana`**, con `"published": false` y solo 4 lecciones escritas de unas 20 (`scripts/cursos/fiscalidad-cripto-espana/`). Si este de psicología sale antes, será el **primer curso publicado**, aunque no el primero escrito. TAREAS.md (apartado 0b) da por hecho que el primero es el de fiscalidad: hay que decidir el orden (pregunta 8.1).
 2. **El sistema de cursos ya resuelve casi todo lo que necesita este curso**: módulos con examen (banco de 15 → 10 sorteadas, aprueba con 5, 24 h de espera tras suspender), examen final con banco propio, certificado verificable (40 % media de módulos + 60 % final) y logro desde `curso_certificados`. **El curso es contenido (filas), no código nuevo**, salvo el logro con su categoría propia y, si se aprueban, tres bloques interactivos nuevos.
-3. **El Diario de Trading ya mide justo los errores que el curso enseña.** Nova avisa de «Cierras las ganadoras antes de tiempo» (es el efecto disposición), de «Tus pérdidas superan el riesgo planeado» (mover el stop por aversión a la pérdida), de rachas («cuidado con subir el tamaño por euforia») y del riesgo por encima del 2 %. El hito «Sin revancha» premia esperar tras una pérdida. Y `diario_dias` guarda el ánimo del día (1-4) y una nota. **El curso pone nombre y respaldo científico a lo que el Diario ya detecta.** Ese es el hueco frente a los rivales: ningún curso de psicología del trading en español trae una herramienta propia para practicarlo.
+3. **El Diario de Trading ya mide justo los errores que el curso enseña.** En la pestaña «Análisis», la cifra «Objetivo conseguido» delata que se cierran las ganadoras antes de tiempo (es el efecto disposición) y «Pérdida frente al stop», que las pérdidas superan el riesgo planeado (mover el stop por aversión a la pérdida); el Resumen enseña la racha en curso (la euforia que lleva a subir el tamaño) y el Diario marca cada operación con el riesgo por encima del 2 %. El hito «Sin revancha» premia esperar tras una pérdida. Y `diario_dias` guarda el ánimo del día (1-4) y una nota. **El curso pone nombre y respaldo científico a lo que el Diario ya mide.** Ese es el hueco frente a los rivales: ningún curso de psicología del trading en español trae una herramienta propia para practicarlo.
 
 ---
 
@@ -107,7 +107,7 @@ Cada lección lleva su objetivo y las fuentes que la sostienen (la lista complet
 | # | Lección | Objetivo | Fuentes |
 |---|---|---|---|
 | 2.1 | Teoría prospectiva y [aversión a la pérdida](/glosario/aversion-a-la-perdida) | Entender que valoramos ganancias y pérdidas respecto a un punto de referencia, no la riqueza total, y que perder duele más que ganar (estimación media λ ≈ 2,25; **es una media, varía entre personas**) | [Kahneman y Tversky 1979](#f-kt1979), [Tversky y Kahneman 1992](#f-kt1992) |
-| 2.2 | El [efecto disposición](/glosario/efecto-disposicion) | Reconocer la tendencia a vender pronto lo que gana y aguantar lo que pierde. Odean: 10.000 cuentas, se realizan antes las ganancias que las pérdidas. **Conexión con Nova**: el aviso «Cierras las ganadoras antes de tiempo» | [Shefrin y Statman 1985](#f-ss1985), [Odean 1998](#f-odean1998) |
+| 2.2 | El [efecto disposición](/glosario/efecto-disposicion) | Reconocer la tendencia a vender pronto lo que gana y aguantar lo que pierde. Odean: 10.000 cuentas, se realizan antes las ganancias que las pérdidas. **Conexión con el Diario**: la cifra «Objetivo conseguido» de la pestaña «Análisis» | [Shefrin y Statman 1985](#f-ss1985), [Odean 1998](#f-odean1998) |
 | 2.3 | Dinero de la casa y querer empatar | Ver cómo una ganancia previa empuja a arriesgar más, y una pérdida previa a buscar lo que permita «quedarse a cero». Es la raíz del [revenge trading](/glosario/revenge-trading) | [Thaler y Johnson 1990](#f-tj1990) |
 | 2.4 | La biología del riesgo | Saber que el miedo y la euforia tienen correlato físico medible (piel, pulso, hormonas, actividad cerebral) y que no se apagan con voluntad. **Matiz obligatorio:** muestras pequeñas (10 y 17 traders), resultados correlacionales | [Lo y Repin 2002](#f-lr2002), [Coates y Herbert 2008](#f-ch2008), [Kuhnen y Knutson 2005](#f-kk2005) |
 
@@ -136,7 +136,7 @@ Cada lección lleva su objetivo y las fuentes que la sostienen (la lista complet
 | 5.1 | Antes, durante y después: el modelo de Gross | Aprender los cinco puntos donde se puede regular una emoción y por qué **reinterpretar** funciona mejor que **reprimir** (reprimir quita la cara, no el sentimiento) | [Gross 1998](#f-gross), [Gross 2002](#f-gross2002) |
 | 5.2 | Reglas «si pasa esto, hago esto» | Escribir planes de implementación. Efecto medio-grande en el metaanálisis de 2006 (d = 0,65); **la revisión de 2024 lo rebaja** tras corregir sesgos de publicación: se cuenta así, con las dos cifras | [Gollwitzer y Sheeran 2006](#f-gs2006) |
 | 5.3 | La lista previa a operar | Montar una [lista de control](/glosario/plan-de-trading) previa. Se usa la lista quirúrgica de la OMS como **analogía** (redujo muertes y complicaciones en 8 hospitales), no como prueba de que funcione en trading | [Haynes et al. 2009](#f-haynes) |
-| 5.4 | Después de una pérdida | Tener un protocolo para el momento más peligroso: pausa obligatoria, bajar tamaño, cerrar la plataforma. **Conexión con el Diario**: el hito «Sin revancha» y el aviso de Nova tras varias pérdidas seguidas | [Thaler y Johnson 1990](#f-tj1990), [Lo, Repin y Steenbarger 2005](#f-lrs) |
+| 5.4 | Después de una pérdida | Tener un protocolo para el momento más peligroso: pausa obligatoria, bajar tamaño, cerrar la plataforma. **Conexión con el Diario**: el hito «Sin revancha» y la etiqueta de racha del Resumen tras varias pérdidas seguidas | [Thaler y Johnson 1990](#f-tj1990), [Lo, Repin y Steenbarger 2005](#f-lrs) |
 
 ### Módulo 6 · Tu sistema de mejora continua
 
@@ -151,18 +151,18 @@ Cada lección lleva su objetivo y las fuentes que la sostienen (la lista complet
 
 ## 4 · Ejercicios prácticos por módulo
 
-Todos usan lo que **ya existe** en el Diario: operaciones con `strategy` y `notes`, riesgo y beneficio esperado (de ahí sale R), el ánimo del día (1-4) con su nota de hasta 600 caracteres, los hitos y los mensajes de Nova. **Nada de lo que sigue exige que Nova cambie.**
+Todos usan lo que **ya existe** en el Diario: operaciones con `strategy` y `notes`, riesgo y beneficio esperado (de ahí sale R), el ánimo del día (1-4) con su nota de hasta 600 caracteres, los hitos y las cifras de las pestañas «Resumen» y «Análisis». **Nada de lo que sigue exige que el Diario cambie.**
 
 Dentro de cada lección hay además bloques interactivos del aula (`pregunta`, `verdadero-falso`, `clasificar`, `ordenar`, `grafico`), que ya existen.
 
 | Módulo | Ejercicio en el Diario | Ejercicio en la lección |
 |---|---|---|
-| 1 | **Auditoría honesta:** apunta (o importa de memoria) tus últimas 10-20 operaciones y lee qué te dice Nova de la esperanza y del riesgo. Anota cuántas operaste por semana. | `clasificar`: «¿esto es un problema de método o de ejecución?» con 8 casos. |
-| 2 | **Etiqueta tus cierres:** durante dos semanas, en la nota de cada operación cerrada, escribe si cerraste *por plan*, *por miedo* o *por esperanza*. Compáralo con el aviso de Nova «Cierras las ganadoras antes de tiempo» y con el porcentaje del objetivo que capturas. | Nuevo bloque `prospectiva` (ver punto 7): el alumno acepta o rechaza apuestas 50/50 y ve su propia aversión a la pérdida aproximada. |
+| 1 | **Auditoría honesta:** apunta (o importa de memoria) tus últimas 10-20 operaciones y mira tu «Esperanza» en el Resumen y tu «Riesgo por operación» en la pestaña «Análisis». Anota cuántas operaste por semana. | `clasificar`: «¿esto es un problema de método o de ejecución?» con 8 casos. |
+| 2 | **Etiqueta tus cierres:** durante dos semanas, en la nota de cada operación cerrada, escribe si cerraste *por plan*, *por miedo* o *por esperanza*. Compáralo con las cifras «Objetivo conseguido» y «Pérdida frente al stop» de la pestaña «Análisis». | Nuevo bloque `prospectiva` (ver punto 7): el alumno acepta o rechaza apuestas 50/50 y ve su propia aversión a la pérdida aproximada. |
 | 3 | **El abogado del diablo:** antes de cada entrada, escribe en la nota el mejor argumento *en contra* de la operación. Y una vez a la semana, revisa si alguna salida la decidió el precio de entrada (anclaje). | `verdadero-falso` sobre casos de anclaje y confirmación. |
-| 4 | **20 operaciones en R:** registra 20 operaciones con su riesgo y beneficio esperado, sin mirar el P&L en euros: solo R. Comprueba que ninguna pasa del 2 % de la cuenta (Nova lo marca). | Nuevo bloque `rachas`: simula 100 operaciones con un 55 % de acierto y enseña lo largas que salen las rachas de pérdidas por puro azar. Nuevo bloque `calculadora-r`: tamaño de posición a partir del % de riesgo. |
+| 4 | **20 operaciones en R:** registra 20 operaciones con su riesgo y beneficio esperado, sin mirar el P&L en euros: solo R. Comprueba que ninguna pasa del 2 % de la cuenta (el Diario lo marca al registrarla y en «Operaciones de riesgo alto»). | Nuevo bloque `rachas`: simula 100 operaciones con un 55 % de acierto y enseña lo largas que salen las rachas de pérdidas por puro azar. Nuevo bloque `calculadora-r`: tamaño de posición a partir del % de riesgo. |
 | 5 | **Tres reglas y un semáforo:** escribe tres reglas «si-entonces» en la nota del día. Regla de ánimo: si apuntas *mal* o *muy mal* (ánimo ≤ 2), ese día no operas o lo haces a medio tamaño. Objetivo práctico: el primer nivel del hito **«Sin revancha»**. | `ordenar`: los pasos del protocolo tras una pérdida. |
-| 6 | **21 días de ánimo:** registra ánimo y nota 21 días (operes o no). Cada domingo, revisión con «Lo más importante» de Nova y la pregunta de Steenbarger: ¿qué día seguí el plan y qué fue distinto? Termina en el plan del 6.4. | Plantilla del plan psicológico para imprimir (hay `BotonImprimir` en el aula). |
+| 6 | **21 días de ánimo:** registra ánimo y nota 21 días (operes o no). Cada domingo, revisión con la foto de la semana en el Resumen del Diario y la pregunta de Steenbarger: ¿qué día seguí el plan y qué fue distinto? Termina en el plan del 6.4. | Plantilla del plan psicológico para imprimir (hay `BotonImprimir` en el aula). |
 
 **Honestidad sobre los ejercicios:** el aula **no comprueba** que se hagan; se evalúa el conocimiento en los exámenes. Los datos del Diario los declara el propio usuario. Por eso el logro principal sale del certificado (imposible de falsear) y lo que dependa del Diario se presenta como práctica, no como prueba (punto 6).
 
@@ -251,7 +251,6 @@ Ya existen y se enlazan: `stop-loss`, `take-profit`, `tamano-de-posicion`, `apal
 - El muro de pago: `exigirAula()`, `contextoAula()`, las policies de `curso_lecciones` y `curso_preguntas` (ver 2b).
 - `createAdminClientOpcional()` en el catálogo (intocable).
 - `src/proxy.ts` y `robots.txt`: `/aula` ya está protegido y bloqueado.
-- **Nova.** Una fase 2 opcional sería que Nova, a quien tenga el certificado, enlace la lección que explica cada aviso («Esto es el efecto disposición → lección 2.2»). No hace falta para lanzar.
 
 ---
 

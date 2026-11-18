@@ -12,16 +12,9 @@ import { useEffect, type RefObject } from "react";
  * `overflow: hidden` solo en <body> no paraba nada y la página corría por
  * detrás del velo. Devuelve la función que lo deja como estaba.
  */
-export function bloquearScroll(): () => void {
-  const raiz = document.documentElement;
-  const antes = { raiz: raiz.style.overflow, body: document.body.style.overflow };
-  raiz.style.overflow = "hidden";
-  document.body.style.overflow = "hidden";
-  return () => {
-    raiz.style.overflow = antes.raiz;
-    document.body.style.overflow = antes.body;
-  };
-}
+// Desde el 18-11-2026, el bloqueo común de toda la web (con contador:
+// src/lib/bloquearScroll.ts). Se reexporta para quien ya lo importaba de aquí.
+export { bloquearScroll } from "@/lib/bloquearScroll";
 
 /**
  * Ajusta un velo fijo (`position: fixed`) a la parte de la pantalla que de

@@ -8,7 +8,6 @@ import Tecla from "@/components/cuaderno/Tecla";
 import { sonar } from "@/lib/sonidos";
 import { useSonidoVentana } from "@/components/trading/useSonidoVentana";
 import { bloquearScroll } from "@/components/trading/useVentanaMovil";
-import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import { TjSegmented, TjSelect } from "@/components/trading/TjControls";
 import { TjEquityCard } from "@/components/trading/TjCharts";
 import TjSummary from "@/components/trading/TjSummary";
@@ -21,8 +20,6 @@ import TjTradeLog, { TjRecentTrades } from "@/components/trading/TjTradeLog";
 import TjCalendar from "@/components/trading/TjCalendar";
 import TjWelcome from "@/components/trading/TjWelcome";
 import TjBalance from "@/components/trading/TjBalance";
-import TjBot, { reiniciarNova } from "@/components/trading/TjBot";
-import { NOVA_FIRMA, NOVA_RESUMEN, buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
 import TjEmotions from "@/components/trading/TjEmotions";
 import { rachaDias, toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
 import {
@@ -374,7 +371,7 @@ export default function TradingJournal({
       setDias({});
       setLogros([]);
       setFilters(NO_FILTERS);
-      reiniciarNova();
+      sonar("borrar");
       closeForm(false);
       setResetOpen(false);
     } catch (err) {
@@ -402,38 +399,6 @@ export default function TradingJournal({
   const summary = (
     <TjSummary stats={account.stats} drawdown={account.drawdown} />
   );
-
-  /*
-   * Nova lee todo (operaciones, sensaciones, hitos) y lo cuenta desde la cabecera.
-   * Se rehace ENTERO cada vez que cambia un dato: una operación nueva o editada,
-   * un ánimo, el capital o un hito. «Ahora» se toma en cada análisis, no al abrir
-   * la página: así la operación que se acaba de apuntar entra en todo.
-   */
-  const botReport = useMemo(
-    () => buildBotReport({
-      name: userName, trades, dias, milestones: account.milestones, ctx, stats: account.stats, capital, now: new Date(),
-    }),
-    [userName, trades, dias, account, ctx, capital],
-  );
-
-  // La huella del último análisis y su resumen (cuántas cosas, cuántas importantes
-  // y la frase principal): Nova en la barra sabe si hay algo sin leer y QUÉ es.
-  useEffect(() => {
-    try {
-      localStorage.setItem(NOVA_FIRMA, botReport.signature);
-      localStorage.setItem(NOVA_RESUMEN, JSON.stringify(botReport.resumen));
-    } catch {
-      // Sin almacenamiento: la barra no podrá avisar de novedades, sin más.
-    }
-    window.dispatchEvent(new Event("tj-bot-visto"));
-  }, [botReport.signature, botReport.resumen]);
-
-  /** Los botones de los mensajes de Nova: cada uno lleva a hacer lo que propone. */
-  function onBotAction(kind: BotActionKind) {
-    if (kind === "nuevo") openNew();
-    else if (kind === "capital") { if (sinCapital) pedirCapital(); else setEditingCapital(true); }
-    else goTo(kind);
-  }
 
   // El balance va en la cabecera: lo primero que se ve al entrar.
   const balance = (
@@ -505,10 +470,9 @@ export default function TradingJournal({
     <div className="trading-journal">
       {/* La portada (saludo y balance) se queda en TODAS las vistas (pedido por
           el admin el 10-11-2026): así la página no cambia de alto al cambiar de
-          pestaña. Nova, oculta mientras llega la mascota (nova-visible.ts). */}
+          pestaña. */}
       <TjWelcome
         name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance}
-        bot={MOSTRAR_NOVA ? <TjBot report={botReport} onAction={onBotAction} /> : null}
       />
       <div ref={anclaRef} className="djp-ancla" aria-hidden="true" />
       {/* Las pestañas del cuaderno y la acción principal. NO se quedan fijas al
@@ -553,7 +517,6 @@ export default function TradingJournal({
                 <li>Tu capital inicial</li>
                 <li>{diasApuntados === 1 ? "El día con emociones y notas" : `Los ${diasApuntados} días con emociones y notas`}</li>
                 <li>Los hitos del diario que hayas conseguido</li>
-                {MOSTRAR_NOVA && <li>Todo lo que Nova sabía de ti</li>}
               </ul>
             </div>
             {resetError && (
@@ -655,8 +618,7 @@ export default function TradingJournal({
               {calendar}
               {summary}
               <TjEquityCard series={account.series} capital={capital} drawdown={account.drawdown} />
-              {/* Últimas operaciones y próximo hito, a la misma altura. Las lecturas automáticas
-                  que iban aquí («Lo que dicen tus números») serán frases del bot. */}
+              {/* Últimas operaciones y próximo hito, a la misma altura. */}
               <div className="djp-duo">
                 <TjRecentTrades trades={trades} onSeeAll={() => goTo("operaciones")} />
                 <TjMilestoneTeaser milestones={account.milestones} onOpen={() => goTo("hitos")} />

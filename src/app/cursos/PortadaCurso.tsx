@@ -7,10 +7,11 @@ import Image from "next/image";
  *
  * Dos capas, y la primera que exista manda:
  *
- * 1. **Una ilustración** del curso (`PORTADA_IMAGEN`): una imagen en
- *    `public/cursos/<slug>/portada.webp`, apaisada (1600 × 560 o similar), con
+ * 1. **Una ilustración** del curso (`PORTADA_IMAGEN`): desde el 18-11-2026, en el
+ *    estilo del cuaderno (ESTILO.md § «Portadas y pegatinas»), una imagen en
+ *    `public/cursos/<slug>/portada-cuaderno.webp`, apaisada (1600 px de ancho), con
  *    el color del curso y el motivo centrado-derecha, porque a la izquierda van
- *    las etiquetas. Los prompts para generarlas están en CURSOS.md.
+ *    las etiquetas. Las plantillas de los prompts están en ESTILO.md.
  * 2. **Arte en SVG** dibujado con el color del curso (`currentColor`): un
  *    motivo por tema (`MOTIVO`) y, sin entrada, uno genérico que varía con el
  *    slug. Así un curso nuevo nunca sale con la portada vacía.
@@ -21,14 +22,16 @@ import Image from "next/image";
 
 /** Ilustración de cada curso. Sin entrada, el arte en SVG. */
 const PORTADA_IMAGEN: Record<string, string> = {
-  "psicologia-del-trading": "/cursos/psicologia-del-trading/portada.webp",
-  "seguridad-cripto": "/cursos/seguridad-cripto/portada.webp",
-  "coinmarketcap-y-coingecko": "/cursos/coinmarketcap-y-coingecko/portada.webp",
-  "bitcoin-y-dca": "/cursos/bitcoin-y-dca/portada.webp",
-  "futuros-y-apalancamiento": "/cursos/futuros-y-apalancamiento/portada.webp",
-  "analisis-tecnico-sin-humo": "/cursos/analisis-tecnico-sin-humo/portada.webp",
-  "defi-y-stablecoins": "/cursos/defi-y-stablecoins/portada.webp",
-  "fiscalidad-cripto-espana": "/cursos/fiscalidad-cripto-espana/portada.webp",
+  // Portadas nuevas, estilo «Cuaderno de estudio» (18-11-2026): otro nombre
+  // de archivo para que Next y el navegador no sirvan la anterior.
+  "psicologia-del-trading": "/cursos/psicologia-del-trading/portada-cuaderno.webp",
+  "seguridad-cripto": "/cursos/seguridad-cripto/portada-cuaderno.webp",
+  "coinmarketcap-y-coingecko": "/cursos/coinmarketcap-y-coingecko/portada-cuaderno.webp",
+  "bitcoin-y-dca": "/cursos/bitcoin-y-dca/portada-cuaderno.webp",
+  "futuros-y-apalancamiento": "/cursos/futuros-y-apalancamiento/portada-cuaderno.webp",
+  "analisis-tecnico-sin-humo": "/cursos/analisis-tecnico-sin-humo/portada-cuaderno.webp",
+  "defi-y-stablecoins": "/cursos/defi-y-stablecoins/portada-cuaderno.webp",
+  "fiscalidad-cripto-espana": "/cursos/fiscalidad-cripto-espana/portada-cuaderno.webp",
 };
 
 type Motivo = "pulso" | "escudo" | "datos" | "peldanos" | "balanza" | "velas" | "vasos" | "generico";

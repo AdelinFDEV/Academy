@@ -237,11 +237,11 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
 
           <div className="djc-mandos">
             <div className="djc-nav">
-              <Tecla color="blanca" tamano="peq" icono onClick={() => shift(-1)} aria-label={mode === "year" ? "Año anterior" : "Mes anterior"} title="Flecha izquierda">
+              <Tecla color="blanca" tamano="peq" icono sonido="pestana" onClick={() => shift(-1)} aria-label={mode === "year" ? "Año anterior" : "Mes anterior"} title="Flecha izquierda">
                 <ChevronLeft size={18} strokeWidth={2.6} />
               </Tecla>
-              <Tecla color="azul" tamano="peq" onClick={goToday} disabled={isCurrent}>Hoy</Tecla>
-              <Tecla color="blanca" tamano="peq" icono onClick={() => shift(1)} aria-label={mode === "year" ? "Año siguiente" : "Mes siguiente"} title="Flecha derecha">
+              <Tecla color="azul" tamano="peq" sonido="pestana" onClick={goToday} disabled={isCurrent}>Hoy</Tecla>
+              <Tecla color="blanca" tamano="peq" icono sonido="pestana" onClick={() => shift(1)} aria-label={mode === "year" ? "Año siguiente" : "Mes siguiente"} title="Flecha derecha">
                 <ChevronRight size={18} strokeWidth={2.6} />
               </Tecla>
             </div>

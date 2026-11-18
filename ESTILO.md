@@ -169,37 +169,11 @@ metas otra que haga lo mismo.** Cualquier componente que las use es de cliente (
 |---|---|---|
 | `rough-notation` | Los gestos de rotulador y boli sobre el texto: subrayado (`underline`), marcador (`highlight`), rodear (`circle`), recuadro (`box`), tachado (`strike-through`), con su animación al aparecer | La forma de la I. Anotar **al entrar en pantalla** (IntersectionObserver), una vez. Con «reducir movimiento», `animate: false`. El `.fluor` de CSS sigue valiendo para titulares fijos que no necesitan animarse |
 | `roughjs` | Dibujar formas «a mano» en SVG o canvas: flechas, cajas, el trazo del camino de los cursos, gráficas esbozadas en guías | Fijar `seed` para que el dibujo no cambie en cada render (y no haya desajuste de hidratación: dibujar en `useEffect`) |
-| `@rive-app/react-canvas` | **La mascota** (ver abajo): sus animaciones y estados | El `.riv` se carga solo donde sale la mascota, nunca en el bundle general. Con «reducir movimiento», un fotograma quieto |
 | `framer-motion` (ya estaba) | Tarjetas que giran, la barra de progreso que se llena, los nodos del camino, transiciones entre pasos | Ya lo usa la barra de navegación (`layoutId`) |
 | `canvas-confetti` (ya estaba) | La celebración: aprobar un examen, terminar una guía, conseguir un logro | Solo en momentos ganados, nunca de adorno. Respeta «reducir movimiento» (`disableForReducedMotion: true`) |
 
 Los botones-tecla, el fondo y la rotación de las tarjetas son **CSS puro**: no necesitan librería y van
 más rápidos así.
-
-## La mascota sustituye a Nova (decidido el 17-11-2026)
-
-Nova, la asistente del Diario de Trading, se cambiará por una **mascota** animada con Rive, en la línea
-de la que se dibujó en las maquetas H, I y E (una moneda naranja con cara). Lo que hay que decidir con
-el admin **antes** de construirla:
-
-- [ ] **Nombre:** ¿sigue llamándose Nova o es un personaje nuevo? Si cambia, hay textos que la nombran
-  en guías, FAQ, glosario, la ficha `/herramientas/diario`, `/premium` y el aviso de cookies.
-- [ ] **Diseño del personaje** y sus estados: reposo, saluda, celebra, piensa, avisa (algo va mal),
-  triste, duerme. Se dibuja y anima en el editor de Rive y se exporta a `.riv`.
-- [ ] **Dónde sale:** el Diario (donde vive hoy Nova), los cursos (en el camino, animando), el quiz de
-  las guías (celebra o anima según la respuesta) y los logros.
-
-Inventario de lo que es Nova hoy, para no dejar nada a medias al cambiarla. Sácalo de nuevo antes de
-empezar, porque cambia: `grep -rli 'nova' src --include=*.tsx --include=*.ts --include=*.css`.
-- **El personaje y su sala:** `src/components/trading/` → `NovaHead.tsx`, `NovaNav.tsx`, `NovaRoom.tsx`,
-  `novaVuelo.tsx`, `nova.css`, `nova-room.css`; y `src/components/NovaMini.tsx` + `nova-mini.css`.
-- **Lo que piensa y dice:** `src/components/trading/tjNova.ts` (la lógica de los avisos) y su uso en
-  `TjBot.tsx`, `TjWelcome.tsx`, `TjDayJournal.tsx`, `TradingJournal.tsx`, `tjStats.ts`.
-- **Dónde aparece fuera del Diario:** `NavPrincipal.tsx` y `SiteNav.tsx` (la barra),
-  `PremiumHome.tsx`, `GuiaAnuncio.tsx`, `/herramientas/diario` (`NovaSaludo.tsx`), la guía del diario
-  de trading (`GuiaDiarioCta.tsx`), `/premium`, `/cursos` y los textos de `glosario.ts`,
-  `preguntas-frecuentes.ts`, `/cookies` y `/admin/guias-instrucciones`.
-- **La lógica de los avisos se conserva:** lo que cambia es quién los dice y cómo se ve.
 
 ## Los sonidos (decidido el 17-11-2026)
 
@@ -214,7 +188,10 @@ partida, que se ajustará al construirlo:
 
 | Momento | Sonido | Carácter |
 |---|---|---|
-| Pulsar cualquier botón-tecla | `tecla` | Clic mecánico corto, con una variación mínima de tono |
+| Pulsar cualquier botón-tecla | `tecla` y `soltar` | El «toc» grave y seco de un teclado mecánico lubricado, como en los vídeos de ASMR (rehecho el 18-11-2026). Cada tamaño tiene su tono: la tecla grande suena más grave, la pequeña y la de icono más agudas |
+| Elegir una opción (largo o corto, cómo acabó, un día, una opción de un desplegable) | `elegir` | Un «pop» de burbuja, corto y hacia arriba |
+| Pasar de pestaña, de mes, de paso o de captura | `pestana` | Una hoja que se pasa |
+| Borrar (una operación, una captura, una posición, el diario) | `borrar` | Papel que se arruga y cae a la papelera |
 | Girar una tarjeta de estudio | `girar` | Roce de papel |
 | Acertar en un quiz | `acierto` | Dos notas ascendentes, alegre |
 | Fallar en un quiz | `fallo` | Una nota grave y suave, nunca un pitido de castigo |
@@ -223,11 +200,19 @@ partida, que se ajustará al construirlo:
 | Mantener la racha | `racha` | Chispa breve |
 | Guardar (operación del Diario, perfil, formularios) | `guardado` | «Clac» satisfactorio |
 | Error al guardar o validar | `error` | Golpe sordo y corto |
-| Interruptor on/off | `interruptor` | Clic doble |
+| Interruptor on/off | `interruptor` | «Tic-tac» de dos toques ligeros |
 | Encender el sonido de la web (el altavoz) | `encender` | Clic y dos notas que suben: algo que se despierta |
 | Apagarlo | `apagar` | Clic y una nota que baja y se apaga; suena antes de silenciar |
 | Abrir y cerrar menús o ventanas | `abrir` / `cerrar` | Muy sutiles |
-| La mascota habla o reacciona | `mascota` | Su «voz» propia, cuando exista |
+
+**🔴 Nada suena dos veces** (18-11-2026, pedido por el admin). Lo garantiza `sonar` en `src/lib/sonidos.ts`, no cada componente:
+
+- Una pulsación es `tecla` al bajar y **una** cosa al subir: `soltar` si el botón no hace nada que suene, o el sonido de lo que hace. Nunca los dos.
+- `guardado`, `encender` y `apagar` callan su propio clic si la tecla acaba de sonar.
+- El mismo sonido no se repite hasta pasar su reposo (`REPOSO`): el quiz y el aviso del logro dan una sola fanfarria.
+- Si dos sonidos piden sonar a la vez, gana el que más cuenta (`PESO`).
+- Para que una tecla suene a lo que hace, se le pone `sonido="elegir"` (o el que toque) en vez de llamar a `sonar` en su `onClick`.
+- **El giro de las tarjetas (`girar`) no se toca**: al admin le encanta como está.
 
 Lo que no suena: pasar el ratón por encima, hacer scroll, escribir en un campo y cualquier cosa que
 pase sola sin que la persona haya hecho nada.
@@ -258,9 +243,6 @@ dibujante. Lo pidió el admin el 17-11-2026: «para siempre respetar el mismo ar
 
 **Pegatinas aprobadas**, que son el modelo a imitar:
 
-- `public/cuaderno/toro-oso-pegatina.webp`: el toro menta persigue al oso coral, que huye a dos patas
-  con los brazos en alto. Va en la barra del móvil con el menú abierto (`site-nav.css`, `.nav-toro-oso`).
-  Es la que mejor fija el estilo: **graciosa, tierna y nada violenta**.
 - `public/cuaderno/cohete-pegatina.webp`: un cohete kawaii que despega entre estrellas, junto a «Mejora
   como trader» en el menú del móvil (`MenuGarabatos.tsx`, `.mm-cohete`).
 
@@ -311,6 +293,29 @@ se recoloca si algo se reacomoda (una letra que carga tarde, el zoom, girar el m
 a `annotate()` directamente: sin el ancla, el trazo se queda donde estaba la palabra (pasó con «a fondo»
 en el móvil).
 
+## 🔴 Las tres reglas de todo trazo (18-11-2026)
+
+Pedidas por el admin para **toda la web**: subrayados, círculos, corchetes, recuadros, tachados y
+símbolos dibujados. Las tres se cumplen en un solo sitio, `prepararTrazo` (`src/lib/anclarTrazo.ts`),
+que es lo único que llaman `Anotacion` y `MarcasEstudio` después de `annotate()`.
+
+1. **Nunca se salen.** El trazo va anclado a su palabra (apartado anterior) y el aire de los lados se
+   recorta a lo que cabe: hasta el borde de la pantalla o hasta la primera caja que recorta lo que se
+   sale. Se vuelve a medir si cambia el ancho de la ventana.
+2. **Nunca se dibujan antes de verse.** Siempre con `alVerse` (franja central, 300 ms quieto, visible,
+   pestaña delante y letras cargadas), nunca con un `IntersectionObserver` propio ni con una animación
+   CSS que arranca al cargar la página. El subrayado del hero de la portada usa `TrazoVisible`.
+3. **Nunca van con prisa, y van de un solo gesto.**
+   - La duración sale de lo largo que es el trazo (`duracionTrazo`): unos 600 px por segundo, entre
+     0,9 s y 2,6 s; con dos pasadas, un 25 % más. No se pasa `duracion` a mano salvo motivo.
+   - El pulso está en `globals.css` («El pulso de los trazos»): el primer tramo arranca suave, los de
+     en medio van a velocidad constante y el último posa despacio. Sin eso, la librería frenaba en seco
+     en cada tramo.
+   - Los trazos que no se animan (`animar={false}`) no aparecen de golpe: entran con un fundido de 0,5 s.
+   - Los símbolos (`SimboloEstudio`, `Llave`) se trazan en 0,95 s y 1,1 s (`simbolo-estudio.css`).
+
+Con «reducir movimiento», todo aparece ya dibujado, sin fundido ni trazo.
+
 ## El puntero (decidido el 18-11-2026)
 
 Solo con ratón. Punteros **nativos** de 32 px (`public/cuaderno/puntero*`, pegatinas en PNG o SVG; reglas al final de
@@ -319,6 +324,73 @@ manita naranja sobre lo que se pulsa y el ↻ naranja sobre las tarjetas que gir
 la barra de texto de siempre. **Toda regla nueva que ponga la mano usa `cursor: var(--puntero-mano, pointer)`**,
 nunca `cursor: pointer` a secas. Al pulsar una tecla con el ratón salen tres rayitas de rotulador
 (`chispa` en `Tecla.tsx`).
+
+## 🔴 Portadas y pegatinas de cursos y guías (decidido el 18-11-2026)
+
+Desde el 18-11-2026 las portadas de los cursos (y, una a una, las de las guías) se dibujan en el estilo
+del cuaderno, como las pegatinas: personajes kawaii a rotulador, pastel plano y borde blanco. Sustituyen
+a los renders 3D oscuros y a las miniaturas con titulares grandes. **Los prompts se dan siempre en
+inglés, completos y desde cero**, con estas plantillas (solo cambian la escena y el color).
+
+**Cada curso lleva DOS imágenes:**
+
+| Imagen | Dónde se ve | Formato | Archivo |
+|---|---|---|---|
+| Portada grande | `/cursos` (recortada a 20:8, con etiquetas arriba a la izquierda) y la ficha del curso | Apaisada 5:2, fondo de cuaderno en el color del curso, dibujo en la mitad derecha | `public/cursos/<slug>/portada-cuaderno.webp` (1600 px) |
+| Pegatina | El cuadrado de su ficha en la portada de la web (`CursosHome.tsx`) | Cuadrada 1:1, **fondo transparente**, borde blanco troquelado | `public/cursos/<slug>/pegatina.webp` (330 px) |
+
+Cómo se convierten y se dan de alta: [`CURSOS.md`](./CURSOS.md) § «Lo único que se hace a mano». Las
+guías llevan solo la portada grande (ver abajo).
+
+**Plantilla de la portada grande** (rellena ESCENA, el fondo y el color del curso):
+
+```
+Create a wide illustrated course cover banner (5:2 ratio, for example 2000 × 800 px), with no
+text, letters or numbers at all.
+
+SCENE: [cute kawaii characters acting out the course idea, with gesture and expression; tender and
+funny, never violent or scary]. Place ALL the characters in the RIGHT HALF of the image; keep the
+LEFT HALF and the TOP-LEFT corner almost empty (only the soft background) because labels will be
+placed there.
+
+BACKGROUND: a flat soft [COLOUR NAME] paper ([SOFT HEX]) with very faint notebook grid lines in a
+slightly darker [COLOUR NAME], and a few tiny scattered doodles (small stars, dots) in the same
+light tone. The grid must cover the WHOLE image evenly. No gradients, no vignette, no lighting
+effects.
+
+STYLE (very important, it must be exactly this): illustration as if hand-drawn with a marker in a
+notebook. Outline stroke in very dark navy ink (#1d1b33), medium weight and slightly irregular, as
+if made by hand, with rounded ends. FLAT PASTEL colour fills, no gradients, no textures, no
+realistic shading, taken from this palette: soft mint (#d9f5e9) with green details (#2fc488);
+soft coral pink (#ffe2e7) with coral details (#ff6b81); cream (#fff3c4); soft orange (#ffead6)
+with orange details (#ff8a1f); soft lilac (#ece8ff) with lilac details (#8f7cff); soft sky blue
+(#d9f3fd) with blue details (#2fbff5); the course colour [NAME] ([HEX]) for the main character's
+accents. Cheeks with a touch of pink. Each character has a THICK WHITE outline border around it,
+like a sticker stuck on the page, with a soft diffuse lilac shadow (#8f7cff at 25% opacity)
+slightly below. Kawaii aesthetic but funny, rounded proportions and slightly big heads.
+
+DO NOT include: text, logos, rectangular frame, 3D style, photorealism, gradients, glows or shine.
+```
+
+**Plantilla de la pegatina**: es el prompt base de las pegatinas (arriba), en inglés, cuadrado, con el
+personaje principal de la portada en un gesto sencillo y «it will be shown at about 100 × 100 px».
+
+**Las escenas de los cursos** (que la de un curso nuevo no se parezca a ninguna):
+
+| Curso | Escena | Color |
+|---|---|---|
+| Psicología del trading | Un cerebro meditando sobre libros mientras la impaciencia (llama), el miedo (nube) y la codicia (moneda) le dan la lata | `#5ec8c4` |
+| Seguridad cripto | Una caja fuerte abraza su moneda y mira con desconfianza un anzuelo con un regalo; una llave da el visto bueno | `#a78bfa` |
+| Cómo leer CoinMarketCap y CoinGecko | Una lupa inspecciona un panel de gráficas; una moneda se esconde detrás | `#ff8a7a` |
+| Bitcoin y DCA a largo plazo | Una tortuga apila monedas una a una mientras el precio sube y baja detrás; un calendario la anima | `#fbbf24` |
+| Futuros y apalancamiento | Un balancín: una moneda pequeña levanta una gigante; una calculadora con gafas hace las cuentas | `#f472b6` |
+| Análisis técnico sin humo | Un lápiz traza la tendencia en un caballete de velas; una regla espanta a la nube de humo | `#a3e635` |
+| DeFi y stablecoins | Una moneda sobre un cofre sólido; una máquina de engranajes riega una plantita | `#22d3ee` |
+| Fiscalidad cripto en España | Una moneda tranquila con su lista toda marcada, sobre carpetas ordenadas; un calendario y un sello aprueban | `#e6b455` |
+
+**Las guías** llevan solo la portada grande (`portada` en `src/lib/guides.ts`, 1600 px de ancho), con la
+misma plantilla pero en **16:9** («a wide illustrated guide cover, 16:9 ratio») y el dibujo **centrado**,
+porque en las tarjetas se ve entera. Sin titulares dentro: el título ya lo pone la tarjeta.
 
 ## Pendiente del nuevo diseño
 

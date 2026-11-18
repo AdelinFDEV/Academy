@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 import Anotacion from "@/components/cuaderno/Anotacion";
@@ -98,6 +99,18 @@ export default function RecursosGratisHome() {
         </header>
 
         <div className="rg-hoja">
+          {/* El bolígrafo con su gotita de tinta tirando del capuchón: una
+              pegatina del cuaderno apoyada en el borde izquierdo de la hoja,
+              solo en pantallas anchas de ordenador (home.css, .rg-boli;
+              18-11-2026, pedido por el admin). */}
+          <Image
+            src="/cuaderno/boli-pegatina.webp"
+            alt=""
+            width={520}
+            height={1832}
+            className="rg-boli"
+            draggable={false}
+          />
           {/* ══ La calculadora: la protagonista ════════════════════════ */}
           <div className="rg-zona rg-calc">
             <div className="rg-lado-texto">
@@ -162,7 +175,9 @@ export default function RecursosGratisHome() {
 
             <div className="rg-pie">
               <Tecla href="/glosario" color="amarillo" className="rg-cta">
-                Abrir el diccionario
+                {/* En el móvil, más corto (home.css). */}
+                <span className="rg-cta-largo">Abrir el diccionario</span>
+                <span className="rg-cta-corto">Ir al diccionario</span>
                 <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
               </Tecla>
             </div>

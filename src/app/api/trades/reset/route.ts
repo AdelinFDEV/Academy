@@ -9,8 +9,6 @@ import { borrarCapturasDeUsuario } from "@/lib/diarioCapturas";
  *   · las emociones y notas de cada día (diario_dias);
  *   · los hitos del diario ganados (user_badges «diario-%»), que vuelven a
  *     bloqueados. El resto de logros (guías, cursos…) no se tocan.
- * Nova no guarda nada propio en el servidor: lo calcula todo de estos datos,
- * así que al borrarlos empieza también de cero (el navegador olvida lo suyo).
  */
 export async function POST() {
   const supabase = await createClient();

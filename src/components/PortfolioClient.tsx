@@ -328,6 +328,7 @@ export default function PortfolioClient({ initialPositions, isAdmin, registro }:
     setBorrarError("");
     const res = await fetch(`/api/portfolio/${id}`, { method: "DELETE" }).catch(() => null);
     if (res?.ok) {
+      sonar("borrar");
       setPositions((prev) => prev.filter((p) => p.id !== id));
       router.refresh();
     } else {

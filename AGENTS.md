@@ -25,7 +25,8 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Tocar el **foro** o el **perfil público** (alias, foto, avisos) | [`FORO.md`](./FORO.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 | Una **historia de Instagram** (o cualquier imagen vertical para redes) para anunciar algo de la web | La skill [`historia-instagram`](./.claude/skills/historia-instagram/SKILL.md): estilo aprobado el 15-11-2026, con su modelo |
-| Un **dibujo o pegatina** generado como imagen para la web (o el prompt para pedirlo) | [`ESTILO.md`](./ESTILO.md) § «🔴 Las pegatinas del cuaderno»: el prompt base, **siempre entero**, y cómo se sube |
+| Un **dibujo o pegatina** generado como imagen para la web (o el prompt para pedirlo) | [`ESTILO.md`](./ESTILO.md) § «🔴 Las pegatinas del cuaderno»: el prompt base, **siempre entero y en inglés**, y cómo se sube |
+| La **portada de un curso o de una guía** (y la pegatina de su ficha) | [`ESTILO.md`](./ESTILO.md) § «🔴 Portadas y pegatinas de cursos y guías»: plantillas, escenas usadas y formatos. El paso a paso, en [`CURSOS.md`](./CURSOS.md) |
 | Apuntar o consultar **cursos y guías que queremos lanzar** en el futuro (ideas aún sin empezar) | [`CURSOS-PENDIENTES.md`](./CURSOS-PENDIENTES.md) · [`GUIAS-PENDIENTES.md`](./GUIAS-PENDIENTES.md) |
 
 Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan. El panel de SEO es el «cómo y por qué», para cualquier página; `AUDITORIA-SEO.md` es el protocolo que se ejecuta fase a fase sobre una guía terminada.
@@ -39,6 +40,8 @@ Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo q
 **Desde el 05-11-2026 no hay Telegram en ningún sitio**: ni canal, ni bot, ni vinculación de cuentas, ni avisos. Se retiró entero, con sus tablas. Las redes son Instagram y YouTube, y el contacto directo es Instagram (`INSTAGRAM_DM_URL`). No lo vuelvas a meter sin que el admin lo pida. El único cron es `/api/cron/diario`: el mantenimiento del foro y borrar las visitas de más de 400 días.
 
 **Desde el 13-11-2026 hay `/admin/acciones`**: ahí esperan las guías y los cursos ya construidos y con su SEO hecho, y el admin los publica (o los devuelve a borrador) con un botón. Guías: `BORRADORES` + tabla `guias_publicadas` (`src/lib/guiasVisibles.ts`); cursos: `cursos.published`. Tras publicar una guía, en la siguiente sesión se asciende de `BORRADORES` a `GUIDES`. El foro sigue en su sección.
+
+**Desde el 18-11-2026 no hay Nova ni ninguna mascota**: ni la asistente del Diario de Trading, ni sus avisos, ni un personaje animado en ningún sitio. Se borró entera, con su código y los textos que la nombraban. No la vuelvas a crear ni a nombrar sin que el admin lo pida.
 
 **Desde el 13-11-2026 la analítica del panel es una sola página (`/admin`)**, con su medición propia de visitas (`PLATAFORMA.md`): no hay `/admin/users` ni `/admin/premium`, ni las tablas `site_visits` y `guide_visits`. **Tampoco hay `/admin/objetivos`**: ni objetivos, ni calendario, ni diario del negocio, ni libro de dinero, ni foto diaria de YouTube. Se borró entero, con sus tablas. No lo vuelvas a crear sin que el admin lo pida.
 

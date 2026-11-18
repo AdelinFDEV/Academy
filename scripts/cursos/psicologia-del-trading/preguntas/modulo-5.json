@@ -184,7 +184,7 @@
   {
     "clave": "pt-m5-15",
     "leccion": "despues-de-una-perdida",
-    "enunciado": "¿A partir de cuántas pérdidas seguidas te avisa Nova de que es buen momento para bajar tamaño o parar?",
+    "enunciado": "En las reglas de racha que pone de ejemplo la lección, ¿con cuántas pérdidas seguidas das el día por terminado?",
     "opciones": [
       "Tres",
       "Dos",
@@ -192,6 +192,6 @@
       "Diez"
     ],
     "correcta": 0,
-    "explicacion": "A partir de tres pérdidas seguidas. Tu protocolo puede ser más exigente."
+    "explicacion": "En el ejemplo, con dos seguidas bajas a medio tamaño y con tres das el día por terminado. Tu protocolo puede ser más exigente."
   }
 ]

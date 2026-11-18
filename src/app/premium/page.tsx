@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Check, X, ArrowRight, Crown, ShieldCheck, Lock, Zap, CreditCard, LineChart, CalendarRange, Trophy,
-  EyeOff, Radio, Coins, Layers, GraduationCap, Smile, BookOpenText, ClipboardCheck, Sparkles,
+  EyeOff, Radio, Coins, Layers, GraduationCap, Smile, BookOpenText, ClipboardCheck, Scale,
   Award, MessagesSquare, Infinity as Siempre,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -10,10 +10,8 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Certificado from "@/components/aula/Certificado";
-import NovaMini from "@/components/NovaMini";
 import Tecla from "@/components/cuaderno/Tecla";
 import Anotacion from "@/components/cuaderno/Anotacion";
-import { MOSTRAR_NOVA } from "@/components/trading/nova-visible";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 import { CoinGeckoGlyph } from "@/components/BrandMarks";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
@@ -25,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/premium" },
   title: "Hazte Premium",
   description:
-    `Diario de Trading con Nova, la cartera real de AdelinBTC en directo y cursos con certificado, por ${PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")} €/mes. Sin permanencia.`,
+    `Diario de Trading, la cartera real de AdelinBTC en directo y cursos con certificado, por ${PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")} €/mes. Sin permanencia.`,
 };
 
 /**
@@ -44,8 +42,9 @@ export const metadata: Metadata = {
  *  · El precio queda fijado mientras la suscripción siga activa (FAQ).
  *  · Se cancela desde «Mi perfil», en el portal de Stripe.
  *
- * Nova está oculta mientras llega la mascota (`MOSTRAR_NOVA`, nova-visible.ts):
- * con el interruptor apagado no se pinta su cara ni su panel de mensajes.
+ *  · Del Diario solo se dice lo que hace (src/components/trading/): cuentas,
+ *    calendario, desgloses, emociones, riesgo e hitos. No da avisos ni lee
+ *    los datos por nadie: no se promete.
  *
  * Lo que se quitó el 06-11-2026 por no ser verdad (reseñas inventadas, «+100
  * traders», «soporte prioritario», «cancela en 1 clic») no vuelve: presentar
@@ -62,7 +61,7 @@ const COMPARA: { label: string; free: boolean; premium: boolean }[] = [
   { label: "Predicción de Precio", free: true, premium: true },
   { label: "Logros y rachas", free: true, premium: true },
   { label: "Leer el foro", free: true, premium: true },
-  { label: "Diario de Trading con Nova", free: false, premium: true },
+  { label: "Diario de Trading", free: false, premium: true },
   { label: "Portfolio Adelin: spot y DCA de bitcoin", free: false, premium: true },
   { label: "Cursos con examen y certificado", free: false, premium: true },
   { label: "Insignia de Miembro Fundador", free: false, premium: true },
@@ -169,7 +168,7 @@ export default async function PremiumPage() {
                   <span className="pm-titulo-2">Aprende con <span className="fluor">certificado</span>.</span>
                 </h1>
                 <p className="pm-lead">
-                  Tu <strong>Diario de Trading con Nova</strong>, la <strong>cartera real de AdelinBTC</strong> en directo
+                  Tu <strong>Diario de Trading</strong>, la <strong>cartera real de AdelinBTC</strong> en directo
                   y <strong>cursos con examen y certificado</strong>. Una sola suscripción, todo incluido.
                 </p>
 
@@ -198,15 +197,12 @@ export default async function PremiumPage() {
                   <span className="pm-carta-kpis">
                     <span><small>Win rate</small><b>58 %</b></span>
                     <span><small>P&amp;L</small><b className="es-sube">+12,4 %</b></span>
-                    <span><small>Objetivo</small><b>4/5</b></span>
+                    <span><small>Esperanza</small><b>+0,4R</b></span>
                   </span>
                   <svg className="pm-carta-curva" viewBox="0 0 300 80" preserveAspectRatio="none">
                     <path className="pm-curva-relleno" d="M0 70 L30 64 L60 67 L90 54 L120 58 L150 44 L180 48 L210 34 L240 38 L270 22 L300 12 L300 80 L0 80 Z" />
                     <path className="pm-curva-linea" d="M0 70 L30 64 L60 67 L90 54 L120 58 L150 44 L180 48 L210 34 L240 38 L270 22 L300 12" pathLength={1} />
                   </svg>
-                  {MOSTRAR_NOVA && (
-                    <span className="pm-carta-nova"><NovaMini size={20} /> Nova: «Riesgo bajo control esta semana»</span>
-                  )}
                 </div>
 
                 <div className="pm-carta pm-carta--portfolio pm-c-menta">
@@ -239,7 +235,6 @@ export default async function PremiumPage() {
             {/* ── Franja: todo lo que entra ── */}
             <section className="pm-franja" aria-label="Qué incluye Premium">
               <span className="pm-c-azul"><IconoDiario size={17} /> Diario de Trading</span>
-              {MOSTRAR_NOVA && <span className="pm-c-azul"><NovaMini size={20} /> Nova, tu asistente</span>}
               <span className="pm-c-menta"><IconoPortfolio size={17} /> Portfolio Adelin</span>
               <span className="pm-c-lila"><IconoCursos size={17} /> Cursos</span>
               <span className="pm-c-amarillo"><Award size={16} /> Certificados</span>
@@ -254,17 +249,14 @@ export default async function PremiumPage() {
                 <span className="pm-kicker"><IconoDiario size={15} /> Diario de Trading</span>
                 <h2 id="pm-diario" className="pm-h2">Deja de operar de memoria</h2>
                 <p className="pm-p">
-                  Apuntas cada operación en un minuto y el diario hace las cuentas: te dice cómo operas de verdad, no
-                  cómo crees que operas. Y Nova te avisa de lo que se te escapa.
+                  Apuntas cada operación en un minuto y el diario hace las cuentas. Así ves cómo operas de verdad, no
+                  cómo crees que operas: dónde ganas, dónde pierdes y cuánto arriesgas.
                 </p>
                 <ul className="pm-lista">
                   <li><span className="pm-lista-ic"><LineChart size={16} /></span> <span><strong>Diez estadísticas</strong> y tu curva de capital</span></li>
                   <li><span className="pm-lista-ic"><CalendarRange size={16} /></span> <span><strong>Calendario</strong> y desglose por par, estrategia, día y hora</span></li>
                   <li><span className="pm-lista-ic"><Smile size={16} /></span> <span><strong>Tus emociones</strong> de cada día, junto a tus resultados</span></li>
-                  <li>
-                    <span className="pm-lista-ic">{MOSTRAR_NOVA ? <NovaMini size={20} /> : <Sparkles size={16} />}</span>{" "}
-                    <span><strong>Nova</strong>: avisos de riesgo, rachas y revancha, y tu objetivo de cada semana</span>
-                  </li>
+                  <li><span className="pm-lista-ic"><Scale size={16} /></span> <span><strong>Tu riesgo</strong> en cada operación y cuánto cumples tu plan</span></li>
                   <li><span className="pm-lista-ic"><Trophy size={16} /></span> <span><strong>Hitos con niveles</strong> que premian la disciplina</span></li>
                   <li><span className="pm-lista-ic"><EyeOff size={16} /></span> <span><strong>Privado</strong>: solo lo ves tú</span></li>
                 </ul>
@@ -274,31 +266,19 @@ export default async function PremiumPage() {
               </div>
 
               <div className="pm-pieza-arte" aria-hidden="true">
-                {MOSTRAR_NOVA ? (
-                  <div className="pm-panel pm-nova">
-                    <span className="pm-nova-cab">
-                      <span className="pm-nova-cara"><NovaMini size={52} sigue /></span>
-                      <span><strong>Nova</strong><small>Lo más importante</small></span>
-                    </span>
-                    <span className="pm-nova-msg is-bien">Riesgo bajo control: ninguna operación pasa del 2 % de la cuenta.</span>
-                    <span className="pm-nova-msg is-ojo">Cierras las ganadoras antes de tiempo: te quedas con el 45 % del objetivo.</span>
-                    <span className="pm-nova-msg">Racha de 4 ganadas: cuidado con subir el tamaño por euforia.</span>
-                  </div>
-                ) : (
-                  /* Una hoja del diario: lo que se apunta y lo que sale solo. */
-                  <div className="pm-panel pm-hoja">
-                    <span className="pm-hoja-cab"><span>Operación nueva</span><span className="pm-hoja-chip">BTC · Long</span></span>
-                    <span className="pm-hoja-linea"><small>Riesgo</small><b>1 % de la cuenta</b></span>
-                    <span className="pm-hoja-linea"><small>Por qué entro</small><b className="pm-hoja-mano">rompe el máximo semanal</b></span>
-                    <span className="pm-hoja-linea"><small>Cómo me siento</small><b>Bien</b></span>
-                    <span className="pm-hoja-sale">
-                      <span><small>Win rate</small><b>58 %</b></span>
-                      <span><small>P&amp;L medio</small><b className="es-sube">+26 $</b></span>
-                      <span><small>Ratio R</small><b>1,8</b></span>
-                    </span>
-                    <span className="pm-hoja-hito"><Trophy size={14} /> Disciplina de riesgo · Nivel 2</span>
-                  </div>
-                )}
+                {/* Una hoja del diario: lo que se apunta y lo que sale solo. */}
+                <div className="pm-panel pm-hoja">
+                  <span className="pm-hoja-cab"><span>Operación nueva</span><span className="pm-hoja-chip">BTC · Long</span></span>
+                  <span className="pm-hoja-linea"><small>Riesgo</small><b>1 % de la cuenta</b></span>
+                  <span className="pm-hoja-linea"><small>Por qué entro</small><b className="pm-hoja-mano">rompe el máximo semanal</b></span>
+                  <span className="pm-hoja-linea"><small>Cómo me siento</small><b>Bien</b></span>
+                  <span className="pm-hoja-sale">
+                    <span><small>Win rate</small><b>58 %</b></span>
+                    <span><small>P&amp;L medio</small><b className="es-sube">+26 $</b></span>
+                    <span><small>Ratio R</small><b>1,8</b></span>
+                  </span>
+                  <span className="pm-hoja-hito"><Trophy size={14} /> Disciplina de riesgo · Nivel 2</span>
+                </div>
               </div>
             </section>
 
@@ -415,7 +395,7 @@ export default async function PremiumPage() {
                 <p className="pm-tarjeta-importe">{PRECIO}<small>/mes</small></p>
                 <p className="pm-tarjeta-dia">Unos {PRECIO_DIA} al día</p>
                 <ul className="pm-tarjeta-lista">
-                  <li><span className="pm-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span> Diario de Trading con Nova</li>
+                  <li><span className="pm-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span> Diario de Trading</li>
                   <li><span className="pm-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span> Portfolio Adelin: spot y DCA en directo</li>
                   <li><span className="pm-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span> Todos los cursos, con certificado</li>
                   <li><span className="pm-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span> Insignia de Miembro Fundador</li>

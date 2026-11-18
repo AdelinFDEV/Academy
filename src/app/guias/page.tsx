@@ -94,7 +94,7 @@ export default async function GuiasPage() {
               demuestran lo que sabes.
             </p>
             <div className="gl-buscar">
-              <GuideSearch />
+              <GuideSearch ventanaEnMovil />
             </div>
             <div className="gl-chips">
               <span className="gl-chip gl-chip--cielo"><BarChart2 size={14} strokeWidth={2.6} aria-hidden="true" /> Gráficas animadas</span>

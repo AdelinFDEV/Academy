@@ -5,7 +5,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { annotate } from "rough-notation";
 import type { RoughAnnotationConfig } from "rough-notation/lib/model";
 import { alVerse } from "@/lib/alVerse";
-import { anclarTrazo } from "@/lib/anclarTrazo";
+import { prepararTrazo } from "@/lib/anclarTrazo";
 import SimboloEstudio, { Llave, type TipoSimbolo } from "@/components/cuaderno/SimboloEstudio";
 import type { ColorCuaderno } from "@/components/cuaderno/colores";
 import "@/components/cuaderno/postit.css";
@@ -86,28 +86,31 @@ export default function MarcasEstudio({
       const animar = !quieto && trazosAnimados < 2;
       if (animar) trazosAnimados++;
       const color = getComputedStyle(el).getPropertyValue(t.color).trim() || "#ff8a1f";
+      const grosor = t.grosor ?? 2;
+      const iteraciones = t.iteraciones ?? 1;
+      const relleno = t.padding ?? (t.type === "box" ? [2, 6] : 3);
+      const porLinea = t.multiline ?? t.type !== "bracket";
       const anotacion = annotate(el as HTMLElement, {
         type: t.type,
         color,
-        strokeWidth: t.grosor ?? 2,
-        iterations: t.iteraciones ?? 1,
-        padding: t.padding ?? (t.type === "box" ? [2, 6] : 3),
-        multiline: t.multiline ?? t.type !== "bracket",
+        strokeWidth: grosor,
+        iterations: iteraciones,
+        padding: relleno,
+        multiline: porLinea,
         animate: animar,
-        animationDuration: 900,
         ...(t.brackets ? { brackets: t.brackets } : {}),
       });
       // Cuando se ve de verdad, no cuando roza la pantalla (src/lib/alVerse.ts).
       // La espera de 300 ms ya la pone alVerse: aquí no hace falta otra.
+      // Que quepa, que siga a su palabra y que se dibuje a su ritmo (src/lib/anclarTrazo.ts).
+      const trazo = prepararTrazo(el as HTMLElement, anotacion, { tipo: t.type, relleno, grosor, iteraciones, porLinea, animar });
       const cancelar = alVerse(el, () => {
-        anotacion.show();
+        trazo.mostrar();
         alDibujar?.();
       });
-      // Que el trazo siga a la palabra en cualquier pantalla (src/lib/anclarTrazo.ts).
-      const soltar = anclarTrazo(el as HTMLElement);
       deshacer.push(() => {
         cancelar();
-        soltar();
+        trazo.soltar();
         anotacion.remove();
       });
     };

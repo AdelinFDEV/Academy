@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, DOMAttributes, KeyboardEvent, ReactNode, Ref } from "react";
-import { sonar } from "@/lib/sonidos";
+import { sonar, type Sonido } from "@/lib/sonidos";
 import "./tecla.css";
 
 /**
@@ -35,13 +35,18 @@ interface Comunes {
    * apagar. Si no, sonaban los dos a la vez.
    */
   muda?: boolean;
+  /**
+   * El sonido de lo que HACE la tecla (`elegir`, `pestana`, `borrar`…). Suena al
+   * pulsarla, en lugar del clic de subir: una pulsación, dos sonidos, nunca tres.
+   */
+  sonido?: Sonido;
   className?: string;
 }
 
 type ComoEnlace = Comunes & { href: string; ref?: Ref<HTMLAnchorElement> } & Omit<ComponentPropsWithoutRef<typeof Link>, "href" | "className" | "children">;
 type ComoBoton = Comunes & { href?: undefined; ref?: Ref<HTMLButtonElement> } & Omit<ComponentPropsWithoutRef<"button">, "className" | "children">;
 
-function clases({ color = "naranja", tamano = "normal", icono, ancho, className }: Omit<Comunes, "muda">): string {
+function clases({ color = "naranja", tamano = "normal", icono, ancho, className }: Omit<Comunes, "muda" | "sonido">): string {
   return [
     "tecla",
     `tecla--${color}`,
@@ -60,19 +65,31 @@ function clases({ color = "naranja", tamano = "normal", icono, ancho, className 
 const MINIMO_HUNDIDA = 110;
 
 /** Cuándo bajó cada tecla, y el temporizador que la suelta si el toque fue corto. */
-const pulsaciones = new WeakMap<HTMLElement, { desde: number; espera: number; muda: boolean }>();
+const pulsaciones = new WeakMap<HTMLElement, { desde: number; espera: number; muda: boolean; tono: number }>();
+
+/**
+ * Cada tamaño, su tono: una tecla grande suena más grave, como la barra
+ * espaciadora, y una pequeña o de solo icono, más aguda. Es lo que hace que un
+ * teclado suene a teclado y no a un mismo clic repetido.
+ */
+function tonoDe(tamano: TamanoTecla | undefined, icono: boolean | undefined): number {
+  if (tamano === "grande") return 0.86;
+  if (icono) return 1.2;
+  if (tamano === "peq") return 1.1;
+  return 1;
+}
 
 /**
  * El golpe: la tecla baja (clase `is-pulsada`, tecla.css), suena y, en los
  * móviles que lo permiten, vibra un instante (Android; iOS no deja en la web).
  * La clase se pone en el DOM, sin estado de React: pulsar no vuelve a pintar nada.
  */
-function bajar(el: HTMLElement, muda: boolean) {
+function bajar(el: HTMLElement, muda: boolean, tono: number) {
   const previa = pulsaciones.get(el);
   if (previa) window.clearTimeout(previa.espera);
-  pulsaciones.set(el, { desde: performance.now(), espera: 0, muda });
+  pulsaciones.set(el, { desde: performance.now(), espera: 0, muda, tono });
   el.classList.add("is-pulsada");
-  if (!muda) sonar("tecla");
+  if (!muda) sonar("tecla", tono);
   if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate(8);
 }
 
@@ -87,7 +104,7 @@ function subir(el: HTMLElement, conClic: boolean) {
   const fin = () => {
     pulsaciones.delete(el);
     el.classList.remove("is-pulsada");
-    if (conClic && !p.muda) sonar("soltar");
+    if (conClic && !p.muda) sonar("soltar", p.tono);
   };
   window.clearTimeout(p.espera);
   const falta = MINIMO_HUNDIDA - (performance.now() - p.desde);
@@ -128,13 +145,14 @@ const esActivar = (e: KeyboardEvent<HTMLElement>) =>
 function gestos<E extends HTMLElement>(
   activa: boolean,
   muda: boolean,
+  tono: number,
   propios: Pick<DOMAttributes<E>, "onPointerDown" | "onPointerUp" | "onPointerLeave" | "onPointerCancel" | "onKeyDown" | "onKeyUp" | "onBlur">,
 ): typeof propios {
   return {
     onPointerDown: (e) => {
       // Solo el botón principal del ratón (o el dedo, o el lápiz).
       if (activa && e.button === 0) {
-        bajar(e.currentTarget, muda);
+        bajar(e.currentTarget, muda, tono);
         if (e.pointerType === "mouse") chispa(e.clientX, e.clientY);
       }
       propios.onPointerDown?.(e);
@@ -153,7 +171,7 @@ function gestos<E extends HTMLElement>(
     },
     // Con el teclado se hunde y suena igual que con el dedo.
     onKeyDown: (e) => {
-      if (activa && !e.repeat && esActivar(e)) bajar(e.currentTarget, muda);
+      if (activa && !e.repeat && esActivar(e)) bajar(e.currentTarget, muda, tono);
       propios.onKeyDown?.(e);
     },
     onKeyUp: (e) => {
@@ -168,31 +186,40 @@ function gestos<E extends HTMLElement>(
 }
 
 export default function Tecla(props: ComoEnlace | ComoBoton) {
-  const { children, color, tamano, icono, ancho, muda = false, className, ...resto } = props;
+  const { children, color, tamano, icono, ancho, muda = false, sonido, className, ...resto } = props;
   const cls = clases({ children, color, tamano, icono, ancho, className });
+  const tono = tonoDe(tamano, icono);
 
   if (resto.href !== undefined) {
-    const { href, onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, ...enlace } = resto as ComoEnlace;
+    const { href, onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick, ...enlace } = resto as ComoEnlace;
     return (
       <Link
         href={href}
         className={cls}
         {...enlace}
-        {...gestos<HTMLAnchorElement>(true, muda, { onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur })}
+        onClick={(e) => {
+          if (sonido) sonar(sonido);
+          onClick?.(e);
+        }}
+        {...gestos<HTMLAnchorElement>(true, muda, tono, { onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur })}
       >
         {children}
       </Link>
     );
   }
 
-  const { onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, type, disabled, ...boton } = resto as ComoBoton;
+  const { onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick, type, disabled, ...boton } = resto as ComoBoton;
   return (
     <button
       type={type ?? "button"}
       className={cls}
       disabled={disabled}
       {...boton}
-      {...gestos<HTMLButtonElement>(!disabled, muda, { onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur })}
+      onClick={(e) => {
+        if (sonido) sonar(sonido);
+        onClick?.(e);
+      }}
+      {...gestos<HTMLButtonElement>(!disabled, muda, tono, { onPointerDown, onPointerUp, onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur })}
     >
       {children}
     </button>

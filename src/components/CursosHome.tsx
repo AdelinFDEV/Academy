@@ -1,10 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Award, BookOpen, ClipboardCheck, Clock3, ListChecks } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import RetoFinal from "@/components/RetoFinal";
 import type { CursoResumen } from "@/lib/cursos";
+import { PEGATINA_CURSO } from "@/lib/cursosPegatinas";
 import "./cursos-home.css";
 
 /**
@@ -27,6 +28,19 @@ import "./cursos-home.css";
  * Sin cursos publicados, la sección no sale.
  */
 
+/** «1.012»: con el punto de los miles también en cuatro cifras (`toLocaleString` no lo pone). */
+const miles = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+/** Cuántos puntitos del nivel van llenos. */
+const NIVELES: Record<CursoResumen["nivel"], number> = { básico: 1, intermedio: 2, avanzado: 3 };
+
+/**
+ * Los cursos que salen primero en la portada (18-11-2026, pedido por el
+ * admin): en el ordenador son las cuatro fichas que se ven, y en el móvil, las
+ * primeras del carrusel. Un slug que no esté publicado se salta solo.
+ */
+const DESTACADOS = ["analisis-tecnico-sin-humo", "seguridad-cripto", "fiscalidad-cripto-espana", "psicologia-del-trading"];
+
 /**
  * La duración en horas redondeadas («5 h»): en la ficha compacta, la línea de
  * datos tiene que caber en una línea. La exacta está en la ficha del curso.
@@ -43,21 +57,28 @@ type Parada = {
   x: number;
   /** Posición vertical, en píxeles. */
   y: number;
-  /** Su nombre, debajo; sin él, no lleva. */
+  /** Su nombre, en una etiqueta; sin él, no lleva. */
   nombre?: string;
+  /** El nombre, encima del nodo en vez de debajo. */
+  arriba?: boolean;
 };
 
-/** El método de un curso, en paradas que suben y bajan como un camino. */
+/**
+ * El método de un curso, en paradas que suben y bajan como un camino. Los
+ * nombres, cortos y en el orden del aula (18-11-2026, pedido por el admin):
+ * Módulo 1 · Examen · Módulo 2 · Examen · … · Examen final · Certificado. El de
+ * «Módulo 2», encima: debajo chocaba con el examen de al lado.
+ */
 const PARADAS: Parada[] = [
-  { clave: "lecciones", tipo: "actual", x: 7, y: 84, nombre: "Lecciones" },
-  { clave: "examen-1", tipo: "examen", x: 22, y: 128, nombre: "Examen del módulo" },
-  { clave: "siguiente", tipo: "bloq", x: 38, y: 84, nombre: "Se abre el siguiente" },
-  { clave: "examen-2", tipo: "examen", x: 51, y: 128 },
+  { clave: "lecciones", tipo: "actual", x: 7, y: 84, nombre: "Módulo 1" },
+  { clave: "examen-1", tipo: "examen", x: 22, y: 128, nombre: "Examen" },
+  { clave: "siguiente", tipo: "bloq", x: 38, y: 84, nombre: "Módulo 2", arriba: true },
+  { clave: "examen-2", tipo: "examen", x: 51, y: 128, nombre: "Examen" },
   { clave: "puntos", tipo: "puntos", x: 60, y: 100 },
   // Más a la izquierda (18-11-2026): su bocadillo, al pulsarlo, rozaba la
   // tecla «Ver los cursos», que queda justo encima a la derecha.
   { clave: "final", tipo: "final", x: 71, y: 104, nombre: "Examen final" },
-  { clave: "meta", tipo: "meta", x: 92, y: 100, nombre: "Tu certificado" },
+  { clave: "meta", tipo: "meta", x: 92, y: 100, nombre: "Certificado" },
 ];
 
 /** El trazo que une las paradas (en un lienzo de 1000 × ALTO). */
@@ -72,13 +93,31 @@ function trazo(): string {
   }).join(" ");
 }
 
-export default function CursosHome({ cursos }: { cursos: CursoResumen[] }) {
+export default function CursosHome({ cursos, preguntas = null }: { cursos: CursoResumen[]; preguntas?: number | null }) {
   if (cursos.length === 0) return null;
   const primero = cursos[0];
+  // Las fichas: primero los cursos destacados, en su orden; después, el resto
+  // en el orden del catálogo.
+  const enOrden = [
+    ...DESTACADOS.map((slug) => cursos.find((c) => c.slug === slug)).filter((c): c is CursoResumen => !!c),
+    ...cursos.filter((c) => !DESTACADOS.includes(c.slug)),
+  ];
   const horasTotales = Math.round(cursos.reduce((total, c) => total + c.minutos, 0) / 60);
+  const lecciones = cursos.reduce((total, c) => total + c.lecciones, 0);
+  // Un examen por módulo y el final de cada curso.
+  const examenes = cursos.reduce((total, c) => total + c.modulos + 1, 0);
 
   return (
     <section id="cursos" className="ch" aria-labelledby="ch-titulo">
+      {/* Garabatos de estudio en el fondo, detrás de la hoja blanca: asoman
+          por los lados en pantallas anchas (18-11-2026, pedido por el admin). */}
+      <span className="ch-garabatos" aria-hidden="true">
+        <svg className="ch-g ch-g--libro" viewBox="0 0 40 40"><path d="M20 10c-4-3-10-4-16-3v24c6-1 12 0 16 3 4-3 10-4 16-3V7c-6-1-12 0-16 3zM20 10v24" /></svg>
+        <svg className="ch-g ch-g--lapiz" viewBox="0 0 40 40"><path d="M8 32l2-8L28 6l6 6-18 18zM24 10l6 6M10 24l6 6" /></svg>
+        <svg className="ch-g ch-g--estrella" viewBox="0 0 40 40"><path d="M20 4l4.5 10 10.5 1-8 7 2.5 10.5L20 27l-9.5 5.5L13 22l-8-7 10.5-1z" /></svg>
+        <svg className="ch-g ch-g--bombilla" viewBox="0 0 40 40"><path d="M20 4c-7 0-12 5-12 11 0 5 3 7 5 10v4h14v-4c2-3 5-5 5-10 0-6-5-11-12-11zM15 33h10M16 37h8" /></svg>
+        <svg className="ch-g ch-g--birrete" viewBox="0 0 40 40"><path d="M4 15l16-7 16 7-16 7zM10 18v8c5 4 15 4 20 0v-8M36 15v9" /></svg>
+      </span>
       <div className="ch-papel">
         <header className="ch-cabecera">
           <div>
@@ -94,6 +133,8 @@ export default function CursosHome({ cursos }: { cursos: CursoResumen[] }) {
               se publica un curso o se añaden lecciones (18-11-2026). */}
           {horasTotales > 0 && (
             <p className="ch-horas">
+              {/* El reloj, solo en el móvil (cursos-home.css). */}
+              <span className="ch-horas-reloj" aria-hidden="true"><Clock3 size={16} strokeWidth={2.6} /></span>
               <span className="ch-horas-cifra">{horasTotales}</span>
               <span className="ch-horas-texto">
                 horas de clase
@@ -109,10 +150,51 @@ export default function CursosHome({ cursos }: { cursos: CursoResumen[] }) {
           </Tecla>
         </header>
 
+        {/* En el móvil (18-11-2026, pedido por el admin), la tarjeta de cifras
+            del ordenador, partida en dos: encima de la carretera, el título y
+            lecciones, exámenes y preguntas; debajo, el resto con la tecla. En
+            el ordenador no sale: allí va la tarjeta entera (cursos-home.css). */}
+        <div className="ch-datos-movil ch-datos-movil--arriba">
+          <p className="ch-resumen-titulo">
+            <span className="ch-resumen-cifra">{cursos.length}</span> cursos para aprender <span className="ch-resumen-mano">paso a paso</span>
+          </p>
+          <ul className="ch-resumen-datos">
+            <li className="ch-dato ch-dato--lecciones">
+              <span className="ch-dato-icono" aria-hidden="true"><BookOpen size={16} strokeWidth={2.5} /></span>
+              <b>{lecciones}</b> <span>lecciones</span>
+            </li>
+            <li className="ch-dato ch-dato--examenes">
+              <span className="ch-dato-icono" aria-hidden="true"><ClipboardCheck size={16} strokeWidth={2.5} /></span>
+              <b>{examenes}</b> <span>exámenes</span>
+            </li>
+            {preguntas != null && preguntas > 0 && (
+              <li className="ch-dato ch-dato--preguntas">
+                <span className="ch-dato-icono" aria-hidden="true"><ListChecks size={16} strokeWidth={2.5} /></span>
+                <b>{miles(preguntas)}</b> <span>preguntas</span>
+              </li>
+            )}
+            {/* Horas y certificados, en la segunda fila, a lo ancho (antes iban
+                debajo de la carretera; subidos el 18-11-2026). */}
+            {horasTotales > 0 && (
+              <li className="ch-dato ch-dato--horas ch-dato--fila">
+                <span className="ch-dato-icono" aria-hidden="true"><Clock3 size={16} strokeWidth={2.5} /></span>
+                <b>{horasTotales}</b> <span>horas de clase</span>
+              </li>
+            )}
+            <li className="ch-dato ch-dato--certificado ch-dato--fila">
+              <span className="ch-dato-icono" aria-hidden="true"><Award size={16} strokeWidth={2.5} /></span>
+              <b>{cursos.length}</b> <span>certificados</span>
+            </li>
+          </ul>
+        </div>
+
         {/* El método, en una franja que se desliza en pantallas estrechas. */}
         <div className="ch-camino-caja">
           <div className="ch-camino" style={{ height: `${ALTO}px` }}>
             <svg className="ch-trazo" viewBox={`0 0 1000 ${ALTO}`} preserveAspectRatio="none" aria-hidden="true">
+              {/* La carretera: el arcén (más ancho y oscuro), el asfalto encima
+                  y la línea discontinua del centro. */}
+              <path className="ch-trazo-arcen" d={trazo()} />
               <path className="ch-trazo-camino" d={trazo()} />
               {/* La línea discontinua del centro, como en una carretera. */}
               <path className="ch-trazo-linea" d={trazo()} />
@@ -152,20 +234,69 @@ export default function CursosHome({ cursos }: { cursos: CursoResumen[] }) {
                       {p.tipo === "bloq" ? "2" : "?"}
                     </span>
                   )}
-                  {p.nombre && <span className="ch-paso">{p.nombre}</span>}
+                  {p.nombre && (
+                    <span className={`ch-paso ch-paso--${p.tipo}${p.arriba ? " ch-paso--arriba" : ""}`}>{p.nombre}</span>
+                  )}
                 </li>
               ))}
             </ol>
           </div>
         </div>
 
+        {/* En el móvil, debajo de la carretera, la tecla de todos los cursos
+            (cursos-home.css). */}
+        <div className="ch-datos-movil ch-datos-movil--abajo">
+          <Tecla href="/cursos" color="lila" ancho className="ch-resumen-tecla">
+            Ver todos los cursos
+            <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+          </Tecla>
+        </div>
+
+        {/* En el ordenador, cuatro fichas a la izquierda y, a la derecha, la
+            tarjeta con las cifras de todos los cursos y su tecla (18-11-2026,
+            pedido por el admin). En la tableta, todas; en el móvil, dos y un
+            enlace a todos (cursos-home.css). */}
+        {/* En el móvil, las fichas se deslizan de lado: una nota a mano lo dice. */}
+        <p className="ch-desliza" aria-hidden="true">desliza y elige tu curso →</p>
+        <div className="ch-zona">
         <ul className="ch-cursos">
-          {cursos.map((c, i) => (
+          {enOrden.map((c, i) => (
             <li key={c.slug}>
               <Link href={`/cursos/${c.slug}`} className="ch-curso" style={{ "--c": c.color } as React.CSSProperties}>
+                {/* El hueco cuadrado de la ilustración de cada curso (solo en el
+                    ordenador). Mientras no esté, su color con el número en
+                    grande; cuando esté, va aquí como imagen. */}
+                <span className="ch-curso-foto" aria-hidden="true">
+                  {PEGATINA_CURSO[c.slug] ? (
+                    <Image src={PEGATINA_CURSO[c.slug]} alt="" width={330} height={270} className="ch-curso-foto-img" draggable={false} />
+                  ) : (
+                    <span className="ch-curso-foto-n">{String(i + 1).padStart(2, "0")}</span>
+                  )}
+                </span>
                 <span className="ch-curso-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                 <span className="ch-curso-cuerpo">
-                  <span className="ch-curso-titulo">{c.titulo}</span>
+                  {/* El nivel, con tres puntitos: uno lleno en básico, dos en intermedio y tres en avanzado. */}
+                  <span className="ch-curso-nivel">
+                    {c.nivel}
+                    <span className="ch-curso-nivel-puntos" aria-hidden="true">
+                      {[1, 2, 3].map((n) => (
+                        <i key={n} className={n <= NIVELES[c.nivel] ? "is-lleno" : undefined} />
+                      ))}
+                    </span>
+                  </span>
+                  <span className="ch-curso-titulo"><span className="ch-curso-titulo-txt">{c.titulo}</span></span>
+                  {c.subtitulo && <span className="ch-curso-sub">{c.subtitulo}</span>}
+                  {/* Los datos reales del curso, en el ordenador (cursos-home.css). */}
+                  <span className="ch-curso-cifras">
+                    <span className="ch-cifra ch-cifra--modulos"><b>{c.modulos}</b> {c.modulos === 1 ? "módulo" : "módulos"}</span>
+                    <span className="ch-cifra ch-cifra--lecciones"><b>{c.lecciones}</b> lecciones</span>
+                    <span className="ch-cifra ch-cifra--examenes"><b>{c.modulos + 1}</b> exámenes</span>
+                    {c.minutos > 0 && (
+                      <span className="ch-cifra ch-cifra--horas">
+                        <Clock3 size={12} strokeWidth={2.8} aria-hidden="true" /> <b>{horas(c.minutos).replace(" h", "")}</b> h
+                      </span>
+                    )}
+                  </span>
                   <span className="ch-curso-datos">
                     {/* Un puntito por módulo: el camino del curso en pequeño. */}
                     <span className="ch-curso-puntos" aria-hidden="true">
@@ -175,10 +306,58 @@ export default function CursosHome({ cursos }: { cursos: CursoResumen[] }) {
                     {c.minutos > 0 && <> · {horas(c.minutos)}</>}
                   </span>
                 </span>
+                {/* La flecha que dice que la ficha se abre. */}
+                <span className="ch-curso-ir" aria-hidden="true"><ArrowRight size={16} strokeWidth={2.8} /></span>
               </Link>
             </li>
           ))}
         </ul>
+
+        {/* Las cifras salen de la base de datos: módulos, lecciones y minutos
+            de cada curso, y las preguntas de sus bancos de examen. Exámenes:
+            uno por módulo y el final de cada curso (CURSOS.md §7). */}
+        <aside className="ch-resumen" aria-label="Todos los cursos, en cifras">
+          <p className="ch-resumen-titulo">
+            <span className="ch-resumen-cifra">{cursos.length}</span> cursos para aprender <span className="ch-resumen-mano">paso a paso</span>
+          </p>
+          <ul className="ch-resumen-datos">
+            <li className="ch-dato ch-dato--lecciones">
+              <span className="ch-dato-icono" aria-hidden="true"><BookOpen size={17} strokeWidth={2.5} /></span>
+              <b>{lecciones}</b> <span>lecciones</span>
+            </li>
+            <li className="ch-dato ch-dato--examenes">
+              <span className="ch-dato-icono" aria-hidden="true"><ClipboardCheck size={17} strokeWidth={2.5} /></span>
+              <b>{examenes}</b> <span>exámenes</span>
+            </li>
+            {preguntas != null && preguntas > 0 && (
+              <li className="ch-dato ch-dato--preguntas">
+                <span className="ch-dato-icono" aria-hidden="true"><ListChecks size={17} strokeWidth={2.5} /></span>
+                <b>{miles(preguntas)}</b> <span>preguntas</span>
+              </li>
+            )}
+            {horasTotales > 0 && (
+              <li className="ch-dato ch-dato--horas">
+                <span className="ch-dato-icono" aria-hidden="true"><Clock3 size={17} strokeWidth={2.5} /></span>
+                <b>{horasTotales}</b> <span>horas de clase</span>
+              </li>
+            )}
+            <li className="ch-dato ch-dato--certificado">
+              <span className="ch-dato-icono" aria-hidden="true"><Award size={17} strokeWidth={2.5} /></span>
+              <b>{cursos.length}</b> <span>certificados</span>
+            </li>
+          </ul>
+          <Tecla href="/cursos" color="lila" ancho className="ch-resumen-tecla">
+            Ver todos los cursos
+            <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+          </Tecla>
+        </aside>
+        </div>
+
+        {cursos.length > 2 && (
+          <Link href="/cursos" className="ch-mas">
+            Ver los {cursos.length} cursos
+          </Link>
+        )}
       </div>
     </section>
   );

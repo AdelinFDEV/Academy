@@ -61,6 +61,14 @@ export default function YouTubeLatest({ videos }: { videos: YouTubeVideo[] }) {
         </header>
 
         <div className={`ytl-rejilla${resto.length === 0 ? " ytl-rejilla--uno" : ""}`}>
+          {/* Un garabato del logo de YouTube (un cuadrado redondeado con el play)
+              que se esconde por detrás de la esquina de abajo a la izquierda de
+              la tarjeta grande. Solo en el ordenador ancho (youtube-latest.css;
+              18-11-2026, pedido por el admin). */}
+          <svg className="ytl-garabato" viewBox="0 0 60 44" aria-hidden="true">
+            <path d="M10 4.5C22 3 38 3 50 4.5c3.5.5 5.6 3 5.9 6.5.7 7.5.7 14.5 0 22-.3 3.5-2.4 6-5.9 6.5-12 1.5-28 1.5-40 0C6.5 39 4.4 36.5 4.1 33c-.7-7.5-.7-14.5 0-22C4.4 7.5 6.5 5 10 4.5z" />
+            <path d="M25 14.5l12.5 7.5L25 29.5z" />
+          </svg>
           {/* El más reciente, en grande. La miniatura grande de YouTube (640 px). */}
           <a href={principal.url} target="_blank" rel="noopener noreferrer" className="ytl-principal">
             <span className="ytl-marco">
