@@ -140,6 +140,13 @@ export default function GuideSearch({
     cargarPublicadas();
     campoVentana.current?.focus({ preventScroll: true });
     setVentana(true);
+    // La hoja se abre al apoyar el dedo, y al levantarlo el móvil lanza un
+    // «click» en ese mismo punto, que ya es el velo (o una teclita) de la
+    // hoja: la cerraba al instante y solo se quedaba abierta manteniendo el
+    // dedo (19-11-2026). Ese primer click se descarta.
+    const tragar = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); };
+    document.addEventListener("click", tragar, { capture: true, once: true });
+    setTimeout(() => document.removeEventListener("click", tragar, { capture: true }), 700);
   }
 
   /** La lista: las criptomonedas explicadas o, al escribir, los resultados. */
@@ -172,7 +179,17 @@ export default function GuideSearch({
 
   return (
     <div className="guide-search" ref={wrapRef}>
-      <div className="guide-search-box">
+      {/* Toda la caja abre el buscador, no solo el texto (19-11-2026): tocar
+          la lupa o el borde no hacía nada y parecía que no se abría. */}
+      <div
+        className="guide-search-box"
+        onPointerDown={(e) => {
+          if (e.target instanceof HTMLInputElement || e.target instanceof HTMLButtonElement) return;
+          e.preventDefault();
+          if (enVentana) abrirVentana();
+          else wrapRef.current?.querySelector<HTMLInputElement>(".guide-search-input")?.focus();
+        }}
+      >
         <Search size={19} aria-hidden="true" className="guide-search-icon" />
         <input
           type="search"
@@ -186,7 +203,12 @@ export default function GuideSearch({
           aria-haspopup={enVentana ? "dialog" : undefined}
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); cargarPublicadas(); }}
-          onFocus={() => { if (!enVentana) { setOpen(true); cargarPublicadas(); } }}
+          // Si el foco llega sin el toque (p. ej. se tocó antes de que la
+          // página terminara de cargar), en el móvil también abre la hoja.
+          onFocus={() => {
+            if (enVentana) { if (!ventana) abrirVentana(); return; }
+            setOpen(true); cargarPublicadas();
+          }}
           onPointerDown={(e) => {
             if (!enVentana) return;
             e.preventDefault();

@@ -4,13 +4,13 @@ import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import { ArrowRight, BookOpen, Trophy, BarChart2, Star } from "lucide-react";
-import { GUIDES } from "@/lib/guides";
 import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 import JsonLd from "@/components/JsonLd";
 import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
 import { itemListSchema } from "@/lib/schema";
 import Tecla from "@/components/cuaderno/Tecla";
+import PaginasGuias from "./PaginasGuias";
 import "./listado.css";
 
 export const metadata: Metadata = {
@@ -27,26 +27,6 @@ const DIFF_CLASS: Record<string, string> = {
   "avanzado": "avanzado",
 };
 
-const GUIA_POR_SLUG = new Map(GUIDES.map((g) => [g.slug, g]));
-
-/**
- * Una guía dentro del itinerario. El nombre y el tiempo salen de `GUIDES`, no
- * escritos a mano, para que no se desincronicen si cambia una guía.
- *
- * Si el slug no está en el array no pinta nada: esa guía ya es invisible para
- * Google de todos modos, y un enlace a una guía inexistente daría 404.
- */
-function enlaceGuia(slug: string) {
-  const g = GUIA_POR_SLUG.get(slug);
-  if (!g) return null;
-  return (
-    <li key={g.slug}>
-      <Link href={`/guias/${g.slug}`}>{g.shortTitle}</Link>
-      <span className="gl-ruta-meta">{g.readTime}</span>
-    </li>
-  );
-}
-
 export default async function GuiasPage() {
   // Las publicadas en el código y las que el admin ha publicado desde el panel.
   const recientes = await guiasVisiblesRecientes();
@@ -61,9 +41,9 @@ export default async function GuiasPage() {
   const isAdmin = role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
 
-  // Estilo «Cuaderno de estudio» (17-11-2026): el color de las guías es el
-  // cielo. Las guías son mazos de tarjetas, como en la portada; el itinerario,
-  // un camino de tres paradas. Los textos son los de siempre (SEO auditado).
+  // Estilo «Cuaderno de estudio» (17-11-2026): el color de las guías es el cielo.
+  // Las guías son mazos de tarjetas, como en la portada. El itinerario («Por
+  // dónde empezar») se quitó el 19-11-2026: no se leen en orden.
   const mesa = recientes.slice(0, 3);
 
   return (
@@ -88,10 +68,19 @@ export default async function GuiasPage() {
               Aprende crypto<br />
               <span className="fluor">como nunca antes.</span>
             </h1>
+            {/* El mismo texto de siempre (SEO auditado), con estilo (19-11-2026):
+                lo que no hay, tachado a mano; lo que trae cada guía, marcado con
+                el color de su chip de abajo. */}
             <p className="gl-hero-sub">
-              No listas de bullets ni teoría aburrida. Cada guía combina contenido experto,
-              gráficas animadas, flashcards, quizzes con puntuación y badges de logro que
-              demuestran lo que sabes.
+              <span className="gl-sub-no">
+                No listas de <s className="gl-tachon">bullets</s> ni <s className="gl-tachon">teoría aburrida</s>.
+              </span>{" "}
+              Cada guía combina <strong className="gl-sub-fuerte">contenido experto</strong>,{" "}
+              <span className="gl-marca gl-marca--cielo">gráficas animadas</span>,{" "}
+              <span className="gl-marca gl-marca--naranja">flashcards</span>,{" "}
+              <span className="gl-marca gl-marca--lila">quizzes con puntuación</span> y{" "}
+              <span className="gl-marca gl-marca--amarillo">badges de logro</span> que
+              demuestran <span className="gl-sub-sabes">lo que sabes.</span>
             </p>
             <div className="gl-buscar">
               <GuideSearch ventanaEnMovil />
@@ -106,6 +95,23 @@ export default async function GuiasPage() {
 
           {mesa.length > 0 && (
             <div className="gl-mesa" aria-hidden="true">
+              {/* Garabatos a mano detrás de las portadas (19-11-2026, pedido
+                  por el admin): estudio, seguimiento y quiz, con trazo
+                  irregular. Asoman alrededor del mazo. */}
+              <span className="gl-garabatos">
+                {/* Lista con casillas marcadas: el quiz */}
+                <svg className="gl-g gl-g--lista" viewBox="0 0 60 60"><path d="M7 9.5c2.8-.4 5.6.3 8.2.1.6 2.7-.1 5.6.3 8.1-2.9.5-5.4-.2-8.3.2-.3-2.7.2-5.6-.2-8.4zM9.5 13.4l2.3 2.6 5.6-7.9M23 12.8c7.6-.6 17.4.5 29.8-.3M7.3 26.1c2.6-.2 5.5.4 8.4 0 .2 2.8-.3 5.6.1 8.2-2.8.3-5.6-.1-8.3.3-.4-2.9.1-5.5-.2-8.5zM9.4 29.8l2.5 2.7 5.4-8.2M23.2 29.6c9.1.4 15.9-.6 24.1.2M7.1 42.7c2.9-.3 5.6.2 8.3-.1.3 2.7-.2 5.5.2 8.3-2.7.4-5.6-.2-8.4.1-.2-2.8.3-5.6-.1-8.3zM23 46.3c6.4-.3 11.7.4 18.6-.2" /></svg>
+                {/* Gráfica de progreso que sube: el seguimiento */}
+                <svg className="gl-g gl-g--grafica" viewBox="0 0 60 60"><path d="M6.5 5.8c.6 15.6-.4 32.1.4 47.5 15.4.6 31.9-.4 47.6.3M11.8 44.2c4.6-5.3 7.4-9.8 11.9-8.1 4.2 1.7 5.6 5.2 9.8.6 4.9-5.6 8.3-15.4 14.9-22.6M42.6 13.6c2.4-.6 5.6-.9 7.1-.5.6 2.3.2 5 .3 7.4" /></svg>
+                {/* Interrogación: las preguntas del quiz */}
+                <svg className="gl-g gl-g--pregunta" viewBox="0 0 40 60"><path d="M9.2 17.6C8.4 9.1 15.3 4.2 21.8 5c7.4.8 11.6 7.9 8.4 14.2-2.8 5.4-9.4 7.4-10 14.6-.2 2.1.3 4.4.1 6.2M19.6 50.4c.9-.6 2.1-.4 2.4.6.3 1.2-.8 2.1-1.9 1.7-1-.4-1.2-1.6-.5-2.3z" /></svg>
+                {/* Lápiz */}
+                <svg className="gl-g gl-g--lapiz" viewBox="0 0 60 60"><path d="M9.6 50.8l3.1-11.9L41.3 9.7c2.6-2.3 6.2-1.8 8.6.9 2.4 2.7 2.2 6.1-.4 8.6L21.1 47.9zM12.9 38.6c3.4.2 6.7 2.9 8.1 9.1M36.6 14.2c3.7.6 7.2 3.7 8.4 8.4" /></svg>
+                {/* Diana con dardo: el objetivo */}
+                <svg className="gl-g gl-g--diana" viewBox="0 0 60 60"><path d="M30.4 8.1c11.9-.5 21.6 9.4 21.2 21.4-.3 11.4-10 21.1-21.6 20.7C18.2 49.8 8.7 40.6 9.1 28.9 9.6 17.4 18.8 8.6 30.4 8.1zM30.1 19.4c5.7-.3 10.6 4.6 10.3 10.4-.3 5.4-4.9 9.9-10.4 9.6-5.5-.2-9.9-4.9-9.6-10.4.3-5.2 4.6-9.4 9.7-9.6zM30.2 29.6L50.8 9.4M45.3 8.9l5.8.3-.2 5.6" /></svg>
+                {/* Estrella de logro */}
+                <svg className="gl-g gl-g--estrella" viewBox="0 0 40 40"><path d="M20.3 4.6l4.2 9.8 10.7.6-8.4 7.3 2.9 10.6-9.6-5.7-9.3 5.9 2.3-10.9-8.1-7 10.8-1.2z" /></svg>
+              </span>
               {mesa.map((g, i) => (
                 <span key={g.slug} className={`gl-mesa-carta gl-mesa-carta--${i + 1}`}>
                   <GuiaPortada guia={g} className="gl-mesa-portada" sizes="(max-width: 900px) 60vw, 320px" />
@@ -121,91 +127,54 @@ export default async function GuiasPage() {
             aquí, en el título de Google y en los h2. Antes esta página tenía
             unas 80 palabras indexables: era un escaparate de tarjetas. */}
         <section className="gl-bloque gl-intro">
+          {/* El cero que empieza el cole (19-11-2026): en el hueco entre el
+              hero y esta sección, arriba a la derecha. Decoración. */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- pegatina decorativa, ya optimizada */}
+          <img src="/cuaderno/cero-pegatina.webp" alt="" width={420} height={415} className="gl-cero" loading="lazy" draggable={false} />
           <div className="gl-intro-cabeza">
             <span className="gl-kicker">Formación gratuita</span>
-            <h2 className="gl-titulo">Aprende criptomonedas gratis, empezando desde cero</h2>
+            {/* Mismo texto (es la palabra clave de la página), con estilo
+                (19-11-2026): «gratis» en fluorescente y el «cero» grande,
+                rodeado a rotulador. */}
+            <h2 className="gl-titulo gl-titulo--cero">
+              Aprende criptomonedas <span className="gl-tc-gratis">gratis</span>,{" "}
+              <span className="gl-tc-desde">empezando desde</span>{" "}
+              <span className="gl-tc-cero">cero</span>
+            </h2>
           </div>
           <div className="gl-hoja">
+            {/* Sin el párrafo de «leerse en orden» (19-11-2026, pedido por el
+                admin: no están pensadas para leerse en orden). Lo que queda,
+                marcado con los colores del cuaderno. */}
             <p>
-              Estas guías son el itinerario de formación gratuita de la academia. No hacen falta
-              conocimientos previos, ni tener dinero invertido, ni comprar nada: se leen enteras sin
-              registrarte. La cuenta gratuita solo la pide el quiz final, que guarda tu resultado.
+              Estas guías son la <span className="gl-marca gl-marca--cielo">formación gratuita</span> de
+              la academia. No hacen falta <s className="gl-tachon">conocimientos previos</s>, ni{" "}
+              <s className="gl-tachon">tener dinero invertido</s>, ni <s className="gl-tachon">comprar nada</s>:{" "}
+              <strong className="gl-sub-fuerte">se leen enteras sin registrarte</strong>. La cuenta
+              gratuita solo la pide el <span className="gl-marca gl-marca--lila">quiz final</span>, que
+              guarda tu resultado.
             </p>
             <p>
-              Están pensadas para leerse <strong>en orden</strong>, aunque cada una funciona por su
-              cuenta. La primera explica qué es una blockchain y por qué resulta tan difícil de
-              falsificar. A partir de ahí cada guía añade una capa: qué hace por dentro un proyecto
-              concreto, cómo funciona una red sin minería y cómo tributa todo esto en España.
+              <span className="gl-marca gl-marca--amarillo">Todas son gratuitas</span> y entre todas
+              suman unas dos horas de lectura. Cada una termina con un{" "}
+              <span className="gl-marca gl-marca--lila">quiz</span> y un{" "}
+              <span className="gl-marca gl-marca--naranja">badge</span>, que están ahí para que
+              compruebes que lo has entendido <span className="gl-sub-sabes">de verdad</span> y no solo
+              leído por encima.
             </p>
-            <p>
-              <strong>Todas son gratuitas</strong> y entre todas suman unas dos horas de
-              lectura. Cada una termina con un quiz y un badge, que están ahí para que compruebes
-              que lo has entendido de verdad y no solo leído por encima.
-            </p>
-          </div>
-        </section>
-
-        {/* Itinerario: los nombres y los tiempos salen de GUIDES, no escritos a
-            mano, para que no se desincronicen si cambia una guía. Se pinta como
-            el camino de los cursos: tres paradas unidas por un trazo. Va antes
-            del listado completo (repaso del 17-11-2026): quien llega sin saber
-            nada ve primero por dónde empezar, y no un muro de tarjetas. */}
-        <section className="gl-bloque">
-          <span className="gl-kicker">El itinerario</span>
-          <h2 className="gl-titulo">Por dónde empezar</h2>
-
-          <div className="gl-ruta">
-            <article className="gl-ruta-paso gl-ruta-paso--1">
-              <span className="gl-ruta-num" aria-hidden="true">1</span>
-              <span className="gl-ruta-nivel">Si empiezas de cero</span>
-              <p>
-                Solo hay una imprescindible, y es esta. Cuenta de dónde sale todo esto, cómo
-                funciona una cadena de bloques y por qué nadie puede reescribirla a su antojo.
-                Saltársela hace que el resto se lea cuesta arriba.
-              </p>
-              <ul className="gl-ruta-lista">
-                {enlaceGuia("que-es-la-blockchain")}
-              </ul>
-            </article>
-
-            <article className="gl-ruta-paso gl-ruta-paso--2">
-              <span className="gl-ruta-num" aria-hidden="true">2</span>
-              <span className="gl-ruta-nivel">Cuando ya entiendes la base</span>
-              <p>
-                Aquí se pasa de la teoría a lo que ocurre de verdad. Cada una de estas tres
-                disecciona un proyecto real, que es la mejor forma de aprender a mirar cualquier
-                otro: qué problema resuelve, cómo funciona por dentro y qué riesgos tiene.
-              </p>
-              <ul className="gl-ruta-lista">
-                {enlaceGuia("worldcoin")}
-                {enlaceGuia("render")}
-                {enlaceGuia("hyperliquid")}
-              </ul>
-            </article>
-
-            <article className="gl-ruta-paso gl-ruta-paso--3">
-              <span className="gl-ruta-num" aria-hidden="true">3</span>
-              <span className="gl-ruta-nivel">Cuando ya te mueves solo</span>
-              <p>
-                XRP entra en cómo funciona una red que no usa minería y en el juicio que marcó al
-                sector entero. La de fiscalidad es la que evita disgustos con Hacienda: modelo 721,
-                método FIFO y cómo se declaran el staking y los airdrops.
-              </p>
-              <ul className="gl-ruta-lista">
-                {enlaceGuia("xrp")}
-                {enlaceGuia("fiscalidad-cripto-espana")}
-              </ul>
-            </article>
           </div>
         </section>
 
         {/* Guías publicadas: cada una, un mazo de tarjetas cielo */}
         <section className="gl-bloque">
-          <h2 className="gl-titulo">Disponibles ahora</h2>
-          <ul className="gl-mazos">
+          {/* Antes «Disponibles ahora» (cambiado el 19-11-2026, pedido por el admin). */}
+          <span className="gl-kicker">Todas gratis</span>
+          <h2 className="gl-titulo">
+            Elige la que te pique la <span className="gl-tc-gratis">curiosidad</span>
+          </h2>
+          <PaginasGuias>
             {recientes.map((g) => (
-              <li key={g.slug}>
-                <Link href={`/guias/${g.slug}`} className="gl-mazo">
+                <Link key={g.slug} href={`/guias/${g.slug}`} className="gl-mazo">
                   <span className="gl-mazo-hoja gl-mazo-hoja--1" aria-hidden="true" />
                   <span className="gl-mazo-hoja gl-mazo-hoja--2" aria-hidden="true" />
                   <span className="gl-mazo-top">
@@ -227,65 +196,28 @@ export default async function GuiasPage() {
                     </span>
                   </span>
                 </Link>
-              </li>
             ))}
-          </ul>
+          </PaginasGuias>
         </section>
 
-        <section className="gl-bloque">
-          <span className="gl-kicker">Preguntas frecuentes</span>
-          <h2 className="gl-titulo">Lo que suele preguntar la gente</h2>
-
-          <dl className="gl-faq">
-            <div className="gl-faq-item">
-              <dt>¿Es gratis de verdad?</dt>
-              <dd>
-                Sí. Todas las guías se leen enteras gratis y sin registrarte. Solo el quiz final de
-                cada una pide una cuenta —también gratuita—, porque guarda tu resultado y te da su
-                badge.
-              </dd>
-            </div>
-
-            <div className="gl-faq-item">
-              <dt>¿Necesito saber algo antes de empezar?</dt>
-              <dd>
-                No. La primera guía da por hecho que no has tocado una criptomoneda en tu vida y
-                empieza por explicar qué es la tecnología que hay debajo.
-              </dd>
-            </div>
-
-            <div className="gl-faq-item">
-              <dt>¿Tengo que comprar criptomonedas para seguirlas?</dt>
-              <dd>
-                No hace falta invertir un euro. Ninguna guía te dice qué comprar ni cuándo: explican
-                cómo funcionan las cosas para que decidas tú con criterio.
-              </dd>
-            </div>
-
-            <div className="gl-faq-item">
-              <dt>¿Cuánto tiempo me van a llevar?</dt>
-              <dd>
-                Las seis suman unas dos horas en total, entre 18 y 28 minutos cada una. No
-                hay que hacerlas del tirón: el progreso se guarda y puedes retomarlas cuando quieras.
-              </dd>
-            </div>
-
-            <div className="gl-faq-item">
-              <dt>¿Y si me pierdo con alguna palabra?</dt>
-              <dd>
-                Para eso está el <Link href="/glosario">diccionario cripto</Link>, con los términos
-                del sector explicados uno a uno y en lenguaje llano.
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        {/* CTA registro */}
+        {/* CTA registro, rediseñada el 19-11-2026 (pedido por el admin): una
+            ficha del cuaderno con celo, lo que ganas con la cuenta en tres
+            líneas y la pegatina del certificado. Sin cuenta, nunca con sesión. */}
         {!user && (
           <div className="gl-cta">
+            {/* eslint-disable-next-line @next/next/no-img-element -- pegatina decorativa, ya optimizada */}
+            <img src="/cuaderno/certificado-pegatina.webp" alt="" width={300} height={299} className="gl-cta-pegatina" loading="lazy" draggable={false} />
             <div className="gl-cta-inner">
-              <h3 className="gl-cta-titulo">Crea tu cuenta gratis y empieza a aprender</h3>
-              <p className="gl-cta-sub">Accede a las guías gratuitas, acumula puntos y desbloquea badges.</p>
+              <span className="gl-cta-nota">Sin pagar nada</span>
+              <h3 className="gl-cta-titulo">
+                Crea tu cuenta <span className="gl-tc-gratis">gratis</span> y guarda{" "}
+                <span className="gl-cta-mano">todo lo que aprendes</span>
+              </h3>
+              <ul className="gl-cta-lista">
+                <li><span className="gl-cta-check gl-cta-check--lila" aria-hidden="true"><Star size={15} strokeWidth={2.8} /></span> <span>Tu nota en el <strong>quiz</strong> de cada guía, guardada</span></li>
+                <li><span className="gl-cta-check gl-cta-check--amarillo" aria-hidden="true"><Trophy size={15} strokeWidth={2.8} /></span> <span>El <strong>badge</strong> de cada guía que superas</span></li>
+                <li><span className="gl-cta-check gl-cta-check--cielo" aria-hidden="true"><BookOpen size={15} strokeWidth={2.8} /></span> <span>Tus <strong>logros</strong>, todos en un sitio</span></li>
+              </ul>
               <div className="gl-cta-acciones">
                 <Tecla href="/register" color="naranja" tamano="grande">
                   Registrarme gratis <ArrowRight size={18} strokeWidth={2.8} aria-hidden="true" />
