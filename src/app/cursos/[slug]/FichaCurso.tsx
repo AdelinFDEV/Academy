@@ -12,6 +12,7 @@ import Anotacion from "@/components/cuaderno/Anotacion";
 import Postit from "@/components/cuaderno/Postit";
 import SimboloEstudio, { Llave } from "@/components/cuaderno/SimboloEstudio";
 import Tecla, { type ColorTecla } from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Termino from "@/components/Termino";
 import type { CursoCompleto, DatosAlumno, Sesion } from "@/lib/cursos";
 import { duracion, fechaLarga, formatoNota, minutosTotales, NOTA_MINIMA_FINAL, type EstadoCurso } from "@/lib/cursos-progreso";
@@ -211,10 +212,15 @@ export default function FichaCurso({ c, sesion, alumno, progreso, seo }: Props) 
             {curso.descripcion && <p className="fc-lead">{enlazar(curso.descripcion)}</p>}
 
             <div className="fc-acciones">
-              <Tecla href={cta.href} color={cta.color} tamano="grande" prefetch={prefetch(cta.href)}>
-                {cta.texto}
-                <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-              </Tecla>
+              {/* Lo que lleva a Premium, con el botón de Premium de toda la web (19-11-2026). */}
+              {cta.href === "/api/checkout" || cta.href === "/premium" ? (
+                <TeclaPremium href={cta.href} tamano="grande">{cta.texto}</TeclaPremium>
+              ) : (
+                <Tecla href={cta.href} color={cta.color} tamano="grande" prefetch={prefetch(cta.href)}>
+                  {cta.texto}
+                  <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+                </Tecla>
+              )}
               {cta.secundario && (
                 <Tecla href={cta.secundario.href} color={cta.secundario.color} tamano="grande">{cta.secundario.texto}</Tecla>
               )}
@@ -618,10 +624,15 @@ export default function FichaCurso({ c, sesion, alumno, progreso, seo }: Props) 
           <span className="fc-final-sello" aria-hidden="true">{iconoCurso(slug, 34)}</span>
           <h2 id="fc-final-titulo" className="fc-final-titulo">{cierre.titulo}</h2>
           <p className="fc-final-sub">{cierre.texto}</p>
-          <Tecla href={cta.href} color={cta.color} tamano="grande" prefetch={prefetch(cta.href)}>
-            {cta.texto}
-            <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-          </Tecla>
+          {/* Lo que lleva a Premium, con el botón de Premium de toda la web (19-11-2026). */}
+          {cta.href === "/api/checkout" || cta.href === "/premium" ? (
+            <TeclaPremium href={cta.href} tamano="grande">{cta.texto}</TeclaPremium>
+          ) : (
+            <Tecla href={cta.href} color={cta.color} tamano="grande" prefetch={prefetch(cta.href)}>
+              {cta.texto}
+              <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+            </Tecla>
+          )}
         </section>
       </main>
 

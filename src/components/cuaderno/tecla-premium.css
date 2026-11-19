@@ -1,0 +1,45 @@
+/* El botón de hacerse Premium (TeclaPremium.tsx), el mismo en toda la web
+   (19-11-2026, pedido por el admin): lila de la paleta, contorno de rotulador,
+   letra blanca, corona dorada que se mece y un brillo que lo cruza. El brillo
+   va en ::before: ::after es la zona táctil de 44 px de la tecla. */
+.tecla.tecla-premium {
+  overflow: hidden;
+  border: 2px solid var(--tinta);
+  color: #fff;
+  white-space: normal;
+  text-align: center;
+}
+
+.tecla-premium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: tecla-premium-brillo 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes tecla-premium-brillo {
+  0%, 55% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+.tecla-premium-corona {
+  flex: none;
+  color: var(--tinta);
+  fill: var(--amarillo);
+  animation: tecla-premium-corona 2.6s ease-in-out infinite;
+}
+
+@keyframes tecla-premium-corona {
+  0%, 100% { rotate: -8deg; }
+  50% { rotate: 8deg; }
+}
+
+.tecla-premium svg:last-child:not(.tecla-premium-corona) { flex: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tecla-premium::before,
+  .tecla-premium-corona { animation: none; }
+}

@@ -9,6 +9,7 @@ import {
 } from "@/lib/logros";
 import type { UnlockEventDetail } from "@/components/BadgeNotifier";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import PegatinaLogro, { colorDeLogro, type ColorPegatina } from "@/components/panel/PegatinaLogro";
 import RachaSemana from "@/components/panel/RachaSemana";
@@ -97,7 +98,7 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso, indice }: 
   } else if (badge.cursoSlug) {
     foot = <span className="lg-foot-text">{isPremium ? "Hacer el curso" : "Ver el curso"} <ArrowRight size={12} aria-hidden="true" /></span>;
   } else if (badge.id === "first-premium" && !isPremium) {
-    foot = <Tecla href="/premium" tamano="peq">Ver Premium <ArrowRight size={13} aria-hidden="true" /></Tecla>;
+    foot = <TeclaPremium href="/premium" tamano="peq" />;
   } else {
     foot = <span className="lg-foot-text"><Lock size={11} aria-hidden="true" /> Bloqueado</span>;
   }

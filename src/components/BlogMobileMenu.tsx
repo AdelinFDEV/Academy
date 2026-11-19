@@ -31,6 +31,9 @@ interface Props {
    *  (`SiteNav`, de `@/lib/stripe`): este componente es de cliente y no puede
    *  importarlo, y escribirlo a mano aquí era una segunda copia que olvidar. */
   precio: string;
+  /** Lo que sale al día («0,67€»), también del servidor: el gancho de la
+   *  tarjeta Premium (19-11-2026). */
+  precioDia: string;
 }
 
 /** El color de cada sección (ESTILO.md, «Cada sección, su color»). */
@@ -125,7 +128,7 @@ const FUERA_DEL_CATALOGO = new Set(["guias", "glosario", "foro"]);
  * `destinoPorRuta`, según quién mire (la ficha pública a quien no tiene
  * acceso, la herramienta a quien sí).
  */
-export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null, foro = false, precio }: Props) {
+export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null, foro = false, precio, precioDia }: Props) {
   const [open, setOpen] = useState(false);
   // Sigue en pantalla mientras se recoge, después de cerrarlo.
   const [montado, setMontado] = useState(false);
@@ -421,10 +424,22 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                       el trono, el cuaderno del Diario y el birrete de los Cursos
                       (18-11-2026). Decoración. */}
                   <Image src="/cuaderno/premium-coronas-pegatina.webp" alt="" width={560} height={408} className="mm-premium-pegatina" draggable={false} />
+                  {/* Lo poco que sale al día, como gancho, encima de la etiqueta
+                      (19-11-2026, pedido por el admin). */}
+                  <span className="mm-premium-dia">solo {precioDia} al día</span>
                   <span className="mm-premium-cabecera">
                     <Crown size={15} aria-hidden="true" /> Premium
                   </span>
-                  <span className="mm-premium-titulo">Diario, Portfolio Adelin y Cursos en una suscripción</span>
+                  {/* El título: las cuatro piezas, cada una con fluorescente de
+                      su color, y «una suscripción» a mano (19-11-2026, pedido
+                      por el admin). */}
+                  <span className="mm-premium-titulo">
+                    <span className="mm-premium-marca mm-premium-marca--lila">Cursos</span>,{" "}
+                    <span className="mm-premium-marca mm-premium-marca--menta">Portfolio Adelin</span>,{" "}
+                    <span className="mm-premium-marca mm-premium-marca--azul">Diario de Trading</span> y{" "}
+                    <span className="mm-premium-marca mm-premium-marca--coral">Foro</span>{" "}
+                    <span className="mm-premium-mano">en una suscripción</span>
+                  </span>
                   <span className="mm-premium-pie">
                     <span className="mm-premium-precio">{precio}<small>/mes</small></span>
                     <span className="mm-premium-ir">

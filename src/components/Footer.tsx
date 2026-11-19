@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Crown, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
 import { CoinGeckoGlyph } from "@/components/BrandMarks";
-import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import { detalleDe, herramienta } from "@/lib/herramientas";
 import "./footer.css";
 
@@ -56,10 +56,7 @@ export default function Footer() {
             <Link href={detalleDe(diario)}>{diario.label}</Link>
             <Link href={detalleDe(cartera)}>{cartera.label}</Link>
             <Link href={detalleDe(cursos)}>{cursos.label}</Link>
-            <Tecla href="/premium" tamano="peq" className="footer-premium-link">
-              <Crown size={14} strokeWidth={2.6} aria-hidden="true" />
-              Hazte Premium
-            </Tecla>
+            <TeclaPremium href="/premium" tamano="peq" flecha={false} className="footer-premium-link" />
           </div>
 
           <div className="footer-links-group footer-tono--azul">

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, Check, Lock, NotebookPen } from "lucide-react";
+import { ArrowRight, Check, NotebookPen } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 
 /**
  * Las llamadas al Diario de Trading dentro de la guía «Cómo hacer un diario de
@@ -56,9 +57,7 @@ function Boton({ estado, precio, grande = false }: { estado: EstadoLector; preci
   if (estado === "cuenta") {
     // /api/checkout lleva al pago y vuelve solo (ver su ruta).
     return (
-      <Tecla href="/api/checkout" prefetch={false} color="naranja" tamano={tamano} className="dtg-cta-btn">
-        <Lock size={15} aria-hidden="true" /> Empezar mi diario · {precio}/mes <ArrowRight size={18} aria-hidden="true" />
-      </Tecla>
+      <TeclaPremium tamano={tamano} className="dtg-cta-btn">Empezar mi diario · {precio}/mes</TeclaPremium>
     );
   }
   return <Tecla href={REGISTRO} color="naranja" tamano={tamano} className="dtg-cta-btn">Crear mi cuenta gratis <ArrowRight size={18} aria-hidden="true" /></Tecla>;

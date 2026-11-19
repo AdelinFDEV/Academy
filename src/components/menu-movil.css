@@ -1426,3 +1426,42 @@
 }
 
 .mm-premium-ir { box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 0 color-mix(in srgb, var(--naranja-o) 80%, var(--tinta)); }
+/* La tarjeta Premium del menú (19-11-2026, pedido por el admin): en el
+   título, «en una suscripción» a mano y las cuatro piezas con fluorescente
+   de su color (abajo). Siguen dejando sitio a las coronas de la derecha. */
+.mm-premium-mano {
+  font-family: var(--letra-mano);
+  font-size: 1.15em;
+  color: var(--naranja-o);
+}
+/* Sustituye a las etiquetas (no convencían): las piezas marcadas dentro del
+   propio título, cada una con su fluorescente. */
+.mm-premium-marca {
+  padding: 0 0.08em;
+  background: linear-gradient(transparent 56%, var(--mk) 56%, var(--mk) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.mm-premium-marca--lila { --mk: color-mix(in srgb, var(--lila) 45%, transparent); }
+.mm-premium-marca--menta { --mk: color-mix(in srgb, var(--menta) 55%, transparent); }
+.mm-premium-marca--azul { --mk: color-mix(in srgb, var(--cielo) 50%, transparent); }
+.mm-premium-marca--coral { --mk: color-mix(in srgb, var(--coral) 45%, transparent); }
+.mm-premium-titulo .mm-premium-mano { display: inline-block; font-size: 1.05em; rotate: -2deg; }
+
+/* «solo 0,67€ al día», encima de la etiqueta Premium: un pósit amarillo
+   ladeado, a mano, que hace de gancho (19-11-2026, pedido por el admin). */
+.mm-premium-dia {
+  position: relative;
+  align-self: flex-start;
+  margin-bottom: 2px;
+  padding: 1px 10px;
+  background: var(--amarillo);
+  border: 2px solid var(--tinta);
+  border-radius: 8px 6px 9px 5px;
+  font-family: var(--letra-mano);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tinta);
+  rotate: -3deg;
+}

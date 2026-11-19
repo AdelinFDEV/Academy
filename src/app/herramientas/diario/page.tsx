@@ -16,6 +16,7 @@ import { ANIMOS } from "@/components/trading/tjDias";
 import { MILESTONES, RISK_LIMIT_PCT, VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import "../ficha.css";
 import "./diario.css";
@@ -259,11 +260,7 @@ function Cta({ premium, grande = false, texto = "Empezar mi diario" }: { premium
   // /api/checkout manda primero al registro si no hay sesión y vuelve solo
   // al pago (ver su ruta): un paso menos que pasar por /premium.
   return (
-    <Tecla href="/api/checkout" prefetch={false} tamano={grande ? "grande" : "normal"}>
-      <Crown size={17} aria-hidden="true" />
-      {texto}
-      <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-    </Tecla>
+    <TeclaPremium tamano={grande ? "grande" : "normal"}>{texto}</TeclaPremium>
   );
 }
 

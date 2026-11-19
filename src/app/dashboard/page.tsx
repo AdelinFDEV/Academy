@@ -13,6 +13,7 @@ import IndicePanel, { type ToolSection } from "@/components/panel/IndicePanel";
 import PegatinaLogro, { colorDeLogro } from "@/components/panel/PegatinaLogro";
 import RachaSemana from "@/components/panel/RachaSemana";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import { semanaDeRacha } from "@/lib/rachaSemana";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak, todayStr } from "@/lib/streak";
@@ -169,9 +170,7 @@ export default async function DashboardPage() {
               {planLabel}
             </span>
             {!isPremium && (
-              <Tecla href="/premium" tamano="peq">
-                <Crown size={15} aria-hidden="true" /> Hazte Premium
-              </Tecla>
+              <TeclaPremium href="/premium" tamano="peq" flecha={false} />
             )}
           </div>
         </div>
@@ -289,9 +288,7 @@ export default async function DashboardPage() {
           </div>
           <div className="dh-premium-compra">
             <p className="dh-premium-precio">{PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")} €<small>/mes</small></p>
-            <Tecla href="/premium" tamano="grande">
-              Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
-            </Tecla>
+            <TeclaPremium href="/premium" tamano="grande" />
             <p className="dh-premium-nota">Sin permanencia · Cancela cuando quieras</p>
           </div>
         </section>

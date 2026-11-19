@@ -3,16 +3,15 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
   ArrowRight, Lock, ShieldCheck, Check, X, CreditCard, Zap, Radio, TrendingUp, TrendingDown, Scale,
-  PieChart, ListOrdered, Bitcoin, CalendarClock, Target, Eye, GraduationCap, HeartCrack, Ruler, Crown,
-  RefreshCw, Layers,
+  PieChart, ListOrdered, Bitcoin, CalendarClock, Target, Eye, HeartCrack, Ruler, Crown,
+  Layers,
 } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
+import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
-import JsonLd from "@/components/JsonLd";
-import { breadcrumbSchema } from "@/lib/schema";
-import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { CoinGeckoGlyph } from "@/components/BrandMarks";
 import { IconoPortfolio } from "@/components/IconosAnimados";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
@@ -83,22 +82,26 @@ const DCA_TRAE: Trae[] = [
 ];
 
 /** Lo que se aprende mirando una cartera real, no lo que se ve. */
+// Simplificado el 19-11-2026 (pedido por el admin): cada punto, una línea.
 const APRENDES = [
   {
     icon: Ruler,
+    color: "menta",
     titulo: "Cuánto pesa cada posición",
-    texto: "El reparto enseña más que la moneda elegida: con qué parte del total se entra y cuándo se deja de añadir.",
+    texto: "Con qué parte del total se entra y cuándo se deja de añadir.",
     termino: { texto: "parte del total", href: "/glosario/tamano-de-posicion" },
   },
   {
     icon: HeartCrack,
+    color: "coral",
     titulo: "Cómo se lleva una posición en rojo",
-    texto: "Las que pierden se quedan en la tabla, con su cifra. Ver una pérdida de verdad, y qué se hace con ella, es lo que ninguna captura enseña.",
+    texto: "Las pérdidas se quedan en la tabla, con su cifra.",
   },
   {
     icon: CalendarClock,
+    color: "naranja",
     titulo: "Qué hace la constancia",
-    texto: "Compra a compra, el DCA enseña lo que pasa al comprar con ritmo fijo, suba o baje el mercado.",
+    texto: "Comprar con ritmo fijo, suba o baje el mercado.",
   },
 ];
 
@@ -114,33 +117,6 @@ const NO_ES = [
   "No se conecta a tu exchange",
   "No es una cartera recomendada",
   "Sin futuros ni apalancamiento",
-];
-
-const FAQ = [
-  {
-    q: "¿Es tu cartera de verdad o una demostración?",
-    a: "Es la cartera real con la que opero en spot y mi DCA de Bitcoin. Se actualiza cuando la muevo, y las posiciones que van en pérdidas se ven igual que las que van en ganancias. Las cifras de esta página se calculan con los precios de mercado del momento en que la abres.",
-  },
-  {
-    q: "¿Me vais a avisar cuando compres o vendas?",
-    a: "No. No es un servicio de señales ni hay alertas: la herramienta refleja el estado de la cartera, no manda avisos para copiar operaciones.",
-  },
-  {
-    q: "¿Puedo copiar la cartera tal cual?",
-    a: "Puedes, pero es mala idea. El peso de cada posición está pensado para un capital, un horizonte y una tolerancia a la pérdida que son míos. Copiar los porcentajes de otro sin eso es la parte fácil y la que menos ayuda.",
-  },
-  {
-    q: "¿Cada cuánto se actualiza?",
-    a: "Los precios, cada vez que abres la página, y con un botón para refrescarlos. Las posiciones y las compras del DCA, cuando compro o vendo de verdad.",
-  },
-  {
-    q: "¿Por qué no se ven aquí las monedas?",
-    a: "Porque qué monedas tengo y a qué precio entré es justo lo que incluye la suscripción. Aquí solo salen cifras agregadas y reales: la rentabilidad, cuántas posiciones hay y cuántas van en pérdidas.",
-  },
-  {
-    q: "¿Qué más incluye la suscripción?",
-    a: `El Diario de Trading y todos los cursos, con examen y certificado. Todo va en la misma cuota de ${PRECIO} al mes, sin permanencia: cancelas cuando quieras desde tu cuenta.`,
-  },
 ];
 
 function pct(n: number): string {
@@ -161,7 +137,7 @@ function ConTermino({ text, termino }: { text: string; termino?: { texto: string
 }
 
 /** El botón principal. Quien ya es Premium abre la herramienta; el resto paga. */
-function Cta({ premium, grande = false, texto = "Ver la cartera completa" }: { premium: boolean; grande?: boolean; texto?: string }) {
+function Cta({ premium, grande = false, texto = "Ver la cartera completa", verde = false }: { premium: boolean; grande?: boolean; texto?: string; verde?: boolean }) {
   if (premium) {
     return (
       <Tecla href="/portfolio" color="menta" tamano={grande ? "grande" : "normal"}>
@@ -173,8 +149,9 @@ function Cta({ premium, grande = false, texto = "Ver la cartera completa" }: { p
   // /api/checkout manda primero al registro si no hay sesión y vuelve solo
   // al pago (ver su ruta): un paso menos que pasar por /premium.
   return (
-    <Tecla href="/api/checkout" prefetch={false} tamano={grande ? "grande" : "normal"}>
-      <Lock size={16} strokeWidth={2.6} aria-hidden="true" />
+    <Tecla href="/api/checkout" prefetch={false} tamano={grande ? "grande" : "normal"} color={verde ? "menta" : undefined}>
+      {/* «Ver la cartera» lleva el ojo; «Desbloquear», el candado (19-11-2026). */}
+      {verde ? <Eye size={18} strokeWidth={2.6} aria-hidden="true" /> : <Lock size={16} strokeWidth={2.6} aria-hidden="true" />}
       {texto}
       <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
     </Tecla>
@@ -230,54 +207,58 @@ export default async function FichaPortfolioPage() {
 
   return (
     <div className="blog-page fh-pagina">
-      <JsonLd
-        data={[
-          breadcrumbSchema([
-            { name: "Inicio", path: "/" },
-            { name: "Portfolio Adelin", path: "/herramientas/portfolio" },
-          ]),
-          {
-            "@type": "FAQPage",
-            mainEntity: FAQ.map((f) => ({
-              "@type": "Question",
-              name: f.q,
-              acceptedAnswer: { "@type": "Answer", text: f.a },
-            })),
-          },
-        ]}
-      />
 
       <SiteNav user={!!user} isPremium={isPremium} isAdmin={role === "admin"} />
 
       <main className="fh fh-c-menta pa">
-        <nav className="fh-migas" aria-label="Migas de pan">
-          <Link href="/">Inicio</Link>
-          <span aria-hidden="true">›</span>
-          <span>Portfolio Adelin</span>
-        </nav>
-
         {/* ── Cabecera: la promesa y el panel, velado ─────────────────────── */}
         <section className="fh-hero pa-hero">
           <div className="fh-hero-texto">
-            <span className="fh-eyebrow">
-              <IconoPortfolio size={15} />
-              Cartera real · Precios en vivo
-            </span>
+            {/* Cabecera reinventada (19-11-2026, pedido por el admin) en el
+                estilo del cuaderno: pósit «en vivo», el título con
+                «Adelin» rodeado a rotulador, la frase a mano con su flecha y
+                el texto en tres apuntes con su color. Mismas palabras. */}
+            <div className="pa-cab">
+              <span className="pa-cab-posit">
+                <span className="pa-cab-punto" aria-hidden="true" />
+                Cartera real · Precios en vivo
+              </span>
+            </div>
 
-            <h1 className="fh-titulo">
-              Portfolio <span className="fluor">Adelin</span>
-              <span className="fh-titulo-2">Mira mi cartera real, posición a posición.</span>
+            <h1 className="fh-titulo pa-cab-titulo">
+              Portfolio <span className="pa-cab-nombre">Adelin</span>
+              <span className="fh-titulo-2 pa-cab-frase">
+                Mira mi cartera real, <span className="pa-cab-subraya">posición a posición.</span>
+              </span>
             </h1>
 
-            <p className="fh-lead">
-              Qué compré, a qué precio entré y cuánto lleva cada moneda, con precios de mercado al momento. Mi cartera
-              en <Link href="/glosario/spot">spot</Link> y mi <Link href="/glosario/dca">DCA</Link> de Bitcoin.{" "}
-              <strong>También lo que va en pérdidas.</strong>
-            </p>
+            <ul className="pa-cab-apuntes">
+              <li className="pa-cab-apunte pa-cab-apunte--menta">
+                <span className="pa-cab-icono" aria-hidden="true"><IconoPortfolio size={16} /></span>
+                <span>Qué compré, a qué precio entré y cuánto lleva cada moneda, con precios de mercado al momento.</span>
+              </li>
+              <li className="pa-cab-apunte pa-cab-apunte--cielo">
+                <span className="pa-cab-icono" aria-hidden="true"><TrendingUp size={16} strokeWidth={2.6} /></span>
+                <span>
+                  Mi cartera en <Link href="/glosario/spot">spot</Link> y mi <Link href="/glosario/dca">DCA</Link> de Bitcoin.
+                </span>
+              </li>
+              <li className="pa-cab-apunte pa-cab-apunte--coral">
+                <span className="pa-cab-icono" aria-hidden="true"><TrendingDown size={16} strokeWidth={2.6} /></span>
+                <strong>También lo que va en pérdidas.</strong>
+              </li>
+            </ul>
 
             {resumen && (
+              <div className="pa-datos">
+              {/* El aviso de que es la cartera real y al precio del momento
+                  (19-11-2026, pedido por el admin), como etiqueta sobre la ficha. */}
+              <p className="pa-datos-vivo">
+                <span className="pa-cab-punto" aria-hidden="true" />
+                <span>Precio <strong>real</strong>, en directo</span>
+              </p>
               <dl className="pa-hero-datos" aria-label="Cifras reales de la cartera, ahora mismo">
-                <div>
+                <div className="pa-dato--spot">
                   <dt>Rentabilidad spot</dt>
                   <dd className={sube ? "es-sube" : "es-baja"}>{pct(resumen.rentabilidadPct)}</dd>
                 </div>
@@ -286,7 +267,7 @@ export default async function FichaPortfolioPage() {
                   <dd>{resumen.posiciones}</dd>
                 </div>
                 {resumen.dca && (
-                  <div>
+                  <div className="pa-dato--dca">
                     <dt>DCA de Bitcoin</dt>
                     <dd className={resumen.dca.rentabilidadPct >= 0 ? "es-sube" : "es-baja"}>
                       {pct(resumen.dca.rentabilidadPct)}
@@ -294,18 +275,33 @@ export default async function FichaPortfolioPage() {
                   </div>
                 )}
               </dl>
+              </div>
             )}
 
-            <div className="fh-cta">
-              <Cta premium={isPremium} grande />
+            {/* El botón y sus datos, rediseñados (19-11-2026, pedido por el
+                admin): texto corto, y debajo el precio grande con lo que cuesta
+                al día y las dos garantías como etiquetas. */}
+            <div className="fh-cta pa-cta">
+              <Cta premium={isPremium} grande texto="Ver la cartera" verde />
               {!isPremium && (
-                <p className="fh-cta-nota">
-                  <ShieldCheck size={14} aria-hidden="true" />
-                  {PRECIO}/mes · Sin permanencia · Cancela cuando quieras
-                </p>
+                <div className="pa-cta-datos">
+                  {/* El café: el precio al día es menos que uno (19-11-2026). */}
+                  {/* eslint-disable-next-line @next/next/no-img-element -- pegatina decorativa, ya optimizada */}
+                  <img src="/cuaderno/cafe-pegatina.webp" alt="" width={300} height={371} className="pa-cta-cafe" loading="lazy" draggable={false} />
+                  <p className="pa-cta-precio">
+                    <span className="pa-cta-etiqueta">Con Premium</span>
+                    <strong>{PRECIO}</strong>
+                    <span>al mes</span>
+                    <span className="pa-cta-dia">menos que un café: {PRECIO_DIA} al día</span>
+                  </p>
+                  <ul className="pa-cta-garantias">
+                    <li><ShieldCheck size={14} strokeWidth={2.6} aria-hidden="true" /> Sin permanencia</li>
+                    <li><Check size={14} strokeWidth={3} aria-hidden="true" /> Cancelas cuando quieras</li>
+                  </ul>
+                </div>
               )}
               {!user && (
-                <p className="fh-cta-login">
+                <p className="fh-cta-login pa-cta-login">
                   ¿Ya eres Premium?{" "}
                   <Link href={`/login?next=${encodeURIComponent("/portfolio")}`}>Inicia sesión</Link>
                 </p>
@@ -315,6 +311,16 @@ export default async function FichaPortfolioPage() {
 
           {/* El panel tal y como es, con lo de pago velado. */}
           <div className="pa-escena">
+            {/* Garabatos de trading detrás del panel, solo en el ordenador
+                (19-11-2026, pedido por el admin): velas, una gráfica que sube,
+                una tarta de reparto, un porcentaje y una moneda. Decoración. */}
+            <span className="pa-garabatos" aria-hidden="true">
+              <svg className="pa-g pa-g--velas" viewBox="0 0 70 60"><path d="M10.2 8.4c.3 14.1-.4 30 .2 44.6M5.6 18.3c3.1-.4 6.2.3 9.1-.2.4 7.2-.3 14.3.2 21.6-3 .4-6.1-.2-9.2.2-.3-7.3.2-14.4-.1-21.6zM30.4 4.1c-.4 16.3.5 34.8-.2 51.2M25.8 12.6c3.2-.3 6 .2 9.2-.1.2 4.9-.3 9.6.1 14.6-3.1.3-6.2-.2-9.1.2-.4-5 .1-9.8-.2-14.7zM50.3 14.2c.2 12.4-.3 26.1.3 38.4M45.7 24.9c3-.2 6.3.3 9.2-.1.3 6.4-.2 12.6.2 19.1-3.2.2-6.1-.2-9.3.1-.2-6.4.2-12.8-.1-19.1z" /></svg>
+              <svg className="pa-g pa-g--sube" viewBox="0 0 80 60"><path d="M5.3 50.6c8.2-7.4 13-14.7 20.4-11.6 6.6 2.8 9.4 8.3 16.1.7 7.4-8.6 13.6-21.6 30.6-32.4M58.6 6.2c4.6-.5 9.9-.9 14.5-.6.4 4.3-.2 9.2.4 13.4" /></svg>
+              <svg className="pa-g pa-g--tarta" viewBox="0 0 60 60"><path d="M30.6 6.1c13.5-.4 24.2 10.9 23.5 24.4-.7 13-11.9 23.6-24.8 22.9C16.2 52.8 5.6 41.6 6.3 28.4 7 16 17.6 6.5 30.6 6.1zM30.2 6.6c.4 8.1-.3 16.1.2 23.9 7.8-.2 15.5.4 23.2-.1M30.4 30.4c-6.4 5.1-12.6 10.6-19.1 15.4" /></svg>
+              <svg className="pa-g pa-g--porcentaje" viewBox="0 0 50 60"><path d="M40.3 6.4C30.6 22.4 19.4 38.6 9.6 54.1M13.4 8.2c4.4-.3 7.5 3.3 7.1 7.4-.4 4-4.2 6.6-8 5.8-3.6-.8-5.4-4.6-4.3-7.9 1-2.9 3.1-5.1 5.2-5.3zM37.2 39.4c4.3-.2 7.4 3.5 6.9 7.6-.5 3.8-4.3 6.4-8 5.6-3.6-.7-5.4-4.5-4.2-7.8 1-2.8 3-5.2 5.3-5.4z" /></svg>
+              <svg className="pa-g pa-g--moneda" viewBox="0 0 60 60"><path d="M30.2 7.4c12.1-.2 21.9 9.8 21.5 21.9-.4 11.6-10.4 21.6-22.2 21-11.9-.6-21-10.4-20.4-22.1.6-11.3 9.6-20.6 21.1-20.8zM26.4 18.6c.2 7.7-.3 15.6.2 23.1M26.5 19.1c5.3-.6 10.4.2 10.6 4.6.2 4.1-5.2 5.3-10.4 5.3 6.5-.2 12 1 11.9 5.9-.1 4.9-6.1 6.2-12 6M29.6 14.6l.1 4.2M29.7 41.7l.1 4.3" /></svg>
+            </span>
             <div className="pa-panel" aria-label="Vista previa del panel del Portfolio Adelin">
               <div className="pa-panel-barra">
                 <span className="fh-ventana-puntos" aria-hidden="true"><i /><i /><i /></span>
@@ -384,9 +390,7 @@ export default async function FichaPortfolioPage() {
                     : <><strong>Todas las posiciones</strong> con su precio de entrada</>}
                 </p>
                 {!isPremium && (
-                  <Tecla href="/api/checkout" prefetch={false} tamano="peq">
-                    Desbloquear <ArrowRight size={14} strokeWidth={2.6} aria-hidden="true" />
-                  </Tecla>
+                  <TeclaPremium tamano="peq" />
                 )}
               </div>
             </div>
@@ -402,6 +406,13 @@ export default async function FichaPortfolioPage() {
         {/* ── Las cifras, calculadas al abrir ─────────────────────────────── */}
         {resumen && (
           <section className="fh-bloque pa-cifras" aria-labelledby="pa-cifras-titulo">
+            {/* Solo en el ordenador (19-11-2026, pedido por el admin): en el
+                hueco de la derecha, «¡datos reales!» a mano en rojo y una
+                flecha grande a rotulador que baja a los tiques. Decoración. */}
+            <span className="pa-reales" aria-hidden="true">
+              <span className="pa-reales-texto">¡datos reales!</span>
+              <SimboloEstudio tipo="flecha" color="coral" giro={78} tamano={120} semilla={21} retraso={400} className="pa-reales-flecha" />
+            </span>
             <div className="pa-cabeza">
               <span className="fh-kicker"><Radio size={14} aria-hidden="true" /> Calculado ahora mismo</span>
               <h2 id="pa-cifras-titulo" className="fh-h2">Números que no se pueden <Anotacion tipo="circle" color="var(--menta)">maquillar</Anotacion></h2>
@@ -411,63 +422,50 @@ export default async function FichaPortfolioPage() {
               </p>
             </div>
 
-            <div className="pa-cifras-rejilla">
-              <div className="pa-cifra">
-                <span className="pa-cifra-cab">
-                  <span className="pa-cifra-icono" aria-hidden="true"><Layers size={16} /></span>
-                  Rentabilidad de la cartera spot
+            {/* Rediseñada de cero (19-11-2026, pedido por el admin): de cuatro
+                tarjetas a dos tiques, uno por cartera, con su cifra grande y
+                su detalle en una línea. Spot en lila y DCA en naranja, como
+                en la cabecera. */}
+            <div className="pa-tiques">
+              <div className="pa-tique pa-tique--spot">
+                <span className="pa-tique-cab">
+                  <span className="pa-tique-icono" aria-hidden="true"><Layers size={16} strokeWidth={2.4} /></span>
+                  Cartera spot
                 </span>
-                <b className={sube ? "es-sube" : "es-baja"}>{pct(resumen.rentabilidadPct)}</b>
-                <small>
+                <b className="pa-tique-cifra">{pct(resumen.rentabilidadPct)}</b>
+                <span className="pa-tique-detalle">
                   {resumen.posiciones} posiciones{resumen.desdeAnio ? ` · desde ${resumen.desdeAnio}` : ""}
-                </small>
-              </div>
-
-              <div className="pa-cifra">
-                <span className="pa-cifra-cab">
-                  <span className="pa-cifra-icono" aria-hidden="true"><Scale size={16} /></span>
-                  En verde y en rojo
                 </span>
-                <b>
-                  <span className="es-sube">{resumen.enGanancias}</span>
-                  <i aria-hidden="true">/</i>
-                  <span className={resumen.enPerdidas > 0 ? "es-baja" : ""}>{resumen.enPerdidas}</span>
-                </b>
                 {conPrecio > 0 && (
-                  <span className="pa-balanza" aria-hidden="true">
-                    <i style={{ width: `${(resumen.enGanancias / conPrecio) * 100}%` }} />
+                  <span className="pa-tique-balanza">
+                    <span className="pa-tique-barra" aria-hidden="true">
+                      <i style={{ width: `${(resumen.enGanancias / conPrecio) * 100}%` }} />
+                    </span>
+                    <span className="pa-tique-leyenda">
+                      <span className="es-sube">{resumen.enGanancias} en verde</span>
+                      <span className="es-baja">{resumen.enPerdidas} en rojo</span>
+                    </span>
                   </span>
                 )}
-                <small>Todas en la tabla, con su cifra</small>
               </div>
 
               {resumen.dca && (
-                <>
-                  <div className="pa-cifra pa-cifra--btc">
-                    <span className="pa-cifra-cab">
-                      <span className="pa-cifra-icono" aria-hidden="true"><Bitcoin size={16} /></span>
-                      Rentabilidad del DCA
-                    </span>
-                    <b className={resumen.dca.rentabilidadPct >= 0 ? "es-sube" : "es-baja"}>
-                      {pct(resumen.dca.rentabilidadPct)}
-                    </b>
-                    <small>{resumen.dca.desdeAnio ? `Desde ${resumen.dca.desdeAnio}` : "Compra a compra"}</small>
-                  </div>
-                  <div className="pa-cifra pa-cifra--btc">
-                    <span className="pa-cifra-cab">
-                      <span className="pa-cifra-icono" aria-hidden="true"><CalendarClock size={16} /></span>
-                      Compras de bitcoin
-                    </span>
-                    <b>{resumen.dca.compras}</b>
-                    <small>Cada una con su fecha y su precio</small>
-                  </div>
-                </>
+                <div className="pa-tique pa-tique--dca">
+                  <span className="pa-tique-cab">
+                    <span className="pa-tique-icono" aria-hidden="true"><Bitcoin size={16} strokeWidth={2.4} /></span>
+                    DCA de bitcoin
+                  </span>
+                  <b className="pa-tique-cifra">{pct(resumen.dca.rentabilidadPct)}</b>
+                  <span className="pa-tique-detalle">
+                    {resumen.dca.compras} compras, cada una con su fecha y su precio
+                    {resumen.dca.desdeAnio ? ` · desde ${resumen.dca.desdeAnio}` : ""}
+                  </span>
+                </div>
               )}
             </div>
 
-            <p className="pa-cifras-nota">
-              <RefreshCw size={13} aria-hidden="true" />
-              Sin importes a propósito: el capital no prueba nada. La rentabilidad, sí.
+            <p className="pa-cifras-nota pa-tiques-nota">
+              Sin importes a propósito: el capital no prueba nada. <strong>La rentabilidad, sí.</strong>
             </p>
           </section>
         )}
@@ -476,7 +474,11 @@ export default async function FichaPortfolioPage() {
         <section className="fh-bloque" aria-labelledby="pa-carteras-titulo">
           <div className="pa-cabeza">
             <span className="fh-kicker"><PieChart size={14} aria-hidden="true" /> Lo que hay dentro</span>
-            <h2 id="pa-carteras-titulo" className="fh-h2">Dos carteras, cada una por su lado</h2>
+            <h2 id="pa-carteras-titulo" className="fh-h2">
+              {/* «Dos carteras», destacado (19-11-2026): el «dos» rodeado a
+                  rotulador y «carteras» con fluorescente. */}
+              <span className="pa-dos"><span className="pa-dos-num">Dos</span> <span className="pa-dos-marca">carteras</span></span>, cada una por su lado
+            </h2>
             <p className="pa-p">
               No se suman a propósito: el DCA y las compras puntuales son estrategias distintas, y una media de las
               dos no describiría a ninguna.
@@ -601,112 +603,184 @@ export default async function FichaPortfolioPage() {
         </section>
 
         {/* ── Qué se aprende ──────────────────────────────────────────────── */}
-        <section className="fh-bloque" aria-labelledby="pa-aprende-titulo">
+        <section className="fh-bloque pa-ap" aria-labelledby="pa-aprende-titulo">
+          {/* Rediseñada el 19-11-2026 (pedido por el admin): título con
+              «copiar» tachado y «gestionar» marcado, y los tres puntos como
+              apuntes de una sola línea con su número a mano. */}
           <div className="pa-cabeza">
-            <span className="fh-kicker"><GraduationCap size={14} aria-hidden="true" /> Para qué sirve</span>
-            <h2 id="pa-aprende-titulo" className="fh-h2">No es para copiar. Es para aprender a gestionar</h2>
+            <span className="pa-ap-nota">Para qué sirve</span>
+            <h2 id="pa-aprende-titulo" className="fh-h2 pa-ap-titulo">
+              No es para <s className="pa-ap-tachon">copiar</s>. Es para aprender a{" "}
+              <span className="pa-ap-marca">gestionar</span>
+            </h2>
+            {/* Solo en el ordenador (19-11-2026): garabatos de lo que se
+                aprende, una balanza, una tirita sobre una vela roja y un
+                calendario con sus marcas. Decoración. */}
+            <span className="pa-ap-garabatos" aria-hidden="true">
+              <svg className="pa-apg pa-apg--balanza" viewBox="0 0 80 70"><path d="M40.3 8.2c.4 17.4-.3 36.1.2 52.6M24.6 62.1c10.4-.5 20.5.4 31.2-.2M12.4 18.6c18.2-2.1 37.4-1.6 55.6-.3M12.6 18.9C9.4 26.8 6.2 33.4 3.6 40.2c5.9 4.1 13.6 4.4 19.4.2-3.4-7.1-6.6-14.1-10.4-21.5zM67.8 18.4c-3.6 7.6-6.8 14.6-9.6 21.6 6 4.2 13.7 4.2 19.3-.1-3.2-7.2-6.2-14.2-9.7-21.5zM38.1 8.6c1.4-1.8 3.5-1.6 4.6.1" /></svg>
+              <svg className="pa-apg pa-apg--vela" viewBox="0 0 60 80"><path d="M30.4 4.6c-.3 22.6.4 47.9-.2 70.6M20.2 18.4c6.8-.4 13.4.3 20.1-.2.4 13.6-.3 27.3.2 40.7-6.7.4-13.6-.2-20.3.2-.3-13.4.2-27.2 0-40.7zM12.4 34.6c11.6-6.2 23.8-7.4 35.4-1.8M12.2 44.8c11.8-6 24.2-6.8 35.8-1.4M22.6 32.8c.6 4 1 7.9 1.2 11.8M36.4 31.6c.4 4 .7 8 .6 12" /></svg>
+              <svg className="pa-apg pa-apg--calendario" viewBox="0 0 70 70"><path d="M8.4 14.2c17.8-.6 36.4.4 53.6-.2.6 15.6-.3 31.8.3 47.4-17.8.5-35.8-.3-53.6.2-.5-15.8.2-31.6-.3-47.4zM8.6 26.4c17.6-.3 35.6.4 53.4-.1M20.2 6.4c.2 4 .3 8 .1 11.8M49.6 6.2c.3 4.1.2 8 .1 12M15.6 37.2l4.6 4.8 7.8-9.6M33.4 37.4l4.4 4.6 7.6-9.2M15.4 50.4l4.8 4.6 7.6-9.4M33.6 50.6l4.4 4.8 7.8-9.6M50.4 36.4c2.6 2 5.2 4.4 7.6 6.6M58 36.2c-2.4 2.3-4.8 4.8-7.4 7" /></svg>
+            </span>
           </div>
-          <div className="pa-aprende">
-            {APRENDES.map(({ icon: Icon, titulo, texto, termino }, i) => (
-              <article key={titulo} className="pa-aprende-tarjeta">
-                <span className="pa-aprende-cab">
-                  <span className="fh-icono" aria-hidden="true"><Icon size={19} strokeWidth={2.2} /></span>
-                  <span className="pa-aprende-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <ol className="pa-ap-lista">
+            {APRENDES.map(({ icon: Icon, color, titulo, texto, termino }, i) => (
+              <li key={titulo} className={`pa-ap-punto pa-ap-punto--${color}`}>
+                <span className="pa-ap-num" aria-hidden="true">{i + 1}</span>
+                <span className="pa-ap-texto">
+                  <strong><Icon size={16} strokeWidth={2.4} aria-hidden="true" /> {titulo}</strong>
+                  <span><ConTermino text={texto} termino={termino} /></span>
                 </span>
-                <h3>{titulo}</h3>
-                <p><ConTermino text={texto} termino={termino} /></p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
         {/* ── Frente a lo habitual ────────────────────────────────────────── */}
-        <section className="fh-bloque" aria-labelledby="pa-versus-titulo">
+        <section className="fh-bloque pa-vs" aria-labelledby="pa-versus-titulo">
+          {/* Rediseñada de cero (19-11-2026, pedido por el admin): como una
+              corrección en el cuaderno. Cada fila, lo de las redes tachado en
+              coral y, debajo, lo que hay aquí, a mano y con su check verde. */}
           <div className="pa-cabeza">
-            <h2 id="pa-versus-titulo" className="fh-h2">Lo que suele enseñarse, y lo que ves aquí</h2>
+            <h2 id="pa-versus-titulo" className="fh-h2">
+              Lo que suele enseñarse, y <span className="pa-vs-marca">lo que ves aquí</span>
+            </h2>
+            {/* Solo en el ordenador: un móvil con su «me gusta» (las redes) y
+                un cuaderno con su check (lo de aquí). Decoración. */}
+            <span className="pa-vs-garabatos" aria-hidden="true">
+              <svg className="pa-vsg pa-vsg--movil" viewBox="0 0 60 90"><path d="M12.6 6.4c11.6-.6 23.8.3 35.2-.2 1.6 25.6-.4 52.4.4 77.6-11.8.6-23.8-.2-35.6.2-.6-25.8.4-51.8 0-77.6zM12.8 16.4c11.6-.2 23.4.3 35-.1M12.6 72.6c11.8-.3 23.4.3 35.2-.1M26.4 78.4c2.4-.2 4.8 0 7.2-.1M30.2 50.6c-6.8-4.8-11.4-9.2-9.8-14.2 1.4-4.2 7.2-4.8 9.6-.6 2.6-4.4 8.6-3.6 9.8.8 1.4 5-3.6 9.4-9.6 14z" /></svg>
+              <svg className="pa-vsg pa-vsg--cuaderno" viewBox="0 0 80 80"><path d="M14.6 8.4c17.4-.6 35.4.4 52.6-.2.6 20.6-.3 42.6.3 63.4-17.6.5-35.2-.3-52.8.2-.5-21 .3-42.4-.1-63.4zM8.4 18.4c4.2-.2 8.2.2 12.2 0M8.2 32.6c4.2-.3 8.4.2 12.4-.1M8.6 46.8c4-.2 8.2.3 12.2 0M8.4 61.2c4.2-.3 8.2.2 12.4-.1M30.6 40.4l9.2 10.4 17.4-24.6" /></svg>
+            </span>
+            <p className="pa-vs-leyenda" aria-hidden="true">
+              <span className="pa-vs-pildora pa-vs-pildora--no"><X size={13} strokeWidth={3.2} /> En redes</span>
+              <span className="pa-vs-pildora pa-vs-pildora--si"><Check size={13} strokeWidth={3.2} /> Portfolio Adelin</span>
+            </p>
           </div>
-          <div className="pa-versus">
-            <div className="pa-versus-col pa-versus-col--no">
-              <span className="pa-versus-cab"><span className="fh-marca"><X size={13} strokeWidth={3.2} aria-hidden="true" /></span> En redes</span>
+          {/* En el ordenador (19-11-2026, rehecha de cero a petición del admin):
+              dos hojas enfrentadas con un «vs» a mano en medio. La de la
+              izquierda, lo de las redes tachado; la de la derecha, más grande,
+              lo de aquí. En el móvil se usa la lista de abajo; cada una se
+              oculta donde no toca, así nadie lee lo mismo dos veces. */}
+          <div className="pa-vs-pc">
+            <div className="pa-vs-hoja pa-vs-hoja--no">
+              <p className="pa-vs-hoja-cab">
+                <span className="pa-vs-hoja-nota">En redes</span>
+                te enseñan <span className="pa-vs-hoja-mano">solo lo bonito</span>
+              </p>
               <ul>
-                {COMPARA.map((c) => <li key={c.otros}><X size={14} strokeWidth={3} aria-hidden="true" />{c.otros}</li>)}
+                {COMPARA.map((c) => (
+                  <li key={c.otros}>
+                    <span className="pa-vs-aspa" aria-hidden="true"><X size={14} strokeWidth={3.4} /></span>
+                    <s>{c.otros}</s>
+                  </li>
+                ))}
               </ul>
             </div>
-            <div className="pa-versus-col pa-versus-col--si">
-              <span className="pa-versus-cab"><span className="fh-marca"><Check size={13} strokeWidth={3.2} aria-hidden="true" /></span> Portfolio Adelin</span>
+            <span className="pa-vs-vs" aria-hidden="true">vs</span>
+            <div className="pa-vs-hoja pa-vs-hoja--si">
+              <p className="pa-vs-hoja-cab">
+                <span className="pa-vs-hoja-nota">Aquí</span>
+                lo ves <span className="pa-vs-hoja-mano">todo, tal cual</span>
+              </p>
               <ul>
-                {COMPARA.map((c) => <li key={c.aqui}><Check size={14} strokeWidth={3.2} aria-hidden="true" />{c.aqui}</li>)}
+                {COMPARA.map((c) => (
+                  <li key={c.aqui}>
+                    <span className="pa-vs-check" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span>
+                    {c.aqui}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
+          <ol className="pa-vs-lista">
+            {COMPARA.map((c) => (
+              <li key={c.aqui} className="pa-vs-fila">
+                <span className="pa-vs-no">
+                  <span className="sr-only">En redes: </span>
+                  <s>{c.otros}</s>
+                </span>
+                <span className="pa-vs-si">
+                  <span className="pa-vs-check" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span>
+                  <span><span className="sr-only">Aquí: </span>{c.aqui}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* ── Qué no es ───────────────────────────────────────────────────── */}
-        <section className="fh-bloque fh-bloque--estrecho">
-          <h2 className="fh-h2 fh-h2--peq">Para que nadie se lleve otra idea</h2>
-          <ul className="fh-noes">
+        {/* Rediseñada el 19-11-2026 (pedido por el admin): un pósit lila con
+            su celo, lo que NO es en cuatro líneas con su aspa a rotulador, y
+            la nota final a mano. */}
+        <section className="fh-bloque pa-noes" aria-labelledby="pa-noes-titulo">
+          <h2 id="pa-noes-titulo" className="pa-noes-titulo">
+            Para que nadie se lleve <span className="pa-noes-mano">otra idea</span>
+          </h2>
+          <ul className="pa-noes-lista">
             {NO_ES.map((n) => (
-              <li key={n}><span className="fh-marca" aria-hidden="true"><X size={12} strokeWidth={3.2} /></span>{n}</li>
+              <li key={n}>
+                <span className="pa-noes-aspa" aria-hidden="true"><X size={14} strokeWidth={3.4} /></span>
+                {n}
+              </li>
             ))}
           </ul>
-          <p className="fh-nota">
-            Solo hay compras en spot: sin <Link href="/glosario/futuros">futuros</Link> ni{" "}
-            <Link href="/glosario/apalancamiento">apalancamiento</Link>. Es información para consultar, no una orden de
-            compra.
+          <p className="pa-noes-nota">
+            Solo compras en spot: sin <Link href="/glosario/futuros">futuros</Link> ni{" "}
+            <Link href="/glosario/apalancamiento">apalancamiento</Link>. Es para consultar, no una orden de compra.
           </p>
         </section>
 
-        {/* ── Precio y llamada final, en el bloque de tinta de Premium ────── */}
-        <section className="fh-precio" id="suscribirse" aria-labelledby="pa-precio-titulo">
-          <div className="fh-precio-texto">
-            <span className="fh-sello"><Crown size={14} aria-hidden="true" /> Premium · todo incluido</span>
-            <h2 id="pa-precio-titulo" className="fh-precio-titulo">Ábrelo y júzgalo tú</h2>
-            <ul className="fh-incluye">
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Portfolio Adelin: spot y DCA de Bitcoin</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Precios de mercado en cada posición</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/diario">Diario de Trading</Link></li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
-            </ul>
-          </div>
+        {/* ── Precio y llamada final, rediseñada (19-11-2026, pedido por el
+            admin) en el estilo de la tarjeta Premium del menú: ficha amarilla
+            con contorno de rotulador, celo, etiqueta ladeada, las coronas de
+            pegatina y el precio repasado con fluorescente. ── */}
+        <section className="pa-pr" id="suscribirse" aria-labelledby="pa-precio-titulo">
+          {/* eslint-disable-next-line @next/next/no-img-element -- pegatina decorativa, ya optimizada */}
+          <img src="/cuaderno/premium-coronas-pegatina.webp" alt="" width={560} height={408} className="pa-pr-coronas" loading="lazy" draggable={false} />
+          <span className="pa-pr-sello"><Crown size={14} strokeWidth={2.6} aria-hidden="true" /> Premium · todo incluido</span>
+          <h2 id="pa-precio-titulo" className="pa-pr-titulo">Ábrelo y <span className="pa-pr-mano">júzgalo tú</span></h2>
+          {/* Flecha a mano, verde, del título a «Portfolio Adelin» (19-11-2026,
+              pedido por el admin). Decoración. */}
+          <SimboloEstudio tipo="flecha" color="menta" giro={62} tamano={64} semilla={14} retraso={300} className="pa-pr-flecha" />
 
-          <div className="fh-precio-caja">
+          <ul className="pa-pr-incluye">
+            {/* Lo de esta página, destacado (19-11-2026, pedido por el admin). */}
+            <li className="pa-pr-aqui"><span className="pa-pr-check pa-pr-check--menta" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span><strong>Portfolio Adelin</strong>: spot y DCA de Bitcoin</span><span className="pa-pr-aqui-nota" aria-hidden="true">estás aquí</span></li>
+            {/* Corregido el 19-11-2026 (pedido por el admin): lo que de verdad
+                incluye Premium, sin repetir lo del portfolio. */}
+            <li><span className="pa-pr-check pa-pr-check--cielo" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span>El <Link href="/herramientas/diario">Diario de Trading</Link> avanzado</span></li>
+            <li><span className="pa-pr-check pa-pr-check--azul" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span>El <Link href="/foro">foro</Link> de preguntas y respuestas</span></li>
+            <li><span className="pa-pr-check pa-pr-check--lila" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</span></li>
+          </ul>
+
+          <div className="pa-pr-pie">
             {isPremium ? (
-              <p className="fh-precio-ya">Ya tienes acceso.</p>
+              <p className="pa-pr-ya">Ya tienes acceso.</p>
             ) : (
-              <>
-                <p className="fh-precio-cifra">{PRECIO}<span>/mes</span></p>
-                <p className="fh-precio-dia">Unos {PRECIO_DIA} al día · el precio se te queda fijado</p>
-              </>
+              <p className="pa-pr-precio">
+                <strong>{PRECIO}</strong>
+                <span>al mes</span>
+                <small>unos {PRECIO_DIA} al día · el precio se te queda fijado</small>
+              </p>
             )}
-            <Cta premium={isPremium} grande texto="Desbloquear el portfolio" />
+            {/* El botón de Premium, rediseñado (19-11-2026, pedido por el admin):
+                lila de la paleta, con la corona dorada y texto corto. */}
+            {isPremium ? (
+              <Cta premium grande />
+            ) : (
+              <TeclaPremium tamano="grande" />
+            )}
             {!isPremium && (
-              <ul className="fh-confianza">
-                <li><ShieldCheck size={13} aria-hidden="true" />Sin permanencia</li>
-                <li><Zap size={13} aria-hidden="true" />Acceso inmediato</li>
-                <li><CreditCard size={13} aria-hidden="true" />Pago seguro con Stripe</li>
+              <ul className="pa-pr-confianza">
+                <li><ShieldCheck size={14} strokeWidth={2.6} aria-hidden="true" />Sin permanencia</li>
+                <li><Zap size={14} strokeWidth={2.6} aria-hidden="true" />Acceso inmediato</li>
+                <li><CreditCard size={14} strokeWidth={2.6} aria-hidden="true" />Pago seguro con Stripe</li>
               </ul>
             )}
           </div>
         </section>
 
-        {/* ── FAQ ─────────────────────────────────────────────────────────── */}
-        <section className="fh-bloque fh-bloque--estrecho">
-          <h2 className="fh-h2">Preguntas frecuentes</h2>
-          <div className="fh-faq">
-            {FAQ.map((f, i) => (
-              <details key={f.q} className="fh-faq-item">
-                <summary>
-                  <span className="fh-faq-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="fh-faq-q">{f.q}</span>
-                  <span className="fh-faq-icono" aria-hidden="true"><ArrowRight size={16} strokeWidth={3} /></span>
-                </summary>
-                <div className="fh-faq-respuesta"><p>{f.a}</p></div>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <DisclaimerRiesgo variante="portfolio" />
+        {/* Sin descargo propio (19-11-2026, pedido por el admin): ya lo cubre
+            el aviso de riesgo del pie de página. */}
       </main>
 
       <Footer />

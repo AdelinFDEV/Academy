@@ -78,10 +78,10 @@ export default async function HomePage() {
       {/* ── Nav ── */}
       <SiteNav user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
 
-      {/* El orden cuenta una historia (repaso del 17-11-2026): lo gratuito
-          primero (guías y, «también gratis», el diccionario y la
-          calculadora), luego los cursos, la comunidad (foro y canal) y, al
-          final, Premium con las dudas. Cada sección, su color (ESTILO.md). */}
+      {/* El orden de las secciones (19-11-2026, pedido por el admin): hero,
+          guías, foro, cursos, herramientas (diccionario y calculadora),
+          YouTube y, al final, las preguntas frecuentes. Cada sección lleva
+          dentro sus garabatos y pegatinas: se mueven con ella. */}
 
       {/* ── Hero: estilo «Cuaderno de estudio». Lleva el único <h1>. ── */}
       <HeroCuaderno
@@ -96,16 +96,16 @@ export default async function HomePage() {
           Desde el 10-10-2026 la academia son las guías. */}
       <GuidesHomeSection />
 
-      {/* ── Lo otro gratuito: el diccionario y la calculadora ── */}
-      <RecursosGratisHome />
+      {/* ── Lo último del foro ──
+          Solo sale si el foro existe para quien mira y hay preguntas. */}
+      <ForoEnPortada conSesion={!!user} />
 
       {/* ── Los cursos: el camino de un curso real y la lista de los publicados.
           Sin cursos publicados, no sale. ── */}
       <CursosHome cursos={cursos} preguntas={preguntasCursos} />
 
-      {/* ── Lo último del foro ──
-          Solo sale si el foro existe para quien mira y hay preguntas. */}
-      <ForoEnPortada conSesion={!!user} />
+      {/* ── Las herramientas gratis: el diccionario y la calculadora (con su boli) ── */}
+      <RecursosGratisHome />
 
       {/* ── Los últimos vídeos del canal ──
           Va a youtube.com (lento y fuera de nuestro control), así que se

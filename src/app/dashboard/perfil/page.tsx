@@ -17,6 +17,7 @@ import AvatarUsuario from "@/components/AvatarUsuario";
 import { Fila2FA, FilaEliminar, FilaPassword, FilaSesion } from "@/components/PerfilAcciones";
 import { InstagramIcon } from "@/components/SocialLinks";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import "./perfil.css";
 
 export const metadata: Metadata = {
@@ -360,9 +361,7 @@ export default async function PerfilPage({
             </ul>
             <div className="mp-premium-pie">
               <span className="mp-premium-precio">{precioEur(PREMIUM_PRICE_EUR)}<small>/mes</small></span>
-              <Tecla href="/premium" tamano="grande">
-                Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
-              </Tecla>
+              <TeclaPremium href="/premium" tamano="grande" />
             </div>
           </div>
         )}

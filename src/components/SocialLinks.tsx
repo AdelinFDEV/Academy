@@ -49,7 +49,9 @@ export default function SocialLinks() {
           className="footer-social-link"
         >
           {l.icon}
-          <span>{l.label}</span>
+          {/* Solo el icono (19-11-2026, pedido por el admin); el nombre, para
+              los lectores de pantalla. */}
+          <span className="sr-only">{l.label}</span>
         </a>
       ))}
     </div>

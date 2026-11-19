@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Award, BookOpenText, Check, Clock3, Layers, Lock } from "lucide-react";
 import Tecla, { type ColorTecla } from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Certificado from "@/components/aula/Certificado";
 import type { Certificado as CertificadoAlumno, Curso, CursoResumen, Sesion } from "@/lib/cursos";
 import { duracion, formatoNota, type ModuloBase } from "@/lib/cursos-progreso";
@@ -191,11 +192,15 @@ export default function TarjetaCurso({
         <MiniCamino camino={avance.camino} />
 
         <div className="cu-curso-acciones">
-          <Tecla href={cta.href} color={cta.color} prefetch={cta.href.startsWith("/api/") ? false : undefined}>
-            {cta.bloqueado && <Lock size={15} strokeWidth={2.6} aria-hidden="true" />}
-            {cta.texto}
-            <ArrowRight size={16} strokeWidth={2.6} aria-hidden="true" />
-          </Tecla>
+          {/* Sin Premium, el botón de Premium de toda la web (19-11-2026). */}
+          {cta.bloqueado ? (
+            <TeclaPremium href={cta.href} />
+          ) : (
+            <Tecla href={cta.href} color={cta.color} prefetch={cta.href.startsWith("/api/") ? false : undefined}>
+              {cta.texto}
+              <ArrowRight size={16} strokeWidth={2.6} aria-hidden="true" />
+            </Tecla>
+          )}
           <Tecla href={`/cursos/${curso.slug}`} color="blanca">Ver temario</Tecla>
         </div>
       </div>

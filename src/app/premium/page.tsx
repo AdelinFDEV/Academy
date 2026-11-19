@@ -11,6 +11,7 @@ import SiteNav from "@/components/SiteNav";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Certificado from "@/components/aula/Certificado";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 import { CoinGeckoGlyph } from "@/components/BrandMarks";
@@ -74,9 +75,7 @@ const COLORES_PREGUNTA = ["naranja", "azul", "menta", "lila", "cielo", "coral"] 
 /** El botón de compra: va al checkout de Stripe (que manda al registro si hace falta). */
 function Cta({ texto, ancho = false, tamano = "grande" }: { texto: string; ancho?: boolean; tamano?: "normal" | "grande" }) {
   return (
-    <Tecla href="/api/checkout" prefetch={false} tamano={tamano} ancho={ancho}>
-      <Crown size={18} aria-hidden="true" /> {texto} <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-    </Tecla>
+    <TeclaPremium tamano={tamano} ancho={ancho}>{texto}</TeclaPremium>
   );
 }
 

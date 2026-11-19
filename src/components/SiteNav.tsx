@@ -151,6 +151,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
           avatar={perfil.avatar}
           foro={foro}
           precio={precioEur(PREMIUM_PRICE_EUR)}
+          precioDia={precioEur(Math.round((PREMIUM_PRICE_EUR / 30) * 100) / 100)}
         />
       </div>
     </nav>

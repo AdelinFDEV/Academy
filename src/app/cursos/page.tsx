@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Award, BookOpenText, Check, ClipboardCheck, Clock3, CreditCard, GraduationCap, Layers, Play, ShieldCheck, Zap } from "lucide-react";
+import { Award, BookOpenText, Check, ClipboardCheck, Clock3, CreditCard, GraduationCap, Layers, Play, ShieldCheck, Zap } from "lucide-react";
 import Certificado from "@/components/aula/Certificado";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import Tecla from "@/components/cuaderno/Tecla";
+import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
@@ -167,9 +168,7 @@ export default async function CursosPage() {
                   <span className="cu-oferta-cab">Todos incluidos en Premium</span>
                   <span className="cu-oferta-precio"><strong>{PRECIO}</strong>/mes</span>
                   <span className="cu-oferta-nota">sin permanencia</span>
-                  <Tecla href="/api/checkout" prefetch={false} ancho>
-                    Desbloquear {resumen.length === 1 ? "el curso" : `los ${nf(resumen.length)} cursos`}
-                  </Tecla>
+                  <TeclaPremium ancho />
                   <Link href="/premium" className="cu-enlace">Ver todo lo que incluye</Link>
                 </div>
               ) : enMarcha ? (
@@ -291,10 +290,7 @@ export default async function CursosPage() {
                 <span className="cu-premium-sello">Premium</span>
                 <div className="cu-premium-importe">{PRECIO}<small>/mes</small></div>
                 <p className="cu-premium-dia">Unos {PRECIO_DIA} al día · sin permanencia</p>
-                <Tecla href="/api/checkout" prefetch={false} tamano="grande" ancho>
-                  {sesion ? "Hazme Premium" : "Empezar ahora"}
-                  <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-                </Tecla>
+                <TeclaPremium tamano="grande" ancho>{sesion ? "Hazme Premium" : "Hazte Premium"}</TeclaPremium>
                 <ul className="cu-premium-confianza">
                   <li><CreditCard size={14} aria-hidden="true" /> Pago seguro con Stripe</li>
                   <li><Zap size={14} aria-hidden="true" /> Acceso inmediato</li>
