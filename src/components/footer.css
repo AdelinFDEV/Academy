@@ -443,3 +443,10 @@
   border-radius: 13px 11px 14px 10px;
 }
 .footer-social-link svg { width: 20px; height: 20px; }
+/* «Hazte Premium»: en el ordenador, dentro de su columna; en el móvil, a lo
+   ancho de las dos columnas (19-11-2026). */
+.footer-premium-link--movil { display: none; }
+@media (max-width: 640px) {
+  .footer-premium-link--pc { display: none; }
+  .footer-premium-link.footer-premium-link--movil { display: flex; grid-column: 1 / -1; margin-top: 0; font-size: 13px; }
+}

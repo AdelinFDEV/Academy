@@ -56,8 +56,12 @@ export default function Footer() {
             <Link href={detalleDe(diario)}>{diario.label}</Link>
             <Link href={detalleDe(cartera)}>{cartera.label}</Link>
             <Link href={detalleDe(cursos)}>{cursos.label}</Link>
-            <TeclaPremium href="/premium" tamano="peq" flecha={false} className="footer-premium-link" />
+            <TeclaPremium href="/premium" tamano="peq" flecha={false} className="footer-premium-link footer-premium-link--pc" />
           </div>
+
+          {/* En el móvil, «Hazte Premium» a lo ancho de las dos columnas
+              (19-11-2026, pedido por el admin); el de la columna, oculto. */}
+          <TeclaPremium href="/premium" tamano="peq" flecha={false} ancho className="footer-premium-link footer-premium-link--movil" />
 
           <div className="footer-links-group footer-tono--azul">
             <span className="footer-links-title">Tu cuenta</span>

@@ -590,46 +590,6 @@
 .gl-hoja .gl-tachon::after { height: 0.12em; }
 .gl-hoja .gl-tachon { white-space: nowrap; }
 
-/* Las páginas del listado (19-11-2026): 3 guías por página. Teclitas
-   blancas con contorno de rotulador; la actual, en cielo y hundida. */
-.gl-mazos > li[hidden] { display: none; }
-.gl-paginas {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 2.4rem;
-}
-.gl-pag {
-  display: inline-grid;
-  place-items: center;
-  min-width: 46px;
-  height: 46px;
-  padding: 0 10px;
-  border: 2px solid var(--tinta);
-  border-radius: 14px 12px 15px 11px;
-  background: #fff;
-  box-shadow: 0 4px 0 var(--tinta);
-  font-family: var(--letra-titular);
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--tinta);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.gl-pag:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0 var(--tinta); }
-.gl-pag:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--tinta); }
-.gl-pag:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
-.gl-pag.is-actual {
-  background: var(--cielo);
-  transform: translateY(3px) rotate(-3deg);
-  box-shadow: 0 1px 0 var(--tinta);
-}
-.gl-pag:disabled { opacity: 0.35; cursor: default; box-shadow: 0 2px 0 var(--tinta); }
-@media (prefers-reduced-motion: reduce) {
-  .gl-pag { transition: none; }
-}
 
 /* La llamada a registrarse, rediseñada (19-11-2026, pedido por el admin):
    ficha blanca con contorno de rotulador, un trozo de celo arriba, el pósit

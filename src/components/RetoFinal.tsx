@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import "./reto-final.css";
 
 /**
  * El «reto final» del camino de los cursos (CursosHome.tsx): la pegatina del

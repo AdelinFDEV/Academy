@@ -10,7 +10,7 @@ import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
 import { itemListSchema } from "@/lib/schema";
 import Tecla from "@/components/cuaderno/Tecla";
-import PaginasGuias from "./PaginasGuias";
+import Paginas from "@/components/cuaderno/Paginas";
 import "./listado.css";
 
 export const metadata: Metadata = {
@@ -172,7 +172,7 @@ export default async function GuiasPage() {
           <h2 className="gl-titulo">
             Elige la que te pique la <span className="gl-tc-gratis">curiosidad</span>
           </h2>
-          <PaginasGuias>
+          <Paginas claseLista="gl-mazos" movil={3} pc={6} etiqueta="Páginas de guías">
             {recientes.map((g) => (
                 <Link key={g.slug} href={`/guias/${g.slug}`} className="gl-mazo">
                   <span className="gl-mazo-hoja gl-mazo-hoja--1" aria-hidden="true" />
@@ -197,7 +197,7 @@ export default async function GuiasPage() {
                   </span>
                 </Link>
             ))}
-          </PaginasGuias>
+          </Paginas>
         </section>
 
         {/* CTA registro, rediseñada el 19-11-2026 (pedido por el admin): una

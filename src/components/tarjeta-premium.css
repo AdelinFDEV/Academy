@@ -1,0 +1,375 @@
+/* La tarjeta Premium del final de página (TarjetaPremium.tsx), la misma en
+   el portfolio y en los cursos. Sacada de portfolio.css el 19-11-2026 para
+   poder usarla en las dos páginas; conserva sus nombres «pa-pr-*». */
+
+/* ── El bloque de precio final, rediseñado (19-11-2026, pedido por el
+   admin) en el estilo de la tarjeta Premium del menú (menu-movil.css):
+   ficha amarilla suave con contorno de rotulador, celo coral, etiqueta
+   ladeada, las coronas a la derecha y el precio con fluorescente. ── */
+
+.pa-pr {
+  position: relative;
+  margin: clamp(3rem, 7vw, 5rem) 0 clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(26px, 5vw, 44px) clamp(20px, 5vw, 48px);
+  background: var(--amarillo-s);
+  border: 2.5px solid var(--tinta);
+  border-radius: 26px 20px 28px 18px / 20px 28px 18px 26px;
+  box-shadow: 0 6px 0 var(--tinta);
+}
+
+.pa-pr::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 36px;
+  width: 78px;
+  height: 22px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--coral) 45%, transparent);
+  rotate: -4deg;
+  pointer-events: none;
+}
+
+.pa-pr-coronas {
+  position: absolute;
+  top: -34px;
+  right: clamp(-6px, 2vw, 30px);
+  width: clamp(120px, 22vw, 220px);
+  height: auto;
+  pointer-events: none;
+  rotate: 6deg;
+}
+
+.pa-pr-sello {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--naranja);
+  border: 2px solid var(--tinta);
+  border-radius: 9px 7px 10px 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  rotate: -2deg;
+}
+
+.pa-pr-titulo {
+  max-width: 60%;
+  margin: 0.8rem 0 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.pa-pr-mano {
+  display: inline-block;
+  font-family: var(--letra-mano);
+  color: var(--naranja-o);
+  rotate: -3deg;
+}
+
+.pa-pr-incluye {
+  display: grid;
+  gap: 10px;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.pa-pr-incluye li { display: flex; align-items: center; gap: 10px; }
+
+.pa-pr-incluye a { color: var(--tinta); font-weight: 900; text-decoration: underline 2px var(--naranja); text-underline-offset: 3px; }
+
+.pa-pr-check {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--tinta);
+  border-radius: 8px 6px 9px 5px;
+  color: var(--tinta);
+}
+
+.pa-pr-check--menta { background: var(--menta); }
+
+.pa-pr-check--cielo { background: var(--cielo); }
+
+.pa-pr-check--azul { background: var(--azul-s, var(--cielo-s)); }
+
+.pa-pr-check--lila { background: var(--lila-s); }
+
+.pa-pr-pie {
+  display: grid;
+  gap: 14px;
+  margin-top: 1.6rem;
+  padding-top: 1.4rem;
+  border-top: 2px dashed color-mix(in srgb, var(--tinta) 30%, transparent);
+}
+
+.pa-pr-precio { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0; color: var(--tinta); }
+
+.pa-pr-precio strong {
+  padding: 0 0.12em;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.4rem, 7vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(transparent 58%, color-mix(in srgb, var(--amarillo) 85%, transparent) 58%, color-mix(in srgb, var(--amarillo) 85%, transparent) 92%, transparent 92%);
+}
+
+.pa-pr-precio > span { font-family: var(--letra-mano); font-size: 22px; font-weight: 700; color: var(--naranja-o); rotate: -5deg; }
+
+.pa-pr-precio small { flex-basis: 100%; font-size: 13px; font-weight: 700; color: var(--tinta-2); }
+
+.pa-pr-ya { margin: 0; font-weight: 900; color: var(--menta-o); }
+
+.pa-pr-pie > .tecla { width: 100%; justify-content: center; }
+
+.pa-pr-confianza { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+
+.pa-pr-confianza li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #fff;
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.pa-pr-confianza svg { color: var(--menta-o); }
+
+@media (min-width: 901px) {
+  .pa-pr-pie { grid-template-columns: auto minmax(260px, 340px); align-items: center; justify-content: space-between; }
+  .pa-pr-confianza { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .pa-pr-titulo { max-width: 62%; }
+  .pa-pr-coronas { top: -26px; width: 118px; }
+}
+
+.pa-pr-pie > .tecla { min-width: 0; max-width: 100%; white-space: normal; text-align: center; }
+
+.pa-pr-sello { position: relative; z-index: 1; }
+
+@media (max-width: 640px) {
+  .pa-pr-pie > .tecla { font-size: 15px; padding-inline: 14px; }
+  .pa-pr-coronas { top: -44px; right: -10px; width: 112px; }
+}
+
+/* El Portfolio Adelin, destacado en la lista de Premium: es la página en la
+   que se está (19-11-2026, pedido por el admin). */
+
+.pa-pr-incluye .pa-pr-aqui {
+  position: relative;
+  margin: 2px -8px 4px;
+  padding: 10px 12px;
+  background: var(--menta-s);
+  border: 2px solid var(--tinta);
+  border-radius: 12px 10px 13px 9px;
+  box-shadow: 0 3px 0 var(--tinta);
+  font-size: 1.05rem;
+  rotate: -0.8deg;
+}
+
+.pa-pr-aqui strong { font-weight: 900; color: var(--menta-o); }
+
+.pa-pr-aqui-nota {
+  position: absolute;
+  top: -12px;
+  right: 10px;
+  padding: 1px 8px;
+  background: var(--amarillo);
+  border: 2px solid var(--tinta);
+  border-radius: 7px 5px 8px 4px;
+  font-family: var(--letra-mano);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tinta);
+  rotate: 4deg;
+}
+
+/* Las coronas de la tarjeta Premium, con balanceo (19-11-2026, pedido por el
+   admin). */
+
+.pa-pr-coronas {
+  transform-origin: 50% 85%;
+  animation: pa-pr-coronas 3.6s ease-in-out infinite;
+}
+
+@keyframes pa-pr-coronas {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(-7deg) translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-pr-coronas { animation: none; }
+}
+
+/* El botón de Premium de esta tarjeta es el de toda la web: TeclaPremium
+   (src/components/cuaderno/tecla-premium.css), desde el 19-11-2026. */
+
+.pa-pr { margin-bottom: 0.5rem; }
+
+/* La flecha a mano del título a «Portfolio Adelin» (19-11-2026). */
+
+.pa-pr-flecha {
+  position: absolute;
+  top: 118px;
+  right: 30px;
+  width: 74px;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: var(--menta);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  rotate: 4deg;
+  pointer-events: none;
+}
+
+/* Colocada en el hueco a la derecha del título, por encima de la ficha. */
+
+.pa-pr-flecha { top: 84px; right: 34px; width: 64px; z-index: 2; }
+
+.pa-pr-incluye { margin-top: 1.9rem; }
+
+@media (min-width: 901px) {
+  .pa-pr-flecha { top: 96px; right: auto; left: min(54%, 420px); width: 80px; }
+}
+
+/* Que no pise la etiqueta «estás aquí»: la punta cae sobre «Portfolio Adelin». */
+
+@media (max-width: 900px) {
+  .pa-pr-flecha { right: 104px; }
+}
+
+/* La flecha, ahora a rotulador de verdad (SimboloEstudio, rough.js): sin el
+   trazo propio del SVG anterior; medidas explícitas o se queda en nada. */
+
+.pa-pr-flecha { width: 78px; height: 78px; stroke: none; rotate: none; }
+
+@media (max-width: 900px) {
+  .pa-pr-flecha { top: 92px; right: 96px; }
+}
+
+/* Más a la izquierda, pegada al título, y algo más pequeña (19-11-2026). */
+
+.pa-pr-flecha { width: 64px; height: 64px; }
+
+@media (max-width: 900px) {
+  .pa-pr-flecha { top: 100px; right: 128px; }
+}
+
+@media (max-width: 900px) {
+  .pa-pr-flecha { right: 152px; }
+}
+
+/* ── La tarjeta Premium en el ordenador, reorganizada (19-11-2026, pedido
+   por el admin; solo PC): dos columnas. A la izquierda, la etiqueta, el
+   título y lo que incluye; a la derecha, el precio, el botón y las garantías
+   en una ficha blanca bajo las coronas. «Portfolio Adelin» destacado a su
+   medida, con «estás aquí» grande a su lado. ── */
+
+@media (min-width: 901px) {
+  .pa-pr {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+    padding: 46px 48px 44px;
+  }
+  .pa-pr-sello { grid-column: 1; grid-row: 1; justify-self: start; }
+  .pa-pr-titulo { grid-column: 1; grid-row: 2; max-width: none; }
+  .pa-pr-incluye { grid-column: 1; grid-row: 3; margin-top: 2.2rem; gap: 14px; font-size: 1.05rem; }
+  .pa-pr-incluye .pa-pr-aqui {
+    justify-self: start;
+    width: fit-content;
+    margin: 0 0 6px -10px;
+    padding: 12px 18px;
+    font-size: 1.1rem;
+  }
+  .pa-pr-aqui-nota {
+    top: 50%;
+    right: auto;
+    left: calc(100% + 18px);
+    padding: 3px 12px;
+    font-size: 21px;
+    white-space: nowrap;
+    transform: translateY(-50%);
+    rotate: -4deg;
+  }
+  .pa-pr-aqui-nota::before {
+    content: "←";
+    margin-right: 6px;
+    font-family: var(--letra-texto);
+    font-weight: 900;
+  }
+  .pa-pr-pie {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin-top: 90px;
+    padding: 24px 24px 20px;
+    background: #fff;
+    border: 2px solid var(--tinta);
+    border-top: 2px solid var(--tinta);
+    border-radius: 18px 14px 20px 13px;
+    box-shadow: 0 5px 0 var(--tinta);
+    rotate: 1deg;
+  }
+  .pa-pr-precio { justify-content: center; text-align: center; }
+  .pa-pr-precio small { text-align: center; }
+  .pa-pr-confianza { justify-content: center; }
+  .pa-pr-coronas { top: -40px; right: 40px; width: 200px; }
+  .pa-pr-flecha { top: 118px; left: 470px; right: auto; }
+}
+
+@media (min-width: 901px) {
+  .pa-pr-flecha { top: 112px; left: 350px; }
+}
+
+@media (min-width: 901px) {
+  .pa-pr-incluye { margin-top: 3.4rem; }
+  .pa-pr-flecha { top: 142px; left: 470px; rotate: 18deg; }
+}
+
+@media (min-width: 901px) {
+  .pa-pr-flecha { left: 372px; }
+}
+
+/* PC: sin la flecha verde; el título y la etiqueta naranja, algo más
+   grandes (19-11-2026, pedido por el admin). */
+
+@media (min-width: 901px) {
+  .pa-pr-flecha { display: none; }
+  .pa-pr-incluye { margin-top: 2.2rem; }
+  .pa-pr-titulo { font-size: clamp(2.6rem, 3.6vw, 3.3rem); }
+  .pa-pr-sello { padding: 6px 15px; font-size: 14px; }
+  .pa-pr-sello svg { width: 17px; height: 17px; }
+}
+
+/* PC: la pieza destacada deja sitio a su «← estás aquí» aunque su texto sea
+   largo (el de los cursos lo es). */
+@media (min-width: 901px) {
+  .pa-pr-incluye .pa-pr-aqui { max-width: calc(100% - 150px); }
+}

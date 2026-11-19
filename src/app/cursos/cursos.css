@@ -1518,3 +1518,960 @@ p.fc-estado { margin-top: 0.7rem; }
   .fc-parada { gap: 10px; }
   .fc-bocadillo { font-size: 0.74rem; translate: -22% 0; }
 }
+
+/* «módulo a módulo» a mano, en lila, como los demás textos destacados de la
+   web; y más aire bajo la barra, que sin las migas quedaba pegada
+   (19-11-2026, pedido por el admin). */
+.cu-titulo-mano {
+  font-family: var(--letra-mano);
+  font-size: 1.12em;
+  font-weight: 700;
+  color: var(--lila-o);
+}
+.cu-cab { padding-top: 1.6rem; }
+@media (max-width: 640px) {
+  .cu-cab { padding-top: 1.3rem; }
+}
+
+/* La oferta: los cursos de hoy + todos los que lleguen (19-11-2026, pedido
+   por el admin). Dos fichas con un «+» a mano y la frase «sin pagar nada
+   más», antes del precio. */
+.cu-oferta-dos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 4px 0 2px;
+}
+.cu-oferta-pieza {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 96px;
+  padding: 8px 12px;
+  border: 2px solid var(--tinta);
+  border-radius: 12px 10px 13px 9px;
+  box-shadow: 0 3px 0 var(--tinta);
+}
+.cu-oferta-pieza--hoy { background: var(--lila-s); rotate: -2deg; }
+.cu-oferta-pieza--futuro { background: var(--amarillo); rotate: 2deg; }
+.cu-oferta-pieza b {
+  font-family: var(--letra-titular);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--tinta);
+}
+.cu-oferta-pieza--futuro b { font-family: var(--letra-mano); font-size: 1.9rem; }
+.cu-oferta-pieza small { font-size: 12px; font-weight: 800; color: var(--tinta-2); }
+.cu-oferta-mas {
+  font-family: var(--letra-mano);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--lila-o);
+}
+.cu-oferta-mano {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--lila-o);
+  text-decoration: underline wavy var(--lila);
+  text-underline-offset: 5px;
+  rotate: -2deg;
+}
+
+/* La tarjeta de oferta, repasada entera (19-11-2026, pedido por el admin:
+   que se lea mejor y con mejor precio). Contorno de rotulador, cabecera más
+   grande, las fichas con más letra, y el precio con fluorescente amarillo,
+   «al mes» a mano, lo del día y las garantías como etiquetas. */
+.cu-oferta {
+  gap: 8px;
+  padding: 30px 22px 20px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 24px 18px 26px 17px;
+  box-shadow: 0 6px 0 var(--tinta);
+}
+.cu-oferta-cab { font-size: 13.5px; color: var(--lila-o); }
+.cu-oferta-dos { gap: 12px; margin: 4px 0; }
+.cu-oferta-pieza { min-width: 112px; padding: 10px 14px; }
+.cu-oferta-pieza b { font-size: 2rem; }
+.cu-oferta-pieza--futuro b { font-size: 2.2rem; }
+.cu-oferta-pieza small { font-size: 13px; color: var(--tinta); }
+.cu-oferta-mano { font-size: 23px; margin-bottom: 4px; }
+
+.cu-oferta-precio {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 2px dashed color-mix(in srgb, var(--tinta) 22%, transparent);
+}
+.cu-oferta-precio strong {
+  position: relative;
+  z-index: 0;
+  padding: 0 0.1em;
+  font-size: 3rem;
+  line-height: 1;
+  rotate: -2deg;
+}
+.cu-oferta-precio strong::before {
+  content: "";
+  position: absolute;
+  left: -0.04em;
+  right: -0.06em;
+  bottom: 0.04em;
+  height: 0.42em;
+  z-index: -1;
+  background: var(--amarillo);
+  border-radius: 40% 60% 45% 55% / 60% 40% 60% 40%;
+  rotate: -1.5deg;
+}
+.cu-oferta-mes {
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--lila-o);
+  rotate: -6deg;
+}
+.cu-oferta-dia { font-size: 14px; font-weight: 800; color: var(--tinta-2); }
+.cu-oferta-garantias {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0 12px;
+}
+.cu-oferta-garantias span {
+  padding: 3px 10px;
+  background: var(--menta-s);
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+.cu-oferta .cu-oferta-cab { color: var(--lila-o); font-size: 13.5px; }
+
+/* ── «Todo lo que hay dentro», rehecha de cero (19-11-2026, pedido por el
+   admin): una ficha con contorno de rotulador, el título a mano, las cuatro
+   cifras grandes en su color separadas por raya discontinua, y la duración
+   en una franja amarilla. ── */
+.cu-dentro {
+  position: relative;
+  margin-top: clamp(2rem, 4vw, 2.8rem);
+  padding: 18px 18px 0;
+  overflow: hidden;
+  background: #fff;
+  border: 2.5px solid var(--tinta);
+  border-radius: 20px 16px 22px 15px;
+  box-shadow: 0 6px 0 var(--tinta);
+  rotate: -0.6deg;
+}
+.cu-dentro-titulo {
+  margin: 0 0 10px;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--lila-o);
+  rotate: -2deg;
+}
+.cu-dentro-cifras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+.cu-dentro-cifra {
+  --c: var(--lila-o);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 6px 14px;
+}
+.cu-dentro-cifra:nth-child(odd) { border-right: 2px dashed color-mix(in srgb, var(--tinta) 20%, transparent); padding-right: 14px; }
+.cu-dentro-cifra:nth-child(even) { padding-left: 16px; }
+.cu-dentro-cifra:nth-child(-n+2) { border-bottom: 2px dashed color-mix(in srgb, var(--tinta) 20%, transparent); }
+.cu-dentro-cifra--azul { --c: var(--azul-o); }
+.cu-dentro-cifra--menta { --c: var(--menta-o); }
+.cu-dentro-cifra--coral { --c: var(--coral-o); }
+.cu-dentro-cifra dd {
+  order: 1;
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--c);
+}
+.cu-dentro-cifra dt {
+  order: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+.cu-dentro-cifra dt svg { color: var(--c); }
+.cu-dentro-horas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 8px -18px 0;
+  padding: 12px 16px;
+  background: var(--amarillo);
+  border-top: 2.5px solid var(--tinta);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tinta);
+}
+.cu-dentro-horas strong { font-family: var(--letra-titular); font-size: 1.35rem; font-weight: 800; }
+@media (min-width: 901px) {
+  .cu-dentro-cifras { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cu-dentro-cifra:nth-child(n) { border: 0; padding: 10px 20px 16px; }
+  .cu-dentro-cifra + .cu-dentro-cifra { border-left: 2px dashed color-mix(in srgb, var(--tinta) 20%, transparent); }
+}
+
+/* «Todo lo que hay dentro», otra vuelta (19-11-2026, pedido por el admin):
+   cada cifra es ya una ficha de su color, con contorno, su icono en una
+   teclita arriba a la derecha y un giro distinto; la ficha grande lleva celo
+   y el título subrayado a mano. */
+.cu-dentro { padding: 22px 18px 0; overflow: visible; }
+.cu-dentro::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  right: 34px;
+  width: 84px;
+  height: 22px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--lila) 40%, transparent);
+  rotate: 5deg;
+}
+.cu-dentro-titulo {
+  font-size: 27px;
+  margin-bottom: 14px;
+  text-decoration: underline wavy var(--lila);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+.cu-dentro-cifras { gap: 14px 12px; }
+.cu-dentro-cifra,
+.cu-dentro-cifra:nth-child(n) {
+  --s: var(--lila-s);
+  position: relative;
+  padding: 12px 14px 12px;
+  background: var(--s);
+  border: 2px solid var(--tinta);
+  border-radius: 13px 10px 14px 9px;
+  box-shadow: 0 4px 0 var(--tinta);
+}
+.cu-dentro-cifra--azul { --s: var(--azul-s); }
+.cu-dentro-cifra--menta { --s: var(--menta-s); }
+.cu-dentro-cifra--coral { --s: var(--coral-s); }
+.cu-dentro-cifra:nth-child(1) { rotate: -1.6deg; }
+.cu-dentro-cifra:nth-child(2) { rotate: 1.3deg; }
+.cu-dentro-cifra:nth-child(3) { rotate: 0.9deg; }
+.cu-dentro-cifra:nth-child(4) { rotate: -1.2deg; }
+.cu-dentro-cifra dd { font-size: 2.3rem; }
+.cu-dentro-cifra dt { font-family: var(--letra-mano); font-size: 19px; font-weight: 700; }
+.cu-dentro-cifra dt svg {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  box-sizing: content-box;
+  padding: 5px;
+  background: #fff;
+  border: 2px solid var(--tinta);
+  border-radius: 8px 6px 9px 5px;
+}
+.cu-dentro-horas {
+  margin-top: 18px;
+  border-radius: 0 0 18px 13px;
+  font-family: var(--letra-mano);
+  font-size: 20px;
+}
+.cu-dentro-horas strong { font-family: var(--letra-titular); font-size: 1.45rem; }
+@media (min-width: 901px) {
+  .cu-dentro-cifra + .cu-dentro-cifra { border-left: 2px solid var(--tinta); }
+}
+.cu-dentro-cifra.cu-dentro-cifra--azul { --s: var(--azul-s); }
+.cu-dentro-cifra.cu-dentro-cifra--menta { --s: var(--menta-s); }
+.cu-dentro-cifra.cu-dentro-cifra--coral { --s: var(--coral-s); }
+
+/* ── La tarjeta de curso en el móvil, compacta (19-11-2026, pedido por el
+   admin; solo móvil): portada más baja, el sello pequeño en línea con el
+   número y el título, el subtítulo en dos líneas, los datos en una sola
+   línea, sin el temario (está en «Ver temario») y los dos botones juntos. ── */
+@media (max-width: 640px) {
+  .cu-lista .cu-curso { border: 2px solid var(--tinta); box-shadow: 0 5px 0 var(--tinta); }
+  .cu-lista .cu-curso-portada { aspect-ratio: 20 / 7.5; }
+  .cu-lista .cu-curso-cuerpo { padding: 0 8px 14px; }
+  .cu-lista .cu-curso-cab { margin-top: -22px; gap: 8px; }
+  .cu-lista .cu-curso-sello { width: 44px; height: 44px; }
+  .cu-lista .cu-curso-sello svg { width: 20px; height: 20px; }
+  .cu-lista .cu-curso-num { font-size: 17px; }
+  .cu-lista .cu-curso-titulo { margin-top: 0.4rem; font-size: 1.3rem; }
+  .cu-lista .cu-curso-sub {
+    margin-top: 0.3rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cu-lista .cu-curso-datos { flex-wrap: nowrap; gap: 5px; margin-top: 0.7rem; }
+  .cu-lista .cu-curso-datos li { padding: 3px 8px; font-size: 12px; white-space: nowrap; }
+  .cu-lista .cu-curso-datos svg { width: 12px; height: 12px; }
+  .cu-lista .cu-curso--nuevo .cu-curso-temario { display: none; }
+  .cu-lista .cu-curso .cu-mini { margin-top: 0.9rem; }
+  .cu-lista .cu-curso-acciones { flex-wrap: nowrap; gap: 8px; padding-top: 0.9rem; }
+  .cu-lista .cu-curso-acciones .tecla { flex: 1 1 auto; padding-inline: 12px; font-size: 13px; }
+  .cu-lista .cu-curso-acciones .tecla--blanca { flex: 0 0 auto; }
+}
+/* Que el camino quepa aunque el curso tenga 7 módulos, y «Hazte Premium» en
+   una línea junto a «Ver temario». */
+@media (max-width: 640px) {
+  .cu-lista .cu-mini { gap: 2px; flex-wrap: nowrap; }
+  .cu-lista .cu-mini-tramo { gap: 2px; }
+  .cu-lista .cu-mini-nodo { width: 22px; height: 22px; font-size: 0.66rem; }
+  .cu-lista .cu-mini-examen { width: 8px; height: 8px; }
+  .cu-lista .cu-mini-meta { width: 26px; height: 26px; }
+  .cu-lista .cu-curso-acciones .tecla-premium { white-space: nowrap; gap: 6px; padding-inline: 10px; }
+  .cu-lista .cu-curso-acciones .tecla { font-size: 12.5px; }
+}
+/* En el móvil, el camino de la tarjeta solo ilustra (19-11-2026, pedido por
+   el admin): los dos primeros módulos, unos puntos suspensivos, el examen
+   final y el logro. Los demás módulos se esconden. */
+@media (max-width: 640px) {
+  .cu-lista .cu-mini-tramo:nth-child(n+3):nth-last-child(n+3) { display: none; }
+  .cu-lista .cu-mini-tramo:nth-child(2):not(:nth-last-child(-n+3))::after {
+    content: "···";
+    margin: 0 4px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--tinta-3);
+  }
+  .cu-lista .cu-mini { gap: 4px; }
+  .cu-lista .cu-mini-tramo { gap: 4px; }
+  .cu-lista .cu-mini-nodo { width: 26px; height: 26px; font-size: 0.74rem; }
+  .cu-lista .cu-mini-examen { width: 10px; height: 10px; }
+  .cu-lista .cu-mini-meta { width: 30px; height: 30px; }
+}
+/* El nivel, algo más abajo, para dejar sitio al celo que sujeta la foto. */
+.cu-lista .cu-curso-chips { top: 30px; }
+
+/* Sin «curso 01»; el sello sube para separarse del título, y los datos de
+   cada curso, cada uno en su pastel (19-11-2026, pedido por el admin). */
+.cu-lista .cu-curso-cab { margin-top: -38px; }
+.cu-lista .cu-curso-titulo { margin-top: 0.8rem; }
+.cu-lista .cu-curso-datos li { color: var(--tinta); border: 1.5px solid color-mix(in srgb, var(--tinta) 25%, transparent); }
+.cu-lista .cu-curso-datos li:nth-child(1) { background: var(--lila-s); }
+.cu-lista .cu-curso-datos li:nth-child(2) { background: var(--menta-s); }
+.cu-lista .cu-curso-datos li:nth-child(3) { background: var(--amarillo-s); }
+@media (max-width: 640px) {
+  .cu-lista .cu-curso-cab { margin-top: -30px; }
+  .cu-lista .cu-curso-titulo { margin-top: 0.6rem; }
+}
+@media (max-width: 640px) { .cu-lista .cu-mini { width: fit-content; max-width: 100%; } }
+
+/* El recorrido de la tarjeta, más bonito (19-11-2026, pedido por el admin):
+   va en una cajita de papel con contorno; las paradas, con contorno de
+   rotulador; y la raya, a puntos finos y solo entre ellas. */
+.cu-lista .cu-mini {
+  gap: 6px;
+  margin-top: 1rem;
+  padding: 8px 12px 10px;
+  background: var(--fondo);
+  border: 2px dashed color-mix(in srgb, var(--tinta) 28%, transparent);
+  border-radius: 14px 11px 15px 10px;
+  overflow: visible;
+}
+.cu-lista .cu-mini::before {
+  left: 24px;
+  right: 24px;
+  top: calc(50% - 1px);
+  height: 3px;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--tinta) 35%, transparent) 0 5px, transparent 5px 10px);
+}
+.cu-lista .cu-mini-nodo,
+.cu-lista .cu-mini-meta {
+  border: 2px solid var(--tinta);
+  box-shadow: 0 2px 0 var(--tinta);
+}
+.cu-lista .cu-mini-nodo.is-abierto,
+.cu-lista .cu-mini-nodo.is-bloq,
+.cu-lista .cu-mini-nodo.is-espera { background: #fff; color: var(--tinta-2); }
+.cu-lista .cu-mini-examen { border: 1.5px solid var(--tinta); box-shadow: none; }
+.cu-lista .cu-mini-tramo:nth-child(2):not(:nth-last-child(-n+3))::after {
+  color: var(--tinta-2);
+  font-size: 15px;
+}
+@media (max-width: 640px) {
+  .cu-lista .cu-mini { width: fit-content; max-width: 100%; }
+}
+
+/* ── El certificado, mejorado (19-11-2026, pedido por el admin): «tu
+   nombre» a mano, el villano del examen final en una ficha coral con su
+   frase, el texto más corto y las tres ventajas como fichas de color. ── */
+.cu-cert-nombre {
+  font-family: var(--letra-mano);
+  font-size: 1.12em;
+  color: var(--lila-o);
+}
+.cu-cert-reto {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 1.2rem 0 0;
+  padding: 14px 16px 14px 12px;
+  background: var(--coral-s);
+  border: 2px solid var(--tinta);
+  border-radius: 14px 11px 15px 10px;
+  box-shadow: 0 4px 0 var(--tinta);
+  rotate: -0.8deg;
+}
+.cu-cert-villano {
+  flex: none;
+  width: 92px;
+  height: auto;
+  margin: -26px 0 -10px -6px;
+  transform-origin: 50% 90%;
+  animation: cu-cert-villano 3s ease-in-out infinite;
+}
+@keyframes cu-cert-villano {
+  0%, 100% { rotate: -6deg; }
+  50% { rotate: 4deg; }
+}
+.cu-cert-reto p { margin: 0; font-size: 0.98rem; font-weight: 600; line-height: 1.5; color: var(--tinta); }
+.cu-cert-mano {
+  display: block;
+  font-family: var(--letra-mano);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--coral-o);
+  rotate: -2deg;
+}
+.cu-cert-jefe {
+  padding: 0 0.1em;
+  font-weight: 900;
+  background: linear-gradient(transparent 55%, color-mix(in srgb, var(--coral) 45%, transparent) 55%, color-mix(in srgb, var(--coral) 45%, transparent) 92%, transparent 92%);
+}
+.cu-cert-p { margin-top: 1rem; }
+.cu-cert-checks { display: grid; gap: 10px; margin: 1.1rem 0 0; padding: 0; list-style: none; }
+.cu-cert-check {
+  --s: var(--lila-s);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--s);
+  border: 2px solid var(--tinta);
+  border-radius: 12px 10px 13px 9px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+.cu-cert-check:nth-child(2) { rotate: 0.6deg; }
+.cu-cert-check:nth-child(3) { rotate: -0.5deg; }
+.cu-cert-check--amarillo { --s: var(--amarillo-s); }
+.cu-cert-check--menta { --s: var(--menta-s); }
+.cu-cert-check svg { flex: none; color: var(--tinta); }
+@media (prefers-reduced-motion: reduce) {
+  .cu-cert-villano { animation: none; }
+}
+/* El villano en /cursos es el componente con diálogo (RetoFinal): su caja
+   ya no se balancea (lo hace la imagen) y el bocadillo sale encima. */
+.cu-cert-villano { position: relative; display: block; animation: none; }
+.cu-cert-villano .ch-reto { position: relative; display: block; width: 92px; }
+.cu-cert-villano .ch-reto-bocadillo { font-size: 18px; }
+/* El bloque del certificado en azul suave, con contorno: el certificado
+   (blanco) se perdía sobre el papel (19-11-2026, pedido por el admin). */
+.cu-seccion.cu-cert {
+  background: var(--cielo-s);
+  border: 2.5px solid var(--tinta);
+  box-shadow: 0 6px 0 var(--tinta);
+}
+.cu-cert .cu-p { color: var(--tinta); }
+
+/* El jefe final, rehecho (19-11-2026): una ficha coral en columna, con
+   «Jefe final» a mano arriba, el villano en el centro con hueco encima para
+   su bocadillo, y una sola frase debajo. */
+.cu-cert-reto {
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1.4rem;
+  padding: 16px 16px 18px;
+  text-align: center;
+}
+.cu-cert-reto .cu-cert-mano { font-size: 26px; rotate: -3deg; }
+.cu-cert-reto .cu-cert-villano { margin: 64px 0 0; width: auto; }
+.cu-cert-villano .ch-reto { width: 104px; }
+.cu-cert-villano .ch-reto-bocadillo { font-size: 17px; }
+.cu-cert-reto p { font-size: 1.05rem; font-weight: 700; }
+
+/* Garabatos de pelea detrás del jefe final (19-11-2026, pedido por el
+   admin): rayos, espadas cruzadas, un cronómetro, una interrogación y un
+   «¡!», a mano, en coral suave. Por detrás del villano y del texto. */
+.cu-cert-reto { isolation: isolate; overflow: hidden; }
+.cu-reto-garabatos { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.cu-rg {
+  position: absolute;
+  overflow: visible;
+  fill: none;
+  stroke: color-mix(in srgb, var(--coral-o) 40%, var(--coral-s));
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cu-rg--rayo1 { top: 64px; left: 18%; width: 30px; rotate: -18deg; }
+.cu-rg--rayo2 { top: 92px; right: 18%; width: 26px; rotate: 22deg; }
+.cu-rg--espadas { top: 14px; left: 10px; width: 54px; rotate: -8deg; }
+.cu-rg--reloj { top: 12px; right: 12px; width: 46px; rotate: 10deg; }
+.cu-rg--pregunta { bottom: 18px; left: 14px; width: 26px; rotate: -12deg; }
+.cu-rg--ojo { bottom: 16px; right: 16px; width: 28px; rotate: 10deg; }
+
+/* ── «Pensado para que termines lo que empiezas», rehecha (19-11-2026,
+   pedido por el admin; PasosCurso.tsx): una ruta de cuatro paradas. Cada una,
+   su número a mano en un círculo de color con contorno, unidas por una raya
+   discontinua; al lado, el título con su icono y una sola línea. En el móvil,
+   en vertical; en el ordenador, en fila. ── */
+.cu-ruta {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cu-ruta::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 26px;
+  left: 25px;
+  width: 3px;
+  background: repeating-linear-gradient(180deg, color-mix(in srgb, var(--tinta) 40%, transparent) 0 7px, transparent 7px 13px);
+}
+.cu-ruta-paso {
+  --c: var(--lila); --s: var(--lila-s);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.cu-ruta-paso--cielo { --c: var(--cielo); --s: var(--cielo-s); }
+.cu-ruta-paso--coral { --c: var(--coral); --s: var(--coral-s); }
+.cu-ruta-paso--amarillo { --c: var(--amarillo); --s: var(--amarillo-s); }
+.cu-ruta-num {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  background: var(--c);
+  border: 2.5px solid var(--tinta);
+  border-radius: 52% 46% 54% 44% / 50% 56% 44% 52%;
+  box-shadow: 0 4px 0 var(--tinta);
+  font-family: var(--letra-mano);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--tinta);
+}
+.cu-ruta-paso:nth-child(even) .cu-ruta-num { rotate: 6deg; }
+.cu-ruta-paso:nth-child(odd) .cu-ruta-num { rotate: -5deg; }
+.cu-ruta-cuerpo {
+  flex: 1;
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  background: var(--s);
+  border: 2px solid var(--tinta);
+  border-radius: 13px 10px 14px 9px;
+}
+.cu-ruta-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--tinta);
+}
+.cu-ruta-icono {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border: 2px solid var(--tinta);
+  border-radius: 8px 6px 9px 5px;
+}
+.cu-ruta-texto { font-size: 0.95rem; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
+.cu-ruta-paso--amarillo .cu-ruta-cuerpo { box-shadow: 0 4px 0 var(--tinta); }
+
+@media (min-width: 901px) {
+  .cu-ruta { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+  .cu-ruta::before {
+    top: 25px;
+    bottom: auto;
+    left: 30px;
+    right: 30px;
+    width: auto;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--tinta) 40%, transparent) 0 7px, transparent 7px 13px);
+  }
+  .cu-ruta-paso { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .cu-ruta-cuerpo { width: 100%; padding: 14px 16px; }
+}
+/* Código, logro y «tuyo para siempre», destacados (19-11-2026): en mayúsculas
+   de rotulador con fluorescente de un tono más fuerte que su ficha. */
+.cu-cert-marca {
+  padding: 0 0.12em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: linear-gradient(transparent 52%, var(--mk) 52%, var(--mk) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.cu-cert-marca--lila { --mk: color-mix(in srgb, var(--lila) 50%, transparent); }
+.cu-cert-marca--amarillo { --mk: color-mix(in srgb, var(--amarillo) 90%, transparent); }
+.cu-cert-marca--menta { --mk: color-mix(in srgb, var(--menta) 55%, transparent); }
+.cu-cert-villano .ch-reto { width: 140px; } .cu-cert-reto .cu-cert-villano { margin-top: 56px; }
+
+/* ── La cabecera de /cursos en el ordenador (19-11-2026, pedido por el
+   admin; el móvil NO se toca): dos columnas, a la izquierda el título, la
+   frase y «Todo lo que hay dentro» subido junto a ellos; a la derecha, la
+   oferta. Detrás, garabatos de estudio y retos a mano. ── */
+.cu-cab-garabatos { display: none; }
+@media (min-width: 901px) {
+  .cu-cab {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+    column-gap: clamp(40px, 6vw, 96px);
+    row-gap: 1.6rem;
+    align-items: center;
+    padding-top: 2.6rem;
+    padding-bottom: 1rem;
+  }
+  .cu-cab-fila { display: contents; }
+  .cu-cab-texto { grid-column: 1; grid-row: 1; }
+  .cu-cab-fila > :not(.cu-cab-texto) { grid-column: 2; grid-row: 1 / span 2; align-self: center; justify-self: center; width: 100%; max-width: 400px; }
+  .cu-cab > .cu-dentro { grid-column: 1; grid-row: 2; margin-top: 0; }
+  .cu-cab .cu-titulo { font-size: clamp(3rem, 4.4vw, 4.2rem); line-height: 1.02; }
+  .cu-cab .cu-lead { max-width: 52ch; font-size: 1.15rem; }
+
+  .cu-cab .cu-dentro { padding: 18px 22px 0; }
+  .cu-cab .cu-dentro-cifras { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .cu-cab .cu-dentro-cifra + .cu-dentro-cifra { border-left: 2px solid var(--tinta); }
+  .cu-cab .cu-dentro-cifra dd { font-size: 2rem; }
+  .cu-cab .cu-dentro-horas { margin-inline: -22px; }
+
+  .cu-cab-garabatos { display: block; position: absolute; inset: -20px -60px; z-index: -1; pointer-events: none; }
+  .cu-cg {
+    position: absolute;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--lila-o) 32%, var(--fondo));
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cu-cg--libros { top: 2%; left: 2%; width: 110px; rotate: -8deg; }
+  .cu-cg--birrete { top: 4%; left: 46%; width: 80px; rotate: 10deg; }
+  .cu-cg--lapiz { bottom: 6%; left: 0; width: 76px; rotate: 14deg; }
+  .cu-cg--bombilla { top: 38%; left: 50%; width: 54px; rotate: -10deg; }
+  .cu-cg--trofeo { top: 0; right: 4%; width: 78px; rotate: 8deg; }
+  .cu-cg--diana { bottom: 2%; right: 2%; width: 74px; rotate: -6deg; }
+  .cu-cg--estrella { bottom: 18%; left: 50%; width: 36px; rotate: 18deg; stroke-width: 2.6; }
+}
+@media (min-width: 901px) {
+  .cu-cab > .cu-cab-fila { display: contents; }
+  .cu-cab > .cu-cab-fila > .cu-cab-texto { grid-column: 1; grid-row: 1; }
+}
+/* PC: «Todo lo que hay dentro» sube y respira sobre las fichas (19-11-2026). */
+@media (min-width: 901px) {
+  .cu-cab .cu-dentro { padding-top: 12px; }
+  .cu-cab .cu-dentro-titulo { margin: -4px 0 22px; }
+  .cu-cab .cu-dentro-cifras { padding-bottom: 4px; }
+}
+/* Todas las tarjetas de curso del mismo tamaño (19-11-2026, pedido por el
+   admin): cada una llena su hueco de la rejilla y los botones van al fondo. */
+.cu-lista > .pag-item { display: flex; }
+.cu-lista > .pag-item[hidden] { display: none; }
+.cu-lista .cu-curso { flex: 1; display: flex; flex-direction: column; }
+/* PC: también el mismo alto de una página a otra (la más alta mide unos
+   817 px); lo que sobra queda sobre los botones, que van al fondo. */
+@media (min-width: 901px) {
+  .cu-lista .cu-curso { min-height: 820px; }
+}
+/* PC: la carretera de cada tarjeta, a la misma altura en todas (justo sobre
+   los botones); lo único que cambia de una a otra es el temario. Y la cajita
+   mide lo que mide la carretera, sin raya de sobra (19-11-2026). */
+@media (min-width: 901px) {
+  .cu-lista .cu-curso-cuerpo { flex: 1; }
+  .cu-lista .cu-mini { margin-top: auto; width: fit-content; max-width: 100%; }
+  .cu-lista .cu-curso-acciones { margin-top: 0; }
+}
+
+/* ── Las tarjetas de curso en el ordenador, mejoradas (19-11-2026, pedido
+   por el admin; el móvil no se toca): contorno de rotulador y un giro
+   ligero; la portada con su marco; el título más grande; el temario en dos
+   columnas de fichitas con su número en un círculo del color del curso; y
+   «Ver temario» y «Hazte Premium» al mismo ancho. ── */
+@media (min-width: 901px) {
+  .cu-lista { gap: 34px 30px; }
+  .cu-lista .cu-curso {
+    padding: 16px 16px 0;
+    border: 2.5px solid var(--tinta);
+    border-radius: 26px 20px 28px 19px;
+    box-shadow: 0 7px 0 var(--tinta);
+  }
+  .cu-lista > li:nth-child(odd) .cu-curso { rotate: -0.6deg; }
+  .cu-lista > li:nth-child(even) .cu-curso { rotate: 0.6deg; }
+  .cu-lista .cu-curso-portada { border: 2px solid var(--tinta); }
+  .cu-lista .cu-curso-cuerpo { padding: 0 14px 22px; }
+  .cu-lista .cu-curso-titulo { font-size: 2rem; }
+  .cu-lista .cu-curso-sub { font-size: 1.02rem; }
+
+  .cu-lista .cu-curso-temario {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 10px;
+    margin-top: 1.1rem;
+  }
+  .cu-lista .cu-curso-temario li {
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--fondo);
+    border: 2px solid color-mix(in srgb, var(--tinta) 18%, transparent);
+    border-radius: 11px 9px 12px 8px;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+  .cu-lista .cu-curso-temario li span {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--tinta);
+    border-radius: 50% 45% 52% 46%;
+    background: color-mix(in srgb, var(--c) 35%, #fff);
+    font-size: 0.75rem;
+    color: var(--tinta);
+  }
+  .cu-lista .cu-curso-acciones { gap: 14px; }
+  .cu-lista .cu-curso-acciones .tecla { flex: 1 1 0; }
+}
+@media (min-width: 901px) { .cu-lista .cu-curso-acciones .tecla-premium { white-space: nowrap; } }
+/* PC: el celo de cada tarjeta, montado sobre el borde de arriba de la
+   tarjeta (medio fuera, medio dentro), como si la sujetara de verdad
+   (19-11-2026, pedido por el admin). */
+@media (min-width: 901px) {
+  .cu-lista .cu-cinta--izq { top: -33px; left: 30px; width: 108px; height: 30px; }
+}
+
+/* ── El certificado en el ordenador, rehecho de cero (19-11-2026, pedido por
+   el admin; el móvil no se toca). Tres actos: arriba, el título a lo ancho;
+   en medio, el jefe final suelto y grande, sin ficha, con sus garabatos de
+   pelea, y una flecha a mano «y es tuyo» que lleva al certificado; abajo, las
+   tres ventajas en fila. ── */
+@media (min-width: 901px) {
+  .cu-seccion.cu-cert {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-areas:
+      "nota   nota"
+      "titulo titulo"
+      "reto   marco"
+      "checks checks";
+    column-gap: 40px;
+    row-gap: 0;
+    align-items: center;
+    padding: 48px 56px 44px;
+  }
+  .cu-cert .cu-cert-texto { display: contents; }
+  .cu-cert .cu-cert-texto > .cu-nota { grid-area: nota; }
+  .cu-cert .cu-cert-texto > .cu-h2 { grid-area: titulo; max-width: 24ch; font-size: clamp(2.4rem, 3.6vw, 3.2rem); }
+  .cu-cert .cu-marco { grid-area: marco; margin-top: 2rem; }
+
+  /* El jefe, fuera de la ficha roja: suelto sobre el azul y mucho más grande. */
+  .cu-cert .cu-cert-reto {
+    grid-area: reto;
+    position: relative;
+    margin-top: 2rem;
+    padding: 0 0 8px;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    rotate: none;
+    overflow: visible;
+  }
+  .cu-cert .cu-cert-reto .cu-cert-mano { font-size: 38px; rotate: -6deg; }
+  .cu-cert .cu-cert-reto .cu-cert-villano { margin-top: 70px; }
+  .cu-cert .cu-cert-villano .ch-reto { width: 220px; }
+  .cu-cert .cu-cert-villano .ch-reto-bocadillo { font-size: 22px; }
+  .cu-cert .cu-cert-reto p { max-width: 26ch; font-size: 1.15rem; }
+  .cu-cert .cu-cert-reto::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 64px;
+    width: 200px;
+    height: 18px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--tinta) 14%, transparent);
+    translate: -50% 0;
+    z-index: -1;
+  }
+  .cu-cert .cu-rg { stroke: color-mix(in srgb, var(--coral-o) 50%, var(--cielo-s)); stroke-width: 2.6; }
+  .cu-cert .cu-rg--espadas { top: 40px; left: 0; width: 72px; }
+  .cu-cert .cu-rg--reloj { top: 30px; right: 0; width: 60px; }
+  .cu-cert .cu-rg--rayo1 { top: 150px; left: 6%; width: 38px; }
+  .cu-cert .cu-rg--rayo2 { top: 190px; right: 6%; width: 34px; }
+  .cu-cert .cu-rg--pregunta { bottom: 70px; left: 2%; width: 32px; }
+  .cu-cert .cu-rg--ojo { bottom: 70px; right: 2%; width: 34px; }
+
+  /* Las tres ventajas, en fila bajo todo. */
+  .cu-cert .cu-cert-checks {
+    grid-area: checks;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 2.4rem;
+  }
+  .cu-cert .cu-cert-check { justify-content: center; padding: 16px 14px; font-size: 1rem; box-shadow: 0 4px 0 var(--tinta); }
+}
+
+/* PC: sin la flecha; la frase bajo el jefe, a lo grande (19-11-2026): letra
+   de titular, «examen final» en coral con su subrayado a mano y «el
+   certificado es tuyo» con fluorescente amarillo, algo ladeada. */
+@media (min-width: 901px) {
+  .cu-cert .cu-cert-reto p {
+    max-width: 18ch;
+    margin-top: 4px;
+    font-family: var(--letra-titular);
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--tinta);
+    rotate: -2deg;
+  }
+  .cu-cert .cu-cert-jefe {
+    background: none;
+    color: var(--coral-o);
+    text-decoration: underline wavy var(--coral);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 7px;
+  }
+  .cu-cert .cu-cert-tuyo {
+    padding: 0 0.12em;
+    background: linear-gradient(transparent 52%, var(--amarillo) 52%, var(--amarillo) 92%, transparent 92%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}
+/* La flecha a mano del jefe al certificado (solo PC), por encima de él. */
+.cu-cert-flecha { display: none; }
+@media (min-width: 901px) {
+  .cu-cert .cu-cert-reto { z-index: 2; }
+  .cu-cert-flecha {
+    position: absolute;
+    top: 40%;
+    right: -78px;
+    display: block;
+    pointer-events: none;
+  }
+  .cu-cert-flecha .se { width: 110px; height: 110px; }
+}
+/* PC: el jefe más arriba y la frase en un pósit amarillo pegado con celo,
+   con aire alrededor (19-11-2026, pedido por el admin). */
+@media (min-width: 901px) {
+  .cu-cert .cu-cert-reto .cu-cert-villano { margin-top: 44px; }
+  .cu-cert .cu-cert-reto::after { bottom: 150px; }
+  .cu-cert .cu-cert-reto p {
+    position: relative;
+    max-width: 340px;
+    margin-top: 26px;
+    padding: 22px 26px 20px;
+    background: var(--amarillo-s);
+    border: 2px solid var(--tinta);
+    border-radius: 6px 4px 8px 5px;
+    box-shadow: 0 5px 0 var(--tinta);
+    font-size: 1.6rem;
+    line-height: 1.3;
+    rotate: -2.5deg;
+  }
+  .cu-cert .cu-cert-reto p::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    width: 96px;
+    height: 26px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--coral) 45%, transparent);
+    transform: translateX(-50%) rotate(4deg);
+  }
+  .cu-cert .cu-cert-tuyo { background: linear-gradient(transparent 52%, var(--amarillo) 52%, var(--amarillo) 92%, transparent 92%); }
+}
+@media (min-width: 901px) { .cu-cert .cu-cert-reto p { max-width: 400px; font-size: 1.5rem; text-wrap: balance; } }
+
+/* ── «Pensado para que termines lo que empiezas» en el ordenador, mejorada
+   (19-11-2026, pedido por el admin; el móvil no se toca): el título con
+   «termines» en fluorescente y «empiezas» a mano; las paradas centradas
+   bajo su número, que es más grande; la raya va solo de la primera a la
+   última; cada ficha con su sombra y su giro, y la meta con una banderita. ── */
+@media (min-width: 901px) {
+  .cu-como-marca {
+    padding: 0 0.1em;
+    background: linear-gradient(transparent 55%, color-mix(in srgb, var(--lila) 45%, transparent) 55%, color-mix(in srgb, var(--lila) 45%, transparent) 92%, transparent 92%);
+  }
+  .cu-como-mano {
+    display: inline-block;
+    font-family: var(--letra-mano);
+    font-size: 1.12em;
+    color: var(--lila-o);
+    rotate: -3deg;
+  }
+  .cu-ruta { gap: 28px; }
+  .cu-ruta::before { left: 12.5%; right: 12.5%; top: 31px; height: 4px; }
+  .cu-ruta-paso { align-items: center; gap: 18px; }
+  .cu-ruta-num { width: 64px; height: 64px; font-size: 34px; }
+  .cu-ruta-cuerpo {
+    justify-items: center;
+    gap: 8px;
+    padding: 20px 18px 18px;
+    text-align: center;
+    box-shadow: 0 5px 0 var(--tinta);
+  }
+  .cu-ruta-paso:nth-child(odd) .cu-ruta-cuerpo { rotate: -1.2deg; }
+  .cu-ruta-paso:nth-child(even) .cu-ruta-cuerpo { rotate: 1.2deg; }
+  .cu-ruta-titulo { flex-direction: column; gap: 10px; font-size: 1.2rem; text-align: center; }
+  .cu-ruta-icono { width: 40px; height: 40px; }
+  .cu-ruta-icono svg { width: 20px; height: 20px; }
+  .cu-ruta-texto { font-size: 1rem; }
+  .cu-ruta-paso--amarillo .cu-ruta-num::after {
+    content: "";
+    position: absolute;
+    top: -26px;
+    left: 40px;
+    width: 26px;
+    height: 32px;
+    background:
+      linear-gradient(var(--tinta), var(--tinta)) 0 0 / 3px 100% no-repeat,
+      linear-gradient(135deg, var(--coral) 50%, transparent 50%) 3px 0 / 22px 18px no-repeat;
+    rotate: 8deg;
+  }
+}

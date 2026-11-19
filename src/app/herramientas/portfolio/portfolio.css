@@ -21,6 +21,7 @@
 .pa-cabeza { margin-bottom: 1.8rem; }
 
 /* El velo de lo que es de pago: rayado de lápiz. */
+
 .pa-velo {
   display: block;
   height: 12px;
@@ -29,9 +30,13 @@
 }
 
 .pa-velo--grande { width: 70%; height: 30px; margin: 6px 0 8px; border-radius: 10px; }
+
 .pa-velo--medio { width: 60%; height: 22px; margin: 6px 0 4px; }
+
 .pa-velo--pill { width: 74px; height: 24px; border-radius: 9px; }
+
 .pa-velo--pl.es-sube { background: repeating-linear-gradient(-45deg, var(--menta-s) 0 6px, #ecfaf3 6px 12px); }
+
 .pa-velo--pl.es-baja { background: repeating-linear-gradient(-45deg, var(--coral-s) 0 6px, #fff0f2 6px 12px); }
 
 /* ══ Cabecera ══════════════════════════════════════════════════════════════ */
@@ -71,6 +76,7 @@
 }
 
 /* ── El panel velado ── */
+
 .pa-escena { position: relative; padding-bottom: 26px; }
 
 .pa-panel {
@@ -156,6 +162,7 @@
 }
 
 .pa-kpi b { font-family: var(--letra-titular); font-size: 26px; font-weight: 800; line-height: 1.1; }
+
 .pa-kpi small { font-size: 12px; font-weight: 700; color: var(--tinta-2); }
 
 .pa-pill {
@@ -169,6 +176,7 @@
 }
 
 .pa-pill.es-sube { background: #dcf5ea; }
+
 .pa-pill.es-baja { background: #fde4e5; }
 
 .pa-tabla { display: grid; gap: 6px; }
@@ -251,6 +259,7 @@
 .pa-candado strong { color: var(--tinta); font-weight: 900; }
 
 /* El pósit pegado al panel. */
+
 .pa-flota {
   position: absolute;
   top: -18px;
@@ -276,7 +285,9 @@
 }
 
 .pa-flota span:last-child { display: flex; flex-direction: column; }
+
 .pa-flota b { font-size: 14px; font-weight: 900; }
+
 .pa-flota small { font-family: var(--letra-mano); font-size: 19px; font-weight: 700; line-height: 1; color: #6b5200; }
 
 /* ══ Las cifras de verdad ══════════════════════════════════════════════════ */
@@ -316,6 +327,7 @@
 }
 
 .pa-cifra > * { position: relative; }
+
 .pa-cifra--btc { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); --t: #fff; }
 
 .pa-cifra-cab {
@@ -353,6 +365,7 @@
 }
 
 .pa-cifra b i { font-style: normal; color: var(--tinta-3); }
+
 .pa-cifra small { font-size: 13px; font-weight: 700; color: var(--tinta-2); }
 
 .pa-balanza {
@@ -421,6 +434,7 @@
 }
 
 .pa-cartera > * { position: relative; }
+
 .pa-cartera--dca { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); --t: #fff; }
 
 .pa-cartera-cab { display: flex; align-items: center; gap: 14px; }
@@ -479,12 +493,15 @@
 }
 
 .pa-mini-barra small { font-size: 12px; font-weight: 700; color: var(--tinta-2); }
+
 .pa-mini-barra b { font-family: var(--letra-titular); font-size: 18px; font-weight: 800; }
 
 .pa-mini-reparto { display: flex; align-items: center; gap: 16px; }
 
 .pa-donut { position: relative; flex: none; width: 116px; height: 116px; }
+
 .pa-donut svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+
 .pa-donut-fondo { fill: none; stroke: var(--gris); stroke-width: 6; }
 
 .pa-donut-tramo {
@@ -505,6 +522,7 @@
 }
 
 .pa-donut-centro b { font-family: var(--letra-titular); font-size: 26px; font-weight: 800; line-height: 1; }
+
 .pa-donut-centro small { font-size: 11px; font-weight: 800; color: var(--tinta-2); }
 
 .pa-leyenda { display: grid; flex: 1; gap: 7px; min-width: 0; margin: 0; padding: 0; list-style: none; }
@@ -518,13 +536,19 @@
 }
 
 .pa-leyenda li > i { width: 12px; height: 12px; border-radius: 50%; }
+
 .pa-leyenda-barra { display: block; height: 8px; overflow: hidden; border-radius: 999px; background: var(--gris); }
+
 .pa-leyenda-barra em { display: block; max-width: 100%; height: 100%; border-radius: inherit; }
 
 .pa-mini-grafico { position: relative; height: 120px; }
+
 .pa-mini-grafico svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
 .pa-guia { stroke: var(--gris); stroke-width: 1.5; stroke-dasharray: 5 6; }
+
 .pa-dca-linea { fill: none; stroke: var(--naranja); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+
 .pa-dca-medio { stroke: var(--tinta-2); stroke-width: 2; stroke-dasharray: 7 6; }
 
 .pa-dca-compra {
@@ -552,8 +576,11 @@
 }
 
 .pa-mini-pie > span { display: inline-flex; align-items: center; gap: 6px; }
+
 .pa-mini-pie i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+
 .pa-mini-pie .es-compra { background: var(--naranja); }
+
 .pa-mini-pie .es-medio { height: 3px; border-radius: 2px; background: var(--tinta-2); }
 
 .pa-mini-dato {
@@ -587,7 +614,9 @@
 }
 
 .pa-trae-texto { display: flex; flex-direction: column; min-width: 0; }
+
 .pa-trae-texto strong { font-size: 14.5px; font-weight: 900; color: var(--tinta); }
+
 .pa-trae-texto > span { font-size: 13.5px; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
 
 .pa-cartera-nota {
@@ -623,6 +652,7 @@
 }
 
 .pa-aprende-tarjeta:nth-child(2) { transform: rotate(-0.8deg); }
+
 .pa-aprende-tarjeta:nth-child(3) { transform: rotate(0.8deg); }
 
 @media (hover: hover) {
@@ -666,6 +696,7 @@
 }
 
 .pa-versus-col--no { background: var(--papel); box-shadow: inset 0 0 0 2px var(--gris); }
+
 .pa-versus-col--si { background: var(--menta-s); box-shadow: 0 6px 0 color-mix(in srgb, var(--menta) 50%, var(--gris-o)); }
 
 .pa-versus-cab {
@@ -693,8 +724,11 @@
 }
 
 .pa-versus-col--no li { color: var(--tinta-2); }
+
 .pa-versus-col--no li svg { flex: none; margin-top: 3px; color: var(--coral-o); }
+
 .pa-versus-col--si li { color: var(--tinta); }
+
 .pa-versus-col--si li svg { flex: none; margin-top: 3px; color: var(--menta-o); }
 
 /* ══ Tableta ═══════════════════════════════════════════════════════════════ */
@@ -752,12 +786,14 @@
    por el admin): pósit «en vivo» con su punto que late, «Adelin» rodeado a
    rotulador, la frase a mano y el texto en tres apuntes de color (lo que hay,
    dónde, y que se ven las pérdidas). Sin el cerdito (19-11-2026). ── */
+
 .pa-cab {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
+
 .pa-cab-posit {
   display: inline-flex;
   align-items: center;
@@ -773,6 +809,7 @@
   color: var(--tinta);
   transform: rotate(-2.5deg);
 }
+
 .pa-cab-punto {
   width: 10px;
   height: 10px;
@@ -781,18 +818,21 @@
   box-shadow: 0 0 0 0 color-mix(in srgb, var(--menta) 60%, transparent);
   animation: pa-cab-late 1.8s ease-out infinite;
 }
+
 @keyframes pa-cab-late {
   0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--menta) 60%, transparent); }
   100% { box-shadow: 0 0 0 9px transparent; }
 }
 
 .pa-cab-titulo { margin-top: 0.6rem; }
+
 .pa-cab-nombre {
   position: relative;
   display: inline-block;
   padding: 0 0.12em;
   color: var(--menta-o);
 }
+
 .pa-cab-nombre::after {
   content: "";
   position: absolute;
@@ -802,6 +842,7 @@
   transform: rotate(-3deg);
   pointer-events: none;
 }
+
 .pa-cab-frase {
   display: block;
   margin-top: 0.5rem;
@@ -811,6 +852,7 @@
   transform: rotate(-1deg);
   transform-origin: left center;
 }
+
 .pa-cab-subraya {
   color: var(--tinta);
   text-decoration: underline wavy var(--menta);
@@ -825,6 +867,7 @@
   padding: 0;
   list-style: none;
 }
+
 .pa-cab-apunte {
   display: flex;
   align-items: flex-start;
@@ -840,13 +883,21 @@
   line-height: 1.5;
   color: var(--tinta-2);
 }
+
 .pa-cab-apunte:nth-child(2) { transform: rotate(0.6deg); }
+
 .pa-cab-apunte:nth-child(3) { transform: rotate(-0.5deg); }
+
 .pa-cab-apunte--menta { --ac: var(--menta); --acs: var(--menta-s); }
+
 .pa-cab-apunte--cielo { --ac: var(--cielo); --acs: var(--cielo-s); }
+
 .pa-cab-apunte--coral { --ac: var(--coral); --acs: var(--coral-s); }
+
 .pa-cab-apunte strong { color: var(--coral-o); font-weight: 800; }
+
 .pa-cab-apunte a { color: var(--tinta); font-weight: 800; }
+
 .pa-cab-icono {
   flex: none;
   display: inline-grid;
@@ -863,13 +914,16 @@
   .pa-cab-posit { font-size: 17px; padding: 5px 11px; }
   .pa-cab-apunte { font-size: 0.95rem; padding: 9px 12px; }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .pa-cab-punto { animation: none; }
 }
 
 /* Más aire bajo la barra (19-11-2026, pedido por el admin): sin las migas de
    pan, la cabecera quedaba pegada al nav. */
+
 .pa-cab { margin-top: 1.6rem; }
+
 @media (max-width: 640px) {
   .pa-cab { margin-top: 1.4rem; }
 }
@@ -877,6 +931,7 @@
 /* Las cifras de la cartera, simplificadas (19-11-2026, pedido por el admin):
    una sola ficha con contorno de rotulador y las tres cifras en fila,
    separadas por rayas discontinuas a mano; la etiqueta, corta y en minúscula. */
+
 .pa-hero-datos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
@@ -889,6 +944,7 @@
   border-radius: 16px 13px 17px 12px;
   box-shadow: 0 4px 0 var(--tinta);
 }
+
 .pa-hero-datos > div,
 .pa-hero-datos > div:nth-child(n) {
   flex: none;
@@ -899,7 +955,9 @@
   box-shadow: none;
   text-align: center;
 }
+
 .pa-hero-datos > div + div { border-left: 2px dashed color-mix(in srgb, var(--tinta) 30%, transparent); }
+
 .pa-hero-datos dt {
   font-family: var(--letra-mano);
   font-size: 15px;
@@ -908,7 +966,9 @@
   text-transform: none;
   color: var(--tinta-2);
 }
+
 .pa-hero-datos dd { font-size: 1.6rem; }
+
 @media (max-width: 640px) {
   .pa-hero-datos > div, .pa-hero-datos > div:nth-child(n) { padding: 2px 6px; }
   .pa-hero-datos dt { font-size: 13px; line-height: 1.2; }
@@ -918,8 +978,11 @@
 /* El aviso «Precio real, en directo» sobre la ficha de cifras, y cada cifra
    con su color: spot en lila, DCA en naranja (19-11-2026, pedido por el
    admin). El signo (+/−) sigue diciendo si sube o baja. */
+
 .pa-datos { position: relative; margin-top: 1.9rem; }
+
 .pa-datos .pa-hero-datos { margin-top: 0; padding-top: 20px; }
+
 .pa-datos-vivo {
   position: absolute;
   top: 0;
@@ -941,15 +1004,21 @@
   color: var(--tinta);
   transform: translate(-50%, -55%) rotate(-2deg);
 }
+
 .pa-datos-vivo strong { font-weight: 900; text-decoration: underline 2px; text-underline-offset: 2px; }
+
 .pa-hero-datos .pa-dato--spot dd { color: var(--lila-o); }
+
 .pa-hero-datos .pa-dato--dca dd { color: var(--naranja-o); }
 
 /* El botón del hero y sus datos (19-11-2026, pedido por el admin): el botón
    a todo lo ancho con «Ver la cartera»; debajo, una ficha con el precio
    grande, lo que sale al día a mano, y las dos garantías como etiquetas. */
+
 .pa-cta { display: grid; gap: 14px; margin-top: 1.6rem; }
+
 .pa-cta > .tecla { width: 100%; justify-content: center; gap: 12px; }
+
 .pa-cta-datos {
   display: flex;
   flex-wrap: wrap;
@@ -961,6 +1030,7 @@
   border: 2px dashed color-mix(in srgb, var(--naranja-o) 55%, transparent);
   border-radius: 14px 12px 15px 11px;
 }
+
 .pa-cta-precio {
   display: flex;
   align-items: baseline;
@@ -969,13 +1039,16 @@
   margin: 0;
   color: var(--tinta);
 }
+
 .pa-cta-precio strong {
   font-family: var(--letra-titular);
   font-size: 1.9rem;
   font-weight: 800;
   line-height: 1;
 }
+
 .pa-cta-precio > span { font-weight: 800; color: var(--tinta-2); }
+
 .pa-cta-precio .pa-cta-dia {
   flex-basis: 100%;
   font-family: var(--letra-mano);
@@ -983,6 +1056,7 @@
   font-weight: 700;
   color: var(--naranja-o);
 }
+
 .pa-cta-garantias {
   display: grid;
   gap: 6px;
@@ -990,6 +1064,7 @@
   padding: 0;
   list-style: none;
 }
+
 .pa-cta-garantias li {
   display: inline-flex;
   align-items: center;
@@ -1002,18 +1077,27 @@
   font-weight: 800;
   color: var(--tinta);
 }
+
 .pa-cta-garantias svg { color: var(--menta-o); }
+
 .pa-cta-login { margin: 0; text-align: center; }
+
 .pa-cta-garantias { display: flex; flex-wrap: wrap; gap: 6px; }
+
 @media (max-width: 640px) {
   .pa-cta-datos { flex-direction: column; align-items: flex-start; }
 }
+
 /* A juego con el botón verde (19-11-2026): la ficha del precio, en menta. */
+
 .pa-cta-datos { background: var(--menta-s); border-color: color-mix(in srgb, var(--menta-o) 50%, transparent); }
+
 .pa-cta-precio .pa-cta-dia { color: var(--menta-o); }
+
 /* El texto del precio, mejorado (19-11-2026): «Con Premium» como etiqueta,
    y lo del día comparado con un café. A la derecha queda sitio para la
    pegatina del café (cuando llegue). */
+
 .pa-cta-precio .pa-cta-etiqueta {
   flex-basis: 100%;
   font-size: 11px;
@@ -1026,7 +1110,9 @@
 /* El precio con más estilo (19-11-2026, pedido por el admin): la cifra
    grande, algo torcida, sobre un trazo de fluorescente amarillo a mano; «al
    mes» en letra de mano, ladeado, como un apunte al lado. */
+
 .pa-cta-precio { align-items: center; gap: 4px 10px; }
+
 .pa-cta-precio strong {
   position: relative;
   display: inline-block;
@@ -1037,6 +1123,7 @@
   transform: rotate(-2deg);
   z-index: 0;
 }
+
 .pa-cta-precio strong::before {
   content: "";
   position: absolute;
@@ -1050,6 +1137,7 @@
   transform: rotate(-1.5deg);
   opacity: 0.85;
 }
+
 .pa-cta-precio strong + span {
   font-family: var(--letra-mano);
   font-size: 22px;
@@ -1060,13 +1148,17 @@
 
 /* Más aire entre el bloque del precio y el panel de debajo (19-11-2026,
    pedido por el admin): la etiqueta de CoinGecko quedaba pegada. */
+
 .pa-escena { margin-top: 2.6rem; }
+
 @media (max-width: 640px) {
   .pa-escena { margin-top: 3rem; }
 }
 
 /* El café a la derecha de la ficha del precio, con su balanceo. */
+
 .pa-cta-datos { position: relative; padding-right: 110px; }
+
 .pa-cta-cafe {
   position: absolute;
   right: 10px;
@@ -1077,20 +1169,24 @@
   transform-origin: 50% 90%;
   animation: pa-cta-cafe 3s ease-in-out infinite;
 }
+
 @keyframes pa-cta-cafe {
   0%, 100% { transform: translateY(-50%) rotate(6deg); }
   50% { transform: translateY(calc(-50% - 4px)) rotate(-3deg); }
 }
+
 @media (max-width: 640px) {
   .pa-cta-datos { padding-right: 96px; }
   .pa-cta-cafe { width: 80px; right: 8px; }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .pa-cta-cafe { animation: none; transform: translateY(-50%) rotate(6deg); }
 }
 
 /* En el móvil, fuera el panel velado bajo el hero (19-11-2026, pedido por el
    admin); en el ordenador se queda de momento. */
+
 @media (max-width: 640px) {
   .pa-escena { display: none; }
 }
@@ -1098,12 +1194,14 @@
 /* ── «Números que no se pueden maquillar», rediseñada de cero (19-11-2026,
    pedido por el admin): dos tiques con contorno de rotulador, uno por
    cartera, con una franja de color arriba, la cifra grande y su detalle. ── */
+
 .pa-tiques {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 18px;
   margin-top: 1.4rem;
 }
+
 .pa-tique {
   --c: var(--lila); --o: var(--lila-o); --s: var(--lila-s);
   position: relative;
@@ -1117,8 +1215,11 @@
   border-radius: 14px 12px 16px 11px;
   box-shadow: 0 5px 0 var(--tinta);
 }
+
 .pa-tique--spot { transform: rotate(-0.8deg); }
+
 .pa-tique--dca { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); transform: rotate(0.7deg); }
+
 .pa-tique-cab {
   display: inline-flex;
   align-items: center;
@@ -1128,6 +1229,7 @@
   font-weight: 700;
   color: var(--tinta);
 }
+
 .pa-tique-icono {
   display: inline-grid;
   place-items: center;
@@ -1138,6 +1240,7 @@
   background: var(--s);
   color: var(--tinta);
 }
+
 .pa-tique-cifra {
   font-family: var(--letra-titular);
   font-size: clamp(2.4rem, 9vw, 3rem);
@@ -1146,7 +1249,9 @@
   letter-spacing: -0.02em;
   color: var(--o);
 }
+
 .pa-tique-detalle { font-size: 0.95rem; font-weight: 700; color: var(--tinta-2); }
+
 .pa-tique-balanza {
   display: grid;
   gap: 6px;
@@ -1154,6 +1259,7 @@
   padding-top: 10px;
   border-top: 2px dashed color-mix(in srgb, var(--tinta) 22%, transparent);
 }
+
 .pa-tique-barra {
   display: block;
   height: 12px;
@@ -1162,10 +1268,15 @@
   border-radius: 99px;
   background: var(--coral);
 }
+
 .pa-tique-barra i { display: block; height: 100%; background: var(--menta); border-right: 2px solid var(--tinta); }
+
 .pa-tique-leyenda { display: flex; justify-content: space-between; font-size: 13px; font-weight: 900; }
+
 .pa-tique-leyenda .es-sube { color: var(--menta-o); }
+
 .pa-tique-leyenda .es-baja { color: var(--coral-o); }
+
 .pa-tiques-nota {
   margin-top: 1.6rem;
   font-family: var(--letra-mano);
@@ -1174,240 +1285,15 @@
   color: var(--tinta-2);
   transform: rotate(-1deg);
 }
+
 .pa-tiques-nota strong { color: var(--menta-o); text-decoration: underline wavy var(--menta); text-underline-offset: 5px; }
+
 .pa-tiques-nota { display: block; }
-
-/* ── El bloque de precio final, rediseñado (19-11-2026, pedido por el
-   admin) en el estilo de la tarjeta Premium del menú (menu-movil.css):
-   ficha amarilla suave con contorno de rotulador, celo coral, etiqueta
-   ladeada, las coronas a la derecha y el precio con fluorescente. ── */
-.pa-pr {
-  position: relative;
-  margin: clamp(3rem, 7vw, 5rem) 0 clamp(2rem, 5vw, 3.5rem);
-  padding: clamp(26px, 5vw, 44px) clamp(20px, 5vw, 48px);
-  background: var(--amarillo-s);
-  border: 2.5px solid var(--tinta);
-  border-radius: 26px 20px 28px 18px / 20px 28px 18px 26px;
-  box-shadow: 0 6px 0 var(--tinta);
-}
-.pa-pr::after {
-  content: "";
-  position: absolute;
-  top: -12px;
-  left: 36px;
-  width: 78px;
-  height: 22px;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--coral) 45%, transparent);
-  rotate: -4deg;
-  pointer-events: none;
-}
-.pa-pr-coronas {
-  position: absolute;
-  top: -34px;
-  right: clamp(-6px, 2vw, 30px);
-  width: clamp(120px, 22vw, 220px);
-  height: auto;
-  pointer-events: none;
-  rotate: 6deg;
-}
-.pa-pr-sello {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: var(--naranja);
-  border: 2px solid var(--tinta);
-  border-radius: 9px 7px 10px 6px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #fff;
-  rotate: -2deg;
-}
-.pa-pr-titulo {
-  max-width: 60%;
-  margin: 0.8rem 0 0;
-  font-family: var(--letra-titular);
-  font-size: clamp(2rem, 5vw, 2.8rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  color: var(--tinta);
-}
-.pa-pr-mano {
-  display: inline-block;
-  font-family: var(--letra-mano);
-  color: var(--naranja-o);
-  rotate: -3deg;
-}
-.pa-pr-incluye {
-  display: grid;
-  gap: 10px;
-  margin: 1.4rem 0 0;
-  padding: 0;
-  list-style: none;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--tinta);
-}
-.pa-pr-incluye li { display: flex; align-items: center; gap: 10px; }
-.pa-pr-incluye a { color: var(--tinta); font-weight: 900; text-decoration: underline 2px var(--naranja); text-underline-offset: 3px; }
-.pa-pr-check {
-  flex: none;
-  display: inline-grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border: 2px solid var(--tinta);
-  border-radius: 8px 6px 9px 5px;
-  color: var(--tinta);
-}
-.pa-pr-check--menta { background: var(--menta); }
-.pa-pr-check--cielo { background: var(--cielo); }
-.pa-pr-check--azul { background: var(--azul-s, var(--cielo-s)); }
-.pa-pr-check--lila { background: var(--lila-s); }
-.pa-pr-pie {
-  display: grid;
-  gap: 14px;
-  margin-top: 1.6rem;
-  padding-top: 1.4rem;
-  border-top: 2px dashed color-mix(in srgb, var(--tinta) 30%, transparent);
-}
-.pa-pr-precio { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0; color: var(--tinta); }
-.pa-pr-precio strong {
-  padding: 0 0.12em;
-  font-family: var(--letra-titular);
-  font-size: clamp(2.4rem, 7vw, 3rem);
-  font-weight: 800;
-  line-height: 1;
-  background: linear-gradient(transparent 58%, color-mix(in srgb, var(--amarillo) 85%, transparent) 58%, color-mix(in srgb, var(--amarillo) 85%, transparent) 92%, transparent 92%);
-}
-.pa-pr-precio > span { font-family: var(--letra-mano); font-size: 22px; font-weight: 700; color: var(--naranja-o); rotate: -5deg; }
-.pa-pr-precio small { flex-basis: 100%; font-size: 13px; font-weight: 700; color: var(--tinta-2); }
-.pa-pr-ya { margin: 0; font-weight: 900; color: var(--menta-o); }
-.pa-pr-pie > .tecla { width: 100%; justify-content: center; }
-.pa-pr-confianza { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.pa-pr-confianza li {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: #fff;
-  border: 2px solid var(--tinta);
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 800;
-  color: var(--tinta);
-}
-.pa-pr-confianza svg { color: var(--menta-o); }
-@media (min-width: 901px) {
-  .pa-pr-pie { grid-template-columns: auto minmax(260px, 340px); align-items: center; justify-content: space-between; }
-  .pa-pr-confianza { grid-column: 1 / -1; }
-}
-@media (max-width: 640px) {
-  .pa-pr-titulo { max-width: 62%; }
-  .pa-pr-coronas { top: -26px; width: 118px; }
-}
-.pa-pr-pie > .tecla { min-width: 0; max-width: 100%; white-space: normal; text-align: center; }
-.pa-pr-sello { position: relative; z-index: 1; }
-@media (max-width: 640px) {
-  .pa-pr-pie > .tecla { font-size: 15px; padding-inline: 14px; }
-  .pa-pr-coronas { top: -44px; right: -10px; width: 112px; }
-}
-
-/* El Portfolio Adelin, destacado en la lista de Premium: es la página en la
-   que se está (19-11-2026, pedido por el admin). */
-.pa-pr-incluye .pa-pr-aqui {
-  position: relative;
-  margin: 2px -8px 4px;
-  padding: 10px 12px;
-  background: var(--menta-s);
-  border: 2px solid var(--tinta);
-  border-radius: 12px 10px 13px 9px;
-  box-shadow: 0 3px 0 var(--tinta);
-  font-size: 1.05rem;
-  rotate: -0.8deg;
-}
-.pa-pr-aqui strong { font-weight: 900; color: var(--menta-o); }
-.pa-pr-aqui-nota {
-  position: absolute;
-  top: -12px;
-  right: 10px;
-  padding: 1px 8px;
-  background: var(--amarillo);
-  border: 2px solid var(--tinta);
-  border-radius: 7px 5px 8px 4px;
-  font-family: var(--letra-mano);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--tinta);
-  rotate: 4deg;
-}
-
-/* Las coronas de la tarjeta Premium, con balanceo (19-11-2026, pedido por el
-   admin). */
-.pa-pr-coronas {
-  transform-origin: 50% 85%;
-  animation: pa-pr-coronas 3.6s ease-in-out infinite;
-}
-@keyframes pa-pr-coronas {
-  0%, 100% { transform: rotate(0deg) translateY(0); }
-  50% { transform: rotate(-7deg) translateY(-4px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pa-pr-coronas { animation: none; }
-}
-
-/* El botón de Premium de esta tarjeta es el de toda la web: TeclaPremium
-   (src/components/cuaderno/tecla-premium.css), desde el 19-11-2026. */
-.pa-pr { margin-bottom: 0.5rem; }
-
-/* La flecha a mano del título a «Portfolio Adelin» (19-11-2026). */
-.pa-pr-flecha {
-  position: absolute;
-  top: 118px;
-  right: 30px;
-  width: 74px;
-  height: auto;
-  overflow: visible;
-  fill: none;
-  stroke: var(--menta);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  rotate: 4deg;
-  pointer-events: none;
-}
-/* Colocada en el hueco a la derecha del título, por encima de la ficha. */
-.pa-pr-flecha { top: 84px; right: 34px; width: 64px; z-index: 2; }
-.pa-pr-incluye { margin-top: 1.9rem; }
-@media (min-width: 901px) {
-  .pa-pr-flecha { top: 96px; right: auto; left: min(54%, 420px); width: 80px; }
-}
-/* Que no pise la etiqueta «estás aquí»: la punta cae sobre «Portfolio Adelin». */
-@media (max-width: 900px) {
-  .pa-pr-flecha { right: 104px; }
-}
-/* La flecha, ahora a rotulador de verdad (SimboloEstudio, rough.js): sin el
-   trazo propio del SVG anterior; medidas explícitas o se queda en nada. */
-.pa-pr-flecha { width: 78px; height: 78px; stroke: none; rotate: none; }
-@media (max-width: 900px) {
-  .pa-pr-flecha { top: 92px; right: 96px; }
-}
-/* Más a la izquierda, pegada al título, y algo más pequeña (19-11-2026). */
-.pa-pr-flecha { width: 64px; height: 64px; }
-@media (max-width: 900px) {
-  .pa-pr-flecha { top: 100px; right: 128px; }
-}
-@media (max-width: 900px) {
-  .pa-pr-flecha { right: 152px; }
-}
 
 /* ── «Para qué sirve», simplificada (19-11-2026, pedido por el admin): el
    título con «copiar» tachado a mano y «gestionar» con fluorescente; los
    tres puntos, apuntes de una línea con su número a mano y su color. ── */
+
 .pa-ap-nota {
   display: inline-block;
   padding: 3px 12px;
@@ -1420,8 +1306,11 @@
   color: var(--tinta);
   rotate: -2deg;
 }
+
 .pa-ap-titulo { margin-top: 0.7rem; }
+
 .pa-ap-tachon { position: relative; text-decoration: none; color: var(--tinta-2); }
+
 .pa-ap-tachon::after {
   content: "";
   position: absolute;
@@ -1433,10 +1322,12 @@
   background: var(--coral);
   rotate: -4deg;
 }
+
 .pa-ap-marca {
   padding: 0 0.1em;
   background: linear-gradient(transparent 55%, color-mix(in srgb, var(--menta) 60%, transparent) 55%, color-mix(in srgb, var(--menta) 60%, transparent) 92%, transparent 92%);
 }
+
 .pa-ap-lista {
   display: grid;
   gap: 14px;
@@ -1444,6 +1335,7 @@
   padding: 0;
   list-style: none;
 }
+
 .pa-ap-punto {
   --c: var(--menta); --o: var(--menta-o); --s: var(--menta-s);
   display: flex;
@@ -1455,10 +1347,15 @@
   border-left: 7px solid var(--c);
   border-radius: 12px 10px 13px 9px;
 }
+
 .pa-ap-punto:nth-child(2) { rotate: 0.6deg; }
+
 .pa-ap-punto:nth-child(3) { rotate: -0.5deg; }
+
 .pa-ap-punto--coral { --c: var(--coral); --o: var(--coral-o); --s: var(--coral-s); }
+
 .pa-ap-punto--naranja { --c: var(--naranja); --o: var(--naranja-o); --s: var(--naranja-s); }
+
 .pa-ap-num {
   flex: none;
   display: inline-grid;
@@ -1473,7 +1370,9 @@
   font-weight: 700;
   color: var(--o);
 }
+
 .pa-ap-texto { display: grid; gap: 2px; }
+
 .pa-ap-texto strong {
   display: inline-flex;
   align-items: center;
@@ -1483,24 +1382,33 @@
   font-weight: 800;
   color: var(--tinta);
 }
+
 .pa-ap-texto strong svg { color: var(--o); }
+
 .pa-ap-texto > span { font-size: 0.95rem; font-weight: 600; color: var(--tinta-2); line-height: 1.45; }
+
 @media (min-width: 901px) {
   .pa-ap-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-.pa-ap-texto strong { display: block; } .pa-ap-texto strong svg { display: inline; vertical-align: -2px; margin-right: 4px; }
+
+.pa-ap-texto strong { display: block; }
+
+.pa-ap-texto strong svg { display: inline; vertical-align: -2px; margin-right: 4px; }
 
 /* ── «Lo que suele enseñarse, y lo que ves aquí», rediseñada de cero
    (19-11-2026, pedido por el admin): una corrección de cuaderno. Cada fila
    es una ficha: arriba, lo de las redes tachado a mano en coral; debajo, lo
    de aquí con su check verde. ── */
+
 .pa-vs-marca {
   padding: 0 0.1em;
   background: linear-gradient(transparent 55%, color-mix(in srgb, var(--menta) 60%, transparent) 55%, color-mix(in srgb, var(--menta) 60%, transparent) 92%, transparent 92%);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
+
 .pa-vs-leyenda { display: flex; flex-wrap: wrap; gap: 8px; margin: 0.9rem 0 0; }
+
 .pa-vs-pildora {
   display: inline-flex;
   align-items: center;
@@ -1512,12 +1420,17 @@
   font-weight: 900;
   color: var(--tinta);
 }
+
 .pa-vs-pildora--no { background: var(--coral-s); }
+
 .pa-vs-pildora--no svg { color: var(--coral-o); }
+
 .pa-vs-pildora--si { background: var(--menta-s); }
+
 .pa-vs-pildora--si svg { color: var(--menta-o); }
 
 .pa-vs-lista { display: grid; gap: 14px; margin: 1.3rem 0 0; padding: 0; list-style: none; }
+
 .pa-vs-fila {
   display: grid;
   gap: 8px;
@@ -1527,14 +1440,19 @@
   border-radius: 13px 11px 14px 10px;
   box-shadow: 0 4px 0 var(--tinta);
 }
+
 .pa-vs-fila:nth-child(even) { rotate: 0.6deg; }
+
 .pa-vs-fila:nth-child(odd) { rotate: -0.5deg; }
+
 .pa-vs-no { font-size: 0.92rem; font-weight: 600; color: var(--tinta-2); }
+
 .pa-vs-no s {
   text-decoration: line-through;
   text-decoration-color: var(--coral);
   text-decoration-thickness: 2.5px;
 }
+
 .pa-vs-si {
   display: flex;
   align-items: flex-start;
@@ -1546,6 +1464,7 @@
   color: var(--tinta);
   line-height: 1.4;
 }
+
 .pa-vs-check {
   flex: none;
   display: inline-grid;
@@ -1557,12 +1476,16 @@
   background: var(--menta);
   color: var(--tinta);
 }
+
 @media (min-width: 901px) {
   .pa-vs-lista { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 }
+
 /* El texto tachado, legible (19-11-2026): más oscuro y más grande, con la
    raya coral más fina y algo transparente para no taparlo. */
+
 .pa-vs-no { font-size: 0.98rem; font-weight: 700; color: var(--tinta); opacity: 0.85; }
+
 .pa-vs-no s {
   text-decoration-color: color-mix(in srgb, var(--coral) 75%, transparent);
   text-decoration-thickness: 2px;
@@ -1571,6 +1494,7 @@
 /* ── «Para que nadie se lleve otra idea», rediseñada (19-11-2026, pedido por
    el admin): un pósit lila con celo, algo ladeado; lo que no es, en líneas
    separadas por raya discontinua con su aspa coral; y la nota final a mano. ── */
+
 .pa-noes {
   position: relative;
   max-width: 620px;
@@ -1582,6 +1506,7 @@
   box-shadow: 0 5px 0 var(--tinta);
   rotate: -1deg;
 }
+
 .pa-noes::before {
   content: "";
   position: absolute;
@@ -1593,6 +1518,7 @@
   background: color-mix(in srgb, var(--amarillo) 70%, transparent);
   transform: translateX(-50%) rotate(3deg);
 }
+
 .pa-noes-titulo {
   margin: 0;
   font-family: var(--letra-titular);
@@ -1601,13 +1527,16 @@
   line-height: 1.1;
   color: var(--tinta);
 }
+
 .pa-noes-mano {
   display: inline-block;
   font-family: var(--letra-mano);
   color: var(--lila-o);
   rotate: -3deg;
 }
+
 .pa-noes-lista { margin: 1rem 0 0; padding: 0; list-style: none; }
+
 .pa-noes-lista li {
   display: flex;
   align-items: center;
@@ -1618,6 +1547,7 @@
   font-weight: 800;
   color: var(--tinta);
 }
+
 .pa-noes-aspa {
   flex: none;
   display: inline-grid;
@@ -1629,6 +1559,7 @@
   background: var(--coral-s);
   color: var(--coral-o);
 }
+
 .pa-noes-nota {
   margin: 1rem 0 0;
   font-family: var(--letra-mano);
@@ -1636,17 +1567,20 @@
   line-height: 1.35;
   color: var(--tinta-2);
 }
+
 .pa-noes-nota a { color: var(--lila-o); font-weight: 700; }
 
 /* «Dos carteras» destacado en su título (19-11-2026, pedido por el admin):
    el «Dos» rodeado a rotulador lila y «carteras» con fluorescente naranja,
    los colores de spot y DCA. */
+
 .pa-dos-num {
   position: relative;
   display: inline-block;
   padding: 0 0.12em;
   color: var(--lila-o);
 }
+
 .pa-dos-num::after {
   content: "";
   position: absolute;
@@ -1656,6 +1590,7 @@
   transform: rotate(-4deg);
   pointer-events: none;
 }
+
 .pa-dos-marca {
   padding: 0 0.08em;
   background: linear-gradient(transparent 55%, color-mix(in srgb, var(--naranja) 45%, transparent) 55%, color-mix(in srgb, var(--naranja) 45%, transparent) 92%, transparent 92%);
@@ -1664,7 +1599,9 @@
 /* ── Solo en el ordenador (19-11-2026, pedido por el admin): garabatos de
    trading detrás del panel, y la barra del panel en menta con contorno
    (se confundía con el fondo). ── */
+
 .pa-garabatos { display: none; }
+
 @media (min-width: 901px) {
   .pa-escena { isolation: isolate; }
   .pa-garabatos { display: block; position: absolute; inset: -40px -50px; z-index: -1; pointer-events: none; }
@@ -1689,96 +1626,17 @@
   }
   .pa-panel { border: 2px solid var(--tinta); }
 }
+
 /* En el ordenador, el café algo más grande (19-11-2026). */
+
 @media (min-width: 901px) {
   .pa-cta-cafe { width: 108px; right: 18px; }
   .pa-cta-datos { padding-right: 140px; }
 }
 
-/* ── La tarjeta Premium en el ordenador, reorganizada (19-11-2026, pedido
-   por el admin; solo PC): dos columnas. A la izquierda, la etiqueta, el
-   título y lo que incluye; a la derecha, el precio, el botón y las garantías
-   en una ficha blanca bajo las coronas. «Portfolio Adelin» destacado a su
-   medida, con «estás aquí» grande a su lado. ── */
-@media (min-width: 901px) {
-  .pa-pr {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
-    grid-template-rows: auto auto 1fr;
-    column-gap: clamp(28px, 4vw, 56px);
-    align-items: start;
-    padding: 46px 48px 44px;
-  }
-  .pa-pr-sello { grid-column: 1; grid-row: 1; justify-self: start; }
-  .pa-pr-titulo { grid-column: 1; grid-row: 2; max-width: none; }
-  .pa-pr-incluye { grid-column: 1; grid-row: 3; margin-top: 2.2rem; gap: 14px; font-size: 1.05rem; }
-  .pa-pr-incluye .pa-pr-aqui {
-    justify-self: start;
-    width: fit-content;
-    margin: 0 0 6px -10px;
-    padding: 12px 18px;
-    font-size: 1.1rem;
-  }
-  .pa-pr-aqui-nota {
-    top: 50%;
-    right: auto;
-    left: calc(100% + 18px);
-    padding: 3px 12px;
-    font-size: 21px;
-    white-space: nowrap;
-    transform: translateY(-50%);
-    rotate: -4deg;
-  }
-  .pa-pr-aqui-nota::before {
-    content: "←";
-    margin-right: 6px;
-    font-family: var(--letra-texto);
-    font-weight: 900;
-  }
-
-  .pa-pr-pie {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-    align-self: center;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
-    margin-top: 90px;
-    padding: 24px 24px 20px;
-    background: #fff;
-    border: 2px solid var(--tinta);
-    border-top: 2px solid var(--tinta);
-    border-radius: 18px 14px 20px 13px;
-    box-shadow: 0 5px 0 var(--tinta);
-    rotate: 1deg;
-  }
-  .pa-pr-precio { justify-content: center; text-align: center; }
-  .pa-pr-precio small { text-align: center; }
-  .pa-pr-confianza { justify-content: center; }
-  .pa-pr-coronas { top: -40px; right: 40px; width: 200px; }
-
-  .pa-pr-flecha { top: 118px; left: 470px; right: auto; }
-}
-@media (min-width: 901px) {
-  .pa-pr-flecha { top: 112px; left: 350px; }
-}
-@media (min-width: 901px) {
-  .pa-pr-incluye { margin-top: 3.4rem; }
-  .pa-pr-flecha { top: 142px; left: 470px; rotate: 18deg; }
-}
-@media (min-width: 901px) { .pa-pr-flecha { left: 372px; } }
-/* PC: sin la flecha verde; el título y la etiqueta naranja, algo más
-   grandes (19-11-2026, pedido por el admin). */
-@media (min-width: 901px) {
-  .pa-pr-flecha { display: none; }
-  .pa-pr-incluye { margin-top: 2.2rem; }
-  .pa-pr-titulo { font-size: clamp(2.6rem, 3.6vw, 3.3rem); }
-  .pa-pr-sello { padding: 6px 15px; font-size: 14px; }
-  .pa-pr-sello svg { width: 17px; height: 17px; }
-}
-
 /* ── «Para qué sirve» y «Lo que suele enseñarse», en el ordenador
    (19-11-2026, pedido por el admin; solo PC): más estructura y garabatos. ── */
+
 .pa-ap-garabatos,
 .pa-vs-garabatos { display: none; }
 
@@ -1835,7 +1693,9 @@
    admin): dos hojas enfrentadas con un «vs» a mano. Izquierda, coral, algo
    más pequeña y ladeada, lo de las redes tachado con su aspa; derecha, verde,
    más grande, lo de aquí con su check. Sin columna ni flechas en medio. */
+
 .pa-vs-pc { display: none; }
+
 @media (min-width: 901px) {
   .pa-vs .pa-vs-leyenda,
   .pa-vs .pa-vs-lista { display: none; }
@@ -1946,6 +1806,7 @@
    por el admin; solo PC): el pósit a todo lo ancho, con el título y la nota
    a la izquierda, y lo que no es en una rejilla de 2×2 de fichas blancas,
    cada una con su aspa y su giro. */
+
 @media (min-width: 901px) {
   .pa-noes {
     display: grid;
@@ -1985,11 +1846,14 @@
   .pa-noes-lista li:nth-child(4) { rotate: -1deg; }
   .pa-noes-aspa { width: 34px; height: 34px; }
 }
+
 @media (min-width: 901px) { .pa-noes-titulo .pa-noes-mano { margin-top: -2px; } .pa-noes-nota { margin-top: 0.8rem; } }
 
 /* «¡datos reales!» con su flecha, en el hueco de la derecha de «Números que
    no se pueden maquillar» (19-11-2026, pedido por el admin; solo PC). */
+
 .pa-reales { display: none; }
+
 @media (min-width: 901px) {
   .pa-cifras { position: relative; }
   .pa-reales {
@@ -2019,11 +1883,14 @@
     50% { scale: 1.05; }
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .pa-reales-texto { animation: none; }
 }
+
 /* «¡datos reales!» quieto, como escrito a mano sobre el fondo, mucho más
    grande, más arriba y algo separado de la flecha (19-11-2026). */
+
 @media (min-width: 901px) {
   .pa-reales { top: -10px; }
   .pa-reales-texto {

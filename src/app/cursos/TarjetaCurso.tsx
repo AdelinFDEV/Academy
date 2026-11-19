@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Award, BookOpenText, Check, Clock3, Layers, Lock } from "lucide-react";
+import { ArrowRight, Award, BookOpenText, Check, Clock3, Layers } from "lucide-react";
 import Tecla, { type ColorTecla } from "@/components/cuaderno/Tecla";
 import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import Certificado from "@/components/aula/Certificado";
@@ -74,7 +74,6 @@ export default function TarjetaCurso({
   curso,
   resumen,
   modulos,
-  numero,
   reciente,
   sesion,
   avance,
@@ -83,19 +82,17 @@ export default function TarjetaCurso({
   resumen: CursoResumen | undefined;
   modulos: ModuloBase[];
   /** Su posición en el catálogo, desde 1. */
-  numero: number;
   /** El último del catálogo, si hay más de uno: lleva el pósit. */
   reciente: boolean;
   sesion: Sesion | null;
   avance: Avance;
 }) {
   const cta = ctaDe(curso.slug, sesion, avance);
-  const premium = !!sesion?.esPremium;
   const nModulos = resumen?.modulos ?? modulos.length;
   const nLecciones = resumen?.lecciones ?? modulos.reduce((t, m) => t + m.lecciones.length, 0);
 
   return (
-    <li className={`cu-curso cu-curso--${avance.tipo}`} style={{ "--c": curso.color } as React.CSSProperties}>
+    <article className={`cu-curso cu-curso--${avance.tipo}`} style={{ "--c": curso.color } as React.CSSProperties}>
       {/* La foto de la portada, pegada con cinta. */}
       <div className="cu-curso-foto">
         <span className="cu-cinta cu-cinta--izq" aria-hidden="true" />
@@ -108,9 +105,8 @@ export default function TarjetaCurso({
             <span className="cu-chip cu-chip--menta"><Check size={12} strokeWidth={3} aria-hidden="true" /> Aprobado</span>
           )}
           {avance.tipo === "empezado" && <span className="cu-chip cu-chip--naranja">En curso</span>}
-          {!premium && avance.tipo !== "aprobado" && (
-            <span className="cu-chip cu-chip--tinta"><Lock size={11} strokeWidth={2.8} aria-hidden="true" /> Premium</span>
-          )}
+          {/* Sin la etiqueta «Premium» (19-11-2026, pedido por el admin): ya lo
+              dice la página entera y el botón de cada tarjeta. */}
         </span>
         {reciente && avance.tipo === "nuevo" && <span className="cu-postit">El más reciente</span>}
         {avance.tipo === "aprobado" && (
@@ -134,7 +130,6 @@ export default function TarjetaCurso({
       <div className="cu-curso-cuerpo">
         <div className="cu-curso-cab">
           <span className="cu-curso-sello" aria-hidden="true">{iconoCurso(curso.slug, 26)}</span>
-          <span className="cu-curso-num">curso {String(numero).padStart(2, "0")}</span>
         </div>
         <h2 className="cu-curso-titulo">
           <Link href={`/cursos/${curso.slug}`}>{curso.titulo}</Link>
@@ -204,6 +199,6 @@ export default function TarjetaCurso({
           <Tecla href={`/cursos/${curso.slug}`} color="blanca">Ver temario</Tecla>
         </div>
       </div>
-    </li>
+    </article>
   );
 }

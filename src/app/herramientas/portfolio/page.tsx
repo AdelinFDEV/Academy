@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
-  ArrowRight, Lock, ShieldCheck, Check, X, CreditCard, Zap, Radio, TrendingUp, TrendingDown, Scale,
-  PieChart, ListOrdered, Bitcoin, CalendarClock, Target, Eye, HeartCrack, Ruler, Crown,
+  ArrowRight, Lock, ShieldCheck, Check, X, Radio, TrendingUp, TrendingDown, Scale,
+  PieChart, ListOrdered, Bitcoin, CalendarClock, Target, Eye, HeartCrack, Ruler,
   Layers,
 } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
 import TeclaPremium from "@/components/cuaderno/TeclaPremium";
+import TarjetaPremium from "@/components/TarjetaPremium";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
@@ -729,55 +730,9 @@ export default async function FichaPortfolioPage() {
           </p>
         </section>
 
-        {/* ── Precio y llamada final, rediseñada (19-11-2026, pedido por el
-            admin) en el estilo de la tarjeta Premium del menú: ficha amarilla
-            con contorno de rotulador, celo, etiqueta ladeada, las coronas de
-            pegatina y el precio repasado con fluorescente. ── */}
-        <section className="pa-pr" id="suscribirse" aria-labelledby="pa-precio-titulo">
-          {/* eslint-disable-next-line @next/next/no-img-element -- pegatina decorativa, ya optimizada */}
-          <img src="/cuaderno/premium-coronas-pegatina.webp" alt="" width={560} height={408} className="pa-pr-coronas" loading="lazy" draggable={false} />
-          <span className="pa-pr-sello"><Crown size={14} strokeWidth={2.6} aria-hidden="true" /> Premium · todo incluido</span>
-          <h2 id="pa-precio-titulo" className="pa-pr-titulo">Ábrelo y <span className="pa-pr-mano">júzgalo tú</span></h2>
-          {/* Flecha a mano, verde, del título a «Portfolio Adelin» (19-11-2026,
-              pedido por el admin). Decoración. */}
-          <SimboloEstudio tipo="flecha" color="menta" giro={62} tamano={64} semilla={14} retraso={300} className="pa-pr-flecha" />
-
-          <ul className="pa-pr-incluye">
-            {/* Lo de esta página, destacado (19-11-2026, pedido por el admin). */}
-            <li className="pa-pr-aqui"><span className="pa-pr-check pa-pr-check--menta" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span><strong>Portfolio Adelin</strong>: spot y DCA de Bitcoin</span><span className="pa-pr-aqui-nota" aria-hidden="true">estás aquí</span></li>
-            {/* Corregido el 19-11-2026 (pedido por el admin): lo que de verdad
-                incluye Premium, sin repetir lo del portfolio. */}
-            <li><span className="pa-pr-check pa-pr-check--cielo" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span>El <Link href="/herramientas/diario">Diario de Trading</Link> avanzado</span></li>
-            <li><span className="pa-pr-check pa-pr-check--azul" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span>El <Link href="/foro">foro</Link> de preguntas y respuestas</span></li>
-            <li><span className="pa-pr-check pa-pr-check--lila" aria-hidden="true"><Check size={14} strokeWidth={3.4} /></span><span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</span></li>
-          </ul>
-
-          <div className="pa-pr-pie">
-            {isPremium ? (
-              <p className="pa-pr-ya">Ya tienes acceso.</p>
-            ) : (
-              <p className="pa-pr-precio">
-                <strong>{PRECIO}</strong>
-                <span>al mes</span>
-                <small>unos {PRECIO_DIA} al día · el precio se te queda fijado</small>
-              </p>
-            )}
-            {/* El botón de Premium, rediseñado (19-11-2026, pedido por el admin):
-                lila de la paleta, con la corona dorada y texto corto. */}
-            {isPremium ? (
-              <Cta premium grande />
-            ) : (
-              <TeclaPremium tamano="grande" />
-            )}
-            {!isPremium && (
-              <ul className="pa-pr-confianza">
-                <li><ShieldCheck size={14} strokeWidth={2.6} aria-hidden="true" />Sin permanencia</li>
-                <li><Zap size={14} strokeWidth={2.6} aria-hidden="true" />Acceso inmediato</li>
-                <li><CreditCard size={14} strokeWidth={2.6} aria-hidden="true" />Pago seguro con Stripe</li>
-              </ul>
-            )}
-          </div>
-        </section>
+        {/* ── Precio y llamada final: la tarjeta Premium, la misma que en los
+            cursos (TarjetaPremium.tsx), con el portfolio destacado. ── */}
+        <TarjetaPremium aqui="portfolio" esPremium={isPremium} accionPremium={<Cta premium grande />} />
 
         {/* Sin descargo propio (19-11-2026, pedido por el admin): ya lo cubre
             el aviso de riesgo del pie de página. */}

@@ -1,0 +1,98 @@
+/* El «reto final» (RetoFinal.tsx): la pegatina del examen final, con capa y
+   las manos en jarra, que se balancea despacio como quien espera el desafío;
+   y su bocadillo de cómic, que sale con un saltito y se va solo. Lo usan la
+   portada (su sitio, en cursos-home.css) y /cursos (en cursos.css). */
+.ch-reto {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: var(--puntero-mano, pointer);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Sin max-width: none, el «max-width: 100%» general de las imágenes la
+   dejaba a 0 dentro de una parada de 0 px de ancho. */
+.ch-reto-img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 50% 90%;
+  animation: ch-reto-espera 3.4s ease-in-out infinite;
+  transition: scale 0.2s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .ch-reto:hover .ch-reto-img { scale: 1.06; }
+}
+
+.ch-reto:active .ch-reto-img { scale: 0.94; transition-duration: 0.06s; }
+
+.ch-reto:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
+
+/* El bocadillo: papel blanco con contorno de rotulador en tinta, el texto a
+   mano en el azul de su capa y un canto azul. El pico, con su contorno (un
+   triángulo de tinta y otro de papel encima). */
+.ch-reto-bocadillo {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 4;
+  padding: 8px 14px 9px;
+  border: 2.5px solid var(--tinta);
+  border-radius: 18px 16px 19px 15px / 16px 19px 15px 18px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--azul) 55%, var(--papel));
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--azul-o) 80%, var(--tinta));
+  translate: -50% 0;
+  rotate: -3deg;
+  pointer-events: none;
+  animation: ch-bocadillo-sale 0.35s cubic-bezier(0.34, 1.8, 0.5, 1) both;
+}
+
+.ch-reto-bocadillo::before,
+.ch-reto-bocadillo::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  border-style: solid;
+  border-color: transparent;
+  translate: -50% 0;
+}
+
+.ch-reto-bocadillo::before {
+  bottom: -13px;
+  border-width: 12px 10px 0;
+  border-top-color: var(--tinta);
+}
+
+.ch-reto-bocadillo::after {
+  bottom: -8px;
+  border-width: 8.5px 7px 0;
+  border-top-color: var(--papel);
+}
+
+@keyframes ch-bocadillo-sale {
+  from { opacity: 0; scale: 0.6; translate: -50% 8px; }
+}
+
+@keyframes ch-reto-espera {
+  0%, 100% { rotate: -3deg; }
+  50% { rotate: 3deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch-reto-img,
+  .ch-reto-bocadillo { animation: none; }
+}

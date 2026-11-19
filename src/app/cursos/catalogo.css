@@ -145,45 +145,6 @@
   transform: rotate(10deg);
 }
 
-/* Los totales de todos los cursos: fichas de papel con su cifra. */
-.cu-cifras {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
-  margin: clamp(2rem, 4vw, 2.8rem) 0 0;
-}
-
-.cu-cifras div {
-  padding: 14px 16px 16px;
-  border-radius: 20px;
-  background: var(--papel);
-  box-shadow: 0 5px 0 var(--gris-o);
-}
-
-.cu-cifras div:nth-child(4) { background: var(--lila-s); box-shadow: 0 5px 0 color-mix(in srgb, var(--lila) 45%, #fff); }
-
-.cu-cifras dt {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.cu-cifras dt svg { color: var(--lila-o); }
-
-.cu-cifras dd {
-  margin: 4px 0 0;
-  font-family: var(--letra-titular);
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  font-weight: 800;
-  line-height: 1.05;
-  color: var(--tinta);
-}
-
 /* ── El listado ─────────────────────────────────────────────────────────── */
 
 .cu-lista {
@@ -703,7 +664,6 @@
   .cu-oferta,
   .cu-reanudar { max-width: 420px; }
   .cu-pegatina { justify-self: start; width: 130px; height: 130px; font-size: 13px; }
-  .cu-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cu-premium-precio { max-width: 420px; }
 }
 
@@ -714,8 +674,6 @@
 /* ── Móvil ──────────────────────────────────────────────────────────────── */
 
 @media (max-width: 560px) {
-  .cu-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .cu-cifras div:last-child { grid-column: 1 / -1; }
   .cu-cab-texto .cu-titulo .anotacion { white-space: normal; }
   .cu-curso { padding: 10px 10px 0; border-radius: 26px; }
   .cu-curso-cuerpo { padding: 0 6px 16px; }
