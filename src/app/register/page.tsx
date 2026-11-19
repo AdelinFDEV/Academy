@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import AccesoShell from "@/components/acceso/AccesoShell";
 import { Aviso, Campo, CampoClave, GoogleIcon, RequisitosClave, Separador, useSonidoDeError } from "@/components/acceso/Campos";
 import { passwordChecks } from "@/lib/passwordRules";
 import { MENSAJE_DOMINIO_NO_PERMITIDO, emailPermitido } from "@/lib/emailPolicy";
+import { bloquearScroll } from "@/components/trading/useVentanaMovil";
 
 export default function RegisterPage() {
   return (
@@ -42,6 +43,12 @@ function RegisterForm() {
   const [error, setError] = useState("");
   // La ventanita que avisa de que solo valen Gmail y Proton Mail.
   const [avisoDominio, setAvisoDominio] = useState(false);
+  // Con la ventanita del correo abierta, la página no se mueve (como todas
+  // las ventanas emergentes de la web).
+  useEffect(() => {
+    if (!avisoDominio) return;
+    return bloquearScroll();
+  }, [avisoDominio]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");

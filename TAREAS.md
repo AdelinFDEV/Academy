@@ -36,6 +36,20 @@ Estado (17-11-2026): **la web ENTERA está rehecha y ya en `master`** (commit `c
 
 ## Funcionalidades pedidas
 
+### 00j. Diario de Trading en dos partes: el de trading y uno tradicional (19-11-2026)
+
+Lo pidió el admin el 19-11-2026. El Diario se parte en dos, **conectados entre sí**:
+
+- **El diario de trading**, el que ya existe (operaciones, estadísticas, riesgo).
+- **Un diario tradicional, por desarrollar**: la entrada de cada día, donde además de escribir se puede **adjuntar la operación de ese día** del diario de trading, y también sentimientos, fotos y lugares.
+
+- [ ] Diseñar y construir el diario tradicional y su conexión con el de trading (datos, tablas, subida de fotos, permisos: solo Premium, como el Diario).
+- La página pública `/herramientas/diario` **lo presenta ya como disponible**: lo decidió el admin el 19-11-2026, avisado de que choca con el intocable «No prometas lo que el producto no hace» (`AGENTS.md`). Mientras no exista, es una promesa abierta: **esta tarea es la que la cierra**, y hasta entonces corre prisa.
+
+### 00k. Página del Diario: una sección con imágenes reales (19-11-2026)
+
+- [ ] En `/herramientas/diario` (la página de venta, sin sesión), añadir **una sección con capturas reales del diario** funcionando, en vez de solo maquetas. Lo pidió el admin el 19-11-2026. Las capturas tienen que ser de una cuenta de prueba, sin datos de nadie.
+
 ### 00h. Diario: capturas de antes y después de cada operación (13-11-2026)
 
 Cada operación admite dos imágenes opcionales, la del gráfico antes de entrar y la de después de cerrar (`TjCapturas.tsx`, `/api/trades/captura`, `src/lib/diarioCapturas.ts`). Van a un bucket privado, recodificadas a WebP por el servidor.

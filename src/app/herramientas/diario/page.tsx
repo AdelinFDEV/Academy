@@ -3,21 +3,20 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
   ArrowRight, ShieldCheck, NotebookPen, BarChart3, Search,
-  LineChart, CalendarRange, Crosshair, EyeOff, Trophy, Check, X,
-  CreditCard, RefreshCw, Crown, Gauge, Camera, SlidersHorizontal, HeartPulse, Scale,
-  Laugh, Smile, Meh, Frown, type LucideIcon,
+  LineChart, Check, X,
+  Crown, Camera, HeartPulse,
+  Smile, Meh, Plus, BookHeart, MapPin, Paperclip, PenLine, Image as ImageIcon,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbSchema, webAppSchema } from "@/lib/schema";
-import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
-import { ANIMOS } from "@/components/trading/tjDias";
-import { MILESTONES, RISK_LIMIT_PCT, VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
+import { webAppSchema } from "@/lib/schema";
+import { MILESTONES, VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import Tecla from "@/components/cuaderno/Tecla";
 import TeclaPremium from "@/components/cuaderno/TeclaPremium";
-import Anotacion from "@/components/cuaderno/Anotacion";
+import TarjetaPremium from "@/components/TarjetaPremium";
+import InfoSuperHito from "./InfoSuperHito";
 import "../ficha.css";
 import "./diario.css";
 
@@ -72,110 +71,11 @@ export const metadata: Metadata = {
 const PRECIO = precioEur(PREMIUM_PRICE_EUR);
 const PRECIO_DIA = precioEur(Math.round((PREMIUM_PRICE_EUR / 30) * 100) / 100);
 
-/** Cifras de la maqueta del panel. Redondas y coherentes entre sí. */
-const DEMO = {
-  pl: "+1.240 $",
-  plPct: "+12,4 %",
-  winRate: 58,
-  operaciones: 47,
-  plMedio: "+26 $",
-};
-
-const DEMO_OPS = [
-  { par: "BTC", dir: "Long", estrategia: "Ruptura", res: "+184 $", tono: "es-sube" },
-  { par: "ETH", dir: "Short", estrategia: "Rango", res: "−62 $", tono: "es-baja" },
-  { par: "SOL", dir: "Long", estrategia: "Tendencia", res: "+97 $", tono: "es-sube" },
-];
-
-/** La curva de la maqueta: puntos de un SVG de 320 × 110. */
-const CURVA: [number, number][] = [
-  [0, 92], [27, 86], [53, 89], [80, 74], [107, 78], [133, 64], [160, 68],
-  [187, 52], [213, 57], [240, 40], [267, 44], [293, 28], [320, 18],
-];
-const CURVA_PUNTOS = CURVA.map(([x, y]) => `${x},${y}`).join(" ");
-const [CURVA_X, CURVA_Y] = CURVA[CURVA.length - 1];
-
-/** Circunferencia del anillo del win rate (r = 15.9, la del 100 = 100). */
-const ANILLO = 2 * Math.PI * 15.9;
-
-/** La cara de cada ánimo (sin emojis en la web pública: ESTILO.md). */
-const CARA_ANIMO: Record<number, LucideIcon> = { 4: Laugh, 3: Smile, 2: Meh, 1: Frown };
-
-/**
- * Riesgo y ejecución: lo que mide la vista «Análisis» (TjAnalysis.tsx y
- * TjBreakdown.tsx). El límite de riesgo sale de la constante del diario.
- */
-const RIESGO_PUNTOS: { icon: LucideIcon; title: string; text: string; termino?: { texto: string; href: string } }[] = [
-  {
-    icon: Scale,
-    title: "Cuánto arriesgas de verdad",
-    text: `El riesgo de cada operación como porcentaje de la cuenta que tenías antes de entrar, y cuántas pasaron del ${RISK_LIMIT_PCT} %.`,
-  },
-  {
-    icon: Gauge,
-    title: "Tu ratio y el acierto que necesitas",
-    text: "Tu ratio riesgo/beneficio medio, tal como lo planeaste, y el acierto mínimo para no perder dinero con él.",
-  },
-  {
-    icon: Crosshair,
-    title: "El plan frente a lo que pasó",
-    text: "Qué parte del objetivo te llevas en las ganadoras y cuánto pierdes frente al stop-loss que habías puesto.",
-    termino: { texto: "stop-loss", href: "/glosario/stop-loss" },
-  },
-  {
-    icon: Search,
-    title: "Dónde ganas y dónde pierdes",
-    text: "Tu resultado desglosado por par, estrategia, dirección, día de la semana y franja horaria.",
-  },
-];
-
-/** La maqueta de «Riesgo y ejecución»: tres de sus medidas, con cifras redondas. */
-const RIESGO_DEMO = [
-  { tono: "es-bien", nombre: "Riesgo por operación", pie: "de tu cuenta, de media", valor: "1,2 %" },
-  { tono: "", nombre: "Ratio riesgo/beneficio", pie: "necesitas acertar más del 33 %", valor: "1:2" },
-  { tono: "es-aviso", nombre: "Objetivo conseguido", pie: "de media en tus ganadoras", valor: "45 %" },
-];
-
-/** Cómo funciona, en el orden en que pasa. */
-const PASOS: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: NotebookPen, title: "Apuntas la operación", text: "Par, dirección, riesgo, resultado, por qué entraste y cómo te sentías. Un minuto." },
-  { icon: BarChart3, title: "El diario hace las cuentas", text: "Diez estadísticas, tu curva de capital y tu riesgo, al día con cada operación." },
-  { icon: Search, title: "Revisas y corriges", text: "En Análisis ves dónde ganas, dónde pierdes y si cumples tu plan. Qué cambiar lo decides tú." },
-];
-
-/** Las diez métricas reales del panel, con lo que dicen en una línea. */
-const METRICAS: [string, string][] = [
-  ["P&L total", "Lo ganado o perdido en total"],
-  ["Win rate", "Qué parte de tus operaciones gana"],
-  ["Operaciones", "Cuántas llevas apuntadas"],
-  ["P&L medio", "Lo que deja cada operación"],
-  ["Ganancia media", "Cuánto ganas al acertar"],
-  ["Pérdida media", "Cuánto pierdes al fallar"],
-  ["Mejor operación", "Tu mayor acierto"],
-  ["Peor operación", "Tu mayor pérdida"],
-  ["Racha ganando", "La más larga sin fallar"],
-  ["Racha perdiendo", "La mala más larga"],
-];
-
-const ADEMAS: { icon: LucideIcon; title: string; text: string; termino?: { texto: string; href: string } }[] = [
-  { icon: LineChart, title: "Curva de capital", text: "Desde el capital que indiques, operación a operación, con tu mayor caída desde un máximo." },
-  { icon: CalendarRange, title: "Calendario y periodos", text: "El resultado de cada día, y tu rendimiento por mes, trimestre y año." },
-  {
-    icon: BarChart3,
-    title: "Resultados en R",
-    text: "Cuántas operaciones cerraron en cada tramo, medidas en múltiplos de R, y lo que deja de media cada una.",
-    termino: { texto: "múltiplos de R", href: "/glosario/r-multiplo" },
-  },
-  { icon: Camera, title: "El gráfico, antes y después", text: "Puedes guardar con cada operación una captura de antes de entrar y otra de después." },
-  { icon: SlidersHorizontal, title: "Filtros", text: "El análisis y la lista de operaciones se filtran por periodo, par, estrategia y dirección." },
-  { icon: EyeOff, title: "Privado de verdad", text: "Nadie más ve tus operaciones: ni otros suscriptores ni un ranking." },
-];
-
 /** Los hitos con niveles, de la misma lista que usa el diario (sin el súper hito). */
 const HITOS = MILESTONES.filter((m) => m.group !== "leyenda").map((m) => m.title);
 
 /** Lo que trae, en una línea, bajo el botón de la cabecera. */
-const INCLUYE_CORTO = ["10 estadísticas", "Riesgo y ejecución", "Sensaciones", `${HITOS.length} hitos + el súper hito`];
+const INCLUYE_CORTO = ["10 estadísticas", "Riesgo y ejecución", "Sensaciones", `${HITOS.length} logros + el súper hito`];
 
 /** La racha de la maqueta del súper hito: 9 meses válidos (uno en rojo) y 3 por llegar. */
 const RACHA: ("ok" | "red" | "pend")[] = ["ok", "ok", "ok", "red", "ok", "ok", "ok", "ok", "ok", "pend", "pend", "pend"];
@@ -234,20 +134,6 @@ const FAQ = [
   },
 ];
 
-/** Enlaza al diccionario la primera aparición de un término dentro de un texto plano. */
-function ConTermino({ text, termino }: { text: string; termino?: { texto: string; href: string } }) {
-  const i = termino ? text.indexOf(termino.texto) : -1;
-  if (!termino || i < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, i)}
-      <Link href={termino.href}>{termino.texto}</Link>
-      {text.slice(i + termino.texto.length)}
-    </>
-  );
-}
-
-/** El botón principal. Quien ya es Premium abre su diario; el resto paga. */
 function Cta({ premium, grande = false, texto = "Empezar mi diario" }: { premium: boolean; grande?: boolean; texto?: string }) {
   if (premium) {
     return (
@@ -265,35 +151,43 @@ function Cta({ premium, grande = false, texto = "Empezar mi diario" }: { premium
 }
 
 /**
- * La cabecera: una hoja del diario con una operación a medio apuntar y lo que
- * el diario calcula solo. Decorativa: las cifras son las redondas de `DEMO`,
- * no de nadie.
+ * La cabecera: el súper hito, a lo grande (19-11-2026, pedido por el admin;
+ * sustituye a la hoja del diario). Una medalla dorada colgada con su cinta,
+ * «Conseguiste vivir del trading», la racha de doce meses a medio camino y
+ * las tres reglas. Decorativa: la racha es una maqueta (`RACHA`), no de nadie;
+ * las reglas reales están en la sección del súper hito, más abajo.
  */
-function HojaDiario() {
+function SuperHitoCabecera() {
   return (
-    <div className="dj-hoja" aria-hidden="true">
-      <span className="dj-hoja-anillas"><i /><i /><i /><i /><i /><i /></span>
-      <span className="dj-hoja-cab">
-        <span>Operación nueva</span>
-        <span className="dj-hoja-fecha">hoy</span>
-      </span>
-      <span className="dj-hoja-chips">
-        <span className="dj-chip dj-chip--azul">BTC/USDT</span>
-        <span className="dj-chip dj-chip--menta">Long</span>
-        <span className="dj-chip">Ruptura</span>
-      </span>
-      <span className="dj-hoja-linea"><small>Riesgo</small><b>1 % de la cuenta</b></span>
-      <span className="dj-hoja-linea"><small>Por qué entro</small><b className="dj-hoja-mano">rompe el máximo semanal</b></span>
-      <span className="dj-hoja-linea"><small>Cómo me siento</small><b className="dj-hoja-animo"><Smile size={16} /> Bien</b></span>
-      <span className="dj-hoja-linea"><small>Resultado</small><b className="es-sube">+184 $</b></span>
+    <div className="dj-sh">
+      {/* La «i»: abre la explicación exacta del logro (lo único interactivo). */}
+      <InfoSuperHito meses={VIVIR_MONTHS} minOps={VIVIR_MIN_OPS} maxRojo={VIVIR_MAX_RED} />
+      <div className="dj-sh-dibujo" aria-hidden="true">
+      <span className="dj-sh-cinta" />
+      <span className="dj-sh-medalla"><Crown size={46} strokeWidth={2} /></span>
+      <span className="dj-sh-kicker">Súper hito</span>
+      <span className="dj-sh-titulo">Conseguiste <span>vivir del trading</span></span>
+      <span className="dj-sh-mano">el logro más difícil del diario</span>
 
-      <span className="dj-hoja-sale">
-        <span><small>Win rate</small><b>{DEMO.winRate} %</b></span>
-        <span><small>Operaciones</small><b>{DEMO.operaciones}</b></span>
-        <span><small>P&amp;L medio</small><b className="es-sube">{DEMO.plMedio}</b></span>
+      <span className="dj-sh-racha">
+        <span className="dj-sh-racha-cab"><span>Tu racha</span><b>9 <i>de {VIVIR_MONTHS} meses</i></b></span>
+        <span className="dj-sh-meses">
+          {RACHA.map((m, i) => (
+            <span key={i} className={`es-${m}`}>
+              {m === "ok" ? <Check size={13} strokeWidth={3.4} /> : m === "red" ? <X size={12} strokeWidth={3.4} /> : null}
+            </span>
+          ))}
+        </span>
       </span>
 
-      <span className="dj-hoja-postit">el diario hace las cuentas</span>
+      <span className="dj-sh-reglas">
+        <span><b>{VIVIR_MONTHS}</b> meses seguidos</span>
+        <span><b>{VIVIR_MIN_OPS}+</b> operaciones al mes</span>
+        <span><b>{VIVIR_MAX_RED}</b> en rojo como mucho</span>
+      </span>
+
+      <span className="dj-sh-postit">y es tuyo para siempre</span>
+      </div>
     </div>
   );
 }
@@ -312,10 +206,6 @@ export default async function FichaDiarioPage() {
     <div className="blog-page fh-pagina">
       <JsonLd
         data={[
-          breadcrumbSchema([
-            { name: "Inicio", path: "/" },
-            { name: "Diario de Trading", path: "/herramientas/diario" },
-          ]),
           webAppSchema({
             path: "/herramientas/diario",
             name: "Diario de Trading",
@@ -336,54 +226,74 @@ export default async function FichaDiarioPage() {
       <SiteNav user={!!user} isPremium={isPremium} isAdmin={role === "admin"} />
 
       <main className="fh fh-c-azul dj">
-        <nav className="fh-migas" aria-label="Migas de pan">
-          <Link href="/">Inicio</Link>
-          <span aria-hidden="true">›</span>
-          <span>Diario de Trading</span>
-        </nav>
+        {/* Sin «Inicio › Diario de Trading» (19-11-2026, pedido por el admin);
+            con él se fue su JSON-LD: no se declara lo que no se ve. */}
 
         {/* ── Cabecera: la promesa, el botón y la hoja del diario ── */}
         <section className="fh-hero dj-hero">
           <div className="fh-hero-texto">
-            <span className="fh-eyebrow">
-              <NotebookPen size={14} aria-hidden="true" />
+            {/* La cabecera, rehecha (19-11-2026, pedido por el admin): solo el
+                diario de trading, vendido como uno de los más completos; el
+                diario tradicional se presenta al final de la página. Pósit,
+                título con su frase a mano, tres apuntes, el botón y el precio. */}
+            <span className="dj-cab-posit">
+              <NotebookPen size={15} strokeWidth={2.4} aria-hidden="true" />
               El diario de trading más completo en español
             </span>
 
-            <h1 className="fh-titulo">
-              Diario de <span className="fluor">Trading</span>
-              <span className="fh-titulo-2">Tú apuntas la operación. Él hace las cuentas.</span>
+            <h1 className="fh-titulo dj-cab-titulo">
+              Diario de <span className="dj-cab-marca">Trading</span>
+              <span className="fh-titulo-2 dj-cab-frase">
+                Tú apuntas la operación. <span className="dj-cab-subraya">Él hace las cuentas.</span>
+              </span>
             </h1>
 
-            <p className="fh-lead">
-              Apunta cada operación y cómo te sentías. Este diario de trading calcula diez estadísticas, tu curva de capital y tu
-              riesgo, y te enseña dónde ganas y dónde pierdes.
-            </p>
+            <ul className="dj-cab-apuntes">
+              <li className="dj-cab-apunte dj-cab-apunte--azul">
+                <span className="dj-cab-icono" aria-hidden="true"><NotebookPen size={16} strokeWidth={2.4} /></span>
+                <span>Apunta cada operación <strong>y cómo te sentías</strong>.</span>
+              </li>
+              <li className="dj-cab-apunte dj-cab-apunte--lila">
+                <span className="dj-cab-icono" aria-hidden="true"><BarChart3 size={16} strokeWidth={2.4} /></span>
+                <span>Este diario de trading calcula <strong>diez estadísticas</strong>, tu curva de capital y tu riesgo.</span>
+              </li>
+              <li className="dj-cab-apunte dj-cab-apunte--menta">
+                <span className="dj-cab-icono" aria-hidden="true"><Search size={16} strokeWidth={2.4} /></span>
+                <span>Y te enseña <strong>dónde ganas y dónde pierdes</strong>.</span>
+              </li>
+            </ul>
 
-            <div className="fh-cta">
-              <Cta premium={isPremium} grande />
+            <div className="fh-cta dj-cab-cta">
+              <Cta premium={isPremium} grande texto="Quiero mi diario" />
               {!isPremium && (
-                <p className="fh-cta-nota">
-                  <ShieldCheck size={14} aria-hidden="true" />
-                  {PRECIO}/mes · Sin permanencia · Cancela cuando quieras
-                </p>
+                <div className="dj-cab-precio">
+                  <p className="dj-cab-cifra">
+                    <strong>{PRECIO}</strong>
+                    <span>al mes</span>
+                  </p>
+                  <p className="dj-cab-dia">unos {PRECIO_DIA} al día: menos que una mala operación</p>
+                  <ul className="dj-cab-garantias">
+                    <li><ShieldCheck size={14} strokeWidth={2.6} aria-hidden="true" /> Sin permanencia</li>
+                    <li><Check size={14} strokeWidth={3} aria-hidden="true" /> Cancelas cuando quieras</li>
+                  </ul>
+                </div>
               )}
               {!user && (
-                <p className="fh-cta-login">
+                <p className="fh-cta-login dj-cab-login">
                   ¿Ya eres Premium?{" "}
                   <Link href={`/login?next=${encodeURIComponent("/dashboard/trading")}`}>Inicia sesión</Link>
                 </p>
               )}
             </div>
 
-            <ul className="dj-incluye-corto">
+            <ul className="dj-incluye-corto dj-cab-chips">
               {INCLUYE_CORTO.map((t) => (
                 <li key={t}><Check size={14} strokeWidth={3} aria-hidden="true" />{t}</li>
               ))}
             </ul>
           </div>
 
-          <HojaDiario />
+          <SuperHitoCabecera />
         </section>
 
         {/* ── La respuesta, arriba (10-11-2026): quien busca «diario de trading»
@@ -393,352 +303,172 @@ export default async function FichaDiarioPage() {
         <section className="fh-bloque fh-bloque--estrecho fh-papel dj-que-es">
           <p className="fh-mano">primero, lo básico</p>
           <h2 className="fh-h2">Qué es un diario de trading</h2>
-          <p className="dj-p">
-            Un <Link href="/glosario/diario-de-trading">diario de trading</Link> es el registro de todas tus
-            operaciones: qué hiciste, cuánto arriesgaste, cómo salió y por qué entraste. En inglés se le llama{" "}
-            <em>trading journal</em>; también se le conoce como registro de operaciones. Sirve para medir cómo
-            operas de verdad, porque la memoria recuerda los aciertos y olvida las pérdidas.
+          {/* Mejorada el 19-11-2026 (pedido por el admin): la definición en
+              grande, lo que se apunta en cuatro etiquetas, el porqué en un
+              pósit y la guía al final. Mismas palabras clave (SEO). */}
+          <p className="dj-qe-def">
+            Un <Link href="/glosario/diario-de-trading">diario de trading</Link> es{" "}
+            <span className="dj-qe-marca">el registro de todas tus operaciones</span>:
           </p>
-          <p className="dj-p">
+          <ul className="dj-qe-chips">
+            <li className="dj-qe-chip dj-qe-chip--azul">qué hiciste</li>
+            <li className="dj-qe-chip dj-qe-chip--coral">cuánto arriesgaste</li>
+            <li className="dj-qe-chip dj-qe-chip--menta">cómo salió</li>
+            <li className="dj-qe-chip dj-qe-chip--lila">por qué entraste</li>
+          </ul>
+          <p className="dj-qe-tambien">
+            En inglés, <em>trading journal</em>; también se le llama registro de operaciones.
+          </p>
+          <p className="dj-qe-posit">
+            Sirve para medir cómo operas <strong>de verdad</strong>: la memoria recuerda los aciertos y olvida las
+            pérdidas. El diario, no.
+          </p>
+          <p className="dj-p dj-qe-guia">
             Puedes llevarlo en un cuaderno o en un Excel, y en la guía{" "}
             <Link href="/guias/como-hacer-un-diario-de-trading">cómo hacer un diario de trading</Link> te explico
-            qué apuntar y qué cifras mirar. Este diario hace las cuentas por ti.
+            qué apuntar y qué cifras mirar. <strong>Este diario hace las cuentas por ti.</strong>
           </p>
         </section>
 
-        {/* ── Riesgo y ejecución ── */}
-        <section className="fh-bloque dj-riesgo">
-          <div>
-            <span className="fh-kicker"><Scale size={14} aria-hidden="true" /> Riesgo y ejecución</span>
-            <h2 className="fh-h2">Cómo planeas y cómo cumples el plan</h2>
-            <p className="dj-p">
-              Un diario lleno de operaciones sirve de poco si hay que sacar las cuentas a mano. Este mide tu riesgo y
-              tu ejecución con cada operación que apuntas, y te lo pone en cifras.
-            </p>
-            <div className="dj-riesgo-puntos">
-              {RIESGO_PUNTOS.map((p) => {
-                const Icon = p.icon;
-                return (
-                  <div key={p.title} className="dj-riesgo-punto">
-                    <span className="fh-icono" aria-hidden="true"><Icon size={18} strokeWidth={2.2} /></span>
-                    <div>
-                      <h3>{p.title}</h3>
-                      <p><ConTermino text={p.text} termino={p.termino} /></p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        {/* ── Los dos diarios y cómo se mezclan (19-11-2026, pedido por el
+            admin; sustituye a «Sensaciones», «Así funciona» y «Y además»).
+            El diario de trading y el diario tradicional, conectados: el día a
+            día entero, documentado. El admin decidió presentarlos ya como
+            disponibles (TAREAS.md, 00j). ── */}
+        <section className="fh-bloque dj-dos" aria-labelledby="dj-dos-titulo">
+          <p className="fh-mano">dos diarios, un solo cuaderno</p>
+          <h2 id="dj-dos-titulo" className="fh-h2 dj-dos-h2">
+            Lo que <span className="dj-dos-marca dj-dos-marca--azul">operas</span> y lo que{" "}
+            <span className="dj-dos-marca dj-dos-marca--coral">vives</span>, en el mismo sitio
+          </h2>
+          <p className="dj-p dj-dos-lead">
+            Tu día a día de trader, documentado de verdad: las operaciones con sus cifras, y lo que pasó alrededor
+            de ellas. Porque cómo duermes, dónde estás y cómo te sientes también acaban en tu cuenta.
+          </p>
 
-          <div className="dj-riesgo-panel" aria-hidden="true">
-            <span className="dj-riesgo-panel-cab">
-              <strong>Riesgo y ejecución</strong>
-              <small>Cómo planeas y cómo cumples el plan</small>
-            </span>
-            <span className="dj-riesgo-filas">
-              {RIESGO_DEMO.map((r) => (
-                <span key={r.nombre} className={`dj-riesgo-fila ${r.tono}`.trim()}>
-                  <span><strong>{r.nombre}</strong><small>{r.pie}</small></span>
-                  <b>{r.valor}</b>
-                </span>
-              ))}
-            </span>
-          </div>
-        </section>
-
-        {/* ── El panel ── */}
-        <section className="fh-bloque dj-panel">
-          <div className="fh-centro">
-            <span className="fh-kicker"><BarChart3 size={14} aria-hidden="true" /> El panel</span>
-            <h2 className="fh-h2">Todo tu trading, en <Anotacion tipo="underline" color="var(--azul)">una pantalla</Anotacion></h2>
-          </div>
-
-          {/* Maqueta del panel. Decorativa: las cifras ilustran cómo se ve,
-              no son de nadie. El admin pidió el 04-11-2026 no rotularla. */}
-          <div className="fh-ventana-marco dj-ventana" aria-hidden="true">
-            <div className="fh-ventana">
-              <div className="fh-ventana-barra">
-                <span className="fh-ventana-puntos"><i /><i /><i /></span>
-                <span className="fh-ventana-nombre">Mi diario de trading</span>
-                <span className="fh-periodos">
-                  <span>Semana</span>
-                  <span className="is-activo">Mes</span>
-                  <span>Año</span>
-                </span>
-              </div>
-
-              <div className="dj-cuerpo">
-                <div className="dj-kpis">
-                  <div className="dj-pl">
-                    <span className="fh-cifra-label">P&amp;L total</span>
-                    <span className="dj-pl-valor es-sube">{DEMO.pl}</span>
-                    <span className="dj-pl-pct">{DEMO.plPct} sobre tu capital</span>
-                  </div>
-
-                  <div className="dj-win">
-                    <svg viewBox="0 0 36 36" className="dj-anillo">
-                      <circle cx="18" cy="18" r="15.9" className="dj-anillo-fondo" />
-                      <circle
-                        cx="18" cy="18" r="15.9"
-                        className="dj-anillo-valor"
-                        strokeDasharray={`${(ANILLO * DEMO.winRate) / 100} ${ANILLO}`}
-                      />
-                    </svg>
-                    <span className="dj-win-texto">
-                      <b>{DEMO.winRate} %</b>
-                      <small>Win rate</small>
-                    </span>
-                  </div>
-
-                  <div className="dj-mini">
-                    <span><small>Operaciones</small><b>{DEMO.operaciones}</b></span>
-                    <span><small>P&amp;L medio</small><b className="es-sube">{DEMO.plMedio}</b></span>
-                  </div>
-                </div>
-
-                <div className="dj-curva">
-                  <div className="dj-curva-cab">
-                    <span className="fh-cifra-label">Curva de capital</span>
-                    <span className="dj-max">Máximo histórico</span>
-                  </div>
-                  <div className="dj-grafica">
-                    <svg viewBox="0 0 320 110" preserveAspectRatio="none">
-                      {[28, 55, 82].map((y) => (
-                        <line key={y} x1="0" x2="320" y1={y} y2={y} className="dj-guia" />
-                      ))}
-                      <polygon points={`${CURVA_PUNTOS} 320,110 0,110`} className="dj-relleno" />
-                      <polyline points={CURVA_PUNTOS} className="dj-linea" pathLength={1} />
-                    </svg>
-                    <span
-                      className="dj-punto"
-                      style={{ left: `${(CURVA_X / 320) * 100}%`, top: `${(CURVA_Y / 110) * 100}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="dj-ops">
-                  {DEMO_OPS.map((o) => (
-                    <div key={o.par} className="dj-op">
-                      <span className={`dj-moneda dj-moneda--${o.par.toLowerCase()}`}>{o.par.slice(0, 1)}</span>
-                      <span className="dj-par">{o.par}<small>/USDT</small></span>
-                      <span className={`dj-dir ${o.dir === "Long" ? "es-long" : "es-short"}`}>{o.dir}</span>
-                      <span className="dj-estrategia">{o.estrategia}</span>
-                      <span className={`dj-res ${o.tono}`}>{o.res}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* El aviso de hito, como sale en la herramienta al subir de nivel. */}
-            <div className="dj-hito-aviso">
-              <span className="dj-hito-aviso-ic"><Trophy size={16} strokeWidth={2.4} /></span>
-              <span>
-                <small>Hito conseguido</small>
-                <b>Disciplina de riesgo · Nivel 2</b>
+          <div className="dj-dos-par">
+            <article className="dj-dos-ficha dj-dos-ficha--trading">
+              <span className="dj-dos-cinta" aria-hidden="true" />
+              <span className="dj-dos-etiqueta"><NotebookPen size={15} strokeWidth={2.4} aria-hidden="true" /> Diario de trading</span>
+              <h3 className="dj-dos-ficha-titulo">Las cifras de cada operación</h3>
+              {/* Las cifras que más se miran, en grande (19-11-2026, pedido por
+                  el admin). Ejemplo con cifras redondas: todas las calcula el
+                  diario de verdad (win rate, P&L del mes, ratio, rachas). */}
+              <span className="dj-dos-cifras" aria-hidden="true">
+                <span className="dj-dos-cifra dj-dos-cifra--menta"><small>Win rate</small><b>58 %</b></span>
+                <span className="dj-dos-cifra dj-dos-cifra--amarillo"><small>Este mes</small><b className="es-sube">+1.240 $</b></span>
+                <span className="dj-dos-cifra dj-dos-cifra--lila"><small>Ratio R/B</small><b>1 : 2</b></span>
+                <span className="dj-dos-cifra dj-dos-cifra--coral"><small>Racha</small><b>5 <i>ganando</i></b></span>
               </span>
-            </div>
+              <ul className="dj-dos-lista">
+                <li><BarChart3 size={16} strokeWidth={2.4} aria-hidden="true" /> Par, dirección, riesgo y resultado, en un minuto</li>
+                <li><Smile size={16} strokeWidth={2.4} aria-hidden="true" /> Cómo te sentías al entrar</li>
+                <li><Camera size={16} strokeWidth={2.4} aria-hidden="true" /> El gráfico de antes y el de después</li>
+                <li><LineChart size={16} strokeWidth={2.4} aria-hidden="true" /> Diez estadísticas y tu curva de capital</li>
+                <li><Search size={16} strokeWidth={2.4} aria-hidden="true" /> Dónde ganas y dónde pierdes</li>
+              </ul>
+            </article>
+
+            <span className="dj-dos-mas" aria-hidden="true">+</span>
+
+            <article className="dj-dos-ficha dj-dos-ficha--tradicional">
+              <span className="dj-dos-cinta" aria-hidden="true" />
+              <span className="dj-dos-etiqueta"><BookHeart size={15} strokeWidth={2.4} aria-hidden="true" /> Diario tradicional</span>
+              <h3 className="dj-dos-ficha-titulo">Lo que pasó ese día</h3>
+              <ul className="dj-dos-lista">
+                <li><PenLine size={16} strokeWidth={2.4} aria-hidden="true" /> Escribe tu día, con tus palabras</li>
+                <li><Paperclip size={16} strokeWidth={2.4} aria-hidden="true" /> Adjunta las operaciones de ese día</li>
+                <li><HeartPulse size={16} strokeWidth={2.4} aria-hidden="true" /> Apunta cómo te sientes</li>
+                <li><ImageIcon size={16} strokeWidth={2.4} aria-hidden="true" /> Añade tus fotos</li>
+                <li><MapPin size={16} strokeWidth={2.4} aria-hidden="true" /> Guarda dónde estabas</li>
+              </ul>
+            </article>
           </div>
 
-          <h3 className="dj-h3">Diez estadísticas que se calculan solas</h3>
-          <dl className="fh-metricas">
-            {METRICAS.map(([nombre, texto]) => (
-              <div key={nombre} className="fh-metrica">
-                <dt>{nombre}</dt>
-                <dd>{texto}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="fh-nota">
-            Se leen en pareja: un <Link href="/glosario/win-rate">win rate</Link> del 58 % es malo si ganas 40 € y
-            pierdes 120 €. Y tu racha perdedora por la pérdida media dice si
-            tu <Link href="/glosario/tamano-de-posicion">tamaño de posición</Link> es
-            demasiado grande para tu capital.
-          </p>
-        </section>
-
-        {/* ── Sensaciones ── */}
-        <section className="fh-bloque dj-animo">
-          <div className="dj-animo-visual" aria-hidden="true">
-            <span className="dj-animo-titulo">Tu dinero según tu ánimo</span>
-            {ANIMOS.map((a, i) => {
-              const valores = [64, 38, -22, -55];
-              const v = valores[i] ?? 0;
-              const Cara = CARA_ANIMO[a.value] ?? Smile;
-              return (
-                <div key={a.value} className="dj-animo-fila">
-                  <span className={`dj-animo-cara dj-animo-cara--${a.value}`}><Cara size={18} strokeWidth={2.4} /></span>
-                  <span className="dj-animo-nombre">{a.label}</span>
-                  <span className="dj-animo-barra">
-                    <i className={v >= 0 ? "es-sube" : "es-baja"} style={{ width: `${Math.abs(v)}%` }} />
-                  </span>
-                  <span className={`dj-animo-valor ${v >= 0 ? "es-sube" : "es-baja"}`}>{v >= 0 ? "+" : "−"}{Math.abs(v)} $</span>
-                </div>
-              );
-            })}
-          </div>
-          <div className="dj-animo-texto">
-            <span className="fh-kicker"><HeartPulse size={14} aria-hidden="true" /> Sensaciones</span>
-            <h2 className="fh-h2">Tus emociones, con números</h2>
-            <p className="dj-p">
-              Cada día apuntas cómo te sientes con un toque y, si quieres, una nota. El diario cruza tu ánimo con tus
-              resultados y te enseña qué le pasa a tu dinero cuando operas eufórico, cansado o con ganas de revancha.
-            </p>
-            <p className="dj-p">
-              Es lo que casi ningún diario mide, y la parte del trading que más dinero cuesta.
-            </p>
-          </div>
-        </section>
-
-        {/* ── Así funciona ── */}
-        <section className="fh-bloque">
-          <h2 className="fh-h2">Así funciona</h2>
-          <div className="fh-dentro">
-            {PASOS.map((d, i) => {
-              const Icon = d.icon;
-              return (
-                <article key={d.title} className="fh-paso">
-                  <span className="fh-paso-num" aria-hidden="true">{i + 1}</span>
-                  <span className="fh-icono" aria-hidden="true"><Icon size={20} strokeWidth={2.2} /></span>
-                  <h3>{d.title}</h3>
-                  <p>{d.text}</p>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ── Y además ── */}
-        <section className="fh-bloque">
-          <h2 className="fh-h2">Y además</h2>
-          <div className="fh-ademas">
-            {ADEMAS.map((a) => {
-              const Icon = a.icon;
-              return (
-                <div key={a.title} className="fh-extra">
-                  <span className="fh-icono" aria-hidden="true"><Icon size={18} strokeWidth={2.2} /></span>
-                  <div>
-                    <h3>{a.title}</h3>
-                    <p><ConTermino text={a.text} termino={a.termino} /></p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ── EL SÚPER HITO: un logro, en amarillo ── */}
-        <section className="dj-super" aria-labelledby="dj-super-titulo">
-          <span className="dj-super-pegatina" aria-hidden="true"><Crown size={40} strokeWidth={2} /></span>
-          <span className="dj-super-kicker">Súper hito · El más difícil del diario</span>
-          <h2 id="dj-super-titulo" className="dj-super-titulo">Conseguiste <span className="fluor">vivir del trading</span></h2>
-          <p className="dj-super-lead">
-            Solo se consigue con <strong>un año entero de rentabilidad</strong>: doce meses cerrados seguidos operando
-            de verdad, el año en beneficio y casi sin tropiezos. Un mes que no cumple y la cuenta vuelve a empezar.
-            Muy pocos llegan. Quien llega, lo tiene para siempre.
-          </p>
-
-          <ul className="dj-super-reglas">
-            <li><span>{VIVIR_MONTHS}</span> meses cerrados seguidos</li>
-            <li><span>{VIVIR_MIN_OPS}+</span> operaciones cada mes</li>
-            <li><span>{VIVIR_MAX_RED}</span> meses en rojo como mucho, y el año en beneficio</li>
-          </ul>
-
-          <div className="dj-super-racha" aria-hidden="true">
-            <div className="dj-super-racha-cab">
-              <span>Tu racha</span>
-              <b>9 <i>de {VIVIR_MONTHS} meses</i></b>
-            </div>
-            <div className="dj-super-meses">
-              {RACHA.map((m, i) => (
-                <span key={i} className={`es-${m}`}>
-                  {m === "ok" ? <Check size={14} strokeWidth={3.4} /> : m === "red" ? <X size={13} strokeWidth={3.4} /> : null}
-                </span>
-              ))}
-            </div>
+          {/* La página de un día: cómo quedan mezclados. Maqueta decorativa. */}
+          <div className="dj-dia" aria-hidden="true">
+            <span className="dj-dia-anillas"><i /><i /><i /><i /><i /></span>
+            <span className="dj-dia-cab">
+              <span className="dj-dia-fecha">martes</span>
+              <span className="dj-dia-nota">así queda un día</span>
+            </span>
+            <span className="dj-dia-texto">
+              Dormí poco y lo noté. Esperé a la ruptura del máximo semanal y entré con la mitad de lo normal.
+            </span>
+            <span className="dj-dia-op">
+              <Paperclip size={15} strokeWidth={2.6} />
+              <b>BTC/USDT · Long</b>
+              <span>riesgo 0,5 %</span>
+              <b className="es-sube">+184 $</b>
+            </span>
+            <span className="dj-dia-chips">
+              <span className="dj-dia-chip dj-dia-chip--animo"><Meh size={14} strokeWidth={2.6} /> cansado</span>
+              <span className="dj-dia-chip dj-dia-chip--lugar"><MapPin size={14} strokeWidth={2.6} /> en casa</span>
+            </span>
+            <span className="dj-dia-foto"><ImageIcon size={26} strokeWidth={2} /></span>
           </div>
 
-          <div className="dj-super-hitos">
-            <h3>Y {HITOS.length} hitos con niveles para el camino</h3>
-            <ul>
-              {HITOS.map((h) => (
-                <li key={h}><Trophy size={13} strokeWidth={2.4} aria-hidden="true" />{h}</li>
-              ))}
-            </ul>
-            <p>Premian cómo operas, no cuánto: ninguno se consigue operando más.</p>
-          </div>
-
-          {!isPremium && (
-            <div className="dj-super-cta">
-              <Cta premium={false} texto="Empezar mi racha hoy" />
-            </div>
-          )}
+          <ol className="dj-dos-pasos">
+            <li><span className="dj-dos-num">1</span><span><b>Operas y la apuntas</b> en el diario de trading.</span></li>
+            <li><span className="dj-dos-num">2</span><span><b>Escribes tu día</b> y le adjuntas esa operación.</span></li>
+            <li><span className="dj-dos-num">3</span><span><b>Ves qué le pasa a tu dinero</b> según cómo vives.</span></li>
+          </ol>
         </section>
 
         {/* ── Frente a lo habitual ── */}
         <section className="fh-bloque">
           <h2 className="fh-h2">Sin diario, y con él</h2>
-          <div className="fh-compara">
-            {COMPARA.map((c) => (
-              <div key={c.aqui} className="fh-compara-fila">
-                <span className="fh-compara-no"><span className="fh-marca"><X size={13} strokeWidth={3.2} aria-hidden="true" /></span>{c.otros}</span>
-                <span className="fh-compara-si"><span className="fh-marca"><Check size={13} strokeWidth={3.2} aria-hidden="true" /></span>{c.aqui}</span>
-              </div>
+          {/* En acordeón (19-11-2026, pedido por el admin): cada fila enseña
+              lo de sin diario; al abrirla, lo que cambia con él. */}
+          <div className="dj-sc">
+            {COMPARA.map((c, i) => (
+              <details key={c.aqui} className="dj-sc-item" open={i === 0}>
+                <summary>
+                  <span className="dj-sc-no"><X size={14} strokeWidth={3.2} aria-hidden="true" /></span>
+                  <span className="dj-sc-otros">{c.otros}</span>
+                  <span className="dj-sc-mas" aria-hidden="true"><Plus size={18} strokeWidth={3} /></span>
+                </summary>
+                <p className="dj-sc-aqui">
+                  <span className="dj-sc-si"><Check size={14} strokeWidth={3.4} aria-hidden="true" /></span>
+                  <span><span className="dj-sc-con">Con el diario:</span> {c.aqui}</span>
+                </p>
+              </details>
             ))}
           </div>
         </section>
 
         {/* ── Qué no es ── */}
-        <section className="fh-bloque fh-bloque--estrecho">
-          <h2 className="fh-h2 fh-h2--peq">Para que nadie se lleve otra idea</h2>
-          <ul className="fh-noes">
+        {/* Rediseñada el 19-11-2026 (pedido por el admin), como la del
+            portfolio: un pósit azul con celo, lo que no es en líneas con su
+            aspa a rotulador y la nota final a mano. */}
+        <section className="fh-bloque dj-noes" aria-labelledby="dj-noes-titulo">
+          <h2 id="dj-noes-titulo" className="dj-noes-titulo">
+            Para que nadie se lleve <span className="dj-noes-mano">otra idea</span>
+          </h2>
+          <ul className="dj-noes-lista">
             {NO_ES.map((n) => (
-              <li key={n}><span className="fh-marca" aria-hidden="true"><X size={12} strokeWidth={3.2} /></span>{n}</li>
+              <li key={n}>
+                <span className="dj-noes-aspa" aria-hidden="true"><X size={14} strokeWidth={3.4} /></span>
+                {n}
+              </li>
             ))}
           </ul>
-          <p className="fh-nota">
-            Las operaciones las apuntas tú, desde la próxima. El diario mira
-            hacia atrás, no hacia delante: no hay señales.
+          <p className="dj-noes-nota">
+            Las operaciones las apuntas tú, desde la próxima. El diario mira hacia atrás, no hacia delante:
+            no hay señales.
           </p>
         </section>
 
-        {/* ── Precio y llamada final, en el bloque de tinta de Premium ── */}
-        <section className="fh-precio" id="suscribirse">
-          <div className="fh-precio-texto">
-            <span className="fh-sello"><Crown size={14} aria-hidden="true" /> Premium · todo incluido</span>
-            <h2 className="fh-precio-titulo">Tu mejor operación empieza por apuntar la próxima</h2>
-            <ul className="fh-incluye">
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El Diario de Trading completo: estadísticas, calendario, riesgo y ejecución</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Sensaciones, capturas de antes y después, {HITOS.length} hitos y el súper hito</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA en directo</li>
-              <li><span className="fh-check" aria-hidden="true"><Check size={13} strokeWidth={3.4} /></span>Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
-            </ul>
-          </div>
-
-          <div className="fh-precio-caja">
-            {isPremium ? (
-              <p className="fh-precio-ya">Ya tienes acceso.</p>
-            ) : (
-              <>
-                <p className="fh-precio-cifra">{PRECIO}<span>/mes</span></p>
-                <p className="fh-precio-dia">Unos {PRECIO_DIA} al día. Menos que una mala operación.</p>
-              </>
-            )}
-            <Cta premium={isPremium} grande />
-            {!isPremium && (
-              <ul className="fh-confianza">
-                <li><ShieldCheck size={14} aria-hidden="true" />Sin permanencia</li>
-                <li><RefreshCw size={14} aria-hidden="true" />Cancela cuando quieras</li>
-                <li><CreditCard size={14} aria-hidden="true" />Pago seguro con Stripe</li>
-              </ul>
-            )}
-          </div>
-        </section>
+        {/* ── Precio y llamada final: la tarjeta Premium de toda la web
+            (TarjetaPremium.tsx), con el Diario destacado (19-11-2026). ── */}
+        <TarjetaPremium aqui="diario" esPremium={isPremium} accionPremium={<Cta premium grande />} />
 
         {/* ── FAQ ── */}
-        <section className="fh-bloque fh-bloque--estrecho">
-          <h2 className="fh-h2">Preguntas frecuentes</h2>
+        {/* Más aire y otro aspecto (19-11-2026, pedido por el admin): nota a
+            mano, título con marca y cada pregunta en una ficha de su color. */}
+        <section className="fh-bloque fh-bloque--estrecho dj-faq">
+          <p className="fh-mano">las dudas de siempre</p>
+          <h2 className="fh-h2">Preguntas <span className="dj-faq-marca">frecuentes</span></h2>
           <div className="fh-faq">
             {FAQ.map((f, i) => (
               <details key={f.q} className="fh-faq-item">
@@ -753,7 +483,8 @@ export default async function FichaDiarioPage() {
           </div>
         </section>
 
-        <DisclaimerRiesgo variante="diario" />
+        {/* Sin descargo propio (19-11-2026, pedido por el admin): ya lo cubre
+            el aviso de riesgo del pie de página. */}
 
       </main>
 
