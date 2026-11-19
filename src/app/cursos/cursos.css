@@ -2475,3 +2475,7 @@ p.fc-estado { margin-top: 0.7rem; }
     rotate: 8deg;
   }
 }
+/* El villano de /cursos, siempre en su sitio aunque siga cargada la hoja de
+   la portada (al llegar desde ella sin recargar): se anulan su posición
+   absoluta y su desplazamiento (19-11-2026). */
+.cu-cert-villano .ch-reto { top: auto; left: auto; translate: none; z-index: auto; }

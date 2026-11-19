@@ -15,7 +15,7 @@ type Pieza = "portfolio" | "diario" | "foro" | "cursos";
 const PIEZAS: Record<Pieza, { color: string; texto: ReactNode; destacado: ReactNode }> = {
   portfolio: {
     color: "menta",
-    texto: <>Portfolio Adelin: spot y DCA de Bitcoin</>,
+    texto: <><Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA de Bitcoin</>,
     destacado: <><strong>Portfolio Adelin</strong>: spot y DCA de Bitcoin</>,
   },
   diario: {
@@ -41,7 +41,8 @@ const ORDEN: Pieza[] = ["portfolio", "diario", "foro", "cursos"];
  * cursos (19-11-2026, pedido por el admin): ficha amarilla con contorno de
  * rotulador, celo, etiqueta ladeada, las coronas de pegatina, lo que incluye
  * (la pieza de la página en la que se está, primera y destacada con «estás
- * aquí») y el precio con fluorescente. En el móvil, una flecha a mano baja
+ * aquí»; cada una de las demás enlaza a la página que la explica) y el precio
+ * con fluorescente. En el móvil, una flecha a mano baja
  * del título a la pieza destacada.
  *
  * `accionPremium`: lo que ve quien ya es Premium en lugar del botón de compra

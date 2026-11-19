@@ -229,10 +229,11 @@
   box-shadow: 0 5px 0 var(--lila-o);
 }
 
-/* El examen final, en el camino de la portada: aquí solo su sitio; el resto
-   de su aspecto (y el bocadillo) vive en reto-final.css, con su componente,
-   para poder usarlo también en /cursos (19-11-2026). */
-.ch-reto {
+/* El examen final, en el camino de la portada: aquí solo su sitio, y SOLO
+   dentro de su parada. Sin ese «.ch-parada», al ir de la portada a /cursos
+   sin recargar, esta hoja seguía cargada y descolocaba al villano de allí
+   (19-11-2026). El resto de su aspecto vive en reto-final.css. */
+.ch-parada .ch-reto {
   position: absolute;
   top: 0;
   left: 0;

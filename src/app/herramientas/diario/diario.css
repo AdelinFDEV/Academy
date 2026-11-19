@@ -1161,3 +1161,536 @@
 .dj-dos-cifra b { font-family: var(--letra-titular); font-size: 1.55rem; font-weight: 800; line-height: 1.05; color: var(--tinta); }
 .dj-dos-cifra b.es-sube { color: var(--menta-o); }
 .dj-dos-cifra i { font-family: var(--letra-mano); font-size: 0.7em; font-style: normal; color: var(--coral-o); }
+
+/* ── La cabecera del Diario en el ordenador (19-11-2026, pedido por el
+   admin; el móvil NO se toca): las dos columnas centradas en vertical, el
+   súper hito algo más grande y, detrás, garabatos de tomar notas y de
+   estadísticas, en azul suave. ── */
+.dj-hero-garabatos { display: none; }
+@media (min-width: 901px) {
+  .dj-hero { position: relative; isolation: isolate; align-items: center; }
+  .dj-hero .dj-sh { margin-top: 2.6rem; padding: 66px 28px 30px; max-width: 520px; justify-self: center; width: 100%; }
+  .dj-hero .dj-sh-titulo { font-size: 2.7rem; }
+  .dj-hero .dj-cab-chips { flex-wrap: nowrap; }
+
+  .dj-hero-garabatos { display: block; position: absolute; inset: -30px -70px; z-index: -1; pointer-events: none; }
+  .dj-hg {
+    position: absolute;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--azul-o) 30%, var(--fondo));
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .dj-hg--libreta { top: 2%; left: 44%; width: 74px; rotate: 8deg; }
+  .dj-hg--lapiz { top: 36%; left: 46%; width: 58px; rotate: -14deg; }
+  .dj-hg--barras { bottom: 4%; left: 44%; width: 86px; rotate: -4deg; }
+  .dj-hg--tarta { top: 0; right: 2%; width: 70px; rotate: 10deg; }
+  .dj-hg--curva { bottom: 0; right: 0; width: 110px; rotate: 4deg; }
+  .dj-hg--check { top: 48%; right: -1%; width: 64px; rotate: -8deg; }
+  .dj-hg--porcentaje { bottom: 12%; left: -1%; width: 40px; rotate: 12deg; stroke-width: 2.6; }
+}
+@media (min-width: 901px) { .dj-hg--lapiz { left: 49%; top: 40%; } .dj-hg--libreta { left: 47%; } .dj-hg--barras { left: 47%; } }
+@media (min-width: 901px) { .dj-hg--lapiz { width: 44px; left: calc(49% + 4px); } }
+
+/* PC: más aire entre «Diario de» y «Trading», y la flecha roja «¿Lo
+   conseguirás?» del título al súper hito (19-11-2026, pedido por el admin). */
+.dj-hero-reto { display: none; }
+@media (min-width: 901px) {
+  .dj-hero .dj-cab-titulo { line-height: 1.14; }
+  .dj-hero .dj-cab-marca { margin-top: 0.12em; }
+  .dj-hero-reto {
+    position: absolute;
+    top: 13%;
+    left: 37%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+  .dj-hero-reto-texto {
+    font-family: var(--letra-mano);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--coral-o);
+    rotate: -6deg;
+    white-space: nowrap;
+  }
+  .dj-hero-reto .se { width: 130px; height: 130px; margin: 2px 0 0 60px; }
+}
+/* La flecha, más tumbada para que apunte de lleno al súper hito, y «¿Lo
+   conseguirás?» más grande (19-11-2026). */
+@media (min-width: 901px) {
+  .dj-hero-reto { top: 16%; left: 35%; }
+  .dj-hero-reto-texto { font-size: 40px; }
+  .dj-hero-reto .se { margin: 6px 0 0 90px; }
+}
+
+/* PC: lo que trae el diario, en cuatro fichas a todo el ancho bajo la
+   cabecera (19-11-2026, pedido por el admin); las etiquetas de la columna se
+   ocultan. En el móvil, al revés. */
+.dj-hero-fichas { display: none; }
+@media (min-width: 901px) {
+  .dj-hero .dj-cab-chips { display: none; }
+  .dj-hero-fichas {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin: 2.6rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dj-hero-ficha {
+    --c: var(--lila); --s: var(--lila-s);
+    position: relative;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding: 18px 18px 16px;
+    background: var(--s);
+    border: 2px solid var(--tinta);
+    border-radius: 14px 11px 15px 10px;
+    box-shadow: 0 5px 0 var(--tinta);
+  }
+  .dj-hero-ficha:nth-child(odd) { rotate: -1deg; }
+  .dj-hero-ficha:nth-child(even) { rotate: 1deg; }
+  .dj-hero-ficha--coral { --c: var(--coral); --s: var(--coral-s); }
+  .dj-hero-ficha--amarillo { --c: var(--amarillo); --s: var(--amarillo-s); }
+  .dj-hero-ficha--menta { --c: var(--menta); --s: var(--menta-s); }
+  .dj-hero-ficha-icono {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 4px;
+    background: var(--c);
+    border: 2px solid var(--tinta);
+    border-radius: 12px 9px 13px 8px;
+    box-shadow: 0 3px 0 var(--tinta);
+    color: var(--tinta);
+  }
+  .dj-hero-ficha strong { font-family: var(--letra-titular); font-size: 1.2rem; font-weight: 800; line-height: 1.15; color: var(--tinta); }
+  .dj-hero-ficha strong b { font-size: 1.5em; color: color-mix(in srgb, var(--c) 55%, var(--tinta)); }
+  .dj-hero-ficha > span:last-child { font-size: 0.95rem; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }
+  .dj-hero-ficha::after {
+    content: "✓";
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-family: var(--letra-mano);
+    font-size: 28px;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--c) 60%, var(--tinta));
+    rotate: 8deg;
+  }
+}
+@media (min-width: 901px) { .dj-hero-reto { top: 140px; } }
+@media (min-width: 901px) { .dj-hero-reto { top: 96px; left: 33%; } }
+
+/* «Qué es un diario de trading» en el ordenador (19-11-2026, pedido por el
+   admin; el móvil no se toca): dos columnas. A la izquierda, el título, la
+   definición, lo que se apunta y los otros nombres; a la derecha, el porqué
+   en un pósit grande y la guía como una ficha con su celo. */
+@media (min-width: 901px) {
+  .dj-que-es {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    column-gap: 52px;
+    align-items: start;
+    max-width: 1120px;
+    padding: 48px 52px 52px;
+  }
+  .dj-que-es > :not(.dj-qe-posit):not(.dj-qe-guia) { grid-column: 1; }
+  .dj-que-es .dj-qe-def { font-size: 1.6rem; }
+  .dj-que-es .dj-qe-chips { gap: 10px; }
+  .dj-que-es .dj-qe-chip { padding: 8px 14px; font-size: 1.02rem; box-shadow: 0 3px 0 var(--tinta); }
+  .dj-que-es .dj-qe-tambien { font-size: 21px; }
+  .dj-que-es .dj-qe-posit {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-self: center;
+    margin: 0;
+    padding: 28px 26px;
+    font-family: var(--letra-titular);
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.35;
+    rotate: 2deg;
+  }
+  .dj-que-es .dj-qe-guia {
+    grid-column: 2;
+    grid-row: 5 / span 2;
+    position: relative;
+    margin-top: 1.6rem;
+    padding: 20px 20px 18px;
+    background: var(--azul-s);
+    border: 2px solid var(--tinta);
+    border-radius: 13px 10px 14px 9px;
+    box-shadow: 0 4px 0 var(--tinta);
+    font-size: 1rem;
+    rotate: -1deg;
+  }
+  .dj-que-es .dj-qe-guia::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 40px;
+    width: 80px;
+    height: 22px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--amarillo) 70%, transparent);
+    rotate: -4deg;
+  }
+}
+
+/* ── Los dos diarios en el ordenador, rehechos de cero (19-11-2026, pedido
+   por el admin; el móvil NO se toca). Una rejilla de tres columnas: arriba,
+   el título a la izquierda y la entradilla a la derecha; en medio, el diario
+   de trading y el tradicional a los lados y, entre los dos, la página de un
+   día que los mezcla, con flechas a mano que llegan a ella; abajo, los tres
+   pasos en una tira. ── */
+@media (min-width: 901px) {
+  .dj-dos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-areas:
+      "nota    nota  lead"
+      "titulo  titulo lead"
+      "trading dia   tradicional"
+      "pasos   pasos pasos";
+    column-gap: 34px;
+    align-items: stretch;
+  }
+  .dj-dos > .fh-mano { grid-area: nota; }
+  .dj-dos > .dj-dos-h2 { grid-area: titulo; font-size: clamp(2.4rem, 3.6vw, 3.2rem); line-height: 1.08; }
+  .dj-dos > .dj-dos-lead { grid-area: lead; align-self: end; margin: 0 0 6px; font-size: 1.05rem; }
+  .dj-dos-par { display: contents; }
+  .dj-dos-mas { display: none; }
+  .dj-dos-ficha--trading { grid-area: trading; margin-top: 2.6rem; }
+  .dj-dos-ficha--tradicional { grid-area: tradicional; margin-top: 2.6rem; }
+  .dj-dos .dj-dia {
+    grid-area: dia;
+    align-self: center;
+    max-width: none;
+    margin: 2.6rem 0 0;
+    rotate: 0deg;
+    z-index: 1;
+  }
+  .dj-dos .dj-dia::before,
+  .dj-dos .dj-dia::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 34px;
+    height: 4px;
+    background: repeating-linear-gradient(90deg, var(--tinta) 0 6px, transparent 6px 10px);
+  }
+  .dj-dos .dj-dia::before { left: -36px; }
+  .dj-dos .dj-dia::after { right: -36px; }
+  .dj-dos .dj-dia-texto { font-size: 21px; }
+  .dj-dos .dj-dia-foto { width: 72px; height: 72px; }
+  .dj-dos .dj-dia-cab .dj-dia-nota { font-size: 19px; }
+
+  .dj-dos .dj-dos-pasos {
+    grid-area: pasos;
+    position: relative;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    margin-top: 2.8rem;
+    padding: 18px 26px;
+    background: #fff;
+    border: 2px solid var(--tinta);
+    border-radius: 16px 12px 17px 11px;
+    box-shadow: 0 5px 0 var(--tinta);
+  }
+  .dj-dos .dj-dos-pasos li { font-size: 1.02rem; }
+  .dj-dos .dj-dos-pasos li + li { padding-left: 24px; border-left: 2px dashed color-mix(in srgb, var(--tinta) 22%, transparent); }
+  .dj-dos .dj-dos-num { width: 44px; height: 44px; font-size: 24px; }
+}
+@media (min-width: 901px) { .dj-dos-ficha--tradicional { align-self: center; } .dj-dos-ficha--tradicional .dj-dos-lista { gap: 12px; } .dj-dos-ficha--tradicional .dj-dos-lista li { font-size: 1.02rem; } }
+/* PC: «así queda un día» fuera de la página del día, encima, a mano y con
+   una flecha que baja hasta ella (19-11-2026, pedido por el admin). */
+.dj-dia-nota-flecha { display: none; }
+@media (min-width: 901px) {
+  .dj-dos .dj-dia { overflow: visible; }
+  .dj-dos .dj-dia-cab .dj-dia-nota {
+    position: absolute;
+    top: -92px;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 28px;
+    font-weight: 700;
+    white-space: nowrap;
+    translate: -50% 0;
+    rotate: -4deg;
+  }
+  .dj-dia-nota-flecha {
+    display: block;
+    width: 26px;
+    height: 40px;
+    margin-top: 2px;
+    overflow: visible;
+    fill: none;
+    stroke: var(--coral-o);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    rotate: 6deg;
+  }
+}
+@media (min-width: 901px) { .dj-dos .dj-dia-cab .dj-dia-nota { font-size: 38px; top: -108px; } .dj-dia-nota-flecha { width: 30px; height: 44px; } }
+/* El cuaderno abierto, en el hueco de abajo a la izquierda de «Qué es» (solo
+   PC), balanceándose un poco. */
+.dj-qe-cuaderno { display: none; }
+@media (min-width: 901px) {
+  .dj-qe-cuaderno {
+    display: block;
+    justify-self: center;
+    width: 210px;
+    height: auto;
+    margin-top: 1.2rem;
+    transform-origin: 50% 90%;
+    animation: dj-qe-cuaderno 3.4s ease-in-out infinite;
+  }
+}
+@keyframes dj-qe-cuaderno {
+  0%, 100% { rotate: -4deg; }
+  50% { rotate: 4deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dj-qe-cuaderno { animation: none; }
+}
+
+/* ── «Sin diario, y con él» en el ordenador, rehecha de cero (19-11-2026,
+   pedido por el admin; el móvil NO se toca, usa el acordeón). Dos páginas
+   enfrentadas: la de sin diario, arrugada, torcida y en coral, con lo de
+   memoria tachado; la del diario, ordenada, en verde, con sus checks; entre
+   las dos, una flecha a mano «con él». Y «Para que nadie se lleve otra idea»,
+   a todo lo ancho con sus fichas en rejilla, como en el portfolio. ── */
+.dj-vs { display: none; }
+@media (min-width: 901px) {
+  .dj-sc { display: none; }
+  .dj-vs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1.08fr);
+    align-items: center;
+    margin-top: 2rem;
+  }
+  .dj-vs-hoja {
+    position: relative;
+    padding: 28px 28px 22px;
+    border: 2.5px solid var(--tinta);
+    box-shadow: 0 6px 0 var(--tinta);
+  }
+  .dj-vs-hoja--sin {
+    background:
+      repeating-linear-gradient(transparent 0 33px, color-mix(in srgb, var(--coral) 22%, transparent) 33px 35px),
+      var(--coral-s);
+    border-radius: 6px 18px 4px 14px / 14px 6px 18px 5px;
+    rotate: -2.4deg;
+    clip-path: polygon(0 2%, 8% 0, 22% 2%, 40% 0, 58% 2.5%, 76% 0, 92% 2%, 100% 0, 100% 100%, 0 100%);
+  }
+  .dj-vs-hoja--con {
+    background:
+      linear-gradient(90deg, transparent 22px, var(--coral-s) 22px, var(--coral-s) 24px, transparent 24px),
+      repeating-linear-gradient(transparent 0 33px, color-mix(in srgb, var(--cielo) 30%, transparent) 33px 35px),
+      var(--menta-s);
+    padding-left: 44px;
+    border-radius: 16px 12px 18px 11px;
+    rotate: 1.2deg;
+  }
+  .dj-vs-hoja--con::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    width: 100px;
+    height: 26px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--amarillo) 70%, transparent);
+    transform: translateX(-50%) rotate(-3deg);
+  }
+  .dj-vs-cab { margin: 0 0 12px; font-family: var(--letra-titular); font-size: 1.5rem; font-weight: 800; color: var(--tinta); }
+  .dj-vs-nota {
+    display: inline-block;
+    padding: 2px 12px;
+    background: #fff;
+    border: 2px solid var(--tinta);
+    border-radius: 8px 6px 9px 5px;
+    font-family: var(--letra-texto);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    rotate: -3deg;
+  }
+  .dj-vs-mano { font-family: var(--letra-mano); font-size: 1.1em; }
+  .dj-vs-hoja--sin .dj-vs-mano { color: var(--coral-o); }
+  .dj-vs-hoja--con .dj-vs-mano { color: var(--menta-o); text-decoration: underline wavy var(--menta); text-underline-offset: 6px; }
+  .dj-vs-hoja ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+  .dj-vs-hoja li { display: flex; align-items: center; gap: 12px; min-height: 35px; padding: 3px 0; font-size: 1.05rem; font-weight: 700; color: var(--tinta); }
+  .dj-vs-hoja--sin li { color: var(--tinta-2); }
+  .dj-vs-hoja--sin s { text-decoration-color: color-mix(in srgb, var(--coral) 85%, transparent); text-decoration-thickness: 2px; }
+  .dj-vs-hoja--con li { font-weight: 800; }
+  .dj-vs-aspa, .dj-vs-check {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--tinta);
+    border-radius: 50% 45% 52% 46%;
+  }
+  .dj-vs-aspa { background: #fff; color: var(--coral-o); }
+  .dj-vs-check { background: var(--menta); color: var(--tinta); }
+  .dj-vs-flecha { display: grid; justify-items: center; gap: 4px; z-index: 1; }
+  .dj-vs-flecha svg { width: 92px; height: auto; overflow: visible; fill: none; stroke: var(--tinta); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .dj-vs-flecha span { font-family: var(--letra-mano); font-size: 26px; font-weight: 700; color: var(--menta-o); rotate: -6deg; }
+
+  /* «Para que nadie se lleve otra idea», a todo lo ancho. */
+  .dj-noes {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-areas: "titulo lista" "nota lista";
+    align-items: start;
+    column-gap: 44px;
+    max-width: none;
+    padding: 40px 44px;
+    rotate: -0.6deg;
+  }
+  .dj-noes::before { left: 22%; width: 120px; }
+  .dj-noes-titulo { grid-area: titulo; font-size: clamp(2rem, 3vw, 2.6rem); }
+  .dj-noes-titulo .dj-noes-mano { display: block; margin-top: -2px; font-size: 1.15em; }
+  .dj-noes-nota { grid-area: nota; margin-top: 0.8rem; font-size: 21px; }
+  .dj-noes-lista { grid-area: lista; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; align-self: center; }
+  .dj-noes-lista li {
+    gap: 14px;
+    padding: 18px;
+    background: #fff;
+    border: 2px solid var(--tinta);
+    border-radius: 12px 10px 13px 9px;
+    box-shadow: 0 4px 0 var(--tinta);
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+  .dj-noes-lista li:nth-child(1) { rotate: -1.5deg; }
+  .dj-noes-lista li:nth-child(2) { rotate: 1.2deg; }
+  .dj-noes-lista li:nth-child(3) { rotate: 0.8deg; }
+  .dj-noes-lista li:nth-child(4) { rotate: -1deg; }
+  .dj-noes-aspa { width: 34px; height: 34px; }
+
+  /* La entradilla de los dos diarios, con sus marcas. */
+  .dj-dl-verdad { color: var(--tinta); font-weight: 800; text-decoration: underline wavy var(--azul); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .dj-dl-azul, .dj-dl-coral { padding: 0 0.1em; color: var(--tinta); font-weight: 800; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .dj-dl-azul { background: linear-gradient(transparent 55%, color-mix(in srgb, var(--azul) 30%, transparent) 55%, color-mix(in srgb, var(--azul) 30%, transparent) 92%, transparent 92%); }
+  .dj-dl-coral { background: linear-gradient(transparent 55%, color-mix(in srgb, var(--coral) 35%, transparent) 55%, color-mix(in srgb, var(--coral) 35%, transparent) 92%, transparent 92%); }
+  .dj-dl-mano { display: inline-block; font-family: var(--letra-mano); font-size: 1.3em; font-weight: 700; color: var(--coral-o); rotate: -2deg; }
+}
+
+/* Las preguntas frecuentes en el ordenador (19-11-2026, pedido por el admin;
+   el móvil no se toca): la cabecera a la izquierda, fija al bajar, con
+   interrogaciones a mano y un bocadillo detrás; las preguntas a la derecha. */
+.dj-faq-sub, .dj-faq-garabatos { display: none; }
+@media (min-width: 901px) {
+  .dj-faq {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    column-gap: 56px;
+    align-items: start;
+    max-width: 1180px;
+  }
+  .dj-faq-cab { position: sticky; top: 110px; padding: 20px 0 40px; }
+  .dj-faq-cab .fh-h2 { font-size: clamp(2.6rem, 3.8vw, 3.4rem); line-height: 1.02; }
+  .dj-faq-sub { display: block; margin: 1rem 0 0; font-family: var(--letra-mano); font-size: 22px; color: var(--tinta-2); }
+  .dj-faq .fh-faq { grid-column: 2; }
+  .dj-faq-garabatos { display: block; position: relative; height: 230px; margin-top: 1.2rem; pointer-events: none; }
+  .dj-fg {
+    position: absolute;
+    overflow: visible;
+    fill: none;
+    stroke: color-mix(in srgb, var(--azul-o) 32%, var(--fondo));
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .dj-fg--1 { top: 0; left: 4%; width: 54px; rotate: -14deg; }
+  .dj-fg--2 { top: 20px; left: 46%; width: 34px; rotate: 12deg; stroke: color-mix(in srgb, var(--coral-o) 40%, var(--fondo)); }
+  .dj-fg--3 { top: 110px; left: 22%; width: 42px; rotate: 18deg; stroke: color-mix(in srgb, var(--menta-o) 40%, var(--fondo)); }
+  .dj-fg--4 { top: 150px; left: 66%; width: 30px; rotate: -10deg; }
+  .dj-fg--5 { top: 60px; left: 80%; width: 26px; rotate: 22deg; stroke: color-mix(in srgb, var(--lila-o) 40%, var(--fondo)); }
+  .dj-fg--bocadillo { top: 70px; left: 40%; width: 96px; rotate: -6deg; stroke-width: 2.2; }
+  .dj-faq .fh-faq-item summary { padding-block: 18px; }
+  .dj-faq .fh-faq-q { font-size: 1.08rem; }
+}
+/* El botón a Instagram bajo «Preguntas frecuentes», solo en el ordenador. */
+.dj-faq-ig { display: none; }
+@media (min-width: 901px) {
+  .dj-faq-cab .dj-faq-ig { display: inline-flex; margin-top: 1.2rem; }
+  .dj-faq-ig svg:first-child { color: #e1306c; }
+}
+
+/* «Sin diario» con la misma forma que «Con el diario» (19-11-2026): sin el
+   borde roto; y las dos etiquetas, mucho más destacadas y en su color. */
+@media (min-width: 901px) {
+  .dj-vs-hoja--sin {
+    clip-path: none;
+    padding-left: 44px;
+    background:
+      linear-gradient(90deg, transparent 22px, color-mix(in srgb, var(--coral) 40%, transparent) 22px, color-mix(in srgb, var(--coral) 40%, transparent) 24px, transparent 24px),
+      repeating-linear-gradient(transparent 0 33px, color-mix(in srgb, var(--coral) 22%, transparent) 33px 35px),
+      var(--coral-s);
+    border-radius: 16px 12px 18px 11px;
+  }
+  .dj-vs-hoja--sin::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    width: 100px;
+    height: 26px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--coral) 45%, transparent);
+    transform: translateX(-50%) rotate(3deg);
+  }
+  .dj-vs-cab { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 18px; }
+  .dj-vs-nota { padding: 6px 16px; font-size: 1.1rem; letter-spacing: 0.08em; box-shadow: 0 3px 0 var(--tinta); }
+  .dj-vs-hoja--sin .dj-vs-nota { background: var(--coral); color: #fff; }
+  .dj-vs-hoja--con .dj-vs-nota { background: var(--menta); color: var(--tinta); }
+  .dj-vs-mano { font-size: 1.25em; }
+  .dj-vs-flecha svg { width: 104px; }
+  .dj-vs-flecha span { font-size: 30px; }
+}
+/* Garabatos de colores detrás del cuaderno abierto (solo PC, 19-11-2026):
+   barras, porcentaje, curva, tarta, una carita y un dólar, a mano. */
+.dj-qe-cuaderno-caja { display: none; }
+@media (min-width: 901px) {
+  .dj-qe-cuaderno-caja { position: relative; display: block; justify-self: center; width: 360px; height: 220px; margin-top: 1rem; isolation: isolate; }
+  .dj-qe-cuaderno-caja .dj-qe-cuaderno { position: absolute; left: 50%; top: 50%; margin: 0; translate: -50% -50%; }
+  .dj-qg { position: absolute; z-index: -1; overflow: visible; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .dj-qg--barras { top: 6px; left: 0; width: 62px; rotate: -10deg; stroke: color-mix(in srgb, var(--azul-o) 45%, #fff); }
+  .dj-qg--porcentaje { top: 0; right: 14px; width: 30px; rotate: 14deg; stroke: color-mix(in srgb, var(--coral-o) 50%, #fff); }
+  .dj-qg--curva { bottom: 4px; right: 0; width: 76px; rotate: -4deg; stroke: color-mix(in srgb, var(--menta-o) 55%, #fff); }
+  .dj-qg--tarta { bottom: 0; left: 8px; width: 50px; rotate: 10deg; stroke: color-mix(in srgb, var(--naranja-o) 50%, #fff); }
+  .dj-qg--cara { top: 46%; left: -18px; width: 36px; rotate: -12deg; stroke: color-mix(in srgb, var(--lila-o) 55%, #fff); }
+  .dj-qg--dolar { top: 40%; right: -14px; width: 26px; rotate: 16deg; stroke: color-mix(in srgb, var(--menta-o) 55%, #fff); }
+}
+/* El botón de Instagram, como el de la portada (degradado de Instagram, letra
+   blanca y canto morado); y el cuaderno abierto, más despacio (19-11-2026). */
+@media (min-width: 901px) {
+  .dj-faq-cab .dj-faq-ig.tecla {
+    --o: #7a2a8c;
+    --t: #fff;
+    background: linear-gradient(45deg, #f58529 0%, #dd2a7b 45%, #8134af 100%);
+    border: 0;
+    color: #fff;
+  }
+  .dj-faq-ig svg:first-child { color: #fff; }
+  .dj-qe-cuaderno { animation-duration: 6.5s; }
+}
