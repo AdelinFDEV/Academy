@@ -147,10 +147,8 @@ for (const t of profundas) {
     falla(`${propias.length - new Set(propias).size} frase(s) repetidas dentro de la propia ficha.`);
   }
 
-  // 9) `seeAlso` con sus tres. No es fallo, pero son enlaces internos gratis.
-  if (t.seeAlso.length < 3) {
-    avisos.push([t.slug, `solo ${t.seeAlso.length} en \`seeAlso\`: pierde enlaces internos gratis.`]);
-  }
+  // (El aviso de `seeAlso` se quitó el 20-11-2026: la sección «Ver también»
+  // de la página del término se retiró, así que ya no da enlaces internos.)
 }
 
 // ── Salida ────────────────────────────────────────────────────────────────

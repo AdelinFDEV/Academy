@@ -14,11 +14,11 @@ import { createClient } from "@/lib/supabase/server";
 import { vestirTexto } from "@/lib/marcas-texto";
 import { breadcrumbSchema, definedTermSchema } from "@/lib/schema";
 import {
-  GLOSARIO,
+  GLOSARIO_ALFABETICO,
   GLOSARIO_CATEGORIAS,
   GLOSARIO_CON_PAGINA,
   buscarTermino,
-  type GlosarioTerm,
+  numeroCromo,
 } from "@/lib/glosario";
 import PreguntaFrecuente from "./PreguntaFrecuente";
 import "./ficha.css";
@@ -111,18 +111,6 @@ export default async function TerminoPage({
   const etiquetaCat =
     GLOSARIO_CATEGORIAS.find((c) => c.id === t.category)?.label ?? t.category;
 
-  // «Ver también» son los términos que el propio texto necesita para
-  // entenderse. Se filtran contra los que ya tienen página: enlazar a una que
-  // no existe daría un 404.
-  const relacionados = (t.seeAlso ?? [])
-    .map((slug) => GLOSARIO.find((x) => x.slug === slug))
-    .filter((x): x is NonNullable<typeof x> => !!x?.extended);
-
-  // Y para no dejar la página sin salida, el resto de su categoría.
-  const mismaCategoria = GLOSARIO_CON_PAGINA.filter(
-    (x) => x.category === t.category && x.slug !== t.slug && !relacionados.includes(x)
-  ).slice(0, 6);
-
   return (
     <div className="fe">
       <JsonLd
@@ -166,12 +154,19 @@ export default async function TerminoPage({
           <span className="fe-migas-actual">{t.term}</span>
         </nav>
 
-        {/* La cabecera es la ficha de cartulina: su pestaña de letra, la
-            categoría, el término y la respuesta en una línea. */}
-        <header className="fe-cab">
-          <span className="fe-pestana" aria-hidden="true">{t.term.charAt(0).toUpperCase()}</span>
+        {/* La cabecera es el mismo CROMO del listado (20-11-2026, pedido por
+            el admin: al entrar no casaba con el diccionario): el marco del
+            color de su categoría; arriba, sobre el marco, la categoría, su
+            número en el álbum, «Guardar» y el término en grande; abajo, la
+            cartulina con la respuesta en una línea. */}
+        <header className={`fe-cab fe-cab--${t.category}`}>
           <div className="fe-cab-top">
-            <span className={`fe-cat fe-cat--${t.category}`}>{etiquetaCat}</span>
+            <div className="fe-cab-datos">
+              <span className="fe-cat">{etiquetaCat}</span>
+              <span className="fe-num">
+                Nº {numeroCromo(t.slug)}/{GLOSARIO_ALFABETICO.length}
+              </span>
+            </div>
             {/* Guardar es la única acción de esta página que necesita cuenta,
                 así que es lo único que se le ofrece a quien ya la tiene. */}
             {user && (
@@ -183,9 +178,7 @@ export default async function TerminoPage({
               />
             )}
           </div>
-          <h1 className="fe-titulo">
-            <span className="fluor">{t.term}</span>
-          </h1>
+          <h1 className="fe-titulo">{t.term}</h1>
           <p className="fe-lead">
             <Anotacion tipo="highlight" color="var(--amarillo)" grosor={2} iteraciones={1} retraso={500}>
               {t.definition}
@@ -196,11 +189,16 @@ export default async function TerminoPage({
         {/* La banda va DEBAJO de la definición corta: quien llega buscando qué
             significa una palabra tiene que ver la respuesta antes que una oferta.
             Si lo primero es un banner, se vuelve a Google — y eso Google lo mide. */}
-        <TerminoCta termino={t.term} logueado={!!user} />
+        <TerminoCta
+          termino={t.term}
+          categoria={t.category}
+          etiquetaCategoria={etiquetaCat}
+          logueado={!!user}
+        />
 
         {/* `termino-body` va PRIMERO en la clase: `npm run check:seo` acota el
             cuerpo de la ficha buscando `class="termino-body`. Lo mismo con
-            `termino-faq`, `tvid` y `termino-relacionados`, que marcan su final. */}
+            `termino-faq` y `tvid`, que marcan su final. */}
         <div
           className="termino-body prose-content fe-texto"
           dangerouslySetInnerHTML={{ __html: vestirTexto(t.extended) }}
@@ -221,20 +219,6 @@ export default async function TerminoPage({
             pedirle otro paso — no el primer segundo. */}
         <TerminoVideo />
 
-        {relacionados.length > 0 && (
-          <section className="termino-relacionados fe-rel">
-            <h2 className="fe-h2">Ver también</h2>
-            <FichasRelacionadas terminos={relacionados} />
-          </section>
-        )}
-
-        {mismaCategoria.length > 0 && (
-          <section className="termino-relacionados fe-rel fe-rel--cat">
-            <h2 className="fe-h2">Más de {etiquetaCat}</h2>
-            <FichasRelacionadas terminos={mismaCategoria} />
-          </section>
-        )}
-
         <p className="fe-volver">
           <Tecla href="/glosario" color="blanca">
             ← Todos los términos del diccionario
@@ -244,30 +228,5 @@ export default async function TerminoPage({
 
       <Footer />
     </div>
-  );
-}
-
-/**
- * Los «ver también», como fichas de cartulina sobre la mesa. El texto del
- * enlace es SOLO el término (el ancla que lee Google); la pestaña con la letra
- * la pinta el CSS desde `data-letra`. Sin `data-sin-popup`: al pulsar se abre
- * la definición corta en el popup del diccionario, como cualquier enlace a una
- * ficha.
- */
-function FichasRelacionadas({ terminos }: { terminos: GlosarioTerm[] }) {
-  return (
-    <ul className="fe-fichas">
-      {terminos.map((r) => (
-        <li key={r.slug}>
-          <Link
-            href={`/glosario/${r.slug}`}
-            className={`fe-mini fe-mini--${r.category}`}
-            data-letra={r.term.charAt(0).toUpperCase()}
-          >
-            {r.term}
-          </Link>
-        </li>
-      ))}
-    </ul>
   );
 }

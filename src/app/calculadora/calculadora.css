@@ -4,9 +4,9 @@
    Estilo «Cuaderno de estudio» (17-11-2026; ESTILO.md, disenos/sistema.html),
    en la línea de la calculadora de colegio de la portada
    (`CalculadoraEscolar.tsx`, en home.css): carcasa de tinta con placa solar,
-   pantalla de cristal líquido verde, teclas de verdad (Tecla.tsx) y, al lado,
-   el mercado como un tique de papel, el veredicto como un aviso y la
-   comparativa con las barras gruesas del sistema.
+   pantalla de cristal líquido verde y teclas de verdad (Tecla.tsx); al lado,
+   el veredicto como un aviso y el mercado en una hoja de papel. El tique de
+   la comparación se quitó el 20-11-2026 (pedido por el admin).
 
    Se ve bien por sí sola sin depender de la base de globals.css.
    ══════════════════════════════════════════════════════════════════════════ */
@@ -31,10 +31,8 @@
   padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5.5rem);
 }
 
-/* Los colores con nombre que usan el mercado, el veredicto y las barras. */
+/* Los colores con nombre del veredicto (menta, amarillo, naranja y coral). */
 .pc-c--naranja { --c: var(--naranja); --co: var(--naranja-o); --cs: var(--naranja-s); --ct: #fff; }
-.pc-c--azul { --c: var(--azul); --co: var(--azul-o); --cs: var(--azul-s); --ct: #fff; }
-.pc-c--lila { --c: var(--lila); --co: var(--lila-o); --cs: var(--lila-s); --ct: #fff; }
 .pc-c--menta { --c: var(--menta); --co: var(--menta-o); --cs: var(--menta-s); --ct: var(--tinta); }
 .pc-c--coral { --c: var(--coral); --co: var(--coral-o); --cs: var(--coral-s); --ct: #fff; }
 .pc-c--amarillo { --c: var(--amarillo); --co: var(--amarillo-o); --cs: var(--amarillo-s); --ct: var(--tinta); }
@@ -74,7 +72,10 @@
   color: var(--tinta-2);
 }
 
-.cal a:not(.tecla) {
+/* Los enlaces del TEXTO de la página, subrayados en azul. Solo dentro de
+   `.cal-main`: `.cal` envuelve también la barra de arriba y el pie, y con
+   `.cal a` se subrayaban el logo, el menú y todos sus enlaces (20-11-2026). */
+.cal-main a:not(.tecla) {
   font-weight: 800;
   color: var(--azul-o);
   text-decoration: underline;
@@ -83,688 +84,10 @@
   text-underline-offset: 3px;
 }
 
-.cal a:not(.tecla):focus-visible {
+.cal-main a:not(.tecla):focus-visible {
   outline: 3px solid var(--azul);
   outline-offset: 2px;
   border-radius: 4px;
-}
-
-/* ── La mesa: la calculadora a la izquierda, lo demás a la derecha ────────── */
-
-.pc-mesa {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(1.5rem, 3.5vw, 2.6rem);
-  align-items: start;
-}
-
-/* ══ La calculadora de colegio ══ */
-
-.pc-maquina {
-  display: grid;
-  gap: 18px;
-  padding: 20px clamp(16px, 3vw, 24px) 22px;
-  border-radius: 36px;
-  background: var(--tinta);
-  color: #fff;
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.12),
-    0 10px 0 #08070f,
-    0 40px 50px -30px rgba(29, 27, 51, 0.65);
-}
-
-.pc-marca {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 4px;
-}
-
-.pc-marca-nombre {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--tinta-3);
-}
-
-/* La placa solar. */
-.pc-solar {
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 7px;
-  background: #3a3758;
-}
-
-.pc-solar i {
-  width: 16px;
-  height: 18px;
-  border-radius: 2px;
-  background: #57537c;
-}
-
-/* ── La pantalla ── */
-.pc-lcd {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 4px;
-  min-height: 210px;
-  padding: 18px 20px;
-  border-radius: 20px;
-  background: var(--menta-s);
-  box-shadow: inset 0 5px 0 rgba(29, 27, 51, 0.14);
-  color: var(--tinta);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.pc-res-rotulo {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.pc-res-cifra {
-  margin: 0;
-  font-family: var(--letra-titular);
-  font-size: clamp(2.6rem, 6vw, 3.6rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
-}
-
-.pc-res-cuenta {
-  margin: 0;
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: var(--tinta-2);
-}
-
-.pc-res-cuenta i { font-style: normal; color: var(--tinta-3); }
-
-.pc-frente {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.pc-frente > div {
-  display: grid;
-  gap: 1px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.55);
-  text-align: right;
-}
-
-.pc-frente small {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.pc-frente strong {
-  font-family: var(--letra-titular);
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1.1;
-}
-
-.pc-frente span {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
-
-/* Lo que se ve en la pantalla antes del primer cálculo, y el muro. */
-.pc-vacio,
-.pc-muro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  width: 100%;
-  text-align: left;
-}
-
-.pc-vacio-icono,
-.pc-muro-icono {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--papel);
-  box-shadow: 0 4px 0 rgba(29, 27, 51, 0.16);
-  color: var(--menta-o);
-}
-
-.pc-muro-icono { color: var(--naranja-o); }
-
-.pc-vacio-titulo,
-.pc-muro-titulo {
-  margin: 6px 0 0;
-  font-family: var(--letra-titular);
-  font-size: 1.4rem;
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-.pc-vacio-texto,
-.pc-muro-texto {
-  max-width: 44ch;
-  margin: 0;
-  font-size: 0.97rem;
-  font-weight: 600;
-  line-height: 1.55;
-  color: var(--tinta-2);
-}
-
-.pc-muro .tecla { margin-top: 8px; }
-
-.pc-muro-alt {
-  margin: 0;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
-
-/* La fórmula, grabada en la carcasa. */
-.pc-formula {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px 10px;
-  margin: 0;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tinta-3);
-}
-
-.pc-formula i {
-  font-family: var(--letra-titular);
-  font-size: 18px;
-  font-style: normal;
-  color: var(--amarillo);
-}
-
-/* ── Los dos campos, como teclas grandes de papel ── */
-.pc-campo {
-  display: grid;
-  gap: 6px;
-  padding: 14px 14px 16px;
-  border-radius: 22px;
-  background: #2a2848;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.06);
-}
-
-.pc-etiqueta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  font-weight: 900;
-  color: #fff;
-}
-
-.pc-paso {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
-  background: var(--amarillo);
-  box-shadow: 0 3px 0 var(--amarillo-o);
-  color: var(--tinta);
-  font-family: var(--letra-titular);
-  font-size: 15px;
-}
-
-.pc-ayuda {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.5;
-  color: #c9c7e3;
-}
-
-.pc-ayuda a:not(.tecla) {
-  color: var(--amarillo);
-  text-decoration-color: var(--amarillo);
-}
-
-.pc-caja {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  padding: 0 16px;
-  border: 3px solid transparent;
-  border-radius: 16px;
-  background: var(--papel);
-  box-shadow: inset 0 4px 0 rgba(29, 27, 51, 0.08);
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.pc-caja:focus-within {
-  border-color: var(--azul);
-  box-shadow: 0 0 0 5px rgba(79, 93, 255, 0.35);
-}
-
-.pc-caja-prefijo {
-  font-family: var(--letra-titular);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--tinta-3);
-}
-
-.pc-input {
-  flex: 1;
-  min-width: 0;
-  padding: 14px 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--tinta);
-  font-family: var(--letra-titular);
-  font-size: 1.6rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-}
-
-.pc-input::placeholder { color: var(--gris-o); }
-
-.pc-caja-lectura {
-  flex: none;
-  padding: 5px 10px;
-  border-radius: 10px;
-  background: var(--fondo);
-  font-size: 12.5px;
-  font-weight: 900;
-  color: var(--tinta-2);
-  white-space: nowrap;
-}
-
-.pc-atajos {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2px 10px;
-  margin-top: 8px;
-}
-
-.pc-atajos .tecla {
-  width: 100%;
-  padding-inline: 6px;
-  letter-spacing: 0.02em;
-  /* «55.5B (XRP)» en media columna a 320 px: que parta antes que salirse. */
-  white-space: normal;
-  text-align: center;
-}
-
-.pc-ejemplos {
-  display: grid;
-  gap: 8px;
-}
-
-.pc-ejemplos-tit {
-  font-family: var(--letra-mano);
-  font-size: 22px;
-  color: var(--amarillo);
-  transform: rotate(-1.5deg);
-  transform-origin: left;
-}
-
-.pc-ejemplos-teclas {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2px 10px;
-}
-
-.pc-ejemplos-teclas .tecla {
-  width: 100%;
-  padding-inline: 8px;
-  white-space: normal;
-  text-align: center;
-}
-
-.pc-restantes {
-  margin: 0;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: var(--naranja-s);
-  color: var(--naranja-o);
-  font-size: 0.92rem;
-  font-weight: 800;
-  line-height: 1.45;
-}
-
-.pc-restantes a:not(.tecla) { color: var(--naranja-o); text-decoration-color: var(--naranja); }
-
-/* ══ La mesa de al lado ══ */
-
-.pc-lado {
-  display: grid;
-  gap: 26px;
-}
-
-/* ── El tique de papel del mercado ── */
-.pc-mercado {
-  position: relative;
-  padding: 20px 20px 18px;
-  border-radius: 6px 6px 22px 22px;
-  background: var(--papel);
-  box-shadow: 0 0 0 2px var(--gris), 0 12px 24px -16px rgba(29, 27, 51, 0.4);
-  transform: rotate(-0.8deg);
-}
-
-/* El borde de arriba, cortado a bocados como el papel de tique. */
-.pc-mercado::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  left: 0;
-  right: 0;
-  height: 12px;
-  background: radial-gradient(circle at 6px 0, transparent 6px, var(--papel) 6.5px) 0 0 / 12px 12px repeat-x;
-}
-
-.pc-mercado-cab {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 10px;
-  border-bottom: 2px dashed var(--gris);
-}
-
-.pc-mercado-tit {
-  font-family: var(--letra-texto);
-  margin: 0;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.pc-actualizar.tecla {
-  margin-bottom: 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-.pc-gira { animation: pc-gira 0.9s linear infinite; }
-@keyframes pc-gira { to { transform: rotate(360deg); } }
-
-.pc-monedas {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pc-moneda {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 2px dashed var(--gris);
-}
-
-.pc-moneda:last-child { border-bottom: 0; padding-bottom: 0; }
-
-.pc-moneda-icono {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 13px;
-  background: var(--c);
-  box-shadow: 0 4px 0 var(--co);
-  color: var(--ct);
-  font-family: var(--letra-titular);
-  font-size: 19px;
-  font-weight: 800;
-}
-
-.pc-moneda-nombre,
-.pc-moneda-cifras {
-  display: grid;
-  gap: 1px;
-  line-height: 1.2;
-}
-
-.pc-moneda-nombre strong { font-weight: 900; }
-
-.pc-moneda-nombre small {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
-
-.pc-moneda-cifras { text-align: right; }
-
-.pc-moneda-cifras strong {
-  font-family: var(--letra-titular);
-  font-size: 1.15rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Cifras con signo: aquí sí, el verde y el rojo de las cifras. */
-.pc-moneda-cifras small {
-  font-size: 0.82rem;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-}
-
-.pc-moneda-cifras .es-sube { color: var(--sube); }
-.pc-moneda-cifras .es-baja { color: var(--baja); }
-
-.pc-moneda-cargando {
-  font-family: var(--letra-mano);
-  font-size: 20px;
-  color: var(--tinta-2);
-}
-
-/* ── El veredicto: un aviso del sistema, con su color ── */
-.pc-veredicto {
-  padding: 18px 20px;
-  border: 3px solid var(--c);
-  border-radius: 22px;
-  background: var(--cs);
-  animation: pc-aparece 0.45s cubic-bezier(0.34, 1.6, 0.5, 1) both;
-}
-
-@keyframes pc-aparece { from { opacity: 0; transform: translateY(10px) scale(0.97); } }
-
-.pc-veredicto-cab {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.pc-veredicto-icono {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--co);
-  color: #fff;
-}
-
-.pc-veredicto-cab strong {
-  font-family: var(--letra-titular);
-  font-size: 1.3rem;
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--tinta);
-}
-
-.pc-veredicto > p {
-  margin: 8px 0 0;
-  font-weight: 700;
-  line-height: 1.5;
-  color: var(--tinta-2);
-}
-
-.pc-medidor { margin-top: 16px; }
-
-.pc-medidor-pista {
-  position: relative;
-  height: 18px;
-  border-radius: 999px;
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
-}
-
-/* El marcador: una teclita de tinta clavada en la barra. */
-.pc-medidor-marca {
-  position: absolute;
-  top: 50%;
-  width: 16px;
-  height: 30px;
-  border: 3px solid var(--papel);
-  border-radius: 7px;
-  background: var(--tinta);
-  box-shadow: 0 3px 0 rgba(29, 27, 51, 0.3);
-  transform: translate(-50%, -50%);
-  transition: left 0.6s cubic-bezier(0.34, 1.5, 0.5, 1);
-}
-
-.pc-medidor-escala {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-/* ── La comparativa ── */
-.pc-compara {
-  padding: clamp(1.2rem, 3vw, 1.6rem);
-  border-radius: 28px;
-  background: var(--papel);
-  box-shadow: 0 7px 0 var(--gris-o);
-}
-
-.pc-compara-cab h2 {
-  margin: 0;
-  font-family: var(--letra-titular);
-  font-size: clamp(1.35rem, 2.6vw, 1.6rem);
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--tinta);
-}
-
-.pc-compara-cab p {
-  margin: 0.4rem 0 0;
-  font-weight: 600;
-  line-height: 1.5;
-  color: var(--tinta-2);
-}
-
-.pc-barras {
-  display: grid;
-  gap: 14px;
-  margin-top: 1.2rem;
-}
-
-.pc-barra {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 6px 12px;
-  align-items: end;
-}
-
-.pc-barra-nombre {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  min-width: 0;
-}
-
-.pc-barra-nombre strong { font-weight: 900; }
-
-.pc-barra-nombre small {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
-
-.pc-barra.es-tuyo .pc-barra-nombre strong {
-  padding: 0 4px;
-  border-radius: 5px;
-  background: var(--amarillo);
-}
-
-.pc-barra-valor {
-  grid-row: 1;
-  grid-column: 2;
-  font-family: var(--letra-titular);
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-}
-
-.pc-barra-pista {
-  grid-column: 1 / -1;
-  height: 18px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--gris);
-}
-
-.pc-barra-relleno {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--c);
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1), inset 0 4px 0 rgba(255, 255, 255, 0.35);
-  transition: width 0.7s cubic-bezier(0.3, 1.3, 0.5, 1);
-  animation: pc-llenar 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) both;
-}
-
-@keyframes pc-llenar { from { width: 0; } }
-
-.pc-conclusion {
-  margin-top: 1.2rem;
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: var(--fondo);
-}
-
-.pc-conclusion p {
-  margin: 0;
-  font-weight: 600;
-  line-height: 1.6;
-  color: var(--tinta-2);
-}
-
-.pc-conclusion strong { color: var(--tinta); font-weight: 900; }
-
-.pc-nota {
-  margin: 1rem 0 0;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--tinta-2);
 }
 
 /* ── La explicación: una hoja del cuaderno (page.tsx) ─────────────────────── */
@@ -800,37 +123,596 @@
 .pc-explica p { margin: 0 0 1.05rem; }
 .pc-explica p:last-child { margin-bottom: 0; }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   LA MESA (rediseño del 20-11-2026, pedido por el admin: «que se parezca a la
+   calculadora del hero»). A la izquierda, el mismo objeto que la portada
+   (CalculadoraEscolar, home.css): la carcasa de tinta con su placa solar, la
+   pantalla de cristal líquido menta alineada a la derecha y las teclas (sin
+   el tique de la portada: aquí no hacía falta). A la derecha, sobre la mesa,
+   el veredicto y el mercado en directo.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.pc-mesa {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+
+/* El objeto: la calculadora, centrada en su columna. */
+.pc-objeto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── La carcasa ── */
+.pc-maquina {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  padding: 20px 22px 18px;
+  border-radius: 34px;
+  background: var(--tinta);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.12),
+    0 10px 0 #08070f,
+    0 34px 46px -28px rgba(29, 27, 51, 0.6);
+}
+
+.pc-marca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 4px 14px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+
+/* La placa solar. */
+.pc-solar {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 6px;
+  background: #3a3758;
+}
+
+.pc-solar i {
+  width: 15px;
+  height: 17px;
+  border-radius: 2px;
+  background: #57537c;
+}
+
+/* ── La pantalla de cristal líquido ── */
+.pc-lcd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  min-height: 176px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--menta-s);
+  box-shadow: inset 0 4px 0 rgba(29, 27, 51, 0.14);
+  color: var(--tinta);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-lcd-linea {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.pc-lcd-linea b {
+  font-family: var(--letra-titular);
+  font-size: 1.2rem;
+}
+
+.pc-lcd-sub {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.pc-lcd-total {
+  font-family: var(--letra-titular);
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* Antes del primer cálculo, el «0» de toda calculadora, apagado. */
+.pc-lcd:not(.is-activo) .pc-lcd-total { color: color-mix(in srgb, var(--tinta) 30%, var(--menta-s)); }
+
+/* El muro, dentro de la pantalla: alineado a la izquierda, que es un texto. */
+.pc-lcd.is-muro { align-items: stretch; text-align: left; }
+
+.pc-muro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.pc-muro-icono {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--menta-o);
+  color: var(--naranja-o);
+}
+
+.pc-muro-titulo {
+  margin: 4px 0 0;
+  font-family: var(--letra-titular);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.pc-muro-texto {
+  margin: 0 0 6px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.pc-muro-alt {
+  margin: 2px 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* La fórmula, grabada en la carcasa bajo la pantalla. */
+.pc-formula {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 8px;
+  margin: 14px 0 0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+
+.pc-formula i {
+  font-style: normal;
+  font-size: 14px;
+  color: var(--amarillo);
+}
+
+/* ── El teclado ── */
+.pc-teclado {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.pc-campo {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pc-rotulo,
+.pc-teclado-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 2px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+
+.pc-teclado-rotulo { margin-top: 4px; }
+
+.pc-paso {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+  background: var(--amarillo);
+  font-size: 11px;
+  letter-spacing: 0;
+  color: var(--tinta);
+}
+
+/* Cada campo, una pantallita de papel hundida en la carcasa. */
+.pc-visor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: inset 0 4px 0 rgba(29, 27, 51, 0.12), 0 0 0 3px transparent;
+  transition: box-shadow 0.15s;
+}
+
+.pc-visor:focus-within {
+  box-shadow: inset 0 4px 0 rgba(29, 27, 51, 0.12), 0 0 0 3px var(--amarillo);
+}
+
+.pc-visor-prefijo {
+  font-family: var(--letra-titular);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--tinta-3);
+}
+
+.pc-input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--tinta);
+  font-family: var(--letra-titular);
+  font-size: 1.45rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-input::placeholder { color: var(--gris-o); }
+
+.pc-visor-lectura {
+  flex: none;
+  padding: 3px 9px;
+  border-radius: 9px;
+  background: var(--menta-s);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--menta-o);
+}
+
+.pc-ayuda {
+  margin: 0 0 0 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--tinta-3);
+}
+
+/* Los enlaces sobre la carcasa oscura, en amarillo: el azul no se leería. */
+.pc-maquina a:not(.tecla) {
+  color: var(--amarillo);
+  text-decoration-color: var(--amarillo);
+}
+
+/* Y dentro de la pantalla menta (el muro), otra vez en azul. */
+.pc-maquina .pc-lcd a:not(.tecla) {
+  color: var(--azul-o);
+  text-decoration-color: var(--azul);
+}
+
+/* Las filas de teclas, de tres en tres como en la portada. */
+.pc-teclado-fila {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pc-teclado-fila--dos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.pc-teclado-fila .tecla {
+  width: 100%;
+  min-height: 44px;
+  padding-inline: 8px;
+  font-size: 14px;
+}
+
+.pc-restantes {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--tinta-3);
+}
+
+/* ══ Al lado, sobre la mesa ══ */
+
+.pc-lado {
+  display: grid;
+  gap: 22px;
+  padding-top: clamp(0px, 4vw, 40px);
+}
+
+/* ── El veredicto: una hoja del color de su dificultad ── */
+.pc-veredicto {
+  padding: 20px 22px 22px;
+  border-radius: 26px;
+  background: var(--cs);
+  box-shadow: 0 7px 0 var(--c);
+  animation: pc-entra 0.45s cubic-bezier(0.34, 1.6, 0.5, 1) both;
+}
+
+@keyframes pc-entra { from { opacity: 0; transform: translateY(14px) rotate(-1deg); } }
+
+.pc-veredicto-cab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--tinta);
+}
+
+.pc-veredicto-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--c);
+  box-shadow: 0 3px 0 var(--co);
+  color: var(--ct);
+}
+
+.pc-veredicto-desc {
+  margin: 10px 0 0;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.pc-medidor { margin-top: 16px; }
+
+.pc-medidor-pista {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* El marcador: una teclita de tinta clavada en la barra. */
+.pc-medidor-marca {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 26px;
+  border: 3px solid var(--papel);
+  border-radius: 6px;
+  background: var(--tinta);
+  box-shadow: 0 3px 0 rgba(29, 27, 51, 0.3);
+  transform: translate(-50%, -50%);
+  transition: left 0.6s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.pc-medidor-escala {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pc-conclusion {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 2px dashed color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+.pc-conclusion p {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.pc-conclusion strong { color: var(--tinta); }
+
+/* Antes del primer cálculo: una nota a mano. */
+.pc-pista {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 25px;
+  line-height: 1.2;
+  color: var(--naranja-o);
+  transform: rotate(-1.5deg);
+}
+
+/* ── El mercado en directo: una hoja de papel ── */
+.pc-mercado {
+  padding: 18px 20px 14px;
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 7px 0 var(--gris-o);
+}
+
+.pc-mercado-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.pc-mercado-tit {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.pc-actualizar.tecla { gap: 6px; }
+
+@keyframes pc-gira { to { transform: rotate(360deg); } }
+.pc-gira { animation: pc-gira 0.9s linear infinite; }
+
+.pc-monedas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pc-moneda {
+  --c: var(--naranja);
+  --co: var(--naranja-o);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 2px dashed var(--gris);
+}
+
+.pc-moneda:first-child { border-top: 0; }
+
+.pc-moneda--ethereum { --c: var(--lila); --co: var(--lila-o); }
+.pc-moneda--solana { --c: var(--menta); --co: var(--menta-o); }
+
+.pc-moneda-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--c);
+  box-shadow: 0 3px 0 var(--co);
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  color: #fff;
+}
+
+.pc-moneda--solana .pc-moneda-icono { color: var(--tinta); }
+
+.pc-moneda-nombre,
+.pc-moneda-cifras {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.pc-moneda-nombre { flex: 1; min-width: 0; }
+.pc-moneda-cifras { text-align: right; }
+
+.pc-moneda-nombre strong,
+.pc-moneda-cifras strong {
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+}
+
+.pc-moneda-nombre small,
+.pc-moneda-cifras small {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+/* Cifras con signo: aquí sí, el verde y el rojo de las cifras. */
+.pc-moneda-cifras small.es-sube { color: var(--sube); }
+.pc-moneda-cifras small.es-baja { color: var(--baja); }
+
+.pc-moneda-cargando {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  color: var(--tinta-3);
+}
+
+/* ── El ordenador (20-11-2026, pedido por el admin: «tienes más espacio,
+   posiciona mejor los elementos») ──────────────────────────────────────────
+   La calculadora no cambia; cambia lo de alrededor. A la izquierda, el objeto
+   (la calculadora) desde arriba del todo; a la derecha, en una
+   columna, el título y la entradilla, debajo el veredicto (o la nota a mano)
+   y el mercado. `.pc-mesa` se disuelve (`display: contents`) para que sus dos
+   hijos entren en la misma rejilla que la cabecera. La columna de la derecha
+   se queda pegada arriba al hacer scroll, así el veredicto sigue a la vista
+   mientras se usa el teclado. */
+@media (min-width: 961px) {
+  .pc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "objeto cab"
+      "objeto lado";
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .pc-mesa { display: contents; }
+
+  .pc-objeto { grid-area: objeto; padding-top: 10px; }
+
+  .pc-cab {
+    grid-area: cab;
+    max-width: none;
+    margin-bottom: 0;
+    padding-top: 1.2rem;
+  }
+
+  .pc-lado {
+    grid-area: lado;
+    position: sticky;
+    top: 110px;
+    align-self: start;
+    padding-top: 2rem;
+  }
+
+  /* La calculadora llena su columna (hasta su ancho máximo). */
+  .pc-maquina { max-width: 540px; }
+}
+
 /* ── Tableta y móvil ──────────────────────────────────────────────────────── */
 
 @media (max-width: 960px) {
   .pc-mesa { grid-template-columns: minmax(0, 1fr); }
-  .pc-maquina { max-width: 620px; width: 100%; margin: 0 auto; }
-  .pc-lado { max-width: 620px; width: 100%; margin: 0 auto; }
+  .pc-objeto,
+  .pc-lado { max-width: 560px; width: 100%; margin: 0 auto; }
+  .pc-lado { padding-top: 0; }
 }
 
 @media (max-width: 480px) {
-  .pc-maquina { border-radius: 30px; }
-  .pc-lcd { min-height: 180px; padding: 16px; }
-  .pc-frente { flex-direction: column; align-items: flex-end; }
-  .pc-atajos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pc-ejemplos-teclas { grid-template-columns: minmax(0, 1fr); }
-  .pc-input { font-size: 1.35rem; }
-  .pc-mercado { transform: none; }
-  .pc-res-cifra { font-size: clamp(2.2rem, 11vw, 2.6rem); }
-  .pc-frente > div { max-width: 100%; }
-  /* La lectura de la oferta («55.50B tokens») baja debajo de la cifra: al
-     lado le dejaba al número tres dígitos de ancho a 320 px. */
-  .pc-caja { flex-wrap: wrap; column-gap: 8px; }
-  .pc-caja .pc-input { flex: 1 1 8rem; }
-  .pc-caja-lectura { margin: -4px 0 10px; }
-  .pc-campo { padding-inline: 12px; }
+  .pc-maquina { padding: 16px 14px 14px; border-radius: 30px; }
+  .pc-lcd { min-height: 150px; padding: 14px; }
+  .pc-lcd-total { font-size: clamp(1.7rem, 9vw, 2.2rem); }
+  .pc-teclado-fila { gap: 8px; }
+  .pc-teclado-fila .tecla { padding-inline: 4px; font-size: 13px; }
+  /* La lectura de la oferta («55.50B tokens») baja debajo de la cifra. */
+  .pc-visor { flex-wrap: wrap; column-gap: 8px; }
+  .pc-visor .pc-input { flex: 1 1 8rem; }
+  .pc-visor-lectura { margin: -4px 0 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pc-gira,
-  .pc-veredicto,
-  .pc-barra-relleno { animation: none; }
+  .pc-veredicto { animation: none; }
   .pc-medidor-marca,
-  .pc-barra-relleno,
-  .pc-caja { transition: none; }
+  .pc-visor { transition: none; }
 }
+

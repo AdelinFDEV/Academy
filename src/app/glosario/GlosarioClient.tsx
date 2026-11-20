@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Bookmark, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Bookmark, ChevronLeft, ChevronRight } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
-import { GLOSARIO as TERMS, GLOSARIO_CATEGORIAS as CATEGORIES } from "@/lib/glosario";
+import BuscadorPopup from "./BuscadorPopup";
+import { GLOSARIO_ALFABETICO, GLOSARIO_CATEGORIAS as CATEGORIES, numeroCromo } from "@/lib/glosario";
 import { sonar } from "@/lib/sonidos";
 
 interface Props {
@@ -13,37 +14,37 @@ interface Props {
 }
 
 /**
- * Términos por página.
- *
- * Siete es lo que pidió el admin, y encaja: la lista deja de ser un muro de
- * texto interminable.
+ * Cromos por página (20-11-2026, pedido por el admin): seis en el ordenador,
+ * dos filas de tres, y cuatro en el móvil, uno debajo de otro.
  */
-const POR_PAGINA = 7;
+const POR_PAGINA = 6;
+const POR_PAGINA_MOVIL = 4;
 
-/** El abecedario del fichero. «#» agrupa los que empiezan por número (2FA…). */
-const ABC = [..."ABCDEFGHIJKLMNÑOPQRSTUVWXYZ", "#"];
-
-/** La letra del fichero en la que se archiva un término: sin tildes, y los números en «#». */
-function inicial(term: string): string {
-  const primera = term.trim().charAt(0).toUpperCase();
-  if (primera === "Ñ") return "Ñ";
-  const sinTilde = primera.normalize("NFD").replace(/[̀-ͯ]/g, "");
-  return /[A-Z]/.test(sinTilde) ? sinTilde : "#";
+/** El móvil es donde la rejilla pasa a una columna (glosario.css, 600 px). */
+const MOVIL = "(max-width: 600px)";
+function suscribir(avisar: () => void) {
+  const mq = window.matchMedia(MOVIL);
+  mq.addEventListener("change", avisar);
+  return () => mq.removeEventListener("change", avisar);
 }
+const esMovil = () => window.matchMedia(MOVIL).matches;
+const enServidor = () => false;
 
 /** El orden de un fichero: alfabético, como se busca una palabra. */
-const ORDENADOS = [...TERMS].sort((a, b) => a.term.localeCompare(b.term, "es", { sensitivity: "base" }));
+const ORDENADOS = GLOSARIO_ALFABETICO;
+
+/** Cuántos cromos tiene el álbum: el número que va detrás de la barra («Nº 003/231»). */
+const TOTAL = ORDENADOS.length;
+
 
 /** El nombre de una categoría para enseñarlo («DeFi», no el id «defi»). */
 const NOMBRE_CATEGORIA = new Map(CATEGORIES.map((c) => [c.id as string, c.label]));
 
 export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
-  const [search, setBusqueda] = useState("");
-  const [category, setCategoria] = useState<string>("all");
-  const [letra, setLetraFiltro] = useState<string | null>(null);
   const [saved, setSaved] = useState<Set<string>>(new Set(initialSaved));
   const [toggling, setToggling] = useState<string | null>(null);
-  const [pagina, setPagina] = useState(1);
+  const [elegida, setPagina] = useState(1);
+  const porPagina = useSyncExternalStore(suscribir, esMovil, enServidor) ? POR_PAGINA_MOVIL : POR_PAGINA;
   /** Una nota debajo de la ficha que se intentó guardar: sin sesión, o si falló. */
   const [nota, setNota] = useState<{ term: string; tipo: "sesion" | "error" } | null>(null);
   const conteo = useRef<HTMLParagraphElement>(null);
@@ -54,36 +55,16 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
     conteo.current?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   };
 
-  /** Lo que dejan la búsqueda y la categoría, antes de elegir letra. */
-  const sinLetra = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return ORDENADOS.filter((t) => {
-      const matchesCat = category === "all" || t.category === category;
-      const matchesText =
-        !q || t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q);
-      return matchesCat && matchesText;
-    });
-  }, [search, category]);
+  // La búsqueda vive en su ventana (BuscadorPopup): la lista es el diccionario
+  // entero, por orden alfabético.
+  const filtered = ORDENADOS;
 
-  /** Las teclas del abecedario que tienen algo detrás. */
-  const letrasConTerminos = useMemo(() => new Set(sinLetra.map((t) => inicial(t.term))), [sinLetra]);
+  const totalPaginas = Math.max(1, Math.ceil(filtered.length / porPagina));
+  // Si al girar o ensanchar la pantalla hay menos páginas, se queda en la última.
+  const pagina = Math.min(elegida, totalPaginas);
 
-  const filtered = useMemo(
-    () => (letra ? sinLetra.filter((t) => inicial(t.term) === letra) : sinLetra),
-    [sinLetra, letra],
-  );
-
-  const totalPaginas = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
-
-  // Al buscar, cambiar de categoría o de letra se vuelve a la primera página:
-  // si no, filtrar desde la página 5 deja la lista en blanco sin explicar por qué.
-  // Se hace en el mismo gesto que cambia el filtro, no en un efecto aparte.
-  const setSearch = (v: string) => { setBusqueda(v); setPagina(1); };
-  const setCategory = (v: string) => { setCategoria(v); setPagina(1); };
-  const setLetra = (v: string | null) => { setLetraFiltro(v); setPagina(1); };
-
-  const desde = (pagina - 1) * POR_PAGINA;
-  const hasta = desde + POR_PAGINA;
+  const desde = (pagina - 1) * porPagina;
+  const hasta = desde + porPagina;
 
   async function toggleSave(t: { term: string; definition: string; category: string }) {
     // Sin sesión no se guarda nada: se dice cómo, junto a la ficha.
@@ -139,82 +120,9 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
 
   return (
     <>
-      {/* ── El cajón de búsqueda: buscador, categorías y abecedario ── */}
+      {/* ── El buscador: una barra que abre la ventana de búsqueda ── */}
       <div className="glx-filtros">
-        <label className="glx-buscador">
-          <Search size={20} strokeWidth={2.6} aria-hidden="true" />
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Busca un término…"
-            aria-label="Buscar en el diccionario"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            enterKeyHint="search"
-            // La lista se filtra mientras se escribe: en el móvil, «Buscar»
-            // solo cierra el teclado para dejar ver los resultados.
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.nativeEvent.isComposing) e.currentTarget.blur();
-            }}
-          />
-        </label>
-
-        <div className="glx-cats" role="group" aria-label="Categorías">
-          <Tecla
-            tamano="peq"
-            color={category === "all" ? "amarillo" : "blanca"}
-            className={category === "all" ? "is-pulsada" : undefined}
-            aria-pressed={category === "all"}
-            onClick={() => setCategory("all")}
-          >
-            Todas
-          </Tecla>
-          {CATEGORIES.map((cat) => (
-            <Tecla
-              key={cat.id}
-              tamano="peq"
-              color={category === cat.id ? "amarillo" : "blanca"}
-              className={category === cat.id ? "is-pulsada" : undefined}
-              aria-pressed={category === cat.id}
-              onClick={() => setCategory(cat.id)}
-            >
-              {cat.label}
-            </Tecla>
-          ))}
-        </div>
-
-        {/* El canto del fichero: una tecla por letra; las letras sin términos,
-            apagadas. Pulsar la letra activa la suelta. */}
-        <div className="glx-abc" role="group" aria-label="Filtrar por letra">
-          <Tecla
-            tamano="peq"
-            color={letra === null ? "amarillo" : "blanca"}
-            className={`glx-abc-todas${letra === null ? " is-pulsada" : ""}`}
-            aria-pressed={letra === null}
-            onClick={() => setLetra(null)}
-          >
-            A–Z
-          </Tecla>
-          {ABC.map((l) => {
-            const activa = letra === l;
-            return (
-              <Tecla
-                key={l}
-                tamano="peq"
-                color={activa ? "amarillo" : "blanca"}
-                className={`glx-abc-letra${activa ? " is-pulsada" : ""}`}
-                aria-pressed={activa}
-                aria-label={l === "#" ? "Términos que empiezan por un número" : `Términos con la letra ${l}`}
-                disabled={!activa && !letrasConTerminos.has(l)}
-                onClick={() => setLetra(activa ? null : l)}
-              >
-                {l}
-              </Tecla>
-            );
-          })}
-        </div>
+        <BuscadorPopup />
       </div>
 
       <p className="glx-conteo" ref={conteo}>
@@ -230,8 +138,8 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
 
         Es deliberado y es por SEO: esta página es el nodo que enlaza a todas
         las fichas del diccionario, el bloque de URLs más grande del sitio. Con
-        un `.slice()` solo llegarían siete enlaces al HTML y Google perdería el
-        resto de golpe. Así se ve lo que pidió el admin —siete a la vez— sin
+        un `.slice()` solo llegarían seis enlaces al HTML y Google perdería el
+        resto de golpe. Así se ve lo que pidió el admin —seis a la vez, cuatro en el móvil— sin
         desmontar el enlazado interno.
       */}
       <div className="glx-lista">
@@ -240,79 +148,86 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
           const enPagina = i >= desde && i < hasta;
           return (
             <article key={t.term} className={`glx-ficha glx-ficha--${t.category}`} hidden={!enPagina}>
-              <span className="glx-ficha-pestana" aria-hidden="true">{inicial(t.term)}</span>
+              {/* La cabecera del cromo, en el propio marco de color: categoría,
+                  número en el álbum y el nombre en grande. */}
+              <div className="glx-cromo-cab">
+                <div className="glx-cromo-datos">
+                  <span className="glx-cromo-cat">{NOMBRE_CATEGORIA.get(t.category) ?? t.category}</span>
+                  <span className="glx-cromo-num">
+                    Nº {numeroCromo(t.slug)}/{TOTAL}
+                  </span>
+                </div>
 
-              <div className="glx-ficha-cab">
-                <span className="glx-ficha-cat">{NOMBRE_CATEGORIA.get(t.category) ?? t.category}</span>
-                <Tecla
-                  icono
-                  tamano="peq"
-                  color={isSaved ? "menta" : "blanca"}
-                  className="glx-guardar"
-                  onClick={() => toggleSave(t)}
-                  disabled={toggling === t.term}
-                  aria-pressed={isSaved}
-                  aria-label={isSaved ? "Quitar de guardados" : "Guardar término"}
-                  title={
-                    isLoggedIn
-                      ? isSaved
-                        ? "Quitar de guardados"
-                        : "Guardar en tu diccionario"
-                      : "Inicia sesión para guardar términos"
-                  }
-                >
-                  <Bookmark size={17} strokeWidth={2.6} fill={isSaved ? "currentColor" : "none"} aria-hidden="true" />
-                </Tecla>
+                {/* `data-sin-popup`: aquí la definición ya está a la vista, así
+                    que el enlace va directo a la ficha (GlosarioPopupGlobal).
+                    Solo enlazan los términos con desarrollo largo: el resto
+                    daría un 404. El nombre es un <h2>: cada término es una
+                    sección de esta página. Su enlace cubre el cromo entero. */}
+                <h2 className="glx-ficha-nombre">
+                  {t.extended ? (
+                    <Link
+                      href={`/glosario/${t.slug}`}
+                      className="glx-ficha-link"
+                      data-sin-popup
+                      // Suena como una tecla al hundirse, como todas las de la web.
+                      onPointerDown={() => sonar("tecla")}
+                    >
+                      {t.term}
+                    </Link>
+                  ) : (
+                    t.term
+                  )}
+                </h2>
               </div>
 
-              {/* `data-sin-popup`: aquí la definición ya está a la vista, así
-                  que el enlace va directo a la ficha (GlosarioPopupGlobal). */}
-              {/* Solo enlazan los términos que ya tienen desarrollo largo. El
-                  resto se queda sin enlace, que si no daría un 404. */}
-              {/* El nombre es un <h2>: cada término es una sección de esta
-                  página, y así Google entiende la estructura en vez de ver
-                  un muro de enlaces sueltos. */}
-              <h2 className="glx-ficha-nombre">
-                {t.extended ? (
-                  <Link href={`/glosario/${t.slug}`} className="glx-ficha-link" data-sin-popup>
-                    {t.term}
-                  </Link>
-                ) : (
-                  t.term
+              <div className="glx-cromo">
+                <p className="glx-ficha-def">{t.definition}</p>
+
+                {nota?.term === t.term && (
+                  <p className={`glx-ficha-aviso${nota.tipo === "error" ? " es-error" : ""}`} role={nota.tipo === "error" ? "alert" : "status"}>
+                    {nota.tipo === "error" ? (
+                      "No se ha podido guardar. Inténtalo de nuevo."
+                    ) : (
+                      <>
+                        <Link href="/login?next=/glosario">Inicia sesión</Link> para guardarlo en tu dashboard.
+                      </>
+                    )}
+                  </p>
                 )}
-              </h2>
 
-              <p className="glx-ficha-def">{t.definition}</p>
-
-              {nota?.term === t.term && (
-                <p className={`glx-ficha-aviso${nota.tipo === "error" ? " es-error" : ""}`} role={nota.tipo === "error" ? "alert" : "status"}>
-                  {nota.tipo === "error" ? (
-                    "No se ha podido guardar. Inténtalo de nuevo."
-                  ) : (
-                    <>
-                      <Link href="/login?next=/glosario">Inicia sesión</Link> para guardarlo en tu dashboard.
-                    </>
+                <div className="glx-cromo-pie">
+                  {/* Decorativo: el enlace que lleva a la ficha es el nombre,
+                      y cubre el cromo entero. */}
+                  {t.extended && (
+                    <span className="glx-cromo-leer" aria-hidden="true">
+                      Leer completo
+                      <ArrowRight size={15} strokeWidth={3} />
+                    </span>
                   )}
-                </p>
-              )}
-
-              {t.extended && (
-                <Link href={`/glosario/${t.slug}`} className="glx-ficha-mas" data-sin-popup>
-                  Leer la explicación completa
-                  <ChevronRight size={16} strokeWidth={3} aria-hidden="true" />
-                </Link>
-              )}
+                  <Tecla
+                    icono
+                    tamano="peq"
+                    color={isSaved ? "menta" : "blanca"}
+                    className="glx-guardar"
+                    onClick={() => toggleSave(t)}
+                    disabled={toggling === t.term}
+                    aria-pressed={isSaved}
+                    aria-label={isSaved ? "Quitar de guardados" : "Guardar término"}
+                    title={
+                      isLoggedIn
+                        ? isSaved
+                          ? "Quitar de guardados"
+                          : "Guardar en tu diccionario"
+                        : "Inicia sesión para guardar términos"
+                    }
+                  >
+                    <Bookmark size={17} strokeWidth={2.6} fill={isSaved ? "currentColor" : "none"} aria-hidden="true" />
+                  </Tecla>
+                </div>
+              </div>
             </article>
           );
         })}
-
-        {filtered.length === 0 && (
-          <p className="glx-vacio">
-            {search.trim()
-              ? `No se encontró ningún término para «${search}».`
-              : "No hay términos con esa letra en esta categoría."}
-          </p>
-        )}
       </div>
 
       {/* ── Paginación ── */}

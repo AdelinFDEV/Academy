@@ -31,298 +31,42 @@
   padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2rem) clamp(3.5rem, 7vw, 5.5rem);
 }
 
-/* ── Cabecera ─────────────────────────────────────────────────────────────── */
-
-.glx-cab {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: center;
-  margin-bottom: clamp(2rem, 5vw, 3.25rem);
-}
-
-.glx-nota {
-  display: inline-block;
-  margin: 0;
-  font-family: var(--letra-mano);
-  font-size: 26px;
-  color: var(--amarillo-o);
-  transform: rotate(-2deg);
-}
-
-.glx-titulo {
-  margin: 0.35rem 0 0;
-  font-family: var(--letra-titular);
-  font-size: clamp(2.5rem, 5.6vw, 4rem);
-  font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  color: var(--tinta);
-}
-
-.glx-titulo-sub {
-  display: block;
-  margin-top: 0.35rem;
-  font-size: 0.62em;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-}
-
-.glx-lead {
-  max-width: 46ch;
-  margin: 1.2rem 0 0;
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1.6;
-  color: var(--tinta-2);
-}
-
-/* Las cifras, como pegatinas de cartulina. */
-.glx-cifras {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 1.6rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.glx-cifras li {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 16px;
-  background: var(--papel);
-  box-shadow: 0 5px 0 var(--gris-o);
-}
-
-.glx-cifras li:first-child {
-  background: var(--amarillo);
-  box-shadow: 0 5px 0 var(--amarillo-o);
-}
-
-.glx-cifra {
-  font-family: var(--letra-titular);
-  font-size: 1.7rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.glx-cifra-txt {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.glx-cifras li:first-child .glx-cifra-txt { color: var(--tinta); }
-
-.glx-sesion {
-  margin: 1.3rem 0 0;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
-
-.glx-sesion a {
-  font-weight: 900;
-  color: var(--azul-o);
-  text-decoration: underline;
-  text-decoration-color: var(--azul);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-}
-
-/* ── El fichero de la cabecera ──
-   La caja amarilla con sus pestañas, dos fichas que asoman y, delante, la
-   ficha que se saca para estudiarla (una TarjetaEstudio). */
-.glx-fichero {
-  position: relative;
-  height: 440px;
-}
-
-.glx-caja {
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  z-index: 2;
-  width: min(370px, 96%);
-  height: 150px;
-  transform: translateX(-50%);
-  border-radius: 28px;
-  background: var(--amarillo);
-  box-shadow:
-    inset 0 3px 0 rgba(255, 255, 255, 0.45),
-    0 9px 0 var(--amarillo-o),
-    0 30px 40px -24px rgba(29, 27, 51, 0.45);
-}
-
-/* Las pestañas de los separadores, asomando por encima del borde de la caja. */
-.glx-caja i {
-  position: absolute;
-  top: -24px;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 30px;
-  border-radius: 10px 10px 0 0;
-  background: var(--papel);
-  box-shadow: inset 0 -3px 0 var(--gris);
-  font-family: var(--letra-titular);
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 800;
-  color: var(--tinta-2);
-}
-
-.glx-caja i:nth-child(1) { left: 8%; }
-.glx-caja i:nth-child(2) { left: 22%; }
-.glx-caja i:nth-child(3) { left: 36%; }
-.glx-caja i:nth-child(4) { left: 52%; }
-.glx-caja i:nth-child(5) { left: 67%; }
-.glx-caja i:nth-child(6) { left: 82%; }
-
-.glx-asoma {
-  position: absolute;
-  bottom: 70px;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 200px;
-  height: 250px;
-  padding: 18px 18px 18px 30px;
-  border-radius: 20px;
-  background:
-    linear-gradient(90deg, transparent 18px, var(--coral-s) 18px 20px, transparent 20px),
-    var(--papel);
-  box-shadow: 0 5px 0 var(--gris-o);
-}
-
-.glx-asoma--1 { left: 4%; transform: rotate(-10deg); }
-.glx-asoma--2 { right: 4%; transform: rotate(9deg); }
-
-.glx-asoma-cat {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tinta-3);
-}
-
-.glx-asoma-palabra {
-  font-family: var(--letra-titular);
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.1;
-  color: var(--tinta-3);
-}
-
-.glx-fichero .te.glx-frente {
-  position: absolute;
-  left: 50%;
-  bottom: 56px;
-  z-index: 3;
-  width: 250px;
-  height: 320px;
-  transform: translateX(-50%) rotate(-3deg);
-}
-
-.glx-frente .te-frente { border-top: 14px solid var(--amarillo); }
-
-.glx-frente .te-pregunta { font-size: 30px; }
-
-.glx-frente .te-respuesta {
-  font-family: var(--letra-texto);
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.glx-frente .te-detalle {
-  font-size: 13.5px;
-  line-height: 1.45;
-}
-
-.glx-fichero-nota {
-  position: absolute;
-  right: 2%;
-  bottom: -14px;
-  z-index: 3;
-  margin: 0;
-  font-family: var(--letra-mano);
-  font-size: 23px;
-  color: var(--tinta-2);
-  transform: rotate(-4deg);
-}
-
-/* ── El cajón de búsqueda ─────────────────────────────────────────────────── */
-
-.glx-filtros {
-  display: grid;
-  gap: 18px;
-  padding: clamp(1.1rem, 3vw, 1.6rem);
-  border-radius: 30px;
-  background: var(--papel);
-  box-shadow: 0 7px 0 var(--gris-o);
-}
+/* ── El buscador ──────────────────────────────────────────────────────────────
+   Una barra que parece un campo y abre la ventana (BuscadorPopup). Se hunde
+   como las teclas al pulsarla. */
 
 .glx-buscador {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 18px;
-  border: 3px solid var(--gris);
-  border-radius: 16px;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 20px;
+  border: 3px solid var(--tinta);
+  border-radius: 18px;
   background: var(--papel);
-  color: var(--tinta-3);
-  box-shadow: inset 0 3px 0 rgba(29, 27, 51, 0.05);
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.glx-buscador:focus-within {
-  border-color: var(--azul);
-  box-shadow: 0 0 0 5px var(--azul-s);
-  color: var(--azul);
-}
-
-.glx-buscador input {
-  flex: 1;
-  min-width: 0;
-  padding: 15px 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--tinta);
+  box-shadow: 0 6px 0 var(--amarillo), 0 20px 30px -24px rgba(29, 27, 51, 0.5);
+  color: var(--tinta-2);
   font: 700 17px var(--letra-texto);
+  text-align: left;
+  cursor: var(--puntero-mano, pointer);
+  transition: transform 0.06s, box-shadow 0.06s;
 }
 
-.glx-buscador input::placeholder { color: var(--tinta-3); }
-
-.glx-cats,
-.glx-abc {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
+@media (hover: hover) {
+  .glx-buscador:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--amarillo), 0 16px 26px -24px rgba(29, 27, 51, 0.5); }
 }
 
-/* El abecedario: teclas cuadradas y pequeñas, como las de un teclado. */
-.glx-abc { gap: 2px 7px; }
+.glx-buscador:active { transform: translateY(6px); box-shadow: 0 0 0 var(--amarillo); }
 
-.glx-abc .tecla.glx-abc-letra {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  font-family: var(--letra-titular);
-  font-size: 16px;
-  letter-spacing: 0;
+.glx-buscador:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 4px;
 }
 
-.glx-abc .tecla.glx-abc-todas {
-  height: 40px;
-  padding: 0 14px;
+.glx-buscador-txt {
+  flex: 1;
+  color: var(--tinta-3);
 }
 
 .glx-conteo {
@@ -338,120 +82,223 @@
 
 /* ── Las fichas ───────────────────────────────────────────────────────────── */
 
+/* Los seis cromos de la página, dos filas de tres en el ordenador. */
 .glx-lista {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 30px 26px;
-  padding-top: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px 22px;
+  padding-bottom: 8px;
 }
 
 /* `hidden` tiene que ganar al `display` de la ficha: si no, la paginación
    enseñaría las doscientas a la vez. */
 .glx-ficha[hidden] { display: none; }
 
+/* La ficha es un CROMO COLECCIONABLE (20-11-2026, elegido por el admin, la
+   «E»): un marco grueso del color de su categoría; arriba, sobre el marco,
+   la categoría, su número en el álbum y el nombre; abajo, la cartulina
+   blanca con la definición, «Leer completo» y el botón de guardar.
+
+   Y es un BOTÓN, como todas las teclas de la web (pedido por el admin el
+   mismo día): con su canto sólido (--h); al pasar el ratón se prepara (baja
+   2 px) y le cruza un brillo; al pulsar baja el recorrido entero en 60 ms,
+   pierde el canto y se oscurece un poco; al soltar rebota con muelle, y
+   suena como una tecla. Todo el cromo es el enlace a la explicación. */
 .glx-ficha {
   --c: var(--amarillo);
   --co: var(--amarillo-o);
   --cs: var(--amarillo-s);
+  --ct: var(--tinta);
+  --h: 9px;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 18px 22px 20px;
-  border-radius: 24px;
-  border-top: 12px solid var(--amarillo);
-  background: var(--papel);
-  box-shadow: 0 6px 0 var(--gris-o), 0 24px 36px -30px rgba(29, 27, 51, 0.45);
-  transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.5, 1), box-shadow 0.3s;
+  gap: 9px;
+  overflow: hidden;
+  padding: 9px;
+  border-radius: 22px;
+  background: var(--c);
+  margin-bottom: var(--h);
+  box-shadow:
+    0 var(--h) 0 var(--co),
+    0 calc(var(--h) + 16px) 30px -20px rgba(29, 27, 51, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  transition:
+    transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.26s cubic-bezier(0.34, 1.8, 0.5, 1),
+    filter 0.2s;
 }
 
-@media (hover: hover) {
-  .glx-ficha:hover {
-    transform: translateY(-4px) rotate(-0.6deg);
-    box-shadow: 0 10px 0 var(--gris-o), 0 30px 40px -28px rgba(29, 27, 51, 0.5);
-  }
-}
-
-/* Cada categoría, el color de su chip (y nada más: la ficha sigue amarilla). */
-.glx-ficha--trading { --c: var(--naranja); --co: var(--naranja-o); --cs: var(--naranja-s); }
-.glx-ficha--defi { --c: var(--lila); --co: var(--lila-o); --cs: var(--lila-s); }
+.glx-ficha--trading { --c: var(--naranja); --co: var(--naranja-o); --cs: var(--naranja-s); --ct: #fff; }
+.glx-ficha--defi { --c: var(--lila); --co: var(--lila-o); --cs: var(--lila-s); --ct: #fff; }
 .glx-ficha--seguridad { --c: var(--menta); --co: var(--menta-o); --cs: var(--menta-s); }
 .glx-ficha--básicos { --c: var(--cielo); --co: var(--cielo-o); --cs: var(--cielo-s); }
 
-/* La pestaña de la letra, como en los separadores del fichero. */
-.glx-ficha-pestana {
+/* El brillo de cromo: una franja blanca que cruza al pasar el ratón. */
+.glx-ficha::after {
+  content: "";
   position: absolute;
-  top: -42px;
-  right: 26px;
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 30px;
-  border-radius: 12px 12px 0 0;
-  background: var(--amarillo);
-  font-family: var(--letra-titular);
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--tinta);
+  inset: -40%;
+  z-index: 2;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.55) 50%, transparent 58%);
+  transform: translateX(-60%);
+  pointer-events: none;
 }
 
-/* El renglón rojo de las fichas de cartulina, bajo la cabecera. */
-.glx-ficha-cab {
+@media (hover: hover) {
+  /* Se prepara: baja 2 px, como una tecla bajo el dedo. */
+  .glx-ficha:hover {
+    transform: translateY(2px);
+    box-shadow:
+      0 calc(var(--h) - 2px) 0 var(--co),
+      0 calc(var(--h) + 12px) 26px -20px rgba(29, 27, 51, 0.5),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .glx-ficha:hover::after {
+    transform: translateX(60%);
+    transition: transform 0.8s ease;
+  }
+}
+
+/* Hundido: el recorrido entero. Solo al pulsar el cromo, no su botón de guardar. */
+.glx-ficha:active:not(:has(.glx-guardar:active)) {
+  transform: translateY(var(--h));
+  box-shadow: 0 0 0 var(--co), inset 0 4px 10px rgba(29, 27, 51, 0.2);
+  filter: brightness(0.93);
+  transition-duration: 0.06s;
+}
+
+
+/* La cabecera: sobre el propio marco de color, con una trama de puntos
+   blancos como la de los cromos, y el nombre del término en grande. */
+.glx-cromo-cab {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 8px 6px;
+  border-radius: 14px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1.4px, transparent 1.8px);
+  background-size: 12px 12px;
+}
+
+.glx-cromo-datos {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--coral-s);
+  gap: 8px;
 }
 
-.glx-ficha-cat {
-  display: inline-flex;
-  padding: 5px 11px;
-  border-radius: 10px;
-  background: var(--cs);
+/* La categoría, en una etiqueta blanca con su tono oscuro. */
+.glx-cromo-cat {
+  padding: 4px 9px;
+  border-radius: 9px;
+  background: var(--papel);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--co);
+}
+
+.glx-cromo-num {
   font-size: 12px;
   font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--ct);
 }
 
-.glx-guardar.tecla { margin-bottom: 8px; }
-
+/* El nombre ocupa siempre el alto de dos líneas: así las cartulinas de los
+   cuatro cromos de la fila empiezan a la misma altura. */
 .glx-ficha-nombre {
+  display: flex;
+  align-items: flex-end;
+  min-height: calc(2 * 1.08em);
   margin: 0;
   font-family: var(--letra-titular);
-  font-size: clamp(1.4rem, 2.6vw, 1.7rem);
+  font-size: 1.55rem;
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.015em;
-  color: var(--tinta);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ct);
+  overflow-wrap: anywhere;
+}
+
+/* La cartulina blanca: la definición y el pie. */
+.glx-cromo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  border-radius: 15px;
+  background: var(--papel);
 }
 
 .glx-ficha-link {
   color: inherit;
   text-decoration: none;
-  background: linear-gradient(transparent 62%, var(--amarillo-s) 62%);
-  transition: background-size 0.2s;
 }
 
-.glx-ficha-link:hover { background: linear-gradient(transparent 58%, var(--amarillo) 58%); }
+/* El enlace cubre el cromo entero. */
+.glx-ficha-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 22px;
+  cursor: var(--puntero-mano, pointer);
+}
 
-.glx-ficha-link:focus-visible,
-.glx-ficha-mas:focus-visible {
+.glx-ficha-link:focus-visible { outline: none; }
+
+.glx-ficha-link:focus-visible::after {
   outline: 3px solid var(--azul);
   outline-offset: 3px;
-  border-radius: 6px;
 }
 
 .glx-ficha-def {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 0.92rem;
   font-weight: 600;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--tinta-2);
 }
+
+.glx-cromo-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 2px dashed var(--cs);
+}
+
+.glx-cromo-leer {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--co);
+}
+
+.glx-cromo-leer svg { transition: transform 0.25s cubic-bezier(0.34, 1.8, 0.5, 1); }
+
+@media (hover: hover) {
+  .glx-ficha:hover .glx-cromo-leer svg { transform: translateX(4px); }
+}
+
+/* El botón de guardar y la nota, por encima del enlace que cubre el cromo. */
+.glx-guardar.tecla,
+.glx-ficha-aviso {
+  position: relative;
+  z-index: 3;
+}
+
+.glx-guardar.tecla { flex: none; margin-bottom: 6px; }
 
 /* La nota al pulsar «Guardar»: sin sesión, el aviso cielo con el enlace;
    si falla, el error en coral (sistema.html §12). */
@@ -478,40 +325,6 @@
   border-color: var(--coral);
   background: var(--coral-s);
   color: var(--coral-o);
-}
-
-.glx-ficha-mas {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  /* 44 px de alto: se pulsa con el dedo sin apuntar. */
-  min-height: 44px;
-  align-self: flex-start;
-  margin-top: auto;
-  font-weight: 900;
-  color: var(--azul-o);
-  text-decoration: underline;
-  text-decoration-color: var(--azul);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-}
-
-.glx-ficha-mas svg { transition: transform 0.25s cubic-bezier(0.34, 1.8, 0.5, 1); }
-
-@media (hover: hover) {
-  .glx-ficha-mas:hover svg { transform: translateX(4px); }
-}
-
-.glx-vacio {
-  grid-column: 1 / -1;
-  margin: 0;
-  padding: 2rem;
-  border-radius: 24px;
-  border: 3px dashed var(--gris-o);
-  font-family: var(--letra-mano);
-  font-size: 26px;
-  text-align: center;
-  color: var(--tinta-2);
 }
 
 /* ── Paginación ───────────────────────────────────────────────────────────── */
@@ -547,36 +360,17 @@
 
 /* ── Tableta y móvil ──────────────────────────────────────────────────────── */
 
-@media (max-width: 900px) {
-  .glx-cab { grid-template-columns: minmax(0, 1fr); }
-  .glx-fichero { height: 420px; max-width: 460px; width: 100%; margin: 0 auto; }
-  .glx-lista { grid-template-columns: minmax(0, 1fr); }
+/* Tableta: dos por fila. Móvil: uno, con el ancho de un cromo de verdad. */
+@media (max-width: 800px) {
+  .glx-lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .glx-lista { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .glx-ficha { width: 100%; max-width: 340px; }
 }
 
 @media (max-width: 520px) {
-  .glx-fichero { height: 400px; }
-  .glx-asoma { width: 170px; height: 220px; }
-  .glx-asoma--1 { left: 0; }
-  .glx-asoma--2 { right: 0; }
-  .glx-fichero .te.glx-frente { width: 230px; height: 300px; }
-  /* El abecedario en el móvil: una rejilla que reparte el ancho entre las
-     teclas, y teclas de 42 px. Antes eran de 36 y caían sueltas, con la
-     última fila a medias. */
-  .glx-abc {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-    gap: 2px 6px;
-  }
-
-  .glx-abc .tecla.glx-abc-letra,
-  .glx-abc .tecla.glx-abc-todas {
-    width: 100%;
-    height: 42px;
-    padding: 0;
-    font-size: 15px;
-    letter-spacing: 0;
-  }
-
   .glx-pag-texto { display: none; }
 
   /* La paginación: los números en su fila, entera, y debajo «anterior» y
@@ -584,11 +378,11 @@
   .glx-paginacion { gap: 8px 12px; }
   .glx-pag-numeros { order: -1; flex-basis: 100%; flex-wrap: wrap; justify-content: center; gap: 6px; }
   .glx-paginacion .tecla.glx-pag-num { min-width: 40px; }
-  .glx-ficha { padding: 16px 18px 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* El mismo hundido, pero sin rebote ni brillo. */
   .glx-ficha,
-  .glx-ficha-mas svg { transition: none; }
-  .glx-ficha:hover { transform: none; }
+  .glx-cromo-leer svg { transition: none; }
+  .glx-ficha::after { display: none; }
 }

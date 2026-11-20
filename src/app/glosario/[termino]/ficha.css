@@ -71,61 +71,70 @@
 .fe-migas-sep { color: var(--tinta-3); }
 .fe-migas-actual { color: var(--tinta); font-weight: 900; }
 
-/* ── La cabecera: la ficha de cartulina ───────────────────────────────────── */
+/* ── La cabecera: el cromo del listado ────────────────────────────────────────
+   El mismo cromo que en /glosario (glosario.css, 20-11-2026), en grande: el
+   marco del color de su categoría, con su canto; arriba, sobre el marco y su
+   trama de puntos blancos, la categoría, el número y el término; abajo, la
+   cartulina blanca con la definición. */
 
 .fe-cab {
+  --c: var(--amarillo);
+  --co: var(--amarillo-o);
+  --ct: var(--tinta);
   position: relative;
-  padding: clamp(1.3rem, 4vw, 2.2rem) clamp(1.2rem, 4vw, 2.4rem) clamp(1.5rem, 4vw, 2.3rem);
-  border-top: 16px solid var(--amarillo);
-  border-radius: 32px;
-  background: var(--papel);
-  box-shadow: 0 8px 0 var(--gris-o), 0 34px 50px -36px rgba(29, 27, 51, 0.5);
-  transform: rotate(-0.4deg);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 30px;
+  background-color: var(--c);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1.6px, transparent 2px);
+  background-size: 14px 14px;
+  box-shadow:
+    0 10px 0 var(--co),
+    0 34px 50px -36px rgba(29, 27, 51, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
 }
 
-.fe-pestana {
-  position: absolute;
-  top: -50px;
-  right: clamp(22px, 6vw, 46px);
-  display: grid;
-  place-items: center;
-  width: 62px;
-  height: 36px;
-  border-radius: 14px 14px 0 0;
-  background: var(--amarillo);
-  font-family: var(--letra-titular);
-  font-size: 21px;
-  font-weight: 800;
-  color: var(--tinta);
-}
+.fe-cab--trading { --c: var(--naranja); --co: var(--naranja-o); --ct: #fff; }
+.fe-cab--defi { --c: var(--lila); --co: var(--lila-o); --ct: #fff; }
+.fe-cab--seguridad { --c: var(--menta); --co: var(--menta-o); }
+.fe-cab--básicos { --c: var(--cielo); --co: var(--cielo-o); }
 
-/* La categoría y «Guardar», sobre el renglón rojo de la cartulina. */
+/* La categoría, el número y «Guardar», sobre el marco. */
 .fe-cab-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--coral-s);
+  padding: 6px 8px 0;
 }
 
+.fe-cab-datos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* La categoría, en una etiqueta blanca con su tono oscuro. */
 .fe-cat {
-  --cs: var(--amarillo-s);
-  --co: #7a5d00;
   display: inline-flex;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 10px;
-  background: var(--cs);
+  background: var(--papel);
   color: var(--co);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fe-num {
   font-size: 13px;
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--ct);
 }
-
-.fe-cat--básicos { --cs: var(--cielo-s); --co: var(--cielo-o); }
-.fe-cat--trading { --cs: var(--naranja-s); --co: var(--naranja-o); }
-.fe-cat--defi { --cs: var(--lila-s); --co: var(--lila-o); }
-.fe-cat--seguridad { --cs: var(--menta-s); --co: var(--menta-o); }
 
 .fe-guardar.tecla { margin-bottom: 6px; }
 
@@ -149,63 +158,155 @@
 }
 
 .fe-titulo {
-  margin: 1.1rem 0 0;
+  margin: 0;
+  padding: 0.7rem 8px 1rem;
   font-family: var(--letra-titular);
   font-size: clamp(2.4rem, 6.4vw, 4rem);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: -0.025em;
-  color: var(--tinta);
+  color: var(--ct);
   overflow-wrap: anywhere;
 }
 
-/* La definición corta hace de entradilla: es la respuesta en una línea. */
+/* La definición corta hace de entradilla: es la respuesta en una línea, en
+   la cartulina blanca del cromo. */
 .fe-lead {
-  max-width: 60ch;
-  margin: 1rem 0 0;
+  margin: 0;
+  padding: clamp(1.1rem, 3vw, 1.6rem) clamp(1.1rem, 3vw, 1.8rem);
+  border-radius: 20px;
+  background: var(--papel);
   font-size: clamp(1.1rem, 2.2vw, 1.28rem);
   font-weight: 700;
   line-height: 1.6;
   color: var(--tinta-2);
 }
 
-/* ── La cuenta, debajo de la definición (TerminoCta) ──────────────────────── */
+/* ── La cuenta, debajo de la definición (TerminoCta) ──────────────────────────
+   La colección de cromos (20-11-2026): a la izquierda (arriba en el móvil) un
+   abanico de tres cromos —el de delante es este término, los otros dos boca
+   abajo— con una nota a mano; a la derecha, el titular, las ventajas en fila
+   y los botones. */
 
 .tcta {
-  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1.2rem 2rem;
+  grid-template-columns: minmax(200px, 0.8fr) minmax(0, 1.2fr);
+  gap: 1.4rem 2.2rem;
   align-items: center;
-  overflow: hidden;
   margin: 2.6rem 0 0;
-  padding: clamp(1.3rem, 3.5vw, 1.9rem);
+  padding: clamp(1.3rem, 3.5vw, 2rem);
   border-radius: 28px;
-  background: var(--papel);
+  background-color: var(--papel);
+  background-image: radial-gradient(var(--gris) 1.4px, transparent 1.8px);
+  background-size: 22px 22px;
   box-shadow: 0 7px 0 var(--gris-o);
 }
 
-/* El círculo suave de las tarjetas de producto (sistema.html, 13). */
-.tcta::before {
-  content: "";
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  background: var(--naranja-s);
+/* El abanico. */
+.tcta-coleccion {
+  position: relative;
+  height: 190px;
 }
 
-.tcta > * { position: relative; }
+.tcta-cromo {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 116px;
+  height: 156px;
+  border-radius: 16px;
+}
+
+/* Los dorsos: lavanda con trama de puntos y un «?» en el centro. */
+.tcta-cromo--dorso {
+  display: grid;
+  place-items: center;
+  border: 7px solid var(--papel);
+  background-color: var(--lila-s);
+  background-image: radial-gradient(var(--lila) 1.4px, transparent 1.8px);
+  background-size: 12px 12px;
+  box-shadow: 0 5px 0 var(--gris-o);
+  font-family: var(--letra-titular);
+  font-size: 46px;
+  font-weight: 800;
+  color: var(--lila-o);
+}
+
+.tcta-cromo--1 { transform: translateX(-118%) rotate(-12deg); }
+.tcta-cromo--2 { transform: translateX(18%) rotate(11deg); }
+
+/* El de delante: el mismo cromo del listado, en pequeño. */
+.tcta-cromo--frente {
+  --c: var(--amarillo);
+  --co: var(--amarillo-o);
+  --ct: var(--tinta);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px;
+  background: var(--c);
+  box-shadow: 0 6px 0 var(--co), 0 18px 24px -14px rgba(29, 27, 51, 0.5);
+  transform: translateX(-50%) rotate(-2deg);
+}
+
+.tcta-cromo--trading { --c: var(--naranja); --co: var(--naranja-o); --ct: #fff; }
+.tcta-cromo--defi { --c: var(--lila); --co: var(--lila-o); --ct: #fff; }
+.tcta-cromo--seguridad { --c: var(--menta); --co: var(--menta-o); }
+.tcta-cromo--básicos { --c: var(--cielo); --co: var(--cielo-o); }
+
+.tcta-cromo-cat {
+  align-self: flex-start;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--papel);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--co);
+}
+
+.tcta-cromo-nombre {
+  padding: 0 2px;
+  font-family: var(--letra-titular);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ct);
+  overflow-wrap: anywhere;
+}
+
+/* La cartulina blanca de abajo, con dos renglones de «texto». */
+.tcta-cromo-carton {
+  flex: 1;
+  border-radius: 10px;
+  background:
+    linear-gradient(var(--gris) 0 0) 10px 14px / 70% 5px no-repeat,
+    linear-gradient(var(--gris) 0 0) 10px 26px / 50% 5px no-repeat,
+    var(--papel);
+}
+
+.tcta-nota {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  font-family: var(--letra-mano);
+  font-size: 24px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--naranja-o);
+  transform: translateX(-50%) rotate(-3deg);
+}
 
 .tcta-title {
   margin: 0;
   font-family: var(--letra-titular);
-  font-size: clamp(1.3rem, 2.8vw, 1.6rem);
+  font-size: clamp(1.35rem, 2.8vw, 1.7rem);
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.18;
   color: var(--tinta);
+  overflow-wrap: anywhere;
 }
 
 .tcta-sub {
@@ -215,8 +316,10 @@
   color: var(--tinta-2);
 }
 
+/* Las ventajas, como etiquetas menta en fila. */
 .tcta-ventajas {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin: 1rem 0 0;
   padding: 0;
@@ -224,33 +327,28 @@
 }
 
 .tcta-ventajas li {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.95rem;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 11px;
+  background: var(--menta-s);
+  font-size: 0.85rem;
   font-weight: 800;
+  line-height: 1.3;
   color: var(--tinta);
 }
 
-.tcta-tic {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  background: var(--menta);
-  box-shadow: 0 3px 0 var(--menta-o);
-  /* Sobre menta, tinta: el blanco no llega al contraste. */
-  color: var(--tinta);
-}
+.tcta-ventajas svg { flex: none; color: var(--menta-o); }
 
 .tcta-accion {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 6px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px 12px;
+  margin-top: 1.2rem;
 }
+
 
 /* ── El texto: una hoja de papel a buena medida ───────────────────────────── */
 
@@ -810,96 +908,6 @@
   margin-top: 0.4rem;
 }
 
-/* ── «Ver también» y «Más de…»: fichas sobre la mesa ──────────────────────── */
-
-.fe-rel { margin: 3.2rem 0 0; }
-.fe-rel--cat .fe-h2 { font-size: clamp(1.3rem, 3vw, 1.6rem); }
-
-.fe-fichas {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 30px 20px;
-  margin: 0;
-  padding: 18px 0 0;
-  list-style: none;
-}
-
-.fe-mini {
-  --c: var(--amarillo);
-  --co: var(--amarillo-o);
-  /* La letra de la pestaña: tinta sobre amarillo, cielo y menta. */
-  --ct: var(--tinta);
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  min-height: 118px;
-  padding: 26px 18px 18px;
-  border-top: 10px solid var(--c);
-  border-radius: 20px;
-  background:
-    linear-gradient(transparent 22px, var(--coral-s) 22px 24px, transparent 24px) top / 100% 100% no-repeat,
-    var(--papel);
-  box-shadow: 0 6px 0 var(--gris-o);
-  color: var(--tinta);
-  font-family: var(--letra-titular);
-  font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1.15;
-  text-decoration: none;
-  /* «Criptomoneda» en media columna a 320 px: se parte con guion. */
-  overflow-wrap: anywhere;
-  hyphens: auto;
-  transform: rotate(-1.4deg);
-  transition: transform 0.35s cubic-bezier(0.34, 1.7, 0.5, 1), box-shadow 0.3s;
-}
-
-.fe-fichas li:nth-child(even) .fe-mini { transform: rotate(1.2deg); }
-.fe-fichas li:nth-child(3n) .fe-mini { transform: rotate(-0.4deg); }
-
-.fe-mini--básicos { --c: var(--cielo); --co: var(--cielo-o); }
-.fe-mini--trading { --c: var(--naranja); --co: var(--naranja-o); --ct: #fff; }
-.fe-mini--defi { --c: var(--lila); --co: var(--lila-o); --ct: #fff; }
-.fe-mini--seguridad { --c: var(--menta); --co: var(--menta-o); }
-
-/* La pestaña de letra, pintada desde `data-letra`: no entra en el texto del enlace. */
-.fe-mini::before {
-  content: attr(data-letra);
-  position: absolute;
-  top: -36px;
-  left: 16px;
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 26px;
-  border-radius: 10px 10px 0 0;
-  background: var(--c);
-  font-size: 14px;
-  color: var(--ct);
-}
-
-.fe-mini::after {
-  content: "→";
-  position: absolute;
-  top: 34px;
-  right: 16px;
-  font-family: var(--letra-texto);
-  font-size: 18px;
-  font-weight: 900;
-  color: var(--co);
-  transition: transform 0.3s cubic-bezier(0.34, 1.8, 0.5, 1);
-}
-
-.fe-fichas li .fe-mini:hover,
-.fe-fichas li .fe-mini:focus-visible {
-  transform: rotate(0deg) translateY(-6px);
-  box-shadow: 0 12px 0 var(--gris-o), 0 26px 30px -22px rgba(29, 27, 51, 0.45);
-}
-
-@media (hover: hover) {
-  .fe-mini:hover::after { transform: translateX(4px); }
-}
-.fe-mini:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
-
 /* ── Volver ── */
 
 .fe-volver {
@@ -911,6 +919,7 @@
 
 @media (max-width: 720px) {
   .tcta { grid-template-columns: minmax(0, 1fr); }
+  .tcta-accion { flex-direction: column; align-items: stretch; }
   .tcta-accion .tecla { width: 100%; }
   .tvid { grid-template-columns: minmax(0, 1fr); }
   .fe .termino-body .prose-vs { grid-template-columns: 1fr; }
@@ -921,9 +930,6 @@
 }
 
 @media (max-width: 480px) {
-  .fe-cab { transform: none; }
-  .fe-fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 14px; }
-  .fe-mini { min-height: 104px; padding: 24px 14px 14px; font-size: 1.08rem; }
   .fe-volver .tecla { white-space: normal; text-align: center; }
   .tvid-botones .tecla { flex: 1 1 100%; }
   /* «Crear cuenta gratis» con sus dos iconos no cabe en una línea a 360 px:
@@ -939,8 +945,6 @@
 @media (prefers-reduced-motion: reduce) {
   .fe-faq-item,
   .fe-faq-signo,
-  .fe-mini,
-  .fe-mini::after,
   .tvid-thumb,
   .fe-migas a { transition: none; }
   .fe .termino-body .prose-chart-fill { animation: none; }

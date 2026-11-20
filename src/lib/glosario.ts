@@ -4716,6 +4716,22 @@ export const GLOSARIO: GlosarioTerm[] = [
 /** Los que ya tienen desarrollo largo: son los únicos con página propia. */
 export const GLOSARIO_CON_PAGINA = GLOSARIO.filter((t) => !!t.extended);
 
+/**
+ * El diccionario en orden alfabético, como se busca una palabra. Es el orden
+ * del listado de /glosario y el que da su número a cada cromo («Nº 003/231»),
+ * en el listado y en la página del término: una sola fuente para los dos.
+ */
+export const GLOSARIO_ALFABETICO = [...GLOSARIO].sort((a, b) =>
+  a.term.localeCompare(b.term, "es", { sensitivity: "base" }),
+);
+
+/** El número de un término en el álbum: «003» de «Nº 003/231». */
+export function numeroCromo(slug: string): string {
+  const cifras = String(GLOSARIO_ALFABETICO.length).length;
+  const i = GLOSARIO_ALFABETICO.findIndex((t) => t.slug === slug);
+  return String(i + 1).padStart(cifras, "0");
+}
+
 export function buscarTermino(slug: string): GlosarioTerm | undefined {
   return GLOSARIO.find((t) => t.slug === slug);
 }
