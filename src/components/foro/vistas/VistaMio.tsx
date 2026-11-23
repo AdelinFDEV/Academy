@@ -4,7 +4,7 @@ import MarcoForo from "@/components/foro/MarcoForo";
 import { fechaCorta } from "@/components/foro/fechas";
 import { MarcarLeidos, PreferenciaRanking } from "@/components/foro/participar/AccionesMias";
 import { LOGROS_FORO, NIVELES } from "@/lib/foro/limites";
-import type { AvisoForo, LoMio } from "@/lib/foro/tipos";
+import { fraseDeAviso as fraseDe, type LoMio } from "@/lib/foro/tipos";
 import "@/app/foro/mio.css";
 
 /**
@@ -19,27 +19,6 @@ import "@/app/foro/mio.css";
 
 const NOMBRE_CLASE = { pregunta: "Pregunta", respuesta: "Respuesta", replica: "Réplica" } as const;
 const NOMBRE_SANCION: Record<string, string> = { suspension: "Suspensión del foro", expulsion: "Expulsión del foro" };
-
-/** La frase de un aviso. Los de valoraciones van agrupados («5 personas…»). */
-function fraseDe(a: AvisoForo): string {
-  const n = a.cuantos;
-  const personas = n === 1 ? "Una persona" : `${n} personas`;
-  switch (a.tipo) {
-    case "respuesta": return n === 1 ? "Nueva respuesta en tu pregunta" : `${n} respuestas nuevas en tu pregunta`;
-    case "replica": return n === 1 ? "Nueva réplica en un hilo donde participas" : `${n} réplicas nuevas en un hilo donde participas`;
-    case "me_gusta": return `${personas} ${n === 1 ? "ha dado" : "han dado"} me gusta a tu mensaje`;
-    case "interesante": return `${personas} ${n === 1 ? "ha marcado" : "han marcado"} «Interesante» en tu pregunta`;
-    case "gracias": return `${personas} ${n === 1 ? "ha marcado" : "han marcado"} «Gracias» en tu pregunta`;
-    case "yo_tambien": return `${personas} ${n === 1 ? "tiene" : "tienen"} tu misma duda`;
-    case "ganadora": return "Han elegido tu respuesta";
-    case "elige_ganadora": return "Tu pregunta tiene respuestas: ya puedes elegir la que te ha servido";
-    case "ganadora_retirada": return "La respuesta que elegiste se ha retirado: puedes elegir otra";
-    case "retirado": return "Un mensaje tuyo se ha retirado";
-    case "restaurado": return "Un mensaje tuyo vuelve a estar publicado";
-    case "sancion": return "Has recibido una sanción en el foro";
-    default: return "Tienes una novedad en el foro";
-  }
-}
 
 /** El tono de un aviso: bueno (menta), de moderación (coral) o neutro. */
 const tonoDe = (tipo: string) =>

@@ -13,6 +13,7 @@ import Tecla from "@/components/cuaderno/Tecla";
 import SonidoColgante from "@/components/SonidoColgante";
 import "./site-nav.css";
 
+import MarcaLogo from "@/components/MarcaLogo";
 interface Props {
   user: boolean;
   isPremium?: boolean;
@@ -75,7 +76,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
   return (
     <nav className="blog-nav">
       <Link href="/" className="blog-brand">
-        Adelin<em>BTC</em>
+        <MarcaLogo prioridad />
       </Link>
       <div className="blog-nav-center">
         <NavPrincipal logueado={user} premium={premium} />

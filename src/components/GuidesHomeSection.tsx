@@ -5,6 +5,7 @@ import type { GuideMeta } from "@/lib/guides";
 import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
+import BuscadorViajero from "@/components/BuscadorViajero";
 import Tecla from "@/components/cuaderno/Tecla";
 import Anotacion from "@/components/cuaderno/Anotacion";
 import SimboloEstudio from "@/components/cuaderno/SimboloEstudio";
@@ -86,16 +87,20 @@ export default async function GuidesHomeSection() {
           <div className="gh-cabecera-acciones">
             {/* La pegatina de la lupa, en el hueco de arriba a la derecha del
                 buscador (pedida por el admin el 18-11-2026). Decoración. */}
-            <TrazoVisible className="gh-lupa" retraso={200}>
-              <Image src="/cuaderno/lupa-pegatina.webp" alt="" width={330} height={367} className="gh-lupa-img" draggable={false} />
-            </TrazoVisible>
-            <p className="gh-buscar-nota" aria-hidden="true">
-              ¿buscas una en concreto?
-              <SimboloEstudio tipo="flecha" color="azul" giro={95} tamano={34} semilla={4} retraso={500} className="gh-buscar-flecha" />
-            </p>
-            <div className="gh-buscar">
-              <GuideSearch ventanaEnMovil />
-            </div>
+            {/* En el ordenador, lupa, nota y barra viajan juntas al centro de
+                la pantalla al entrar en el buscador (BuscadorViajero, 23-11-2026). */}
+            <BuscadorViajero>
+              <TrazoVisible className="gh-lupa" retraso={200}>
+                <Image src="/cuaderno/lupa-pegatina.webp" alt="" width={330} height={367} className="gh-lupa-img" draggable={false} />
+              </TrazoVisible>
+              <p className="gh-buscar-nota" aria-hidden="true">
+                ¿buscas una en concreto?
+                <SimboloEstudio tipo="flecha" color="azul" giro={95} tamano={34} semilla={4} retraso={500} className="gh-buscar-flecha" />
+              </p>
+              <div className="gh-buscar">
+                <GuideSearch ventanaEnMovil />
+              </div>
+            </BuscadorViajero>
             <Tecla href="/guias" color="blanca" className="gh-todas">
               Ver todas las guías
             </Tecla>

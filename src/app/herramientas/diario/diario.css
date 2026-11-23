@@ -488,21 +488,23 @@
   translate: -50% 0;
 }
 
+/* El dibujo del súper hito (23-11-2026), en lugar de la medalla con corona:
+   asoma por arriba de la ficha y se mece. */
 .dj-sh-medalla {
   position: absolute;
-  top: -34px;
+  top: -78px;
   left: 50%;
-  display: grid;
-  place-items: center;
-  width: 92px;
-  height: 92px;
-  background: var(--amarillo);
-  border: 3px solid var(--tinta);
-  border-radius: 50%;
-  box-shadow: 0 5px 0 var(--tinta), inset 0 0 0 7px color-mix(in srgb, #fff 45%, transparent);
-  color: var(--tinta);
+  display: block;
+  width: 136px;
   translate: -50% 0;
   animation: dj-sh-brillo 3.4s ease-in-out infinite;
+}
+
+.dj-sh-medalla-dibujo {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 12px rgba(143, 124, 255, 0.4));
 }
 
 @keyframes dj-sh-brillo {
@@ -1273,6 +1275,9 @@
     box-shadow: 0 3px 0 var(--tinta);
     color: var(--tinta);
   }
+  /* La ficha del súper hito: su dibujo en vez de un icono, sin caja. */
+  .dj-hero-ficha-icono--superhito { width: 54px; height: 54px; padding: 0; border: 0; background: none; box-shadow: none; }
+  .dj-hero-ficha-icono--superhito img { width: 100%; height: auto; }
   .dj-hero-ficha strong { font-family: var(--letra-titular); font-size: 1.2rem; font-weight: 800; line-height: 1.15; color: var(--tinta); }
   .dj-hero-ficha strong b { font-size: 1.5em; color: color-mix(in srgb, var(--c) 55%, var(--tinta)); }
   .dj-hero-ficha > span:last-child { font-size: 0.95rem; font-weight: 600; line-height: 1.45; color: var(--tinta-2); }

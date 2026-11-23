@@ -41,13 +41,19 @@ const COLORES_CONFETI = ["#ffd23f", "#ff8a1f", "#2fc488", "#8f7cff", "#2fbff5", 
  * (`disableForReducedMotion`).
  */
 function celebrar(especial: boolean) {
-  sonar("logro");
+  // El sonido va al compás de la animación: el «toc» suena cuando la pegatina
+  // se estampa (0,42 s) y el confeti sale justo entonces.
+  sonar("logro", especial ? 2 : 1);
   const comun = { colors: COLORES_CONFETI, zIndex: 10001, disableForReducedMotion: true } as const;
-  void confetti({ ...comun, particleCount: especial ? 90 : 60, spread: 80, startVelocity: 48, origin: { x: 0.5, y: 0.42 } });
-  if (especial) {
-    void confetti({ ...comun, particleCount: 45, angle: 60, spread: 70, origin: { x: 0, y: 0.7 } });
-    void confetti({ ...comun, particleCount: 45, angle: 120, spread: 70, origin: { x: 1, y: 0.7 } });
-  }
+  const reloj = window.setTimeout(() => {
+    void confetti({ ...comun, particleCount: especial ? 110 : 70, spread: 90, startVelocity: 46, scalar: 1.05, origin: { x: 0.5, y: 0.36 } });
+    void confetti({ ...comun, particleCount: 26, spread: 360, startVelocity: 22, gravity: 0.6, shapes: ["star"], scalar: 1.3, origin: { x: 0.5, y: 0.3 } });
+    if (especial) {
+      void confetti({ ...comun, particleCount: 55, angle: 60, spread: 70, origin: { x: 0, y: 0.75 } });
+      void confetti({ ...comun, particleCount: 55, angle: 120, spread: 70, origin: { x: 1, y: 0.75 } });
+    }
+  }, 420);
+  return () => window.clearTimeout(reloj);
 }
 
 /**
@@ -64,17 +70,18 @@ function Popup({ badge, onClose }: { badge: UnlockNotice; onClose: () => void })
     onClose();
   }, [onClose]);
 
-  useEffect(() => {
-    celebrar(!!badge.special);
-  }, [badge]);
+  useEffect(() => celebrar(!!badge.special), [badge]);
 
+  // Solo se cierra con «¡Genial!» (23-11-2026, pedido por el admin): ni
+  // tocando fuera ni con Escape, para que un doble clic sin querer no corte la
+  // animación. Y los botones no responden hasta que la animación ha entrado
+  // (1,4 s; al momento con «reducir movimiento»).
+  const [listo, setListo] = useState(false);
   useEffect(() => {
-    const alTeclado = (e: KeyboardEvent) => {
-      if (e.key === "Escape") cerrar();
-    };
-    window.addEventListener("keydown", alTeclado);
-    return () => window.removeEventListener("keydown", alTeclado);
-  }, [cerrar]);
+    const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reloj = window.setTimeout(() => setListo(true), quieto ? 0 : 1400);
+    return () => window.clearTimeout(reloj);
+  }, [badge]);
 
   // Con el aviso a la vista, la página de detrás no se desplaza: una sola
   // barra de desplazamiento, la del propio aviso (si no cabe, en el móvil
@@ -83,17 +90,25 @@ function Popup({ badge, onClose }: { badge: UnlockNotice; onClose: () => void })
   useEffect(() => bloquearScroll(), []);
 
   return (
-    <div className="bn-fondo" onClick={cerrar}>
+    <div className={`bn-fondo${badge.special ? " is-especial" : ""}`}>
+      {/* Detrás de la tarjeta: rayos que giran y una onda que sale al estamparse. */}
+      <span className="bn-rayos" aria-hidden="true" />
       <div
         className={`bn-tarjeta${badge.special ? " bn-tarjeta--especial" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="bn-titulo"
-        onClick={(e) => e.stopPropagation()}
       >
-        <div className="bn-pegatina" aria-hidden="true">
-          <span className="bn-pegatina-icono">{badge.bigIcon}</span>
-          {badge.special && <span className="bn-estrella">★</span>}
+        <div className="bn-escena" aria-hidden="true">
+          <span className="bn-onda" />
+          <span className="bn-onda bn-onda--2" />
+          <span className="bn-chispas">
+            {Array.from({ length: 10 }, (_, i) => <i key={i} style={{ "--i": i } as React.CSSProperties} />)}
+          </span>
+          <div className="bn-pegatina">
+            <span className="bn-pegatina-icono">{badge.bigIcon}</span>
+            {badge.special && <span className="bn-estrella">★</span>}
+          </div>
         </div>
 
         <p className="bn-antetitulo">{badge.eyebrow ?? "¡Logro desbloqueado!"}</p>
@@ -105,8 +120,8 @@ function Popup({ badge, onClose }: { badge: UnlockNotice; onClose: () => void })
           </p>
         )}
 
-        <div className="bn-acciones">
-          <Tecla color="amarillo" ancho autoFocus onClick={cerrar}>Genial ✓</Tecla>
+        <div className={`bn-acciones${listo ? " is-lista" : ""}`}>
+          <Tecla color={badge.special ? "naranja" : "amarillo"} ancho autoFocus onClick={cerrar}>¡Genial!</Tecla>
           {/* Un enlace de solo hash no puede ir por Link (no dispara
               "hashchange"): se cambia el hash a mano. */}
           {link.href.startsWith("#") ? (

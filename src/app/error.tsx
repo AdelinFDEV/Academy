@@ -9,6 +9,7 @@ import InterruptorSonido from "@/components/cuaderno/InterruptorSonido";
 import "@/components/site-nav.css";
 import "./pagina-estado.css";
 
+import MarcaLogo from "@/components/MarcaLogo";
 /**
  * El error inesperado de cualquier página (error.js de Next), estilo
  * «Cuaderno de estudio» (17-11-2026), hermano de not-found.tsx: la misma mesa
@@ -33,7 +34,7 @@ export default function ErrorPagina({ error, retry }: { error: unknown; retry: (
     <div className="pe">
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">
-          Adelin<em>BTC</em>
+          <MarcaLogo />
         </Link>
         {/* El altavoz, también aquí: los sonidos vienen encendidos y
             silenciarlos tiene que estar a mano en todas las páginas. */}

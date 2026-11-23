@@ -1,7 +1,8 @@
+import Image from "next/image";
 import React from "react";
 import {
   Flame, Zap, Gem, Trophy,
-  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, GraduationCap, type LucideIcon,
+  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, GraduationCap, type LucideIcon,
   CalendarRange, Anchor, Crosshair, Footprints, Scale, Wind, Sun, Sigma, Mountain, CalendarDays,
 } from "lucide-react";
 import { GUIDES, TODAS_LAS_GUIAS, type GuideMeta } from "@/lib/guides";
@@ -356,11 +357,34 @@ export const DIARIO_ICONS: Record<string, LucideIcon> = {
   semanas: CalendarRange,
   control: Anchor,
   objetivo: Crosshair,
-  vivir: Crown,
+  // El súper hito («vivir») no lleva icono: lleva su dibujo (SUPERHITO_PEGATINA).
 };
+
+/**
+ * La imagen del súper hito (del admin, 23-11-2026): sale en TODOS los sitios
+ * que lo nombran (su pegatina de logro, el aviso al conseguirlo, la tarjeta
+ * del diario, la ficha del Diario y la página de logros), nunca una corona.
+ */
+export const SUPERHITO_PEGATINA = "/cuaderno/superhito-pegatina.webp";
+
+/** El dibujo del súper hito en lugar de un icono. Llena la pegatina que lo lleve (`.icono-superhito`). */
+function IconoSuperHito({ lado }: { lado: number }) {
+  return <Image src={SUPERHITO_PEGATINA} alt="" width={lado} height={Math.round(lado * 1.06)} className="icono-superhito" draggable={false} />;
+}
 
 export const DIARIO_BADGE_DEFS: BadgeDef[] = MILESTONES.map((m) => {
   const Icon = DIARIO_ICONS[m.id] ?? Trophy;
+  if (m.group === "leyenda") {
+    return {
+      id: `diario-${m.id}`,
+      label: m.title,
+      condition: `${m.desc}. Niveles: ${m.tiers.map(m.format).join(" · ")}.`,
+      icon: <IconoSuperHito lado={96} />,
+      bigIcon: <IconoSuperHito lado={160} />,
+      diario: { family: m.id, levels: m.tiers.length },
+      special: true,
+    };
+  }
   return {
     id: `diario-${m.id}`,
     label: m.title,
@@ -368,8 +392,6 @@ export const DIARIO_BADGE_DEFS: BadgeDef[] = MILESTONES.map((m) => {
     icon: <Icon size={24} aria-hidden="true" />,
     bigIcon: <Icon size={48} aria-hidden="true" />,
     diario: { family: m.id, levels: m.tiers.length },
-    // El súper hito se presenta como especial, igual que los logros de guías perfectas.
-    ...(m.group === "leyenda" ? { special: true } : {}),
   };
 });
 
@@ -386,5 +408,51 @@ export function isEarned(earned: Set<string>, badge: BadgeDef): boolean {
   return badge.diario ? diarioLevel(earned, badge) > 0 : earned.has(badge.id);
 }
 
-/** Todos: los de actividad, el de Miembro Fundador, uno por guía y uno por hito del diario. */
+/** Lo que hace falta de un curso para su logro (lo trae `logrosDeCursos`, de `@/lib/cursos`). */
+export interface LogroCurso {
+  slug: string;
+  titulo: string;
+  logro: string;
+  conseguido: { fecha: string; nota: number } | null;
+}
+
+/** El logro de un curso: se gana al aprobar su examen final. Su id es `curso-<slug>`. */
+export function logroDeCurso(c: Pick<LogroCurso, "slug" | "titulo" | "logro">): BadgeDef {
+  return {
+    id: `curso-${c.slug}`,
+    label: c.logro,
+    condition: `Aprueba el examen final del curso «${c.titulo}»`,
+    icon: iconoCurso(c.slug, 24),
+    bigIcon: iconoCurso(c.slug, 48),
+    cursoSlug: c.slug,
+  };
+}
+
+/**
+ * 🔴 LA ÚNICA CUENTA DE LOGROS DE LA WEB (23-11-2026). El dashboard decía 31 y
+ * «Mis logros» 39 porque cada uno sumaba a su manera (al dashboard le faltaban
+ * los de los cursos). Toda cifra de «X de Y logros» sale de aquí:
+ *
+ *   actividad + uno por guía publicada + uno por curso publicado + los hitos
+ *   del Diario de Trading (que también son logros).
+ *
+ * Los del diario solo se ganan con Premium: sin él (`conDiario` falso) cuentan
+ * solo los que ya se tengan, para no enseñar logros imposibles. `earned` lleva
+ * los ids de `user_badges` y, por cada certificado, `curso-<slug>`.
+ */
+export function coleccionDeLogros(
+  earned: Set<string>,
+  cursos: Pick<LogroCurso, "slug" | "titulo" | "logro">[],
+  conDiario: boolean,
+): { defs: BadgeDef[]; total: number; conseguidos: number } {
+  const defs = [
+    ...BADGE_DEFS,
+    ...GUIDE_BADGE_DEFS,
+    ...cursos.map(logroDeCurso),
+    ...DIARIO_BADGE_DEFS.filter((b) => conDiario || isEarned(earned, b)),
+  ];
+  return { defs, total: defs.length, conseguidos: defs.filter((b) => isEarned(earned, b)).length };
+}
+
+/** Los de `user_badges`: actividad, guías e hitos del diario. Para el total, `coleccionDeLogros`. */
 export const LOGROS: BadgeDef[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS, ...DIARIO_BADGE_DEFS];

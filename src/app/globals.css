@@ -1633,3 +1633,37 @@ svg.rough-annotation path { animation-timing-function: linear !important; }
 svg.rough-annotation path:first-child { animation-timing-function: cubic-bezier(0.45, 0, 0.75, 0.75) !important; }
 svg.rough-annotation path:last-child { animation-timing-function: cubic-bezier(0.25, 0.25, 0.35, 1) !important; }
 svg.rough-annotation path:only-child { animation-timing-function: cubic-bezier(0.4, 0, 0.25, 1) !important; }
+
+/* ══ La marca: el logo (MarcaLogo.tsx, 23-11-2026) ═════════════════════════
+   Dos imágenes del mismo tamaño, una encima de otra: la de reposo y la de
+   «hover» (la tecla hundida y la gorra saludando), que aparece al pasar el
+   ratón o al llegar con el teclado. Mide 1,75 veces la letra del enlace que lo
+   lleva: así hereda los tamaños que la barra, el pie y el acceso ya tenían en
+   cada pantalla. */
+.marca-logo {
+  position: relative;
+  display: inline-block;
+  height: 1.75em;
+  aspect-ratio: 3 / 1;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.marca-logo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.12s ease;
+}
+
+.marca-logo-hover { opacity: 0; }
+
+a:focus-visible > .marca-logo .marca-logo-hover { opacity: 1; }
+a:focus-visible > .marca-logo .marca-logo-img:not(.marca-logo-hover) { opacity: 0; }
+
+@media (hover: hover) {
+  a:hover > .marca-logo .marca-logo-hover { opacity: 1; }
+  a:hover > .marca-logo .marca-logo-img:not(.marca-logo-hover) { opacity: 0; }
+}

@@ -8,6 +8,7 @@ import InterruptorSonido from "@/components/cuaderno/InterruptorSonido";
 import "./site-nav.css";
 import "./legal-shell.css";
 
+import MarcaLogo from "@/components/MarcaLogo";
 interface Props {
   title: string;
   lastUpdated: string;
@@ -111,7 +112,7 @@ export default function LegalShell({ title, lastUpdated, children }: Props) {
     <div className="lg">
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">
-          Adelin<em>BTC</em>
+          <MarcaLogo prioridad />
         </Link>
         {/* El altavoz, también aquí: los sonidos vienen encendidos y
             silenciarlos tiene que estar a mano en todas las páginas. */}

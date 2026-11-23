@@ -54,11 +54,6 @@
   transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.footer-brand em {
-  font-style: normal;
-  color: var(--naranja);
-}
-
 @media (hover: hover) {
   .footer-brand:hover { transform: rotate(-3deg); }
 }

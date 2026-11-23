@@ -3,7 +3,7 @@ import { bd } from "../bd";
 import { ETIQUETA_IDS, logrosDelForo, nivelDe, type EtiquetaId } from "../limites";
 import type { ResultadoAccion } from "../peticion";
 import { accesoAlForo, motivoParaNoParticipar } from "../permisos";
-import type { AvisoForo, LoMio, MensajeMio, MioEnHilo } from "../tipos";
+import type { AvisoForo, LoMio, MensajeMio, MioEnHilo, PreguntaMia } from "../tipos";
 
 /**
  * Lo PERSONAL de quien mira: qué ha hecho en un hilo y sus avisos.
@@ -101,10 +101,79 @@ async function leerAvisos(usuarioId: string): Promise<{ avisos: AvisoForo[]; sin
   return { avisos, sinLeer: avisos.filter((a) => !a.leido).length };
 }
 
+/**
+ * Lo nuevo del usuario en el foro, para su dashboard (23-11-2026): cuántos
+ * avisos tiene sin leer (respuestas, réplicas, me gusta, etiquetas, ganadora,
+ * moderación) y los más recientes. Lo llama la página, con el usuario de la
+ * sesión. Si algo falla, nada nuevo: el dashboard no enseña el aviso.
+ */
+export async function novedadesDelForo(usuarioId: string, cuantas = 3): Promise<{ sinLeer: number; avisos: AvisoForo[] }> {
+  try {
+    const { avisos } = await leerAvisos(usuarioId);
+    const nuevos = avisos.filter((a) => !a.leido);
+    return { sinLeer: nuevos.length, avisos: nuevos.slice(0, Math.max(1, Math.min(cuantas, 5))) };
+  } catch {
+    return { sinLeer: 0, avisos: [] };
+  }
+}
+
 const extracto = (texto: unknown) => {
   const t = String(texto ?? "").replace(/\s+/g, " ").trim();
   return t.length > 140 ? `${t.slice(0, 140).replace(/\s+\S*$/, "")}…` : t;
 };
+
+/**
+ * Las últimas preguntas del usuario con su estado, para su dashboard
+ * (23-11-2026): si está resuelta, cuántas respuestas tiene o si la ocultó la
+ * moderación (con el motivo, que solo ve él). Las borradas no salen. Lo llama
+ * la página, con el usuario de la sesión; si algo falla, devuelve una lista
+ * vacía y el dashboard no enseña el bloque.
+ */
+export async function misPreguntas(usuarioId: string, cuantas = 4): Promise<PreguntaMia[]> {
+  try {
+    const cliente = bd();
+    const { data: filas } = await cliente
+      .from("foro_preguntas")
+      .select("id, slug, titulo, estado, respuestas, ganadora_id, creada_at, ultima_actividad_at")
+      .eq("autor_id", usuarioId)
+      .in("estado", ["publicada", "oculta"])
+      .order("ultima_actividad_at", { ascending: false })
+      .limit(Math.max(1, Math.min(cuantas, 10)));
+    const preguntas = filas ?? [];
+
+    const ocultas = preguntas.filter((p) => p.estado === "oculta").map((p) => Number(p.id));
+    const motivoDe = new Map<number, string>();
+    if (ocultas.length) {
+      const { data: registro } = await cliente
+        .from("foro_moderacion")
+        .select("pregunta_id, motivo")
+        .eq("usuario_id", usuarioId)
+        .is("respuesta_id", null)
+        .in("pregunta_id", ocultas)
+        .in("accion", ["ocultar", "ocultar_auto"])
+        .order("creado_at", { ascending: false });
+      // Del más reciente al más antiguo: el primero que aparece manda.
+      for (const m of registro ?? []) {
+        const id = Number(m.pregunta_id);
+        if (!motivoDe.has(id)) motivoDe.set(id, String(m.motivo ?? ""));
+      }
+    }
+
+    return preguntas.map((p) => ({
+      id: Number(p.id),
+      slug: String(p.slug),
+      titulo: String(p.titulo),
+      estado: String(p.estado),
+      motivo: p.estado === "oculta" ? (motivoDe.get(Number(p.id)) ?? "") : "",
+      respuestas: Math.max(0, Number(p.respuestas ?? 0)),
+      resuelta: p.ganadora_id != null,
+      fecha: String(p.creada_at),
+      ultimaActividad: String(p.ultima_actividad_at ?? p.creada_at),
+    }));
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Todo lo del usuario en el foro, para su página `/foro/mio`: su reputación,

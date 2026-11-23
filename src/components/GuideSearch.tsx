@@ -5,11 +5,29 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, X, CornerDownLeft } from "lucide-react";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import type { GuiaBuscador } from "@/app/api/guias/publicadas/route";
 import { bloquearScroll } from "@/lib/bloquearScroll";
+import { sonar } from "@/lib/sonidos";
 import "./guide-search-ventana.css";
+import "./buscador-popup.css";
+
+/** En la ventana (`popup`): cuántas criptomonedas se sugieren antes de escribir. */
+const SUGERIDAS = 6;
+
+/** El texto con lo buscado pasado a rotulador. `plano` no cambia la longitud de las letras con tilde. */
+function Resaltado({ texto, q }: { texto: string; q: string }) {
+  const i = q ? plano(texto).indexOf(q) : -1;
+  if (i === -1) return <>{texto}</>;
+  return (
+    <>
+      {texto.slice(0, i)}
+      <mark>{texto.slice(i, i + q.length)}</mark>
+      {texto.slice(i + q.length)}
+    </>
+  );
+}
 
 const esCripto = (g: { tags: string[] }) => g.tags.includes("CRIPTOMONEDAS");
 const CRYPTO_GUIDES: GuiaBuscador[] = GUIDES_NEWEST_FIRST.filter(esCripto);
@@ -49,18 +67,32 @@ const enServidor = () => false;
  * (guide-search-ventana.css). En el ordenador, y en el menú (que ya ocupa toda
  * la pantalla), sigue siendo el desplegable de siempre. En el menú, las
  * sugerencias salen a partir de tres letras (`sugerenciasDesde`).
+ *
+ * `popup` (23-11-2026, pedido por el admin): el buscador del menú. Al tocarlo
+ * cae en mitad de la pantalla la misma hoja de libreta que el buscador del
+ * diccionario (buscador-popup.css), en el móvil y en el ordenador. Antes era
+ * un desplegable dentro del menú y, al salir el teclado, el menú se escalaba
+ * para caber y los iconos quedaban aplastados. La ventana está siempre
+ * montada y escondida, como la hoja del móvil, para que el iPhone saque el
+ * teclado en el mismo toque.
  */
 export default function GuideSearch({
   ventanaEnMovil = false,
   sugerenciasDesde = 0,
+  popup = false,
 }: {
   ventanaEnMovil?: boolean;
   /** Con un número, el desplegable no sale hasta escribir esas letras (y sin
-   *  las teclitas de criptomonedas al enfocar). El menú usa 3 (18-11-2026). */
+   *  las teclitas de criptomonedas al enfocar). */
   sugerenciasDesde?: number;
+  /** Abre la ventana centrada del diccionario en vez del desplegable o la hoja. */
+  popup?: boolean;
 } = {}) {
   const movil = useSyncExternalStore(suscribirMovil, esMovil, enServidor);
-  const enVentana = movil && ventanaEnMovil;
+  const enHoja = movil && ventanaEnMovil && !popup;
+  const enVentana = enHoja || popup;
+  // El resultado elegido con las flechas, en la ventana.
+  const [activo, setActivo] = useState(0);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -104,14 +136,21 @@ export default function GuideSearch({
     if (!ventana) return;
     const soltar = bloquearScroll();
     const alTeclear = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setVentana(false);
+      if (e.key !== "Escape") return;
+      // En el menú, Escape cierra solo la ventana, no también el menú de detrás.
+      if (popup) {
+        e.stopPropagation();
+        sonar("cerrar");
+        setQuery("");
+      }
+      setVentana(false);
     };
     document.addEventListener("keydown", alTeclear);
     return () => {
       soltar();
       document.removeEventListener("keydown", alTeclear);
     };
-  }, [ventana]);
+  }, [ventana, popup]);
 
   const q = plano(query.trim());
   const hasQuery = q.length >= Math.max(2, sugerenciasDesde);
@@ -138,6 +177,7 @@ export default function GuideSearch({
    */
   function abrirVentana() {
     cargarPublicadas();
+    if (popup) sonar("abrir");
     campoVentana.current?.focus({ preventScroll: true });
     setVentana(true);
     // La hoja se abre al apoyar el dedo, y al levantarlo el móvil lanza un
@@ -147,6 +187,29 @@ export default function GuideSearch({
     const tragar = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); };
     document.addEventListener("click", tragar, { capture: true, once: true });
     setTimeout(() => document.removeEventListener("click", tragar, { capture: true }), 700);
+  }
+
+  /** Cierra la ventana del menú, con su sonido, y la deja limpia para la próxima vez. */
+  function cerrarPopup() {
+    sonar("cerrar");
+    setVentana(false);
+    setQuery("");
+    setActivo(0);
+  }
+
+  /** En la ventana: flechas para moverse por los resultados e Intro para abrir. */
+  function alTeclearPopup(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.nativeEvent.isComposing || results.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActivo((a) => (a + 1) % results.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActivo((a) => (a - 1 + results.length) % results.length);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      ir(results[Math.min(activo, results.length - 1)].slug);
+    }
   }
 
   /** La lista: las criptomonedas explicadas o, al escribir, los resultados. */
@@ -239,7 +302,97 @@ export default function GuideSearch({
 
       {open && !enVentana && !esperando && <div className="guide-search-dropdown">{lista(() => setOpen(false), "")}</div>}
 
-      {enVentana &&
+      {popup &&
+        createPortal(
+          <div className={`bcp${ventana ? " is-abierta" : ""}`} aria-hidden={ventana ? undefined : true}>
+            <div className="bp-velo bcp-velo" onClick={cerrarPopup}>
+              <div
+                className="bp-hoja bcp-hoja"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Buscar una criptomoneda"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="bp-espiral" aria-hidden="true">
+                  {Array.from({ length: 9 }, (_, i) => (
+                    <i key={i} />
+                  ))}
+                </span>
+
+                <button type="button" className="bp-cerrar" aria-label="Cerrar" tabIndex={ventana ? 0 : -1} onClick={cerrarPopup}>
+                  <X size={18} strokeWidth={2.8} aria-hidden="true" />
+                </button>
+
+                <p className="bp-nota" aria-hidden="true">¿qué cripto quieres entender?</p>
+
+                <label className="bp-campo">
+                  <Search size={26} strokeWidth={2.6} aria-hidden="true" />
+                  <input
+                    ref={campoVentana}
+                    type="search"
+                    value={query}
+                    onChange={(e) => { setQuery(e.target.value); setActivo(0); }}
+                    onKeyDown={alTeclearPopup}
+                    placeholder="Bitcoin, XRP, Solana…"
+                    aria-label="Nombre de la criptomoneda"
+                    aria-controls="bcp-resultados"
+                    aria-activedescendant={results.length ? `bcp-r-${activo}` : undefined}
+                    tabIndex={ventana ? 0 : -1}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    enterKeyHint="go"
+                  />
+                </label>
+
+                {!hasQuery ? (
+                  <div className="bp-sugeridos">
+                    <span className="bp-sugeridos-txt">Para empezar:</span>
+                    {guias.slice(0, SUGERIDAS).map((g) => (
+                      <Link key={g.slug} href={`/guias/${g.slug}`} className="bp-chip" tabIndex={ventana ? 0 : -1} onClick={cerrarPopup}>
+                        {g.shortTitle}
+                      </Link>
+                    ))}
+                  </div>
+                ) : results.length === 0 ? (
+                  <p className="bp-vacio">Aún no hay guía de «{query.trim()}»… todavía.</p>
+                ) : (
+                  <ul id="bcp-resultados" className="bp-lista" role="listbox" aria-label="Resultados">
+                    {results.map((g, i) => (
+                      <li key={g.slug} role="presentation" style={{ "--i": i } as React.CSSProperties}>
+                        <Link
+                          id={`bcp-r-${i}`}
+                          role="option"
+                          aria-selected={i === activo}
+                          href={`/guias/${g.slug}`}
+                          className={`bp-res bcp-res${i === activo ? " es-activo" : ""}`}
+                          style={{ "--c": g.color } as React.CSSProperties}
+                          onMouseEnter={() => setActivo(i)}
+                          onClick={cerrarPopup}
+                        >
+                          <span className="bp-res-lomo" aria-hidden="true" />
+                          <span className="bp-res-cuerpo">
+                            <span className="bp-res-cab">
+                              <span className="bp-res-nombre">
+                                <Resaltado texto={g.shortTitle} q={q} />
+                              </span>
+                              <span className="bp-res-cat">Guía</span>
+                            </span>
+                            <span className="bp-res-def">{g.description}</span>
+                          </span>
+                          <CornerDownLeft className="bp-res-intro" size={18} strokeWidth={2.6} aria-hidden="true" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {enHoja &&
         createPortal(
           <div
             className={`gs-ventana${ventana ? " is-abierta" : ""}`}

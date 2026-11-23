@@ -177,9 +177,17 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
     // getBoundingClientRect a mitad de giro, parecía 226 px en vez de 850, y el
     // menú se cortaba: avisado por el admin el 17-11-2026) ni el propio `zoom`,
     // que solo multiplica lo que se ve.
+    // El teclado del móvil encoge la página (`interactiveWidget:
+    // "resizes-content"`, layout.tsx): si con el mismo ancho hay menos alto, es
+    // el teclado y el menú se queda como estaba. Antes se escalaba para caber
+    // y los iconos quedaban aplastados (avisado por el admin el 23-11-2026).
+    let medido = { ancho: 0, disponible: 0 };
     const ajustar = () => {
       const estilo = getComputedStyle(caja);
       const disponible = caja.clientHeight - parseFloat(estilo.paddingTop) - parseFloat(estilo.paddingBottom);
+      const ancho = caja.clientWidth;
+      if (ancho === medido.ancho && disponible < medido.disponible) return;
+      medido = { ancho, disponible };
       el.style.zoom = "1";
       for (let pasada = 0; pasada < 3; pasada++) {
         // Un 2 % de colchón: el canto de la última tecla y el redondeo.
@@ -280,8 +288,9 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
         >
           <div className="mm-hoja" ref={hoja}>
           <div className="mm-buscar">
-            {/* Sugerencias a partir de 3 letras (pedido por el admin el 18-11-2026). */}
-            <GuideSearch sugerenciasDesde={3} />
+            {/* Abre la ventana del diccionario (23-11-2026, pedido por el admin):
+                el desplegable, con el teclado, aplastaba el menú. */}
+            <GuideSearch popup />
             {/* En el móvil la etiqueta colgante no se ve con el menú abierto:
                 el altavoz pasa aquí, junto al buscador (site-nav.css). */}
             <span className="mm-sonido"><InterruptorSonido /></span>

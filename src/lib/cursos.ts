@@ -283,6 +283,71 @@ export async function logrosDeCursos(userId: string) {
   });
 }
 
+// ── «Mis cursos», en el dashboard ─────────────────────────────────────────
+
+/** Un curso que el alumno tiene empezado, con por dónde va. */
+export interface CursoEnMarcha {
+  slug: string;
+  titulo: string;
+  color: string;
+  /** 0-100, el mismo porcentaje que enseña el aula. */
+  porcentaje: number;
+  modulosAprobados: number;
+  modulosTotales: number;
+  leccionesHechas: number;
+  leccionesTotales: number;
+  /** Lo que le toca ahora; `null` si no hay nada abierto (o ya lo terminó). */
+  siguiente: EstadoCurso["siguiente"];
+  /** Ya tiene el certificado. */
+  terminado: boolean;
+}
+
+/**
+ * Los cursos publicados en los que el alumno está inscrito, con su progreso,
+ * para el dashboard (23-11-2026). Primero los que tiene a medias, del más
+ * avanzado al menos; al final, los terminados. Solo los del propio alumno: lo
+ * llama la página con el usuario de la sesión. Si algo falla (o falta la clave
+ * de servicio), una lista vacía, y el dashboard no enseña el bloque.
+ */
+export async function cursosDelAlumno(userId: string, esAdmin = false): Promise<CursoEnMarcha[]> {
+  try {
+    const db = createAdminClient();
+    const { data: inscripciones } = await db.from("curso_inscripciones").select("curso_id").eq("user_id", userId);
+    const ids = (inscripciones ?? []).map((i) => i.curso_id as string);
+    if (!ids.length) return [];
+
+    const { data: filas } = await db.from("cursos").select("slug").in("id", ids).eq("published", true).order("orden", { ascending: true });
+
+    const cursos = await Promise.all(
+      (filas ?? []).map(async (f): Promise<CursoEnMarcha | null> => {
+        const completo = await cursoPorSlug(f.slug as string);
+        if (!completo) return null;
+        const alumno = await datosAlumno(userId, completo);
+        const estado = estadoCurso(completo.modulos, alumno.completadas, alumno.intentos, { esAdmin });
+        return {
+          slug: completo.curso.slug,
+          titulo: completo.curso.titulo,
+          color: completo.curso.color,
+          porcentaje: alumno.certificado ? 100 : estado.porcentaje,
+          modulosAprobados: estado.modulos.filter((m) => m.examen.tipo === "aprobado").length,
+          modulosTotales: estado.modulos.length,
+          leccionesHechas: estado.leccionesHechas,
+          leccionesTotales: estado.leccionesTotales,
+          siguiente: alumno.certificado ? null : estado.siguiente,
+          terminado: alumno.certificado !== null,
+        };
+      }),
+    );
+
+    return cursos
+      .filter((c): c is CursoEnMarcha => c !== null)
+      .sort((a, b) => Number(a.terminado) - Number(b.terminado) || b.porcentaje - a.porcentaje);
+  } catch (e) {
+    console.error("[cursos] No se pudo leer «Mis cursos»:", e instanceof Error ? e.message : e);
+    return [];
+  }
+}
+
 // ── La vitrina de certificados ────────────────────────────────────────────
 
 /** Un certificado del alumno con los datos del curso que lo emitió. */

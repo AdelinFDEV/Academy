@@ -55,6 +55,30 @@ export type AvisoForo = {
   respuestaId: string | null;
 };
 
+/**
+ * La frase de un aviso. Los de valoraciones van agrupados («5 personas…»).
+ * Vive aquí, junto a su tipo, porque la usan «Lo mío» y el dashboard.
+ */
+export function fraseDeAviso(a: AvisoForo): string {
+  const n = a.cuantos;
+  const personas = n === 1 ? "Una persona" : `${n} personas`;
+  switch (a.tipo) {
+    case "respuesta": return n === 1 ? "Nueva respuesta en tu pregunta" : `${n} respuestas nuevas en tu pregunta`;
+    case "replica": return n === 1 ? "Nueva réplica en un hilo donde participas" : `${n} réplicas nuevas en un hilo donde participas`;
+    case "me_gusta": return `${personas} ${n === 1 ? "ha dado" : "han dado"} me gusta a tu mensaje`;
+    case "interesante": return `${personas} ${n === 1 ? "ha marcado" : "han marcado"} «Interesante» en tu pregunta`;
+    case "gracias": return `${personas} ${n === 1 ? "ha marcado" : "han marcado"} «Gracias» en tu pregunta`;
+    case "yo_tambien": return `${personas} ${n === 1 ? "tiene" : "tienen"} tu misma duda`;
+    case "ganadora": return "Han elegido tu respuesta";
+    case "elige_ganadora": return "Tu pregunta tiene respuestas: ya puedes elegir la que te ha servido";
+    case "ganadora_retirada": return "La respuesta que elegiste se ha retirado: puedes elegir otra";
+    case "retirado": return "Un mensaje tuyo se ha retirado";
+    case "restaurado": return "Un mensaje tuyo vuelve a estar publicado";
+    case "sancion": return "Has recibido una sanción en el foro";
+    default: return "Tienes una novedad en el foro";
+  }
+}
+
 // ── El panel de moderación (/admin/foro) ────────────────────────────────────
 // Tampoco aquí hay ids de usuario: el admin sanciona AL AUTOR DE UN MENSAJE y
 // el servidor busca quién es (`acciones/moderar.ts`).
@@ -232,6 +256,25 @@ export type MensajeMio = {
   /** Si se ocultó o se retiró: el motivo que dio la moderación. */
   motivo: string;
   fecha: string;
+};
+
+/**
+ * Una pregunta del propio usuario con su estado, para su dashboard
+ * (23-11-2026). Solo la ve él: sale de `misPreguntas`, con su sesión.
+ */
+export type PreguntaMia = {
+  id: number;
+  slug: string;
+  titulo: string;
+  /** «publicada» u «oculta» (las borradas no salen). */
+  estado: string;
+  /** Si se ocultó: el motivo que dio la moderación. */
+  motivo: string;
+  respuestas: number;
+  /** Tiene respuesta ganadora. */
+  resuelta: boolean;
+  fecha: string;
+  ultimaActividad: string;
 };
 
 export type LoMio = {

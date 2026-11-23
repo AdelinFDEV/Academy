@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import EnviarALaVista from "./EnviarALaVista";
 import "./acceso.css";
 
+import MarcaLogo from "@/components/MarcaLogo";
 /**
  * La mesa de las pantallas de acceso (estilo «Cuaderno de estudio», 17-11-2026):
  * /login, /register, /forgot-password, /auth/reset-password y /mfa-challenge.
@@ -46,7 +47,7 @@ export default function AccesoShell({
       <EnviarALaVista />
       <header className="acc-cabeza">
         <Link href="/" className="acc-marca" aria-label="AdelinBTC Academy: ir a la portada">
-          Adelin<em>BTC</em>
+          <MarcaLogo prioridad />
         </Link>
       </header>
 

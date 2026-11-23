@@ -6,6 +6,7 @@ import TeclaPremium from "@/components/cuaderno/TeclaPremium";
 import { detalleDe, herramienta } from "@/lib/herramientas";
 import "./footer.css";
 
+import MarcaLogo from "@/components/MarcaLogo";
 /**
  * El pie de todas las páginas. Estilo «Cuaderno de estudio» desde el
  * 17-11-2026 (ESTILO.md): una hoja de papel sobre el fondo lavanda, la marca
@@ -32,7 +33,7 @@ export default function Footer() {
         <div className="footer-inner">
           <div className="footer-brand-col">
             <Link href="/" className="footer-brand">
-              Adelin<em>BTC</em>
+              <MarcaLogo />
             </Link>
             <p className="footer-tagline">
               Formación crypto profesional. Análisis, educación blockchain

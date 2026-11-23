@@ -8,7 +8,7 @@ import { Search, X, CornerDownLeft } from "lucide-react";
 import { GLOSARIO, GLOSARIO_CATEGORIAS } from "@/lib/glosario";
 import { bloquearScroll } from "@/lib/bloquearScroll";
 import { sonar } from "@/lib/sonidos";
-import "./buscador-popup.css";
+import "@/components/buscador-popup.css";
 
 /**
  * El buscador del diccionario (20-11-2026, pedido por el admin): en la página

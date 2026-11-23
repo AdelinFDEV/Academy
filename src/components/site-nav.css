@@ -66,11 +66,6 @@
   transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.blog-brand em {
-  font-style: normal;
-  color: var(--naranja);
-}
-
 @media (hover: hover) {
   .blog-brand:hover { transform: rotate(-3deg) scale(1.03); }
 }
@@ -1525,19 +1520,6 @@
 
   .blog-nav .tecla.nav-red--instagram { rotate: -3deg; }
   .blog-nav .tecla.nav-red--youtube { rotate: 3deg; }
-}
-
-/* La marca, con el gesto de los títulos de la portada (18-11-2026, pedido por
-   el admin): «BTC» repasado con fluorescente amarillo y algo ladeado, como
-   la palabra clave de cada título. El naranja pasa a su tono oscuro para
-   leerse bien sobre el amarillo. */
-.blog-brand em {
-  display: inline-block;
-  margin-left: 0.04em;
-  padding: 0 0.1em;
-  background: linear-gradient(transparent 55%, var(--amarillo) 55%, var(--amarillo) 92%, transparent 92%);
-  color: var(--naranja-o);
-  rotate: -3deg;
 }
 
 /* Las teclas de la barra con contorno de rotulador también en el móvil

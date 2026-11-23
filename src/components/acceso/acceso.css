@@ -37,11 +37,6 @@
   transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
 }
 
-.acc-marca em {
-  font-style: normal;
-  color: var(--naranja);
-}
-
 @media (hover: hover) {
   .acc-marca:hover { transform: rotate(-3deg) scale(1.03); }
 }
@@ -473,16 +468,6 @@
   .acc-lead { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.5; }
 }
 
-/* La marca, igual que en la barra de la web (site-nav.css, 18-11-2026):
-   «BTC» repasado con fluorescente amarillo, algo ladeado, en naranja oscuro. */
-.acc-marca em {
-  display: inline-block;
-  margin-left: 0.04em;
-  padding: 0 0.1em;
-  background: linear-gradient(transparent 55%, var(--amarillo) 55%, var(--amarillo) 92%, transparent 92%);
-  color: var(--naranja-o);
-  rotate: -3deg;
-}
 
 /* Móvil, aún más apretado (18-11-2026: en un móvil real, con las barras del
    navegador, quedan unos 620-660 px de alto y aún había scroll). Sin la nota

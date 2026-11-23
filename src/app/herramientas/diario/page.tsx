@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   ArrowRight, ShieldCheck, NotebookPen, BarChart3, Search,
   LineChart, Check, X,
-  Crown, Camera, HeartPulse,
+  Camera, HeartPulse,
   Smile, Meh, Plus, BookHeart, MapPin, Paperclip, PenLine, Image as ImageIcon,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
@@ -20,6 +20,8 @@ import TarjetaPremium from "@/components/TarjetaPremium";
 import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import { InstagramIcon } from "@/components/SocialLinks";
 import InfoSuperHito from "./InfoSuperHito";
+import { SUPERHITO_PEGATINA } from "@/lib/logros";
+import Image from "next/image";
 import "../ficha.css";
 import "./diario.css";
 
@@ -167,7 +169,7 @@ function SuperHitoCabecera() {
       <InfoSuperHito meses={VIVIR_MONTHS} minOps={VIVIR_MIN_OPS} maxRojo={VIVIR_MAX_RED} />
       <div className="dj-sh-dibujo" aria-hidden="true">
       <span className="dj-sh-cinta" />
-      <span className="dj-sh-medalla"><Crown size={46} strokeWidth={2} /></span>
+      <span className="dj-sh-medalla"><Image src={SUPERHITO_PEGATINA} alt="" width={240} height={254} className="dj-sh-medalla-dibujo" draggable={false} /></span>
       <span className="dj-sh-kicker">Súper hito</span>
       <span className="dj-sh-titulo">Conseguiste <span>vivir del trading</span></span>
       <span className="dj-sh-mano">el logro más difícil del diario</span>
@@ -335,7 +337,7 @@ export default async function FichaDiarioPage() {
               <span>Qué le pasa a tu dinero según tu ánimo.</span>
             </li>
             <li className="dj-hero-ficha dj-hero-ficha--menta">
-              <span className="dj-hero-ficha-icono" aria-hidden="true"><Crown size={22} strokeWidth={2.4} /></span>
+              <span className="dj-hero-ficha-icono dj-hero-ficha-icono--superhito" aria-hidden="true"><Image src={SUPERHITO_PEGATINA} alt="" width={96} height={102} draggable={false} /></span>
               <strong><b>{HITOS.length}</b> logros + el súper hito</strong>
               <span>Premian cómo operas, no cuánto.</span>
             </li>

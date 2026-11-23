@@ -2,7 +2,9 @@
 
 import type { CSSProperties } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Trophy, Lock, Crown, Check, Minus, ArrowRight } from "lucide-react";
+import { Trophy, Lock, Check, Minus, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { SUPERHITO_PEGATINA } from "@/lib/logros";
 import Tecla from "@/components/cuaderno/Tecla";
 import type { UnlockNotice } from "@/components/BadgeNotifier";
 import { DIARIO_ICONS as ICONS } from "@/lib/logros";
@@ -18,7 +20,7 @@ const GROUPS: { id: MilestoneGroup; title: string; sub: string }[] = [
 ];
 
 /** Lo que un aviso necesita saber de un hito: su definición, no los datos del usuario. */
-type MilestoneInfo = Pick<Milestone, "id" | "title" | "desc" | "tiers" | "tierNotes" | "format">;
+type MilestoneInfo = Pick<Milestone, "id" | "group" | "title" | "desc" | "tiers" | "tierNotes" | "format">;
 
 /** Qué dice un nivel concreto: la cifra y, si la tiene, su lectura. */
 function tierText(m: MilestoneInfo, level: number): string {
@@ -40,6 +42,20 @@ export function milestoneNotices(milestones: MilestoneInfo[], unlockedIds: strin
     const level = Math.max(...levels.keys());
     const next = m.tiers[level] ?? null;
     const Icon = ICONS[m.id] ?? Trophy;
+    // El súper hito, con su dibujo y su propio encabezado (23-11-2026).
+    if (m.group === "leyenda") {
+      notices.push({
+        id: `hito-${m.id}-${level}`,
+        eyebrow: "¡Súper hito conseguido!",
+        label: m.title,
+        condition: tierText(m, level),
+        reward: "Eres una leyenda de la academia, para siempre",
+        bigIcon: <Image src={SUPERHITO_PEGATINA} alt="" width={160} height={170} className="icono-superhito" draggable={false} />,
+        special: true,
+        link: { href: "#hitos", label: "Ver hitos" },
+      });
+      continue;
+    }
     notices.push({
       id: `hito-${m.id}-${level}`,
       eyebrow: "¡Hito conseguido!",
@@ -254,7 +270,7 @@ function LegendCard({ m, trades, now }: { m: Milestone; trades: Trade[]; now: Da
     <motion.section className={`djh-leyenda${done ? " is-hecha" : ""}`} variants={cardVariants}>
       <div className="djh-leyenda-cabeza">
         <span className={`djh-corona${done ? " is-hecha" : ""}`} aria-hidden="true">
-          <Crown size={46} strokeWidth={2.2} />
+          <Image src={SUPERHITO_PEGATINA} alt="" width={160} height={170} className="djh-corona-dibujo" draggable={false} />
           {!done && <span className="djh-corona-candado"><Lock size={13} strokeWidth={3} /></span>}
         </span>
         <div className="djh-leyenda-titulo">

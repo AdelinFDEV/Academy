@@ -4,7 +4,7 @@
  * Estilo «Cuaderno de estudio» (17-11-2026): los logros son AMARILLOS (como el
  * Diccionario) y cada uno es una pegatina del color de su categoría
  * (PegatinaLogro.tsx: actividad naranja, guías cielo, cursos lila, Diario
- * azul). Los avances van con la barra de progreso y la racha con sus siete
+ * menta). Los avances van con la barra de progreso y la racha con sus siete
  * casillas, como en disenos/sistema.html. Las piezas pn-* y la racha (.rs)
  * están en dashboard.css.
  */
@@ -15,279 +15,879 @@
   gap: 28px;
 }
 
-/* ── Progreso total y el siguiente logro ── */
-.lg-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  align-items: stretch;
-  border-radius: 34px;
+/* ══ Los garabatos del fondo (GarabatosLogros.tsx, 23-11-2026) ════════════
+   Detrás de todo, por los márgenes y entre las hojas: trazos a mano de
+   tamaños distintos, en los colores de la paleta y muy suaves. */
+.lg-page {
+  position: relative;
+  --garabatos:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%231d1b33' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M52 50c-4-6 6-9 9-3 4 8-6 15-14 11-11-5-8-21 4-24 15-4 27 9 22 24-5 17-27 22-40 12-15-12-12-36 5-45 19-10 43-1 49 19'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%231d1b33' stroke-width='4' stroke-linejoin='round'%3E%3Cpath d='M50 12l9 26 27 1-21 17 8 27-23-16-22 15 7-26-21-17 27-1z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160' fill='none' stroke='%231d1b33' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M8 80c18-30 34-30 30-6s-26 26-14 2 40-38 46-10-22 32-8 10 44-34 50-6-20 30-6 8 38-30 46-4'/%3E%3C/svg%3E");
+}
+.lg-page > :not(.lgg):not(.sr-only) { position: relative; z-index: 1; }
+
+.lgg {
+  position: absolute;
+  inset: -20px -14vw;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.lg-hero-main {
+.lgg svg {
+  position: absolute;
+  height: auto;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.4;
+}
+
+.lgg-espiral { top: 2%; left: 3%; width: 110px; color: var(--lila); transform: rotate(-12deg); }
+.lgg-estrella { top: 9%; right: 4%; width: 70px; color: var(--amarillo-o); transform: rotate(14deg); }
+.lgg-rizo { top: 19%; left: 1%; width: 150px; color: var(--cielo); transform: rotate(8deg); }
+.lgg-zigzag { top: 27%; right: 2%; width: 120px; color: var(--coral); transform: rotate(-18deg); }
+.lgg-flecha { top: 36%; left: 5%; width: 90px; color: var(--naranja); transform: rotate(-6deg); }
+.lgg-circulo { top: 44%; right: 6%; width: 96px; color: var(--menta-o); transform: rotate(20deg); }
+.lgg-chispas { top: 52%; left: 2%; width: 64px; color: var(--amarillo-o); }
+.lgg-corazon { top: 59%; right: 3%; width: 58px; color: var(--coral); transform: rotate(-14deg); }
+.lgg-tachon { top: 66%; left: 4%; width: 120px; color: var(--azul); transform: rotate(-9deg); }
+.lgg-bucle { top: 74%; right: 1%; width: 150px; color: var(--lila); transform: rotate(6deg); }
+.lgg-estrellita { top: 81%; left: 7%; width: 44px; color: var(--naranja); transform: rotate(22deg); }
+.lgg-ondas { top: 87%; right: 5%; width: 110px; color: var(--cielo); transform: rotate(-10deg); }
+.lgg-espiral2 { top: 94%; left: 2%; width: 80px; color: var(--menta-o); transform: rotate(30deg); }
+.lgg-cruz { top: 48%; left: 48%; width: 40px; color: var(--tinta-3); transform: rotate(10deg); }
+
+/* ══ El progreso total (23-11-2026, rehecho de cero) ═══════════════════════
+   Amarillo pastel, el de los Logros, con la copa en la esquina. A la
+   izquierda, un anillo con cuántos lleva; a su lado, la frase; debajo, una
+   ficha blanca por categoría con su color, su cuenta y su barra. */
+.lgh {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "anillo texto" "anillo sub" "cats cats";
+  align-items: center;
+  gap: 22px 28px;
+  /* Sitio arriba para la copa, que asoma por encima de la hoja. */
+  margin-top: 44px;
+  padding: 32px 32px 30px;
+  border-radius: 32px;
+  background: var(--amarillo-s);
+  box-shadow: 0 6px 0 var(--amarillo), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+/* Un cuarto de círculo pegado a la esquina: la hoja no recorta (la copa
+   asoma por fuera), así que el círculo no puede salirse. */
+.lgh::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 0 32px 0 100%;
+  background: color-mix(in srgb, var(--amarillo) 38%, var(--amarillo-s));
+  pointer-events: none;
+}
+
+.lgh > * { position: relative; }
+
+/* La copa: grande y viva. Entra con un salto y después flota y se mece,
+   como si celebrara (23-11-2026, pedido por el admin). */
+.lgh > .lgh-copa {
+  position: absolute;
+  top: -58px;
+  right: -26px;
+  z-index: 2;
+  width: 200px;
+  height: auto;
+  transform-origin: 50% 90%;
+  pointer-events: none;
+  user-select: none;
+  animation:
+    lgh-copa-entra 0.8s cubic-bezier(0.34, 1.7, 0.5, 1) 0.2s both,
+    lgh-copa-baila 3.6s ease-in-out 1s infinite;
+}
+
+@keyframes lgh-copa-entra {
+  from { opacity: 0; transform: translateY(30px) scale(0.4) rotate(-25deg); }
+}
+
+@keyframes lgh-copa-baila {
+  0%, 100% { transform: translateY(0) rotate(6deg); }
+  25% { transform: translateY(-8px) rotate(-3deg); }
+  50% { transform: translateY(-2px) rotate(8deg) scale(1.03); }
+  75% { transform: translateY(-10px) rotate(-5deg); }
+}
+
+/* El anillo: se llena hasta el porcentaje con un rebote. */
+.lgh-anillo {
+  grid-area: anillo;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+  border-radius: 50%;
+  background: var(--papel);
+  box-shadow: 0 6px 0 var(--amarillo);
+}
+
+.lgh-anillo svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.lgh-anillo circle {
+  fill: none;
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+
+.lgh-anillo-fondo { stroke: var(--gris); }
+
+.lgh-anillo-lleno {
+  stroke: var(--amarillo);
+  stroke-dasharray: calc(var(--pct) * 1) 100;
+  animation: lgh-llenar 1.6s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+@keyframes lgh-llenar { from { stroke-dasharray: 0 100; } }
+
+.lgh-anillo-cifra {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
-.lg-total {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.lg-total strong {
+.lgh-anillo-cifra strong {
   font-family: var(--letra-titular);
-  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-size: 2.6rem;
   font-weight: 800;
-  line-height: 0.9;
 }
 
-.lg-total span {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--tinta-2);
+.lgh-anillo-cifra span {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--amarillo-o);
 }
 
-.lg-hero-nota {
+.lgh-texto {
+  grid-area: texto;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 190px;
+}
+
+.lgh > .lgh-sub { padding-right: 190px; }
+
+.lgh-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--amarillo-o);
+}
+
+.lgh-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.lgh-sub {
+  grid-area: sub;
+  align-self: start;
+  margin: 0;
   font-weight: 700;
-  color: var(--tinta-2);
+  color: #7a5d00;
 }
 
-.lg-cats {
+.lgh-cats {
+  grid-area: cats;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 10px;
-  margin-top: 6px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.lg-cat {
+.lgh-cat {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas:
-    "icono nombre cuenta"
-    "barra barra barra";
+  grid-template-areas: "icono nombre cuenta" "barra barra barra";
   align-items: center;
-  gap: 8px 10px;
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: var(--c-s);
+  gap: 10px 10px;
+  height: 100%;
+  padding: 14px 16px 15px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--c);
   color: var(--tinta);
   text-decoration: none;
-  box-shadow: 0 4px 0 var(--c);
   transition: transform 0.26s var(--muelle), box-shadow 0.26s var(--muelle);
 }
 
 @media (hover: hover) {
-  .lg-cat:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--c); }
+  .lgh-cat:hover { transform: translateY(3px); box-shadow: 0 2px 0 var(--c); }
 }
 
-.lg-cat:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+.lgh-cat:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
 
-.lg-cat-icon {
+.lgh-cat-icono {
   grid-area: icono;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
   background: var(--c);
   color: var(--c-t);
   box-shadow: 0 3px 0 var(--c-o);
 }
 
-.lg-cat-name { grid-area: nombre; font-weight: 900; }
-.lg-cat-count { grid-area: cuenta; font-weight: 900; color: var(--c-o); }
-.lg-cat .pn-barra { grid-area: barra; background: var(--papel); }
+.lgh-cat-nombre { grid-area: nombre; font-weight: 900; }
 
-/* El siguiente logro: una hoja aparte con su pósit. */
-.lg-next {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 28px 20px 20px;
-  border-radius: 24px;
-  background: var(--naranja-s);
-  text-align: center;
+.lgh-cat-cuenta {
+  grid-area: cuenta;
+  font-weight: 800;
+  color: var(--tinta-2);
 }
 
-.lg-next-postit {
-  position: absolute;
-  top: -14px;
-  left: 16px;
-  padding: 4px 12px;
-  background: var(--amarillo);
-  font-family: var(--letra-mano);
-  font-size: 22px;
-  line-height: 1.2;
-  transform: rotate(-4deg);
-  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.4);
-}
-
-.lg-next .pgl { margin: 6px 0 4px; }
-
-.lg-next-nombre {
+.lgh-cat-cuenta b {
   font-family: var(--letra-titular);
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--c-o);
 }
 
-.lg-next-cond {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
+.lgh-cat .pn-barra { grid-area: barra; background: var(--fondo); }
+.lgh-cat .pn-barra > i { background: var(--c); }
 
-.lg-next .pn-barra { width: 100%; flex: none; margin-top: 6px; background: var(--papel); }
-
-.lg-foot-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--tinta-2);
-}
-
-/* ── La racha ── */
-.lg-streak {
+/* ══ La racha (23-11-2026, rehecha de cero) ═════════════════════════════════
+   La tarjeta entera en el naranja de la marca: la llama y los días que
+   lleva, la semana con el récord, y el siguiente logro de racha en una ficha
+   blanca con su pegatina. */
+.lgr {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: 1.25rem 2rem;
   align-items: center;
+  gap: 24px 32px;
+  overflow: hidden;
+  padding: 28px 32px;
+  border-radius: 32px;
+  background: var(--naranja);
+  box-shadow: 0 6px 0 var(--naranja-o), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+  color: #fff;
 }
 
-.lg-streak-cifra {
+.lgr::before {
+  content: "";
+  position: absolute;
+  bottom: -110px;
+  left: -60px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.lgr > * { position: relative; }
+
+.lgr-cifra {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-.lg-flame {
+.lgr-llama {
   display: grid;
   place-items: center;
   width: 62px;
   height: 62px;
   border-radius: 20px;
-  background: var(--naranja);
-  color: #fff;
+  background: var(--papel);
+  color: var(--naranja);
   box-shadow: 0 5px 0 var(--naranja-o);
   transform: rotate(-6deg);
 }
 
-.lg-streak-num {
+/* La racha encendida: un 🔥 que arde. Crece y encoge a sacudidas, se ladea
+   como una llama con viento y brilla por debajo. Apagada, la llama dibujada. */
+.lgr-fuego {
+  display: block;
+  font-size: 36px;
+  line-height: 1;
+  transform-origin: 50% 90%;
+  filter: drop-shadow(0 2px 6px rgba(255, 138, 31, 0.55));
+  animation: lgr-arde 1.1s ease-in-out infinite;
+}
+
+@keyframes lgr-arde {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  20% { transform: scale(1.08, 1.14) rotate(2deg); }
+  40% { transform: scale(0.96, 1.02) rotate(-4deg); }
+  60% { transform: scale(1.1, 1.18) rotate(3deg) translateY(-1px); }
+  80% { transform: scale(0.98, 1.04) rotate(-1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lgr-fuego { animation: none; }
+}
+
+.lgr-num {
   display: block;
   font-family: var(--letra-titular);
-  font-size: 3rem;
+  font-size: 3.4rem;
   font-weight: 800;
-  line-height: 0.95;
+  line-height: 0.9;
 }
 
-.lg-streak-label {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--tinta-2);
-}
+.lgr-label { font-weight: 800; opacity: 0.92; }
 
-.lg-streak-semana {
+.lgr-semana {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.lg-chips {
+.lgr-etiqueta { color: rgba(255, 255, 255, 0.9); }
+
+/* Las casillas de la semana, sobre naranja: de papel, y las de racha, en tinta. */
+.lgr .rs-dia { background: rgba(255, 255, 255, 0.92); box-shadow: 0 4px 0 var(--naranja-o); color: var(--tinta-3); }
+.lgr .rs-dia.is-on { background: var(--tinta); box-shadow: 0 4px 0 #08070f; color: #fff; }
+.lgr .rs-dia.is-hoy { outline-color: #fff; }
+.lgr .rs.is-cargando .rs-dia { background: rgba(255, 255, 255, 0.35); box-shadow: none; }
+
+.lgr-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.lg-streak-goal {
+.lgr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.lgr-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--papel);
+  color: var(--tinta);
+}
+
+.lgr-meta .pgl { flex: none; }
+
+.lgr-meta-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lgr-meta-texto .pn-etiqueta { color: var(--naranja-o); }
+
+.lgr-meta-texto strong {
+  font-family: var(--letra-titular);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.lgr-meta-texto .pn-barra { flex: none; }
+
+.lgr-meta-falta {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+
+/* ══ El súper hito (23-11-2026, rehecho: «más espectacular, que genere
+   hype») ═══════════════════════════════════════════════════════════════════
+   Una hoja de tinta oscura con rayos de oro que giran despacio detrás del
+   emblema, polvo dorado que sube, una cinta «Solo para leyendas», el título
+   con «vivir del trading» en oro que brilla, las cuatro reglas como fichas y
+   una tecla grande. Conseguido, todo el oro se enciende. */
+.lgs {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.6fr);
+  align-items: center;
+  gap: 24px 40px;
+  overflow: hidden;
+  padding: 44px 44px 40px;
+  border-radius: 36px;
+  background:
+    radial-gradient(ellipse at 22% 50%, rgba(255, 210, 63, 0.22), transparent 55%),
+    linear-gradient(135deg, #2a2647, var(--tinta) 55%);
+  box-shadow: 0 8px 0 #08070f, 0 34px 50px -30px rgba(29, 27, 51, 0.75);
+  color: #fff;
+  isolation: isolate;
+}
+
+/* Un marco de oro, cosido a mano. */
+.lgs::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  z-index: -1;
+  border: 2px dashed rgba(255, 210, 63, 0.4);
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+/* Los rayos: un abanico de oro detrás del emblema, girando muy despacio. */
+.lgs-rayos {
+  position: absolute;
+  top: 50%;
+  left: 22%;
+  z-index: -1;
+  width: 760px;
+  height: 760px;
+  margin: -380px 0 0 -380px;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 210, 63, 0.13) 0deg 9deg, transparent 9deg 22deg);
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle, #000 18%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 18%, transparent 62%);
+  animation: lgs-girar 40s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes lgs-girar { to { transform: rotate(360deg); } }
+
+/* El polvo de oro: puntitos que suben y se apagan, cada uno a su ritmo. */
+.lgs-polvo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lgs-polvo i {
+  position: absolute;
+  bottom: -10px;
+  left: calc(4% + var(--i) * 7%);
+  width: calc(4px + (var(--i) * 3 % 5) * 1px);
+  height: calc(4px + (var(--i) * 3 % 5) * 1px);
+  border-radius: 50%;
+  background: var(--amarillo);
+  box-shadow: 0 0 8px rgba(255, 210, 63, 0.8);
+  opacity: 0;
+  animation: lgs-polvo calc(5s + (var(--i) * 7 % 5) * 1s) ease-in infinite;
+  animation-delay: calc(var(--i) * -0.73s);
+}
+
+@keyframes lgs-polvo {
+  0% { opacity: 0; transform: translateY(0); }
+  15% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-340px); }
+}
+
+/* La pegatina del súper hito: grande, con su sombra lila y flotando. Su borde
+   blanco ya viene en la propia imagen. */
+.lgs-emblema {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 290px);
+}
+
+.lgs-emblema-dibujo {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 16px 22px rgba(143, 124, 255, 0.5));
+  animation: lgs-emblema 4.5s ease-in-out infinite;
+}
+
+@keyframes lgs-emblema {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+/* Sin conseguir: el oro algo apagado y su candado. Sigue viéndose apetecible. */
+.lgs:not(.is-hecho) .lgs-emblema-dibujo {
+  filter: saturate(0.75) drop-shadow(0 16px 22px rgba(143, 124, 255, 0.5));
+}
+
+/* El candado, arriba a la derecha: abajo tapaba las monedas que aplauden. */
+.lgs-candado {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--tinta);
+  border-radius: 50%;
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow: 0 4px 0 #08070f;
+  transform: rotate(8deg);
+}
+
+.lgs-texto {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
-  padding: 16px 18px;
+}
+
+/* La cinta: un pósit de oro, ladeado. */
+.lgs-cinta {
+  padding: 5px 14px;
+  background: var(--amarillo);
+  color: var(--tinta);
+  font-family: var(--letra-mano);
+  font-size: 1.45rem;
+  line-height: 1.1;
+  transform: rotate(-3deg);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.6);
+}
+
+.lgs-etiqueta {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.lgs-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+/* «vivir del trading», en oro, con un brillo que lo cruza de vez en cuando. */
+.lgs-oro {
+  background: linear-gradient(100deg, var(--amarillo) 0%, #fff3c4 45%, var(--amarillo) 55%, var(--naranja) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: lgs-brillo 4.5s ease-in-out infinite;
+}
+
+@keyframes lgs-brillo {
+  0%, 60% { background-position: 100% 0; }
+  85%, 100% { background-position: 0 0; }
+}
+
+.lgs-sub {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Las cuatro reglas, como fichas con su cifra de oro. */
+.lgs-reglas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lgs-reglas li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 12px 13px;
+  border: 2px solid rgba(255, 210, 63, 0.25);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.lgs-regla-cifra {
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  font-family: var(--letra-titular);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--amarillo);
+}
+
+/* El «≤» con aire antes de la cifra, y la flecha a la altura de las cifras
+   (antes se veía más pequeña que el resto). */
+.lgs-regla-signo { margin-right: 0.14em; font-size: 0.85em; }
+.lgs-regla-icono { width: 1.15em; height: 1.15em; }
+
+.lgs-accion { margin-top: 8px; }
+
+.lgs-sello {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 22px;
+  background: var(--amarillo);
+  color: var(--tinta);
+  font-family: var(--letra-mano);
+  font-size: 30px;
+  line-height: 1;
+  transform: rotate(-4deg);
+  box-shadow: 0 8px 14px -8px rgba(0, 0, 0, 0.6);
+}
+
+.lgs-sello small {
+  margin-top: 4px;
+  font-family: var(--letra-texto);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Conseguido: el oro se enciende entero. */
+.lgs.is-hecho {
+  background:
+    radial-gradient(ellipse at 22% 50%, rgba(255, 210, 63, 0.4), transparent 60%),
+    linear-gradient(135deg, #3a3155, var(--tinta) 60%);
+}
+
+.lgs.is-hecho::after { border-style: solid; border-color: rgba(255, 210, 63, 0.7); }
+.lgs.is-hecho .lgs-rayos { background: repeating-conic-gradient(from 0deg, rgba(255, 210, 63, 0.24) 0deg 9deg, transparent 9deg 22deg); }
+
+/* ══ Cada categoría (23-11-2026, rehecha) ═══════════════════════════════════
+   Una hoja entera en el pastel de su color, con los puntos de la libreta en
+   su tono. Arriba, la cabecera: el icono en una tecla, «capítulo 01» a mano,
+   el título grande y cuántos lleva con su barra; debajo, las pegatinas. */
+.lg-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow: hidden;
+  padding: 30px 30px 28px;
+  border-radius: 32px;
+  background-color: var(--c-s);
+  background-image: radial-gradient(color-mix(in srgb, var(--c) 30%, transparent) 1.5px, transparent 2px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  box-shadow: 0 6px 0 var(--c), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+  scroll-margin-top: 1.5rem;
+}
+
+/* Un círculo plano en la esquina, como en las demás tarjetas. */
+.lg-section::before {
+  content: "";
+  position: absolute;
+  top: -70px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 22%, var(--c-s));
+  pointer-events: none;
+}
+
+.lg-section > * { position: relative; }
+
+.lg-sechead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(170px, 230px);
+  align-items: center;
+  gap: 18px 22px;
+}
+
+.lg-sechead-icono {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
   border-radius: 20px;
-  background: var(--fondo);
+  background: var(--c);
+  color: var(--c-t);
+  box-shadow: 0 6px 0 var(--c-o), inset 0 3px 0 rgba(255, 255, 255, 0.3);
+  transform: rotate(-6deg);
+}
+
+.lg-sechead-icono svg { width: 30px; height: 30px; }
+
+.lg-sechead-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.lg-sechead-num {
+  font-family: var(--letra-mano);
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--c-o);
+  transform: rotate(-2deg);
+  transform-origin: left;
+}
+
+.lg-sechead-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.lg-sechead-sub {
+  margin: 2px 0 0;
   font-weight: 700;
   line-height: 1.5;
   color: var(--tinta-2);
 }
 
-.lg-streak-goal strong { color: var(--tinta); }
-.lg-streak-goal .pn-barra { flex: none; }
-
-/* ── Cada categoría ── */
-.lg-section {
+/* Cuántos lleva: una ficha blanca con la cifra y su barra. */
+.lg-sechead-cuenta {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  scroll-margin-top: 1.5rem;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--c);
+  font-weight: 800;
+  color: var(--tinta-2);
 }
 
-.lg-sechead {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-}
-
-.lg-sechead-num {
-  font-family: var(--letra-mano);
-  font-size: 34px;
-  line-height: 1;
+.lg-sechead-cuenta b {
+  font-family: var(--letra-titular);
+  font-size: 1.7rem;
   color: var(--c-o);
-  transform: rotate(-6deg);
 }
 
+.lg-sechead-cuenta .pn-barra { flex: none; background: var(--fondo); }
+.lg-sechead-cuenta .pn-barra > i { background: var(--c); }
+
+/* La rejilla: solo pegatinas (23-11-2026, pedido por el admin). */
 .lg-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+  gap: 26px 14px;
+  padding: 8px 0 4px;
 }
 
-.lg-link {
-  display: flex;
-  color: inherit;
-  text-decoration: none;
-  border-radius: 24px;
+/* Las bloqueadas, sobre el pastel, en papel claro para que se lean. */
+.lg-grid .pgl.is-bloqueada { --c: color-mix(in srgb, var(--papel) 70%, var(--gris)); }
+
+/* ── Vivos: un logro conseguido se mueve (23-11-2026). Flota y se mece, cada
+   uno a su ritmo (`--i`), y su icono late; los bloqueados se quedan quietos.
+   Al pasar el ratón manda el «despegarse» de la pegatina. ── */
+.lg-tile.is-earned .pgl {
+  animation: lg-flota 3.4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.47s);
 }
 
-.lg-link:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
-
-/* La ficha de un logro: papel, la pegatina arriba y su condición. */
-.lg-card {
-  position: relative;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 22px 18px 18px;
-  border-radius: 24px;
-  background: var(--papel);
-  text-align: center;
-  box-shadow: 0 5px 0 var(--gris-o);
-  transition: transform 0.3s var(--muelle), box-shadow 0.3s var(--muelle);
+.lg-tile.is-earned .pgl-icono svg {
+  animation: lg-late 2.2s cubic-bezier(0.34, 1.6, 0.5, 1) infinite;
+  animation-delay: calc(var(--i, 0) * -0.31s);
 }
 
-.lg-card.is-earned { box-shadow: 0 5px 0 var(--c-o); }
+@keyframes lg-flota {
+  0%, 100% { transform: translateY(0) rotate(var(--giro, 0deg)); }
+  50% { transform: translateY(-7px) rotate(calc(var(--giro, 0deg) * -0.6)); }
+}
 
-.lg-card.is-locked { background: color-mix(in srgb, var(--papel) 60%, var(--fondo)); }
+@keyframes lg-late {
+  0%, 60%, 100% { transform: scale(1) rotate(0); }
+  70% { transform: scale(1.22) rotate(-10deg); }
+  82% { transform: scale(0.94) rotate(6deg); }
+  92% { transform: scale(1.05) rotate(0); }
+}
 
 @media (hover: hover) {
-  .lg-link:hover .lg-card { transform: translateY(-4px) rotate(-0.6deg); }
+  .lg-tile.is-earned:hover .pgl { animation-play-state: paused; }
 }
 
-.lg-card .pgl { margin-bottom: 6px; }
+/* Un logro: su pegatina es el botón, y la «i» de la esquina dice que tiene ficha. */
+.lg-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  padding: 6px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: var(--puntero-mano, pointer);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s var(--muelle);
+}
+
+@media (hover: hover) {
+  .lg-tile:hover { transform: translateY(-4px) rotate(-4deg) scale(1.04); }
+  .lg-tile:hover .lg-info { transform: scale(1.12); }
+}
+
+.lg-tile:active { transform: scale(0.94); transition-duration: 0.08s; }
+.lg-tile:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* La «i»: una tecla redonda de papel, con su canto. */
+.lg-info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--tinta);
+  border-radius: 50%;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--tinta);
+  color: var(--tinta);
+  font-family: var(--letra-titular);
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform 0.26s var(--muelle);
+}
+
+.lg-tile.is-locked .lg-info { border-color: var(--tinta-3); box-shadow: 0 3px 0 var(--tinta-3); color: var(--tinta-2); }
 
 .lg-especial {
   position: absolute;
-  top: -10px;
-  right: 14px;
+  top: -12px;
+  left: 18px;
   padding: 3px 10px;
   background: var(--amarillo);
   font-family: var(--letra-mano);
@@ -297,42 +897,7 @@
   box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.4);
 }
 
-.lg-name {
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  font-size: 1.15rem;
-  line-height: 1.2;
-}
-
-.lg-card.is-locked .lg-name { color: var(--tinta-2); }
-
-.lg-cond {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.45;
-  color: var(--tinta-2);
-}
-
-.lg-reward {
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.4;
-  color: #7a5d00;
-}
-
-.lg-foot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: auto;
-  padding-top: 10px;
-}
-
-.lg-foot .pn-barra { width: 100%; flex: none; }
-
-/* Los niveles de un hito del Diario: cuadraditos que se encienden en azul. */
+/* Los niveles de un hito del Diario: cuadraditos que se encienden en menta. */
 .lg-niveles {
   display: flex;
   gap: 5px;
@@ -346,26 +911,257 @@
   box-shadow: 0 3px 0 var(--gris-o);
 }
 
-.lg-niveles i.is-on { background: var(--azul); box-shadow: 0 3px 0 var(--azul-o); }
+.lg-niveles i.is-on { background: var(--menta); box-shadow: 0 3px 0 var(--menta-o); }
 
 /* ── Tableta y móvil ── */
+/* ── La ficha de un logro: una hoja que cae en mitad de la pantalla, con la
+   pegatina en grande y el color de su categoría arriba. ── */
+.lgf-velo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(29, 27, 51, 0.42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: lgf-velo 0.22s ease-out both;
+}
+
+@keyframes lgf-velo { from { opacity: 0; } }
+
+.lgf-hoja {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(420px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 30px 26px 26px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 0, var(--c-s, var(--fondo)) 0 130px, transparent 131px),
+    var(--papel);
+  box-shadow: 0 8px 0 var(--c-o, var(--gris-o)), 0 40px 70px -20px rgba(29, 27, 51, 0.55);
+  color: var(--tinta);
+  text-align: center;
+  animation: lgf-cae 0.5s cubic-bezier(0.34, 1.5, 0.5, 1) both;
+}
+
+@keyframes lgf-cae {
+  from { opacity: 0; transform: translateY(-50px) rotate(-5deg) scale(0.92); }
+  60% { opacity: 1; }
+}
+
+.lgf-cerrar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--coral);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--coral-o), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  cursor: var(--puntero-mano, pointer);
+  transition: transform 0.06s, box-shadow 0.06s;
+}
+
+.lgf-cerrar:active { transform: translateY(5px); box-shadow: 0 0 0 var(--coral-o); }
+.lgf-cerrar:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+/* La pegatina entra con un saltito, después de la hoja. */
+.lgf-pegatina {
+  margin: 4px 0 4px;
+  animation: lgf-pegatina 0.6s cubic-bezier(0.34, 1.7, 0.5, 1) 0.15s both;
+}
+
+@keyframes lgf-pegatina {
+  from { opacity: 0; transform: scale(0.5) rotate(-20deg); }
+}
+
+.lgf-nombre {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.lgf-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.lgf-estado .pn-barra { width: 100%; flex: none; }
+
+.lgf-estado-texto {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.lgf-cond {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.lgf-premio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--amarillo-s);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+  color: #7a5d00;
+  text-align: left;
+}
+
+.lgf-accion { width: 100%; margin-top: 8px; }
+
+/* Conseguido, también se mueve en su ficha: flota y su icono late, igual que
+   en la rejilla, en cuanto termina de entrar. */
+.lgf-pegatina.is-viva .pgl { animation: lg-flota 3.4s ease-in-out 0.75s infinite; }
+.lgf-pegatina.is-viva .pgl-icono svg { animation: lg-late 2.2s cubic-bezier(0.34, 1.6, 0.5, 1) 0.9s infinite; }
+
+/* La etiqueta «Especial», dentro de la ficha (su borde recorta lo que asoma). */
+.lgf-hoja .lg-especial { top: 18px; left: 20px; transform: rotate(-4deg); }
+
 @media (max-width: 960px) {
-  .lg-hero { grid-template-columns: minmax(0, 1fr); }
-  .lg-streak { grid-template-columns: minmax(0, 1fr); }
+  .lgs { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 40px 28px 34px; }
+  .lgs-texto { align-items: center; }
+  .lgs-emblema { width: 250px; }
+  .lgs-rayos { left: 50%; top: 150px; }
+  .lgr { grid-template-columns: auto minmax(0, 1fr); }
+  .lgr-meta { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .lgh {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "texto texto" "anillo sub" "cats cats";
+    gap: 14px 14px;
+    margin-top: 30px;
+    padding: 20px 14px 16px;
+    border-radius: 28px;
+  }
+
+  .lgh::before { width: 130px; height: 130px; border-radius: 0 28px 0 100%; }
+  .lgh > .lgh-copa { top: -38px; right: -8px; width: 118px; }
+  .lgh-texto { gap: 6px; padding-right: 96px; }
+  .lgh-titulo { font-size: 1.55rem; }
+
+  .lgh-anillo { width: 96px; height: 96px; padding: 6px; box-shadow: 0 4px 0 var(--amarillo); }
+  .lgh-anillo circle { stroke-width: 15; }
+  .lgh-anillo-cifra strong { font-size: 1.75rem; }
+  .lgh-anillo-cifra span { margin-top: 2px; font-size: 11px; }
+  .lgh > .lgh-sub { align-self: center; padding-right: 0; font-size: 0.95rem; line-height: 1.4; }
+
+  .lgh-cats { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .lgh-cat {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "icono nombre cuenta" "barra barra barra";
+    gap: 8px 8px;
+    padding: 10px 10px 11px;
+    border-radius: 16px;
+    box-shadow: 0 4px 0 var(--c);
+  }
+  .lgh-cat-icono { width: 28px; height: 28px; border-radius: 9px; }
+  .lgh-cat-icono svg { width: 14px; height: 14px; }
+  .lgh-cat-nombre { overflow: hidden; font-size: 13px; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
+  .lgh-cat-cuenta { font-size: 12px; }
+  .lgh-cat-cuenta b { font-size: 1.05rem; }
+
+  .lgr { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 22px 16px 18px; border-radius: 28px; }
+
+  .lgs { gap: 14px; padding: 32px 18px 28px; border-radius: 30px; }
+  .lgs::after { inset: 8px; border-radius: 24px; }
+  .lgs-emblema { width: 220px; }
+  .lgs-rayos { top: 130px; width: 560px; height: 560px; margin: -280px 0 0 -280px; }
+  .lgs-titulo { font-size: 2.1rem; }
+  .lgs-sub { font-size: 0.98rem; }
+  .lgs-reglas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lgs-accion,
+  .lgs-accion .tecla { width: 100%; }
+  .lgr-semana .rs { justify-content: space-between; }
+  .lgr .rs-dia { flex: 1 1 0; }
+}
+
+@media (max-width: 760px) {
+  .lg-sechead { grid-template-columns: auto minmax(0, 1fr); }
+  .lg-sechead-cuenta { grid-column: 1 / -1; }
 }
 
 @media (max-width: 560px) {
-  .lg-sechead { grid-template-columns: auto minmax(0, 1fr); }
-  .lg-sechead > .pn-chip { grid-column: 2; justify-self: start; }
-  .lg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-  .lg-card { padding: 18px 12px 14px; }
+  .lg-section { padding: 22px 16px 20px; border-radius: 28px; }
+  .lg-section::before { top: -60px; right: -50px; width: 170px; height: 170px; }
+  .lg-sechead-icono { width: 52px; height: 52px; border-radius: 16px; }
+  .lg-sechead-icono svg { width: 24px; height: 24px; }
+  .lg-sechead-titulo { font-size: 1.8rem; }
+  .lgg { inset: -20px -14px; }
+  .lgg svg { opacity: 0.55; scale: 0.8; }
+
+  .lg-section::after,
+  .lgr::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: var(--garabatos);
+    background-repeat: no-repeat;
+    background-size: 90px auto, 70px auto, 110px auto;
+    background-position: 92% 92%, 6% 70%, 70% 40%;
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  .lg-section > *,
+  .lgr > * { z-index: 1; }
+
+  .lg-section:nth-of-type(even)::after,
+  .lgr::after { background-position: 8% 94%, 94% 62%, 30% 38%; }
+  .lg-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 6px; padding: 22px 10px 18px; }
+  .lgf-hoja { padding: 28px 20px 22px; }
 }
 
 @media (max-width: 380px) {
-  .lg-grid { grid-template-columns: minmax(0, 1fr); }
+  .lg-grid .pgl { --lado: 72px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lg-cat,
-  .lg-card { transition: none; }
+  .lgh-cat,
+  .lg-tile,
+  .lg-info { transition: none; }
+
+  .lgh-anillo-lleno,
+  .lgh > .lgh-copa,
+  .lg-tile.is-earned .pgl,
+  .lg-tile.is-earned .pgl-icono svg,
+  .lgf-pegatina.is-viva .pgl,
+  .lgf-pegatina.is-viva .pgl-icono svg,
+  .lgs-rayos,
+  .lgs-polvo i,
+  .lgs-emblema-dibujo,
+  .lgs-oro,
+  .lgf-velo,
+  .lgf-hoja,
+  .lgf-pegatina { animation: none; }
 }

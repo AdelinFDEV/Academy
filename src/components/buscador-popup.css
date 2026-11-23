@@ -1,5 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   El buscador del diccionario en ventana (BuscadorPopup.tsx, 20-11-2026).
+   El buscador en ventana: el del diccionario (BuscadorPopup.tsx, 20-11-2026)
+   y, con la misma hoja, el del menú (GuideSearch.tsx `popup`, 23-11-2026).
    Una hoja de libreta con espiral que cae en mitad de la pantalla.
    ══════════════════════════════════════════════════════════════════════════ */
 
@@ -326,10 +327,51 @@
   .bp-espiral i:nth-child(n + 8) { display: none; }
 }
 
+/* ── El buscador del menú (GuideSearch.tsx, `popup`; 23-11-2026) ─────────────
+   La misma hoja, pero siempre montada y escondida: su campo se enfoca en el
+   mismo toque que la abre, que es la única forma de que el iPhone saque el
+   teclado. Por eso entra con transiciones y no con las animaciones de arriba,
+   que solo corren al montarse. El lomo de cada resultado, del color de la guía. */
+
+.bcp {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+}
+
+.bcp.is-abierta { pointer-events: auto; }
+
+.bcp .bcp-velo {
+  opacity: 0;
+  animation: none;
+  transition: opacity 0.22s ease-out;
+}
+
+.bcp.is-abierta .bcp-velo { opacity: 1; }
+
+.bcp .bcp-hoja {
+  opacity: 0;
+  transform: translateY(-60px) rotate(-5deg) scale(0.92);
+  animation: none;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.5, 0.5, 1),
+    opacity 0.3s ease-out;
+}
+
+.bcp.is-abierta .bcp-hoja {
+  opacity: 1;
+  transform: none;
+}
+
+.bcp-res { --cs: color-mix(in srgb, var(--c) 22%, var(--papel)); }
+
 @media (prefers-reduced-motion: reduce) {
   .bp-velo,
   .bp-hoja,
   .bp-lista li { animation: none; }
   .bp-res,
-  .bp-chip { transition: none; }
+  .bp-chip,
+  .bcp .bcp-velo,
+  .bcp .bcp-hoja { transition: none; }
 }

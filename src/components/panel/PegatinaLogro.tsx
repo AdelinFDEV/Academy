@@ -51,11 +51,13 @@ export default function PegatinaLogro({
 
 /**
  * El color de un logro: el de su categoría (ESTILO.md). Guías cielo, cursos
- * lila, Diario azul; los de actividad (racha y Premium), naranja de marca.
+ * lila, Diario menta (desde el 23-11-2026); los de actividad, naranja de marca.
  */
 export function colorDeLogro(b: { guideSlug?: string; cursoSlug?: string; diario?: unknown }): ColorPegatina {
   if (b.guideSlug) return "cielo";
   if (b.cursoSlug) return "lila";
-  if (b.diario) return "azul";
+  // Los del Diario, en menta (23-11-2026, pedido por el admin: en azul se
+  // confundían con los lila de los cursos).
+  if (b.diario) return "menta";
   return "naranja";
 }

@@ -218,6 +218,51 @@
   }
 }
 
+/* ── El buscador que viaja (BuscadorViajero.tsx, 23-11-2026, solo en el
+   ordenador): lupa, nota y barra van en este grupo. Al entrar en el campo
+   el grupo vuela con muelle al centro de la pantalla, la página se difumina
+   detrás y la lupa da un salto; al cerrar, vuelve igual. ── */
+.gh-viajero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  transition: transform 0.65s cubic-bezier(0.34, 1.35, 0.5, 1);
+  will-change: transform;
+}
+
+/* Mientras viaja, el grupo va por encima del velo. La cabecera deja de ser un
+   apilamiento propio para que el grupo pueda subir por encima de todo. */
+.gh-cabecera.is-viaje { z-index: auto; }
+.gh-viajero.is-de-viaje { z-index: 1001; }
+
+.gh-viaje-velo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(47, 191, 245, 0.22), transparent 45%),
+    rgba(29, 27, 51, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.gh-viaje-velo.is-visible { opacity: 1; }
+
+/* En el centro, la lupa celebra que ha llegado y la nota se ve en blanco. */
+.gh-viajero.is-viajando .gh-lupa-img { animation: gh-lupa-llega 0.8s cubic-bezier(0.34, 1.8, 0.5, 1) 0.35s both, gh-lupa-busca 4s ease-in-out 1.2s infinite; }
+.gh-viajero.is-viajando .gh-buscar-nota { color: #fff; transition: color 0.4s ease; }
+
+@keyframes gh-lupa-llega {
+  0% { scale: 1; rotate: 0deg; }
+  40% { scale: 1.35; rotate: -18deg; }
+  70% { scale: 0.95; rotate: 10deg; }
+  100% { scale: 1; rotate: 0deg; }
+}
+
 .gh-buscar-nota {
   position: relative;
   align-self: flex-start;

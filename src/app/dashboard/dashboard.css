@@ -520,210 +520,90 @@
   background: var(--fondo);
 }
 
-/* ── El índice: todo lo suyo, en fichas de color (IndicePanel.tsx) ── */
-.ix {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.ix-cab {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.3rem 1rem;
-}
-
-.ix-cab .pn-mano { color: var(--tinta-2); }
-
-.ix-grupo {
-  display: grid;
-  grid-template-columns: 9.5rem minmax(0, 1fr);
-  gap: 0.6rem 1rem;
-  align-items: start;
-}
-
-.ix-grupo-titulo {
-  padding-top: 1.1rem;
-  font-family: var(--letra-texto);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.ix-lista {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 14px;
-}
-
-/* La ficha: papel con el canto de su color; al pasar se levanta y se tuerce
-   un poco, como una pestaña del cuaderno. */
-.ix-ficha {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 100%;
-  min-height: 78px;
-  padding: 14px 16px;
-  border-radius: 20px;
-  background: var(--papel);
-  color: var(--tinta);
-  text-decoration: none;
-  box-shadow: 0 5px 0 var(--c-o, var(--gris-o)), 0 18px 26px -24px rgba(29, 27, 51, 0.6);
-  transition: transform 0.3s var(--muelle), box-shadow 0.3s var(--muelle);
-}
-
-.ix-ficha.tono-papel { box-shadow: 0 5px 0 var(--gris-o), 0 18px 26px -24px rgba(29, 27, 51, 0.6); }
-
-@media (hover: hover) {
-  a.ix-ficha:hover {
-    transform: translateY(-3px) rotate(-0.8deg);
-    box-shadow: 0 8px 0 var(--c-o, var(--gris-o)), 0 22px 30px -22px rgba(29, 27, 51, 0.55);
+/* ── La cabecera en el ordenador y la tableta: la misma ficha de alumno del
+   móvil, a lo grande (23-11-2026, pedido por el admin: con más sitio, un
+   diseño más trabajado). A la izquierda, una franja naranja suave a toda la
+   altura con la foto, el saludo y el plan; a la derecha, sobre papel, «así
+   vas» con los tres datos y la racha. El canto, naranja: el de la marca. ── */
+@media (min-width: 641px) {
+  .dh {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    box-shadow: 0 6px 0 var(--naranja), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
   }
 
-  a.ix-ficha.is-bloqueada:hover { box-shadow: 0 8px 0 var(--gris-o), 0 22px 30px -22px rgba(29, 27, 51, 0.55); }
+  .dh::before { display: none; }
+
+  .dh-texto {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding: clamp(1.75rem, 3.2vw, 2.75rem);
+    background: var(--naranja-s);
+  }
+
+  /* Dos círculos planos, como en las tarjetas de producto. */
+  .dh-texto::before,
+  .dh-texto::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .dh-texto::before {
+    right: -70px;
+    bottom: -110px;
+    width: 260px;
+    height: 260px;
+    background: color-mix(in srgb, var(--naranja) 20%, var(--naranja-s));
+  }
+
+  .dh-texto::after {
+    top: -34px;
+    right: 22%;
+    width: 86px;
+    height: 86px;
+    background: color-mix(in srgb, var(--amarillo) 55%, var(--naranja-s));
+  }
+
+  .dh-texto > * { position: relative; z-index: 1; }
+
+  .dh-nota { font-size: 1.6rem; }
+  .dh-saludo-fila { gap: 18px; margin-top: 0.6rem; }
+
+  .dh-saludo-foto {
+    width: 84px;
+    height: 84px;
+    border-width: 5px;
+    border-radius: 26px;
+    box-shadow: 0 6px 0 var(--naranja);
+    font-size: 2rem;
+  }
+
+  .dh-saludo { font-size: clamp(2rem, 3.3vw, 2.9rem); }
+  .dh-sub { margin-top: 1rem; color: var(--tinta); opacity: 0.75; }
+  .dh-acciones .pn-chip { padding: 7px 13px; background: var(--papel); }
+
+  .dh-lado {
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(1.5rem, 2.8vw, 2.25rem);
+  }
+
+  .dh-lado-nota { color: var(--tinta-2); font-size: 1.5rem; line-height: 1; }
+  .dh-dato { padding: 16px 16px 15px; }
+  .dh-dato-icono { width: 38px; height: 38px; border-radius: 12px; }
 }
 
-a.ix-ficha:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--c-o, var(--gris-o)); transition-duration: 0.06s; }
-a.ix-ficha:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
-
-.ix-icono {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 15px;
-  background: var(--c);
-  color: var(--c-t);
-  box-shadow: 0 4px 0 var(--c-o);
+/* La nota a mano de la columna de datos solo sale con sitio. */
+@media (max-width: 640px) {
+  .dh-lado-nota { display: none; }
 }
-
-.ix-ficha.tono-papel .ix-icono { background: var(--fondo); box-shadow: 0 4px 0 var(--gris-o); }
-
-.ix-icono.has-foto { overflow: hidden; padding: 0; }
-
-.ix-foto {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  font-size: 1.2rem;
-}
-
-.ix-texto {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.ix-nombre {
-  font-family: var(--letra-titular);
-  font-size: 1.08rem;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.ix-desc {
-  margin-top: 2px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--tinta-2);
-}
-
-.ix-chip {
-  position: absolute;
-  top: -10px;
-  right: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 9px;
-  border-radius: 9px;
-  background: var(--gris);
-  color: var(--tinta-2);
-  font-size: 12px;
-  font-weight: 900;
-  transform: rotate(3deg);
-}
-
-.ix-chip--premium { background: var(--naranja); color: #fff; box-shadow: 0 3px 0 var(--naranja-o); }
-
-/* Bloqueada: se sabe que existe, pero no engaña. Si es de Premium sigue
-   siendo un enlace (a su ficha); si aún no existe, no se puede pulsar. */
-.ix-ficha.is-bloqueada { background: var(--fondo); box-shadow: 0 5px 0 var(--gris); }
-div.ix-ficha.is-bloqueada { cursor: not-allowed; }
-.ix-ficha.is-bloqueada .ix-icono { background: var(--gris); color: var(--tinta-3); box-shadow: 0 4px 0 var(--gris-o); }
-.ix-ficha.is-bloqueada .ix-nombre { color: var(--tinta-2); }
-
-/* ── La cartera (DashboardAtajos.tsx): tarjeta de producto menta ── */
-.dash-atajo {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  overflow: hidden;
-  padding: 22px 24px;
-  border-radius: 28px;
-  background: var(--papel);
-  box-shadow: 0 7px 0 var(--gris-o);
-}
-
-.dash-atajo::before {
-  content: "";
-  position: absolute;
-  top: -50px;
-  right: -40px;
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  background: var(--c-s);
-}
-
-.dash-atajo > * { position: relative; }
-
-.dash-atajo-icon {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  background: var(--c);
-  color: var(--c-t);
-  box-shadow: 0 5px 0 var(--c-o);
-  transform: rotate(-4deg);
-}
-
-.dash-atajo-cuerpo {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.dash-atajo-cifra {
-  font-family: var(--letra-titular);
-  font-size: clamp(2rem, 5vw, 2.6rem);
-  font-weight: 800;
-  line-height: 1.1;
-}
-
-.dash-atajo-cifra.is-sube { color: var(--sube); }
-.dash-atajo-cifra.is-baja { color: var(--baja); }
-
-.dash-atajo-pie {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--tinta-2);
-}
-
-.dash-atajo-cta { flex: none; }
 
 /* ── El aviso de la verificación en dos pasos (TwoFactorNudge.tsx) ── */
 .dash-2fa { align-items: center; }
@@ -1072,6 +952,525 @@ div.ix-ficha.is-bloqueada { cursor: not-allowed; }
   color: var(--tinta-2);
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   El dashboard como sitio privado (23-11-2026): su diario, sus preguntas del
+   foro, sus guías y sus logros. Cada bloque lleva el color de su sección
+   (ESTILO.md): Diario azul, Foro coral, Guías cielo, Logros amarillo.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* La etiqueta de sección encima de cada titular, con su icono y su color. */
+.dp-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: var(--c-o);
+}
+
+.dp-subtitulo { margin: 1.3rem 0 0.7rem; }
+.dp-subtitulo:first-child { margin-top: 0; }
+
+/* El diario y el foro, uno al lado del otro; sin preguntas, el diario a lo ancho. */
+.dp-par {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 28px;
+}
+
+.dp-par.is-solo { grid-template-columns: minmax(0, 1fr); }
+
+/* ── El diario (azul) ── */
+.dp-diario { box-shadow: 0 6px 0 var(--azul-o), 0 26px 40px -34px rgba(29, 27, 51, 0.5); }
+
+.dp-cifras {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dp-cifra {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--azul-s);
+}
+
+.dp-cifra .pn-etiqueta { color: var(--azul-o); }
+
+.dp-cifra-valor {
+  overflow-wrap: anywhere;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+
+/* Solo las cifras con signo van en verde o rojo (ESTILO.md). */
+.dp-cifra-valor.is-sube,
+.dp-op-pnl.is-sube { color: var(--sube); }
+.dp-cifra-valor.is-baja,
+.dp-op-pnl.is-baja { color: var(--baja); }
+
+.dp-ops {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dp-op {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--fondo);
+  font-weight: 800;
+}
+
+.dp-op-dir {
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dp-op-dir.is-long { background: var(--menta-s); color: var(--menta-o); }
+.dp-op-dir.is-short { background: var(--coral-s); color: var(--coral-o); }
+
+.dp-op-par {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--tinta);
+}
+
+.dp-op-fecha {
+  font-size: 13px;
+  color: var(--tinta-3);
+}
+
+.dp-op-pnl {
+  font-family: var(--letra-titular);
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dp-diario-vacio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 18px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--azul-s);
+}
+
+.dp-diario-texto {
+  flex: 1 1 260px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--tinta);
+}
+
+.dp-diario-vacio .tecla { margin-bottom: 6px; }
+.dp-carita { flex: none; }
+
+/* ── Sus cursos (lila), 23-11-2026 ── En el ordenador, a todo el ancho bajo
+   el diario y el foro; en el móvil, entre los dos (más abajo). */
+.dp-cursos {
+  grid-column: 1 / -1;
+  order: 3;
+  box-shadow: 0 6px 0 var(--lila-o), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+.dp-cursos-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 14px;
+}
+
+.dp-curso {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 14px 16px 14px 14px;
+  border-radius: 20px;
+  background: var(--lila-s);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.26s var(--muelle);
+}
+
+@media (hover: hover) {
+  .dp-curso:hover { transform: translateY(-3px); }
+  .dp-curso:hover .dp-curso-ir { transform: translateX(4px); }
+}
+
+.dp-curso:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* El dibujo del curso: su pegatina, o su color con el gorro. */
+.dp-curso-dibujo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  background: var(--papel);
+  color: var(--curso, var(--lila-o));
+}
+
+.dp-curso-dibujo img { width: 100%; height: 100%; object-fit: contain; }
+
+.dp-curso-cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.dp-curso-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.dp-curso-progreso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dp-curso-progreso .pn-barra { background: var(--papel); }
+
+.dp-curso-progreso b {
+  flex: none;
+  font-family: var(--letra-titular);
+  font-weight: 800;
+}
+
+.dp-curso-datos {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lila-o);
+}
+
+.dp-curso-toca {
+  overflow: hidden;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--tinta-2);
+}
+
+.dp-curso-ir {
+  flex: none;
+  color: var(--lila-o);
+  transition: transform 0.26s var(--muelle);
+}
+
+.dp-cursos-vacio {
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--lila-s);
+}
+
+.dp-cursos-texto {
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--tinta);
+}
+
+/* ── Las preguntas del foro (coral) ── */
+/* La pegatina de la esquina solo sale en el móvil. */
+.dp-foro-mascota,
+.dp-cursos-mascota,
+.dp-logros-copa { display: none; }
+
+.dp-foro { box-shadow: 0 6px 0 var(--coral-o), 0 26px 40px -34px rgba(29, 27, 51, 0.5); }
+
+.dp-preguntas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dp-pregunta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--fondo);
+  box-shadow: inset 4px 0 0 var(--coral);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.26s var(--muelle), box-shadow 0.26s var(--muelle);
+}
+
+.dp-pregunta.is-resuelta { box-shadow: inset 4px 0 0 var(--menta); }
+.dp-pregunta.is-oculta { box-shadow: inset 4px 0 0 var(--tinta-3); }
+
+@media (hover: hover) {
+  a.dp-pregunta:hover { transform: translateX(4px); }
+}
+
+a.dp-pregunta:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+.dp-pregunta-titulo {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-family: var(--letra-titular);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.dp-pregunta.is-oculta .dp-pregunta-titulo { color: var(--tinta-2); }
+
+.dp-pregunta-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.dp-pregunta-dato {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.dp-pregunta-motivo {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--coral-o);
+}
+
+/* ── Lo nuevo del foro (23-11-2026): cuando alguien responde, replica o
+   reacciona a algo suyo. Tres señales: el punto rojo con la cuenta sobre la
+   tecla «Lo mío», una nota con la campana que suena y, en la pregunta que
+   tiene respuesta sin ver, su marca «Nueva respuesta». ── */
+.dp-punto {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border: 3px solid var(--papel);
+  border-radius: 999px;
+  background: var(--baja);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+  animation: dp-latir 1.8s ease-in-out infinite;
+}
+
+@keyframes dp-latir {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--baja) 55%, transparent); }
+  60% { box-shadow: 0 0 0 9px transparent; }
+}
+
+.dp-novedades {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--coral), inset 0 0 0 2px var(--coral);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.26s var(--muelle);
+}
+
+@media (hover: hover) {
+  .dp-novedades:hover { transform: translateY(-3px); }
+  .dp-novedades:hover .dp-novedades-ir { transform: translateX(4px); }
+}
+
+.dp-novedades:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* La campana: suena de vez en cuando, como un aviso que insiste un poco. */
+.dp-novedades-campana {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--coral);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--coral-o);
+}
+
+.dp-novedades-campana svg {
+  transform-origin: 50% 10%;
+  animation: dp-campana 3.2s ease-in-out infinite;
+}
+
+@keyframes dp-campana {
+  0%, 62%, 100% { transform: rotate(0); }
+  68% { transform: rotate(16deg); }
+  74% { transform: rotate(-14deg); }
+  80% { transform: rotate(10deg); }
+  86% { transform: rotate(-6deg); }
+  92% { transform: rotate(3deg); }
+}
+
+.dp-novedades-cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dp-novedades-titulo {
+  font-family: var(--letra-titular);
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.dp-novedades-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.dp-novedad {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.dp-novedad small {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--tinta-2);
+}
+
+.dp-novedad--mas { color: var(--coral-o); }
+
+.dp-novedades-ir {
+  flex: none;
+  color: var(--coral-o);
+  transition: transform 0.26s var(--muelle);
+}
+
+/* La marca de una pregunta con respuesta sin ver. */
+.dp-nueva {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--baja);
+}
+
+.dp-nueva i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--baja);
+  animation: dp-latir 1.8s ease-in-out infinite;
+}
+
+/* ── Las guías completadas: chips menta con su check ── */
+.dp-hechas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dp-hecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 12px;
+  background: var(--menta-s);
+  box-shadow: 0 4px 0 var(--menta);
+  color: var(--tinta);
+  font-size: 0.92rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.2s var(--muelle);
+}
+
+.dp-hecha svg { color: var(--menta-o); }
+
+@media (hover: hover) {
+  .dp-hecha:hover { transform: translateY(-2px) rotate(-1.5deg); }
+}
+
+.dp-hecha:focus-visible { outline: 3px solid var(--azul); outline-offset: 4px; }
+
+/* ── Sin logros todavía: los primeros, con lo que piden a la vista ── */
+.dh-logros-rejilla.is-proximos {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.dh-logros-rejilla.is-proximos .dh-logro-pista {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: none;
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  pointer-events: none;
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+
+/* ── Lo demás de su cuenta, al pie ── Solo en el móvil (23-11-2026, pedido
+   por el admin: en el ordenador sobran, que ahí está la barra de arriba). */
+.dp-accesos {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding-bottom: 6px;
+}
+
 /* Las teclas pequeñas miden 34 px de alto: con el dedo, su zona de toque se
    amplía por fuera hasta los 44 px sin cambiar cómo se ven. Y las teclas a
    todo el ancho pueden partir su texto en dos líneas antes que salirse. */
@@ -1088,42 +1487,623 @@ div.ix-ficha.is-bloqueada { cursor: not-allowed; }
   text-align: center;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   Las tarjetas de cada sección, a todo color (23-11-2026). Nacieron para el
+   móvil y el admin las pidió también en el ordenador: cada una en el color de
+   su sección, con la etiqueta y el titular en líneas separadas, su pegatina en
+   la esquina y su tecla al final. Lo propio del ordenador y lo propio del
+   móvil van después, en sus bloques.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── «Tu trading»: la tarjeta entera en el azul del Diario
+   (23-11-2026, pedido por el admin). Arriba, la etiqueta y el titular, cada
+   uno en su línea; el resultado, en una ficha blanca grande (el verde y el
+   rojo solo se leen bien sobre papel); operaciones y acierto, en azul más
+   claro; las últimas operaciones, en una sola hoja blanca con sus rayas; y
+   la tecla de abrir el diario, blanca y a lo ancho, al final. ── */
+.dp-diario {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 16px 18px;
+  background: var(--azul);
+  color: #fff;
+}
+
+/* El círculo de las tarjetas de producto, un tono más claro que el fondo. */
+.dp-diario::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.dp-diario > *,
+.dp-diario .pn-hoja-cab > * { position: relative; }
+
+/* La cabecera se deshace: su texto queda arriba y su tecla baja al final. */
+.dp-diario .pn-hoja-cab { display: contents; }
+.dp-diario .pn-hoja-cab > div { margin-bottom: 16px; }
+.dp-diario .dp-etiqueta { display: flex; margin-bottom: 4px; color: rgba(255, 255, 255, 0.85); }
+.dp-diario .pn-h2 { display: block; font-size: 1.8rem; color: #fff; }
+
+.dp-diario .pn-hoja-cab .tecla {
+  --c: var(--papel);
+  --o: #1c2580;
+  --t: var(--azul-o);
+  order: 10;
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* El resultado, a lo ancho y en papel; operaciones y acierto, debajo. */
+.dp-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.dp-cifra { background: rgba(255, 255, 255, 0.16); }
+.dp-cifra .pn-etiqueta { color: rgba(255, 255, 255, 0.85); }
+.dp-cifra:not(:first-child) .dp-cifra-valor { color: #fff; }
+
+.dp-cifra:first-child {
+  grid-column: 1 / -1;
+  padding: 14px 16px 15px;
+  background: var(--papel);
+}
+
+.dp-cifra:first-child .pn-etiqueta { color: var(--azul-o); }
+.dp-cifra:first-child .dp-cifra-valor { font-size: 2.1rem; }
+
+.dp-diario .pn-barra {
+  --c: #fff;
+  flex: none;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: none;
+}
+
+.dp-diario .dp-subtitulo { margin-top: 1.2rem; color: rgba(255, 255, 255, 0.85); }
+
+.dp-ops {
+  gap: 0;
+  padding: 3px 14px;
+  border-radius: 18px;
+  background: var(--papel);
+}
+
+.dp-op { gap: 10px; padding: 11px 0; border-radius: 0; background: none; }
+.dp-op + .dp-op { border-top: 2px solid var(--gris); }
+/* ── «Tus preguntas»: la tarjeta entera en el rosa pastel del
+   Foro (23-11-2026, pedido por el admin). La etiqueta y el titular, cada uno
+   en su línea; cada pregunta, una ficha blanca con su estado a la izquierda
+   y hace cuánto a la derecha; y la tecla «Lo mío», a lo ancho, al final. ── */
+.dp-foro {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 16px 18px;
+  background: var(--coral-s);
+  box-shadow: 0 6px 0 var(--coral), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+.dp-foro::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--coral) 16%, var(--coral-s));
+  pointer-events: none;
+}
+
+.dp-foro > *,
+.dp-foro .pn-hoja-cab > * { position: relative; }
+
+/* La pegatina del foro, asomada en la esquina, sobre el círculo. */
+.dp-foro > .dp-foro-mascota {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  display: block;
+  width: 78px;
+  height: auto;
+  transform: rotate(6deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* El titular deja sitio a la pegatina. */
+.dp-foro .pn-hoja-cab > div { padding-right: 84px; }
+
+.dp-foro .pn-hoja-cab { display: contents; }
+.dp-foro .pn-hoja-cab > div { margin-bottom: 16px; }
+.dp-foro .dp-etiqueta { display: flex; margin-bottom: 4px; }
+.dp-foro .pn-h2 { display: block; font-size: 1.8rem; }
+.dp-foro .pn-hoja-cab .tecla { order: 10; width: 100%; margin-top: 16px; }
+
+.dp-foro .dp-preguntas { gap: 12px; }
+
+.dp-foro .dp-pregunta {
+  gap: 12px;
+  padding: 15px 16px 14px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--coral) 45%, var(--coral-s));
+}
+
+.dp-foro .dp-pregunta.is-resuelta { box-shadow: 0 4px 0 var(--menta); }
+.dp-foro .dp-pregunta.is-oculta { background: rgba(255, 255, 255, 0.6); box-shadow: none; }
+
+.dp-foro .dp-pregunta-titulo { font-size: 1.1rem; }
+.dp-foro .dp-pregunta-pie { justify-content: space-between; }
+.dp-foro .dp-pregunta-dato:last-child { margin-left: auto; color: var(--tinta-3); }
+
+/* ── Las guías: la tarjeta entera en el cielo pastel de las
+   Guías (23-11-2026, pedido por el admin: las portadas blancas se perdían
+   sobre la hoja blanca). La etiqueta y el titular, cada uno en su línea;
+   solo las DOS últimas guías; y la tecla «Ver todas», a lo ancho, al final. ── */
+.dp-guias {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 16px 18px;
+  background: var(--cielo-s);
+  box-shadow: 0 6px 0 var(--cielo), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+.dp-guias::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--cielo) 18%, var(--cielo-s));
+  pointer-events: none;
+}
+
+.dp-guias > *,
+.dp-guias .pn-hoja-cab > * { position: relative; }
+
+.dp-guias .pn-hoja-cab { display: contents; }
+.dp-guias .pn-hoja-cab > div { margin-bottom: 16px; }
+.dp-guias .dp-etiqueta { display: flex; margin-bottom: 4px; }
+.dp-guias .pn-h2 { display: block; font-size: 1.8rem; }
+.dp-guias .pn-hoja-cab .tecla { order: 10; width: 100%; margin-top: 18px; }
+.dp-guias .dp-subtitulo { color: var(--cielo-o); }
+
+.dp-guias .dh-guias { gap: 16px; }
+.dp-guias .dh-guia { border-radius: 20px; box-shadow: 0 5px 0 var(--cielo-o); }
+.dp-guias .dh-guia-cuerpo { padding: 12px 16px 16px; }
+
+/* ── Los logros: la tarjeta entera en el amarillo pastel de los
+   Logros (23-11-2026, pedido por el admin). La etiqueta, el titular y
+   cuántos lleva, cada uno en su línea; el progreso, en una ficha blanca;
+   las pegatinas, de tres en tres en otra; y «Ver todos», a lo ancho, al final. ── */
+.dh-logros {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 16px 18px;
+  background: var(--amarillo-s);
+  box-shadow: 0 6px 0 var(--amarillo), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+.dh-logros::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--amarillo) 38%, var(--amarillo-s));
+  pointer-events: none;
+}
+
+.dh-logros > *,
+.dh-logros .pn-hoja-cab > * { position: relative; }
+
+/* La copa, asomada en la esquina, sobre el círculo (como la del foro). */
+.dh-logros > .dp-logros-copa {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  display: block;
+  width: 76px;
+  height: auto;
+  transform: rotate(6deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.dh-logros .pn-hoja-cab { display: contents; }
+.dh-logros .pn-hoja-cab > div { margin-bottom: 14px; padding-right: 80px; }
+.dh-logros .dp-etiqueta { display: flex; margin-bottom: 4px; }
+.dh-logros .pn-h2 { display: block; font-size: 1.8rem; }
+.dh-logros .pn-sub { margin-top: 0.35rem; font-weight: 700; color: #7a5d00; }
+.dh-logros .pn-hoja-cab .tecla { order: 10; width: 100%; margin-top: 16px; }
+
+.dh-logros .pn-progreso {
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--papel);
+}
+
+.dh-logros .pn-progreso > b { min-width: 0; font-size: 1.35rem; }
+
+.dh-logros .dh-logros-rejilla {
+  gap: 18px 6px;
+  padding: 18px 8px 16px;
+  border-radius: 20px;
+  background: var(--papel);
+}
+
+.dh-logros .dh-logros-rejilla:not(.is-proximos) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.dh-logros .dh-logro-nombre { overflow-wrap: anywhere; }
+
+/* ── Los certificados: la tarjeta entera en el lila pastel de
+   los Cursos (23-11-2026, pedido por el admin). La nota a mano y el titular
+   arriba; los certificados, que ya son de papel blanco, se deslizan sobre el
+   lila; y «Ver y descargar», a lo ancho, al final. Solo con certificados:
+   la vitrina vacía (/dashboard/certificados) no cambia. ── */
+.cv-estante:not(.is-vacia) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 16px 18px;
+  border-radius: 28px;
+  background: var(--lila-s);
+  box-shadow: 0 6px 0 var(--lila), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+}
+
+.cv-estante:not(.is-vacia)::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lila) 18%, var(--lila-s));
+  pointer-events: none;
+}
+
+.cv-estante:not(.is-vacia) > *,
+.cv-estante:not(.is-vacia) .cv-estante-cab > * { position: relative; }
+
+.cv-estante:not(.is-vacia) .cv-estante-cab { display: contents; }
+.cv-estante:not(.is-vacia) .pn-mano { font-size: 1.35rem; line-height: 1; }
+.cv-estante:not(.is-vacia) .cv-estante-titulo { margin-top: 6px; font-size: 1.8rem; }
+.cv-estante:not(.is-vacia) .cv-estante-cab .tecla { order: 10; width: 100%; margin-top: 12px; }
+
+.cv-estante:not(.is-vacia) .cv-expositor {
+  gap: 18px;
+  margin: 0 -16px !important;
+  padding: 22px 16px 8px !important;
+  scroll-padding: 0 16px;
+  scrollbar-width: none;
+}
+
+.cv-estante:not(.is-vacia) .cv-expositor::-webkit-scrollbar { display: none; }
+.cv-estante:not(.is-vacia) .cv-expositor > li { width: 80%; }
+.cv-estante:not(.is-vacia) .cv-hueco { background: rgba(255, 255, 255, 0.6); }
+
+/* ── «Tus cursos»: la tarjeta entera en el lila de los Cursos,
+   como el diario en azul (23-11-2026). Cada curso, una ficha blanca con su
+   pegatina, su barra y lo que toca; «Ver cursos», a lo ancho, al final. ── */
+.dp-cursos {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 16px 18px;
+  /* Lila PASTEL (23-11-2026, pedido por el admin: en lila sólido se parecía
+     demasiado al azul del Diario, que va justo encima). */
+  background: var(--lila-s);
+  box-shadow: 0 6px 0 var(--lila), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
+  color: var(--tinta);
+}
+
+.dp-cursos::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lila) 18%, var(--lila-s));
+  pointer-events: none;
+}
+
+.dp-cursos > *,
+.dp-cursos .pn-hoja-cab > * { position: relative; }
+
+/* Las velas, asomadas en la esquina, sobre el círculo (como la del foro). */
+.dp-cursos > .dp-cursos-mascota {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  display: block;
+  width: 74px;
+  height: auto;
+  transform: rotate(6deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.dp-cursos .pn-hoja-cab { display: contents; }
+.dp-cursos .pn-hoja-cab > div { margin-bottom: 16px; padding-right: 80px; }
+.dp-cursos .dp-etiqueta { display: flex; margin-bottom: 4px; }
+.dp-cursos .pn-h2 { display: block; font-size: 1.8rem; }
+.dp-cursos .pn-sub { color: var(--lila-o); font-weight: 700; }
+
+.dp-cursos .pn-hoja-cab .tecla {
+  order: 10;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.dp-cursos-lista { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.dp-curso { gap: 12px; padding: 12px 12px 13px; background: var(--papel); }
+.dp-curso-dibujo { width: 60px; height: 60px; background: var(--lila-s); }
+.dp-curso-progreso .pn-barra { background: var(--gris); }
+.dp-curso-ir { display: none; }
+.dp-cursos-vacio { background: var(--papel); }
+.dp-cursos-texto { color: var(--tinta); }
+
+
+/* ── Las tarjetas en el ordenador y la tableta: lo mismo, con más aire. Más
+   margen dentro, titulares más grandes, pegatinas más grandes, la tecla del
+   final a su ancho (no de lado a lado) y, donde hay sitio, las cosas en fila:
+   las tres cifras del diario, tres guías, seis logros, los cursos de dos en
+   dos. ── */
+@media (min-width: 641px) {
+  .dp-diario,
+  .dp-foro,
+  .dp-guias,
+  .dh-logros,
+  .dp-cursos,
+  .cv-estante:not(.is-vacia) { padding: 30px 30px 28px; border-radius: 32px; }
+
+  .dp-diario .pn-h2,
+  .dp-foro .pn-h2,
+  .dp-guias .pn-h2,
+  .dh-logros .pn-h2,
+  .dp-cursos .pn-h2,
+  .cv-estante:not(.is-vacia) .cv-estante-titulo { font-size: 2.2rem; }
+
+  .dp-diario .dp-etiqueta,
+  .dp-foro .dp-etiqueta,
+  .dp-guias .dp-etiqueta,
+  .dh-logros .dp-etiqueta,
+  .dp-cursos .dp-etiqueta { margin-bottom: 8px; font-size: 13px; }
+
+  .dp-diario .pn-hoja-cab > div,
+  .dp-foro .pn-hoja-cab > div,
+  .dp-guias .pn-hoja-cab > div,
+  .dp-cursos .pn-hoja-cab > div { margin-bottom: 22px; }
+  .dh-logros .pn-hoja-cab > div { margin-bottom: 20px; }
+
+  /* La tecla del final, a su ancho y a la izquierda. */
+  .dp-diario .pn-hoja-cab .tecla,
+  .dp-foro .pn-hoja-cab .tecla,
+  .dp-guias .pn-hoja-cab .tecla,
+  .dh-logros .pn-hoja-cab .tecla,
+  .dp-cursos .pn-hoja-cab .tecla,
+  .cv-estante:not(.is-vacia) .cv-estante-cab .tecla {
+    align-self: flex-start;
+    width: auto;
+    margin-top: 22px;
+  }
+
+  /* Los círculos de la esquina, más grandes. */
+  .dp-diario::before,
+  .dp-foro::before,
+  .dp-guias::before,
+  .dp-cursos::before,
+  .cv-estante:not(.is-vacia)::before { top: -80px; right: -60px; width: 240px; height: 240px; }
+
+  /* Las pegatinas de la esquina, más grandes. */
+  .dp-foro > .dp-foro-mascota,
+  .dp-cursos > .dp-cursos-mascota,
+  .dh-logros > .dp-logros-copa { top: 14px; right: 22px; width: 104px; }
+
+  .dp-foro .pn-hoja-cab > div,
+  .dp-cursos .pn-hoja-cab > div,
+  .dh-logros .pn-hoja-cab > div { padding-right: 120px; }
+
+  /* El diario: las tres cifras en fila, el resultado más ancho. */
+  .dp-cifras { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-bottom: 14px; }
+  .dp-cifra { justify-content: center; padding: 16px 18px; }
+  .dp-cifra:first-child { grid-column: auto; padding: 16px 18px; }
+  .dp-cifra:first-child .dp-cifra-valor { font-size: clamp(1.7rem, 2.6vw, 2.3rem); }
+  .dp-cifra:not(:first-child) .dp-cifra-valor { font-size: 1.7rem; }
+  .dp-ops { padding: 4px 18px; border-radius: 20px; }
+  .dp-op { padding: 13px 0; }
+
+  /* El foro: fichas con más aire. */
+  .dp-foro .dp-pregunta { padding: 18px 20px 16px; }
+  .dp-foro .dp-pregunta-titulo { font-size: 1.2rem; }
+
+  /* Los cursos: fichas blancas en dos columnas, con su flecha. */
+  .dp-cursos-lista { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 14px; }
+  .dp-curso { gap: 16px; padding: 16px 18px 16px 16px; }
+  .dp-curso-dibujo { width: 76px; height: 76px; }
+  .dp-curso-titulo { font-size: 1.15rem; }
+  .dp-cursos-vacio { padding: 22px; }
+  .dp-curso-ir { display: block; }
+
+  /* Las guías: portadas sin torcer sobre el cielo. */
+  .dp-guias .dh-guias { gap: 20px; }
+
+  /* Los logros: seis en fila. La hoja no recorta, para que la nota de cada
+     logro pueda asomar por encima al pasar el ratón; por eso su círculo es
+     un cuarto de círculo pegado a la esquina. */
+  .dh-logros { overflow: visible; }
+
+  .dh-logros::before {
+    top: 0;
+    right: 0;
+    width: 190px;
+    height: 190px;
+    border-radius: 0 32px 0 100%;
+  }
+
+  .dh-logros .pn-progreso { padding: 16px 20px; }
+  .dh-logros .dh-logros-rejilla { gap: 22px 10px; padding: 26px 16px 22px; }
+  .dh-logros .dh-logros-rejilla:not(.is-proximos) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+  /* Los certificados: el expositor llega a los bordes de la tarjeta. */
+  .cv-estante:not(.is-vacia) .pn-mano { font-size: 1.6rem; }
+
+  .cv-estante:not(.is-vacia) .cv-expositor {
+    gap: 26px;
+    margin: 0 -30px !important;
+    padding: 26px 30px 10px !important;
+    scroll-padding: 0 30px;
+  }
+
+  .cv-estante:not(.is-vacia) .cv-expositor > li { width: min(320px, 78%); }
+}
+
 /* ── Tableta y móvil ── */
 @media (max-width: 960px) {
   .dh { grid-template-columns: minmax(0, 1fr); }
   .dh-premium { grid-template-columns: minmax(0, 1fr); }
   .dh-guias { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dh-guia:nth-child(3) { display: none; }
+  .dh-logros .dh-logros-rejilla:not(.is-proximos) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-  .ix-grupo { grid-template-columns: minmax(0, 1fr); }
-  .ix-grupo-titulo { padding-top: 0; }
+  .dp-par { grid-template-columns: minmax(0, 1fr); }
+  /* En una columna, los cursos van justo después del diario, antes del foro. */
+  .dp-cursos { order: 0; }
 }
 
 @media (max-width: 640px) {
   .dashboard-main { gap: 24px; }
 
-  .dh-datos { gap: 8px; }
-  .dh-dato { padding: 12px 10px; }
-  .dh-dato-texto { font-size: 12px; }
-
-  /* En el móvil, cada grupo del índice se desliza en horizontal. */
-  .ix-lista {
-    display: flex;
-    gap: 12px;
-    margin: 0 calc(-1 * clamp(1rem, 4vw, 2rem));
-    padding: 12px clamp(1rem, 4vw, 2rem) 14px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scroll-padding: 0 clamp(1rem, 4vw, 2rem);
-    scrollbar-width: none;
+  /* ── La cabecera en el móvil: una ficha de alumno (23-11-2026, pedido por
+     el admin: más sencilla y profesional, y distinta de las demás hojas por
+     ser lo primero que se ve). Arriba, una franja naranja suave con la foto,
+     el saludo y el plan; debajo, los tres datos en una sola fila, sin cajas,
+     y la racha de la semana a lo ancho. El canto, naranja: el de la marca. ── */
+  .dh {
+    gap: 0;
+    padding: 0;
+    border-radius: 28px;
+    box-shadow: 0 6px 0 var(--naranja), 0 26px 40px -34px rgba(29, 27, 51, 0.5);
   }
 
-  .ix-lista::-webkit-scrollbar { display: none; }
-  .ix-lista > li { flex: none; width: 74%; max-width: 280px; scroll-snap-align: start; }
+  .dh::before { display: none; }
 
-  .dash-atajo { flex-wrap: wrap; padding: 20px; }
-  .dash-atajo-cta { width: 100%; }
+  .dh-texto {
+    position: relative;
+    overflow: hidden;
+    padding: 18px 18px 16px;
+    background: var(--naranja-s);
+  }
+
+  /* El círculo de las tarjetas de producto, pequeño y dentro de la franja. */
+  .dh-texto::after {
+    content: "";
+    position: absolute;
+    top: -46px;
+    right: -38px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--naranja) 20%, var(--naranja-s));
+    pointer-events: none;
+  }
+
+  .dh-texto > * { position: relative; z-index: 1; }
+
+  .dh-nota { font-size: 1.35rem; line-height: 1; }
+  .dh-saludo-fila { gap: 12px; margin-top: 0.5rem; }
+  .dh-saludo-foto { width: 54px; height: 54px; border-radius: 18px; box-shadow: 0 4px 0 var(--naranja); }
+  .dh-saludo { font-size: clamp(1.55rem, 7.2vw, 2rem); }
+  .dh-sub { display: none; }
+  .dh-acciones { gap: 10px; margin-top: 0.9rem; }
+  .dh-acciones .pn-chip { background: var(--papel); }
+
+  .dh-lado { gap: 0; padding: 16px 12px 18px; }
+
+  .dh-datos { gap: 0; }
+
+  .dh-dato {
+    align-items: center;
+    gap: 2px;
+    padding: 2px 6px;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    text-align: center;
+    transform: none !important;
+  }
+
+  .dh-dato + .dh-dato { border-left: 2px solid var(--gris); }
+  .dh-dato:focus-visible { outline-offset: 2px; border-radius: 12px; }
+
+  .dh-dato-icono { width: 30px; height: 30px; border-radius: 10px; }
+  .dh-dato-icono svg { width: 16px; height: 16px; }
+  .dh-dato-valor { margin-top: 6px; font-size: 1.6rem; }
+  .dh-dato-texto { font-size: 11.5px; line-height: 1.2; }
+
+  .dh-racha {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin: 16px 6px 0;
+    padding: 14px 0 0;
+    border-top: 2px dashed var(--gris);
+    border-radius: 0;
+    background: none;
+  }
+
+  .dh-racha .pn-etiqueta { text-align: center; }
+  .dh-racha .rs { justify-content: space-between; gap: 6px; }
+  .dh-racha .rs-dia { flex: 1 1 0; height: 40px; background: var(--fondo); }
+  .dh-racha .rs-dia.is-on { background: var(--naranja); }
+
+  /* ── Los accesos del pie en el móvil: tres teclas pastel en fila, cada una
+     con el color de su sección (perfil menta, diccionario amarillo,
+     calculadora naranja), el icono arriba y el nombre debajo. ── */
+  .dp-accesos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .dp-accesos .tecla.tecla--blanca {
+    --h: 5px;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    padding: 14px 4px 12px;
+    border: 0;
+    border-radius: 18px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .dp-accesos .tecla svg { width: 22px; height: 22px; }
+  .dp-accesos .tecla.tecla--blanca:nth-child(1) { --c: var(--menta-s); --o: var(--menta); --t: var(--menta-o); }
+  .dp-accesos .tecla.tecla--blanca:nth-child(2) { --c: var(--amarillo-s); --o: var(--amarillo); --t: var(--amarillo-o); }
+  .dp-accesos .tecla.tecla--blanca:nth-child(3) { --c: var(--naranja-s); --o: var(--naranja); --t: var(--naranja-o); }
+
+  /* En el móvil, solo las dos últimas guías. */
+  .dp-guias .dh-guia:nth-child(n + 3) { display: none; }
+
+  .dp-diario-vacio { padding: 16px; }
+  .dp-diario-vacio .tecla { width: 100%; }
 
   .dash-2fa { flex-wrap: wrap; }
   .dash-2fa-acciones { width: 100%; justify-content: flex-end; }
@@ -1147,18 +2127,26 @@ div.ix-ficha.is-bloqueada { cursor: not-allowed; }
 }
 
 @media (max-width: 400px) {
-  .dh-datos { grid-template-columns: minmax(0, 1fr); }
-  .dh-dato { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; transform: none !important; }
-  .dh-dato-valor { margin-top: 0; }
+  /* Los tres datos siguen en una fila (la ficha del móvil): solo se aprietan. */
+  .dh-dato { padding: 2px 3px; }
+  .dh-dato-valor { font-size: 1.45rem; }
+  .dh-dato-texto { font-size: 11px; }
   .rs-dia { flex-basis: 34px; height: 42px; }
+  .dh-racha .rs-dia { height: 38px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pn-barra > i,
   .rs-dia.is-on { animation: none; }
 
+  .dp-punto,
+  .dp-nueva i,
+  .dp-novedades-campana svg { animation: none; }
+
   .dh-dato,
-  .ix-ficha,
   .dh-guia,
+  .dp-novedades,
+  .dp-pregunta,
+  .dp-hecha,
   .dh-logro-pista { transition: none; }
 }

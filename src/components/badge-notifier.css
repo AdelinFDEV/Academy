@@ -16,86 +16,203 @@
   /* Si la tarjeta no cabe (móvil apaisado), que se pueda bajar hasta ella en
      vez de quedar cortada por arriba. */
   place-items: safe center;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  overflow-x: hidden;
   overflow-y: auto;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   overscroll-behavior: contain;
-  background: rgba(29, 27, 51, 0.5);
+  /* Un foco de luz cálida en el centro, sobre la página oscurecida. */
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 210, 63, 0.28), transparent 46%),
+    rgba(29, 27, 51, 0.62);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   color-scheme: light;
   animation: bn-aparece 0.3s ease both;
 }
 
-@keyframes bn-aparece {
-  from { opacity: 0; }
+.bn-fondo.is-especial {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 138, 31, 0.38), transparent 50%),
+    rgba(29, 27, 51, 0.7);
 }
+
+@keyframes bn-aparece { from { opacity: 0; } }
+
+/* Los rayos: un abanico de luz que gira despacio detrás de todo. */
+.bn-rayos {
+  position: fixed;
+  top: 42%;
+  left: 50%;
+  width: 1100px;
+  height: 1100px;
+  margin: -550px 0 0 -550px;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 243, 196, 0.16) 0deg 8deg, transparent 8deg 20deg);
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle, #000 12%, transparent 58%);
+  mask-image: radial-gradient(circle, #000 12%, transparent 58%);
+  pointer-events: none;
+  animation: bn-rayos-entra 0.6s 0.35s ease-out both, bn-rayos-gira 30s linear infinite;
+}
+
+@keyframes bn-rayos-entra { from { opacity: 0; scale: 0.4; } }
+@keyframes bn-rayos-gira { to { transform: rotate(360deg); } }
 
 .bn-tarjeta {
   --p: var(--amarillo);
   --po: var(--amarillo-o);
+  --ps: var(--amarillo-s);
   --pt: var(--tinta);
 
   position: relative;
-  width: min(380px, 100%);
-  padding: 74px 26px 18px;
-  margin-top: 56px;
+  width: min(400px, 100%);
+  padding: 92px 26px 20px;
+  margin-top: 70px;
   border-radius: 32px;
-  background: var(--papel);
+  background:
+    radial-gradient(circle at 50% 0, var(--ps) 0 120px, transparent 121px),
+    var(--papel);
   color: var(--tinta);
   font-family: var(--letra-texto);
   text-align: center;
   box-shadow:
-    0 8px 0 var(--gris-o),
-    0 40px 60px -30px rgba(29, 27, 51, 0.6);
-  animation: bn-sube 0.55s cubic-bezier(0.34, 1.56, 0.5, 1) both;
+    0 8px 0 var(--po),
+    0 50px 80px -30px rgba(29, 27, 51, 0.7);
+  /* Sube con rebote y, cuando la pegatina se estampa, se sacude. */
+  animation:
+    bn-sube 0.5s cubic-bezier(0.34, 1.56, 0.5, 1) both,
+    bn-sacude 0.42s 0.42s ease-out;
 }
 
 .bn-tarjeta--especial {
   --p: var(--naranja);
   --po: var(--naranja-o);
+  --ps: var(--naranja-s);
   --pt: #fff;
 }
 
-@keyframes bn-sube {
-  from { opacity: 0; transform: translateY(60px) scale(0.92); }
+@keyframes bn-sube { from { opacity: 0; transform: translateY(80px) scale(0.9); } }
+
+@keyframes bn-sacude {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(0, 7px) scale(0.985); }
+  45% { transform: translate(-4px, -2px) rotate(-0.6deg); }
+  70% { transform: translate(3px, 1px) rotate(0.4deg); }
+  100% { transform: translate(0, 0); }
 }
 
-/* La pegatina: redonda, con borde blanco y sombra, que cae girando y se
-   queda ladeada, como pegada a mano. */
+/* La escena de la pegatina, encima de la tarjeta. */
+.bn-escena {
+  position: absolute;
+  top: -78px;
+  left: 50%;
+  width: 156px;
+  height: 156px;
+  margin-left: -78px;
+}
+
+/* La pegatina: cae desde lejos girando, se estampa (0,42 s) y después flota. */
 .bn-pegatina {
   position: absolute;
-  top: -62px;
-  left: 50%;
+  inset: 0;
   display: grid;
   place-items: center;
-  width: 124px;
-  height: 124px;
-  margin-left: -62px;
-  border: 6px solid #fff;
+  border: 7px solid #fff;
   border-radius: 50%;
   background: var(--p);
   color: var(--pt);
   box-shadow:
-    inset 0 -6px 0 rgba(0, 0, 0, 0.1),
-    0 6px 0 var(--po),
-    0 18px 26px -12px rgba(29, 27, 51, 0.55);
-  transform: rotate(8deg);
-  animation: bn-estampa 0.7s 0.18s cubic-bezier(0.34, 1.8, 0.5, 1) both;
+    inset 0 -8px 0 rgba(0, 0, 0, 0.1),
+    inset 0 5px 0 rgba(255, 255, 255, 0.35),
+    0 7px 0 var(--po),
+    0 22px 30px -12px rgba(29, 27, 51, 0.6);
+  animation:
+    bn-estampa 0.62s cubic-bezier(0.5, 0, 0.75, 0) both,
+    bn-flota 3s 1.1s ease-in-out infinite;
 }
 
 @keyframes bn-estampa {
-  0% { opacity: 0; transform: scale(2.2) rotate(-40deg); }
-  60% { opacity: 1; }
+  0% { opacity: 0; transform: scale(3) rotate(-60deg); }
+  45% { opacity: 1; }
+  68% { transform: scale(0.88) rotate(10deg); }
+  84% { transform: scale(1.08) rotate(6deg); }
   100% { opacity: 1; transform: scale(1) rotate(8deg); }
+}
+
+@keyframes bn-flota {
+  0%, 100% { transform: translateY(0) rotate(8deg); }
+  50% { transform: translateY(-8px) rotate(-3deg); }
 }
 
 .bn-pegatina-icono {
   display: grid;
   place-items: center;
   line-height: 0;
+  animation: bn-icono 0.5s 0.6s cubic-bezier(0.34, 1.8, 0.5, 1) both;
 }
 
-.bn-pegatina-icono svg {
-  width: 52px;
-  height: 52px;
+.bn-pegatina-icono svg { width: 66px; height: 66px; }
+
+/* El súper hito: su dibujo, más grande que la pegatina, asomando por los bordes. */
+.bn-pegatina-icono .icono-superhito { width: 168px; height: auto; margin-top: -8px; }
+
+@keyframes bn-icono { from { transform: scale(0) rotate(-30deg); } }
+
+/* Un brillo que cruza la pegatina después de estamparse. */
+.bn-pegatina::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.7) 50%, transparent 65%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  animation: bn-brillo 0.9s 0.75s ease-in-out both;
+  pointer-events: none;
+}
+
+@keyframes bn-brillo { to { background-position: -50% 0; } }
+
+/* La onda: un aro que sale al estamparse. */
+.bn-onda {
+  position: absolute;
+  inset: 0;
+  border: 5px solid var(--p);
+  border-radius: 50%;
+  opacity: 0;
+  animation: bn-onda 0.8s 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.bn-onda--2 { border-width: 3px; animation-delay: 0.55s; }
+
+@keyframes bn-onda {
+  0% { opacity: 0.9; transform: scale(0.9); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+
+/* Las chispas: diez estrellitas que salen disparadas en círculo. */
+.bn-chispas { position: absolute; inset: 0; }
+
+.bn-chispas i {
+  --a: calc(var(--i) * 36deg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  background: var(--amarillo);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0;
+  animation: bn-chispa 0.85s 0.44s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.bn-chispas i:nth-child(even) { width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; background: var(--p); }
+.bn-tarjeta--especial .bn-chispas i:nth-child(even) { background: #fff; }
+
+@keyframes bn-chispa {
+  0% { opacity: 1; transform: rotate(var(--a)) translateY(0) scale(0.4); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(-120px) scale(1.1) rotate(120deg); }
 }
 
 .bn-estrella {
@@ -104,34 +221,54 @@
   right: -12px;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border: 4px solid #fff;
   border-radius: 50%;
   background: var(--amarillo);
   color: var(--tinta);
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1;
   box-shadow: 0 3px 0 var(--amarillo-o);
   transform: rotate(-14deg);
+  animation: bn-icono 0.5s 0.8s cubic-bezier(0.34, 1.8, 0.5, 1) both;
 }
 
+/* Los textos entran escalonados, después del golpe. */
+.bn-antetitulo,
+.bn-titulo,
+.bn-desc,
+.bn-premio,
+.bn-acciones { animation: bn-texto 0.45s cubic-bezier(0.34, 1.4, 0.5, 1) both; }
+
+.bn-antetitulo { animation-delay: 0.55s; }
+.bn-titulo { animation-delay: 0.65s; }
+.bn-desc { animation-delay: 0.75s; }
+.bn-premio { animation-delay: 0.85s; }
+
+@keyframes bn-texto { from { opacity: 0; transform: translateY(14px); } }
+
+/* «¡Logro desbloqueado!», como un sello de rotulador. */
 .bn-antetitulo {
+  display: inline-block;
   margin: 0;
+  padding: 4px 14px;
+  background: var(--p);
+  color: var(--pt);
   font-family: var(--letra-mano);
-  font-size: 26px;
+  font-size: 25px;
   font-weight: 700;
-  line-height: 1.1;
-  color: var(--naranja-o);
-  transform: rotate(-2deg);
+  line-height: 1.15;
+  rotate: -3deg;
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.45);
 }
 
 .bn-titulo {
-  margin: 6px 0 0;
+  margin: 14px 0 0;
   font-family: var(--letra-titular);
-  font-size: 27px;
+  font-size: 30px;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.12;
   letter-spacing: -0.015em;
   color: var(--tinta);
 }
@@ -144,7 +281,7 @@
   color: var(--tinta-2);
 }
 
-/* La recompensa: un pósit amarillo ladeado. */
+/* La recompensa: un pósit ladeado. */
 .bn-premio {
   display: inline-flex;
   align-items: center;
@@ -156,7 +293,7 @@
   font-size: 14px;
   font-weight: 800;
   line-height: 1.35;
-  transform: rotate(-1.5deg);
+  rotate: -1.5deg;
   box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.35);
 }
 
@@ -167,17 +304,38 @@
   flex-direction: column;
   gap: 6px;
   margin-top: 22px;
+  /* No se pueden pulsar hasta que han entrado del todo: un doble clic sin
+     querer no corta la animación. */
+  pointer-events: none;
 }
+
+.bn-acciones { animation-delay: 0.95s; }
+.bn-acciones.is-lista { pointer-events: auto; }
 
 .bn-acciones .tecla { white-space: normal; text-align: center; }
 
 @media (max-width: 420px) {
-  .bn-tarjeta { padding: 66px 18px 14px; }
-  .bn-titulo { font-size: 24px; }
+  .bn-tarjeta { padding: 82px 18px 16px; }
+  .bn-escena { top: -66px; width: 132px; height: 132px; margin-left: -66px; }
+  .bn-pegatina-icono svg { width: 56px; height: 56px; }
+  .bn-titulo { font-size: 25px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bn-fondo,
-  .bn-tarjeta { animation: none; }
-  .bn-pegatina { animation: none; }
+  .bn-rayos,
+  .bn-tarjeta,
+  .bn-pegatina,
+  .bn-pegatina::after,
+  .bn-pegatina-icono,
+  .bn-estrella,
+  .bn-antetitulo,
+  .bn-titulo,
+  .bn-desc,
+  .bn-premio { animation: none; }
+  .bn-acciones { animation: none; }
+
+  .bn-pegatina { transform: rotate(8deg); }
+  .bn-onda,
+  .bn-chispas { display: none; }
 }

@@ -351,10 +351,47 @@ function avance(ctx: AudioContext) {
 }
 
 /** Logro (examen aprobado, guía terminada): una fanfarria corta, junto al confeti. */
-function logro(ctx: AudioContext) {
-  [523.25, 659.25, 783.99].forEach((f, i) => nota(ctx, f, i * 0.09, 0.2));
-  nota(ctx, 1046.5, 0.3, 0.55, { volumen: VOLUMEN * 1.1 });
-  nota(ctx, 783.99, 0.3, 0.55, { tipo: "sine", volumen: VOLUMEN * 0.6 });
+function logro(ctx: AudioContext, tono = 1) {
+  // Rehecho el 23-11-2026 (pedido por el admin: «mejora muchísimo el sonido»).
+  // Va al compás de la animación del aviso (badge-notifier.css):
+  //  1) 0,00 s · un soplo que sube mientras la pegatina cae;
+  //  2) 0,42 s · el «¡toc!» grave de la pegatina al estamparse;
+  //  3) 0,50 s · el arpegio do–mi–sol–do que sube;
+  //  4) 0,86 s · el acorde final, cálido, con un brillo de campanitas encima.
+  // Con `tono` > 1 (un logro especial) el acorde dura más y suena una octava
+  // de campanitas más.
+  const especial = tono > 1;
+  const t = ctx.currentTime;
+
+  // 1) El soplo: ruido filtrado cuyo filtro sube, flojo.
+  const soplo = ctx.createBufferSource();
+  soplo.buffer = ruido(ctx);
+  const filtro = ctx.createBiquadFilter();
+  filtro.type = "bandpass";
+  filtro.Q.value = 0.9;
+  filtro.frequency.setValueAtTime(500, t);
+  filtro.frequency.exponentialRampToValueAtTime(4200, t + 0.38);
+  const gs = ctx.createGain();
+  gs.gain.setValueAtTime(0.0001, t);
+  gs.gain.exponentialRampToValueAtTime(VOLUMEN * 0.5, t + 0.26);
+  gs.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+  soplo.connect(filtro).connect(gs).connect(salida(ctx));
+  soplo.start(t, 0, 0.45);
+
+  // 2) El toc de la pegatina: un golpe grave y redondo con su chasquido de papel.
+  modo(ctx, t + 0.42, 95, 0.22, VOLUMEN * 1.6);
+  modo(ctx, t + 0.42, 190, 0.12, VOLUMEN * 0.7);
+  chasquido(ctx, t + 0.42, 1800, 0.05, VOLUMEN * 0.5);
+
+  // 3) El arpegio que sube.
+  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => nota(ctx, f, 0.5 + i * 0.075, 0.22, { volumen: VOLUMEN * 0.9 }));
+
+  // 4) El acorde final y su brillo.
+  const largo = especial ? 1.5 : 1.05;
+  [523.25, 659.25, 783.99].forEach((f) => nota(ctx, f, 0.86, largo, { tipo: "sine", volumen: VOLUMEN * 0.55 }));
+  nota(ctx, 1046.5, 0.86, largo, { volumen: VOLUMEN * 0.8 });
+  const brillo = especial ? [2093, 2637, 3136, 4186, 3136, 4186] : [2093, 2637, 3136, 4186];
+  brillo.forEach((f, i) => nota(ctx, f, 0.92 + i * 0.07, 0.3, { tipo: "sine", volumen: VOLUMEN * 0.28 }));
 }
 
 /** Racha: una chispa breve y aguda. */
