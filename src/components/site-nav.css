@@ -1096,16 +1096,17 @@
 /* Por debajo de 1280 px las tres piezas y el foro de escritorio no caben
    junto a la marca y los accesos (medido sin sesión, que es el caso más
    ancho): van en el menú, y el foro pasa a su tecla de móvil. */
-/* ── El centro, centrado de verdad ──
-   Con `auto 1fr auto`, la cápsula se centraba en el hueco que dejan la marca
-   y los accesos, que es mucho más ancho a la derecha: quedaba 144 px a la
-   izquierda del centro de la pantalla. Con dos columnas laterales iguales
-   queda en el centro; y si la derecha no cabe en su mitad, la columna crece
-   lo justo (`max-content`) y la cápsula se aparta solo eso. */
+/* ── El centro, centrado entre el logo y los accesos (23-11-2026) ──
+   Antes iba en el centro exacto de la pantalla, pero como los accesos de la
+   derecha (redes, la tarjeta de la cuenta y el menú) son mucho más anchos que
+   el logo, el hueco de la izquierda era casi el triple del de la derecha y se
+   veía descentrado (avisado por el admin). Ahora la cápsula y el foro quedan
+   a la MISMA distancia del logo que de los accesos: la columna del medio
+   ocupa todo el hueco y el grupo se centra dentro. */
 @media (min-width: 1280px) {
-  .blog-nav { grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr); }
+  .blog-nav { grid-template-columns: auto minmax(0, 1fr) auto; }
   .blog-brand { justify-self: start; }
-  .blog-nav-center { gap: 8px; }
+  .blog-nav-center { justify-self: center; gap: 8px; }
 }
 
 @media (max-width: 1279px) {

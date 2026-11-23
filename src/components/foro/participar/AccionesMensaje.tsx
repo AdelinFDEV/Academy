@@ -151,7 +151,7 @@ export default function AccionesMensaje({
           </Tecla>
         )}
         {esMio && !esGanadora && (
-          <Tecla color="blanca" tamano="peq" className="fp-accion" aria-expanded={panel === "borrar"} onClick={() => abrir("borrar")}>
+          <Tecla color="coral" tamano="peq" className="fp-accion" aria-expanded={panel === "borrar"} onClick={() => abrir("borrar")}>
             <Trash2 size={14} strokeWidth={2.6} aria-hidden="true" /> Borrar
           </Tecla>
         )}

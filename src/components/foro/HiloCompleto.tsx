@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BadgeCheck, CornerDownRight, Lock, MessageCircle, Pin } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, BadgeCheck, CornerDownRight, HandHeart, Heart, Lightbulb, Lock, MessageCircle, Pin, Users } from "lucide-react";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
@@ -114,38 +115,92 @@ export default function HiloCompleto({
   const { Icono } = aspectoDe(hilo.categoria.slug);
   const resuelto = hilo.respuestas.some((r) => r.esGanadora);
   const meGustaTotal = hilo.respuestas.reduce((n, r) => n + r.meGusta + r.replicas.reduce((m, x) => m + x.meGusta, 0), 0);
-  const valoraciones = hilo.etiquetas.interesante + hilo.etiquetas.gracias + hilo.etiquetas.yoTambien;
 
   return (
     <MarcoForo conSesion={conSesion} tono={colorDe(hilo.categoria.slug)}>
       <ContextoHilo preguntaId={hilo.id} conSesion={conSesion}>
-        <nav className="fo-migas" aria-label="Estás en">
-          <Link href="/foro">Foro</Link>
-          <span aria-hidden="true">/</span>
-          <Link href={`/foro/${hilo.categoria.slug}`}>{hilo.categoria.nombre}</Link>
-        </nav>
+        {/* ── El inicio del hilo (23-11-2026, rehecho de cero: pedido por el
+            admin) ── Una hoja en el pastel de su categoría, como la cabecera
+            del foro: arriba, la vuelta y las migas; la categoría en una
+            pegatina con «pregunta en …» a mano; el titular grande; y abajo la
+            firma en una ficha blanca y los datos del hilo en chips. En la
+            esquina, la pegatina del «?» o, si ya está resuelto, un sello. */}
+        <header className={`fhc${resuelto ? " is-resuelto" : ""}`}>
+          {resuelto ? (
+            <span className="fhc-sello" aria-hidden="true">
+              <BadgeCheck size={22} strokeWidth={2.6} />
+              ¡Resuelta!
+            </span>
+          ) : (
+            <Image src="/cuaderno/pregunta-pegatina.webp" alt="" width={225} height={300} className="fhc-pegatina" draggable={false} />
+          )}
+
+          <nav className="fhc-migas" aria-label="Estás en">
+            <Link href="/foro" className="fhc-volver">
+              <ArrowLeft size={15} strokeWidth={2.8} aria-hidden="true" /> Foro
+            </Link>
+            <span aria-hidden="true">/</span>
+            <Link href={`/foro/${hilo.categoria.slug}`}>{hilo.categoria.nombre}</Link>
+          </nav>
+
+          <div className="fhc-cat">
+            <Link href={`/foro/${hilo.categoria.slug}`} className="fhc-cat-icono" aria-label={`Categoría: ${hilo.categoria.nombre}`}>
+              <Icono size={26} strokeWidth={2.4} aria-hidden="true" />
+            </Link>
+            <p className="fhc-nota">pregunta en {hilo.categoria.nombre.toLowerCase()}</p>
+          </div>
+
+          <h1 className="fhc-titulo">{hilo.titulo}</h1>
+
+          <div className="fhc-pie">
+            <div className="fhc-firma">
+              <Firma autor={hilo.autor} fecha={hilo.fecha} />
+            </div>
+            <ul className="fhc-datos" aria-label="Datos del hilo">
+              <li>
+                <MessageCircle size={15} strokeWidth={2.6} aria-hidden="true" />
+                <b>{hilo.totalRespuestas}</b> {hilo.totalRespuestas === 1 ? "respuesta" : "respuestas"}
+              </li>
+              {/* Las tres reacciones de la pregunta, en su color (las mismas
+                  teclas del pie), para verlo todo de un vistazo. */}
+              <li className="is-interesante">
+                <Lightbulb size={15} strokeWidth={2.6} aria-hidden="true" />
+                <b>{hilo.etiquetas.interesante}</b> Interesante
+              </li>
+              <li className="is-gracias">
+                <HandHeart size={15} strokeWidth={2.6} aria-hidden="true" />
+                <b>{hilo.etiquetas.gracias}</b> Gracias
+              </li>
+              <li className="is-yotambien">
+                <Users size={15} strokeWidth={2.6} aria-hidden="true" />
+                <b>{hilo.etiquetas.yoTambien}</b> Yo también
+              </li>
+              {meGustaTotal > 0 && (
+                <li>
+                  <Heart size={15} strokeWidth={2.6} aria-hidden="true" />
+                  <b>{meGustaTotal}</b> me gusta
+                </li>
+              )}
+              {resuelto && (
+                <li className="is-resuelto">
+                  <BadgeCheck size={15} strokeWidth={2.8} aria-hidden="true" /> Resuelto
+                </li>
+              )}
+              {hilo.fijado && (
+                <li>
+                  <Pin size={14} strokeWidth={2.8} aria-hidden="true" /> Fijado
+                </li>
+              )}
+              {hilo.cerrado && !resuelto && (
+                <li>
+                  <Lock size={14} strokeWidth={2.8} aria-hidden="true" /> Cerrado
+                </li>
+              )}
+            </ul>
+          </div>
+        </header>
 
         {aviso && <p className="fo-aviso" role="status">{aviso}</p>}
-
-        {/* ── La pregunta, como el arranque de una hoja ── */}
-        <header className="fh-cabecera">
-          <div className="fh-sellos">
-            <Link href={`/foro/${hilo.categoria.slug}`} className="fo-cat">
-              <Icono size={13} strokeWidth={2.6} aria-hidden="true" />
-              {hilo.categoria.nombre}
-            </Link>
-            {resuelto && (
-              <span className="fo-sello fo-sello--resuelto">
-                <BadgeCheck size={13} strokeWidth={2.8} aria-hidden="true" /> Resuelto
-              </span>
-            )}
-            {hilo.fijado && (
-              <span className="fo-sello"><Pin size={12} strokeWidth={2.8} aria-hidden="true" /> Fijado</span>
-            )}
-          </div>
-          <h1 className="fh-hilo-titulo">{hilo.titulo}</h1>
-          <Firma autor={hilo.autor} fecha={hilo.fecha} />
-        </header>
 
         <div className="fh-rejilla">
           <div className="fh-principal">
@@ -175,6 +230,7 @@ export default function HiloCompleto({
               <footer className="fh-pregunta-pie">
                 <Etiquetas
                   inicial={{ interesante: hilo.etiquetas.interesante, gracias: hilo.etiquetas.gracias, yo_tambien: hilo.etiquetas.yoTambien }}
+                  comentarios={hilo.totalRespuestas}
                 />
                 <div className="fh-pregunta-acciones">
                   {marca && <span className="fh-editado">{marca}</span>}
@@ -182,6 +238,40 @@ export default function HiloCompleto({
                 </div>
               </footer>
             </article>
+
+            {/* ── Responder (23-11-2026): siempre justo al acabar la pregunta,
+                antes de las respuestas; el pósit de las normas, al lado. ── */}
+            {hilo.cerrado ? (
+              <p className={`fh-cerrado${resuelto ? " is-resuelto" : ""}`}>
+                <span className="fh-cerrado-icono" aria-hidden="true">
+                  {resuelto ? <BadgeCheck size={20} strokeWidth={2.6} /> : <Lock size={18} strokeWidth={2.6} />}
+                </span>
+                {resuelto
+                  ? "Resuelto: este hilo ya tiene respuesta y no admite más."
+                  : "Este hilo está cerrado y no admite más respuestas."}
+              </p>
+            ) : (
+              <div className="fh-responder-zona">
+                <div className="fh-responder" id="responder">
+                  <h3 className="fh-responder-titulo">
+                    <span className="fh-responder-icono" aria-hidden="true"><MessageCircle size={18} strokeWidth={2.6} /></span>
+                    Tu respuesta
+                  </h3>
+                  <Responder />
+                </div>
+
+                {/* Antes de responder: el pósit, al lado del formulario. */}
+                <section className="fh-recordatorio" aria-label="Antes de responder">
+                  <h2>Antes de responder</h2>
+                  <ul>
+                    <li>Responde a lo que se pregunta, con tus palabras.</li>
+                    <li>Nada de contactar por privado ni de enlaces de referido.</li>
+                    <li>Nunca pidas ni publiques una frase semilla.</li>
+                  </ul>
+                  <Link href="/foro/normas">Normas del foro</Link>
+                </section>
+              </div>
+            )}
 
             {/* ── Las respuestas ── */}
             <section className="fh-respuestas" aria-labelledby="fh-respuestas-titulo">
@@ -225,66 +315,9 @@ export default function HiloCompleto({
                 </ol>
               )}
 
-              {hilo.cerrado ? (
-                <p className={`fh-cerrado${resuelto ? " is-resuelto" : ""}`}>
-                  <span className="fh-cerrado-icono" aria-hidden="true">
-                    {resuelto ? <BadgeCheck size={20} strokeWidth={2.6} /> : <Lock size={18} strokeWidth={2.6} />}
-                  </span>
-                  {resuelto
-                    ? "Resuelto: este hilo ya tiene respuesta y no admite más."
-                    : "Este hilo está cerrado y no admite más respuestas."}
-                </p>
-              ) : (
-                <div className="fh-responder" id="responder">
-                  <h3 className="fh-responder-titulo">
-                    <span className="fh-responder-icono" aria-hidden="true"><MessageCircle size={18} strokeWidth={2.6} /></span>
-                    Tu respuesta
-                  </h3>
-                  <Responder />
-                </div>
-              )}
             </section>
           </div>
 
-          {/* ── La columna lateral ── */}
-          <aside className="fh-lateral">
-            <section className="fh-ficha fo-tarjeta" aria-label="Sobre este hilo">
-              <dl>
-                <div>
-                  <dt>Respuestas</dt>
-                  <dd>{hilo.totalRespuestas}</dd>
-                </div>
-                <div>
-                  <dt>Me gusta</dt>
-                  <dd>{meGustaTotal}</dd>
-                </div>
-                <div>
-                  <dt>Valoraciones</dt>
-                  <dd>{valoraciones}</dd>
-                </div>
-              </dl>
-              <p className={`fh-estado${resuelto ? " is-resuelto" : ""}`}>
-                {resuelto ? "Resuelto" : hilo.cerrado ? "Cerrado" : hilo.totalRespuestas > 0 ? "Abierto, con respuestas" : "Esperando la primera respuesta"}
-              </p>
-              {!hilo.cerrado && (
-                <Tecla href="#responder" color="coral" ancho className="fh-ficha-responder">
-                  <MessageCircle size={17} strokeWidth={2.6} aria-hidden="true" />
-                  Responder
-                </Tecla>
-              )}
-            </section>
-
-            {/* Antes de responder: un pósit, como una nota al margen. */}
-            <section className="fh-recordatorio" aria-label="Antes de responder">
-              <h2>Antes de responder</h2>
-              <ul>
-                <li>Responde a lo que se pregunta, con tus palabras.</li>
-                <li>Nada de contactar por privado ni de enlaces de referido.</li>
-                <li>Nunca pidas ni publiques una frase semilla.</li>
-              </ul>
-              <Link href="/foro/normas">Normas del foro</Link>
-            </section>
-          </aside>
         </div>
 
         <p className="fh-opiniones">

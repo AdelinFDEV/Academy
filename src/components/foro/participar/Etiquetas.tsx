@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HandHeart, Lightbulb, Users, type LucideIcon } from "lucide-react";
+import { Check, HandHeart, Lightbulb, MessageCircle, Users, type LucideIcon } from "lucide-react";
 import Tecla, { type ColorTecla } from "@/components/cuaderno/Tecla";
 import { pedirForo } from "@/components/foro/pedir";
 import { sonar } from "@/lib/sonidos";
@@ -21,7 +21,7 @@ const COLOR: Record<EtiquetaId, ColorTecla> = { interesante: "amarillo", gracias
  * Se ven los totales, nunca quién las puso (FORO.md §8). Quien preguntó solo
  * ve las cifras: nadie valora lo suyo.
  */
-export default function Etiquetas({ inicial }: { inicial: Cuentas }) {
+export default function Etiquetas({ inicial, comentarios }: { inicial: Cuentas; comentarios: number }) {
   const { preguntaId, mio, cambiar } = useHilo();
   const [cuentas, setCuentas] = useState(inicial);
   const [enviando, setEnviando] = useState<EtiquetaId | null>(null);
@@ -57,8 +57,10 @@ export default function Etiquetas({ inicial }: { inicial: Cuentas }) {
         {ETIQUETAS.map((e) => {
           const Icono = ICONO[e.id];
           const puesta = mio?.etiquetas.includes(e.id) ?? false;
+          // Cada una se colorea en cuanto recibe la primera (23-11-2026).
+          const con = cuentas[e.id] > 0;
           return mio?.esAutorDeLaPregunta ? (
-            <li key={e.id} className="fp-etiqueta es-propia" title={e.ayuda}>
+            <li key={e.id} className={`fp-etiqueta es-propia is-${COLOR[e.id]}${con ? " is-con" : ""}`} title={e.ayuda}>
               <Icono size={16} strokeWidth={2.5} aria-hidden="true" />
               {e.nombre}
               <b>{cuentas[e.id]}</b>
@@ -66,21 +68,28 @@ export default function Etiquetas({ inicial }: { inicial: Cuentas }) {
           ) : (
             <li key={e.id}>
               <Tecla
-                color={puesta ? COLOR[e.id] : "blanca"}
+                color={con || puesta ? COLOR[e.id] : "blanca"}
                 tamano="peq"
                 className={`fp-etiqueta${puesta ? " is-puesta" : ""}`}
                 aria-pressed={puesta}
-                title={e.ayuda}
+                title={puesta ? `${e.ayuda} (la tuya)` : e.ayuda}
                 disabled={!mio || enviando !== null}
                 onClick={() => alternar(e.id)}
               >
-                <Icono size={16} strokeWidth={2.5} aria-hidden="true" />
+                {puesta ? <Check size={16} strokeWidth={3} aria-hidden="true" /> : <Icono size={16} strokeWidth={2.5} aria-hidden="true" />}
                 {e.nombre}
                 <b>{cuentas[e.id]}</b>
               </Tecla>
             </li>
           );
         })}
+        {/* Los comentarios: un dato de la fila, no un botón; coral en
+            cuanto llega la primera respuesta. */}
+        <li className={`fp-etiqueta es-propia is-coral${comentarios > 0 ? " is-con" : ""}`}>
+          <MessageCircle size={16} strokeWidth={2.5} aria-hidden="true" />
+          Comentarios
+          <b>{comentarios}</b>
+        </li>
       </ul>
       {error && <p className="fp-error" role="alert">{error}</p>}
       {invitar !== null && <Invitacion motivo={invitar} onCerrar={() => { sonar("cerrar"); setInvitar(null); }} />}

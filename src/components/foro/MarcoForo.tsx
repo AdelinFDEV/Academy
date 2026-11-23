@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
+import GarabatosForo from "@/components/foro/GarabatosForo";
 import "@/app/foro/foro.css";
 
 /**
@@ -26,6 +27,8 @@ export default function MarcoForo({
     <div className="blog-page fo-pagina" style={tono}>
       <SiteNav user={conSesion} />
       <div className="fo-cuadricula" aria-hidden="true" />
+      {/* Garabatos de conversación en el fondo, detrás de todo (23-11-2026). */}
+      <GarabatosForo />
       <main className="fo-main">{children}</main>
       <Footer />
     </div>

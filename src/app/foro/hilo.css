@@ -15,39 +15,236 @@
 
 /* ── Cabecera ──────────────────────────────────────────────────────────── */
 
-.fh-cabecera {
+/* ── El inicio del hilo (23-11-2026, rehecho de cero) ─────────────────────
+   Una hoja en el pastel de su categoría (`--cat-s`), con los puntos de la
+   libreta y un cuarto de círculo en la esquina, como la cabecera del foro.
+   La pegatina del «?» (o el sello «¡Resuelta!») asoma por arriba a la derecha. */
+.fhc {
+  position: relative;
   display: grid;
-  justify-items: start;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin: 2.4rem 0 2.2rem;
+  padding: 1.6rem 2.2rem 1.7rem;
+  border-radius: 32px;
+  background-color: var(--cat-s, var(--coral-s));
+  background-image: radial-gradient(color-mix(in srgb, var(--cat, var(--coral)) 28%, transparent) 1.5px, transparent 2px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  box-shadow: 0 7px 0 var(--cat, var(--coral)), 0 30px 46px -36px rgba(29, 27, 51, 0.55);
 }
 
-.fh-sellos {
+.fhc::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 0 32px 0 100%;
+  background: color-mix(in srgb, var(--cat, var(--coral)) 20%, var(--cat-s, var(--coral-s)));
+  pointer-events: none;
+}
+
+.fhc > * { position: relative; }
+
+/* La pegatina del «?», asomando y pensando. */
+.fhc > .fhc-pegatina {
+  position: absolute;
+  top: -44px;
+  right: 26px;
+  z-index: 2;
+  width: 96px;
+  height: auto;
+  rotate: 10deg;
+  filter: drop-shadow(0 10px 14px rgba(143, 124, 255, 0.35));
+  pointer-events: none;
+  animation: fhc-piensa 3.4s ease-in-out infinite;
+}
+
+@keyframes fhc-piensa {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  40% { transform: translateY(-6px) rotate(-6deg); }
+  70% { transform: translateY(-2px) rotate(4deg); }
+}
+
+/* Resuelto: un sello menta estampado en la esquina. */
+.fhc-sello {
+  position: absolute;
+  top: -18px;
+  right: 24px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 3px solid var(--menta-o);
+  border-radius: 16px;
+  background: var(--menta-s);
+  color: var(--menta-o);
+  font-family: var(--letra-mano);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  rotate: 6deg;
+  box-shadow: 0 5px 0 var(--menta-o);
+}
+
+/* La vuelta al foro y las migas. */
+.fhc-migas {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
+  padding-right: 120px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--tinta-3);
 }
 
-.fh-hilo-titulo {
-  max-width: 26ch;
+.fhc-migas a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 11px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--cat, var(--coral)) 40%, var(--cat-s, var(--coral-s)));
+  color: var(--tinta-2);
+  text-decoration: none;
+  transition: transform 0.2s var(--fo-muelle), color 0.15s ease;
+}
+
+.fhc-migas a:hover { color: var(--cat-o, var(--coral-o)); transform: translateY(-1px); }
+
+/* La categoría: su icono en una pegatina de su color y la nota a mano. */
+.fhc-cat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 0.6rem;
+}
+
+.fhc-cat-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 4px solid var(--papel);
+  border-radius: 18px;
+  background: var(--cat, var(--coral));
+  color: var(--cat-t, #fff);
+  box-shadow: 0 5px 0 var(--cat-o, var(--coral-o));
+  rotate: -6deg;
+  transition: rotate 0.3s var(--fo-muelle);
+}
+
+.fhc-cat-icono:hover { rotate: 4deg; }
+
+.fhc-nota {
   margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cat-o, var(--coral-o));
+  rotate: -2deg;
+}
+
+.fhc-titulo {
+  max-width: 24ch;
+  margin: 0.2rem 0 0;
   font-family: var(--letra-titular);
-  font-size: clamp(2rem, 4.4vw, 3.1rem);
+  font-size: clamp(2rem, 4.4vw, 3.2rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.06;
   letter-spacing: -0.022em;
   color: var(--tinta);
   overflow-wrap: anywhere;
 }
 
+/* Abajo: la firma en una ficha blanca y los datos del hilo en chips. */
+.fhc-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-top: 0.4rem;
+  padding-top: 1.1rem;
+  border-top: 2px dashed color-mix(in srgb, var(--cat, var(--coral)) 35%, transparent);
+}
+
+.fhc-firma {
+  padding: 8px 16px 8px 8px;
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--cat, var(--coral)) 40%, var(--cat-s, var(--coral-s)));
+}
+
+.fhc-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fhc-datos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 12px;
+  background: var(--papel);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tinta-2);
+}
+
+.fhc-datos li svg { color: var(--cat-o, var(--coral-o)); }
+.fhc-datos li b { font-family: var(--letra-titular); font-size: 1rem; color: var(--tinta); }
+/* Todos los chips en blanco, que se lean sobre el pastel de cualquier
+   categoría; cada reacción lleva su icono en una pastilla de su color. */
+.fhc-datos li.is-interesante svg,
+.fhc-datos li.is-gracias svg,
+.fhc-datos li.is-yotambien svg {
+  box-sizing: content-box;
+  padding: 4px;
+  border-radius: 8px;
+}
+.fhc-datos li.is-interesante svg { background: var(--amarillo-s); color: var(--amarillo-o); }
+.fhc-datos li.is-gracias svg { background: var(--menta-s); color: var(--menta-o); }
+.fhc-datos li.is-yotambien svg { background: var(--cielo-s); color: var(--cielo-o); }
+.fhc-datos li.is-resuelto { background: var(--menta-s); color: var(--menta-o); }
+.fhc-datos li.is-resuelto svg { color: var(--menta-o); }
+
+@media (max-width: 640px) {
+  .fhc { margin-top: 2.2rem; padding: 1.3rem 1rem 1.3rem; border-radius: 28px; }
+  .fhc::before { width: 140px; height: 140px; border-radius: 0 28px 0 100%; }
+  .fhc > .fhc-pegatina { top: -34px; right: 10px; width: 70px; }
+  .fhc-sello { right: 12px; font-size: 1.3rem; padding: 8px 14px; }
+  .fhc-migas { padding-right: 76px; }
+  .fhc-cat-icono { width: 46px; height: 46px; border-radius: 15px; }
+  .fhc-nota { font-size: 1.4rem; }
+  .fhc-titulo { font-size: 1.85rem; }
+  .fhc-pie { gap: 10px; }
+  .fhc-firma { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fhc > .fhc-pegatina { animation: none; }
+  .fhc-cat-icono { transition: none; }
+}
+
 /* ── Rejilla: hilo + columna ── */
 
+/* Una sola columna (23-11-2026): la pregunta y las respuestas a todo el
+   ancho; lo que iba en la columna lateral va en la barra del hilo y junto
+   al formulario de respuesta. */
 .fh-rejilla {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  align-items: start;
-  gap: 2.4rem;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .fh-principal {
@@ -434,65 +631,14 @@
   color: #fff;
 }
 
-/* ── La columna lateral ── */
+/* ── La zona de respuesta: el formulario y, al lado, el pósit de las normas ── */
 
-.fh-lateral {
+.fh-responder-zona {
   display: grid;
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  align-items: start;
+  gap: 1.8rem;
 }
-
-.fh-ficha {
-  display: grid;
-  gap: 1rem;
-  padding: 1.3rem 1.2rem 0.6rem;
-}
-
-.fh-ficha dl {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin: 0;
-}
-
-.fh-ficha dl > div {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.2rem;
-  text-align: center;
-}
-
-.fh-ficha dl > div + div { border-left: 2px dashed var(--gris); }
-
-.fh-ficha dd {
-  margin: 0;
-  font-family: var(--letra-titular);
-  font-size: 1.9rem;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--tinta);
-  font-variant-numeric: tabular-nums;
-}
-
-.fh-ficha dt {
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--tinta-2);
-}
-
-.fh-estado {
-  justify-self: center;
-  margin: 0;
-  padding: 5px 12px;
-  border-radius: 10px;
-  background: var(--coral-s);
-  font-size: 0.82rem;
-  font-weight: 900;
-  color: var(--coral-o);
-  text-align: center;
-}
-
-.fh-estado.is-resuelto { background: var(--menta-s); color: var(--menta-o); }
 
 /* Antes de responder: un pósit amarillo. */
 .fh-recordatorio {
@@ -565,16 +711,12 @@
 /* ── Tableta y móvil ── */
 
 @media (max-width: 1000px) {
-  .fh-rejilla { grid-template-columns: minmax(0, 1fr); }
-  .fh-lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-  /* En una sola columna la ficha cae debajo del formulario: su «Responder»
-     llevaría hacia arriba, a lo que se acaba de pasar. */
-  .fh-ficha .fh-ficha-responder { display: none; }
-  .fh-ficha { padding-bottom: 1.2rem; }
+  /* El pósit, encima del formulario: se lee antes de escribir. */
+  .fh-responder-zona { grid-template-columns: minmax(0, 1fr); }
+  .fh-responder-zona .fh-recordatorio { order: -1; transform: rotate(0.6deg); }
 }
 
 @media (max-width: 640px) {
-  .fh-lateral { grid-template-columns: minmax(0, 1fr); }
   .fh-pregunta { padding: 1.5rem 1.1rem 1.2rem 2.4rem; }
   .fh-pregunta::after { left: 1.1rem; }
   .fh-pregunta::before { left: 1.6rem; }
@@ -595,8 +737,6 @@
   .fh-replica::before { left: calc(-0.7rem - 3px); width: calc(0.7rem - 2px); }
   .fh-replica .fo-texto { font-size: 1rem; }
   .fh-resp .fp-form--replica { padding: 0.9rem 0.85rem 0.4rem; }
-  /* Las cifras del hilo: en minúscula caben en su tercio a 360 px. */
-  .fh-ficha dt { letter-spacing: 0.02em; text-transform: none; font-size: 0.8rem; }
   .fh-responder { padding: 1.2rem 1rem 0.6rem; }
   .fh-imagenes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

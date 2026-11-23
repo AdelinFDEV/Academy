@@ -5,115 +5,573 @@
    Lo importa `src/components/foro/ListadoHilos.tsx`. Prefijo: fl-.
    Estilo «Cuaderno de estudio» desde el 17-11-2026, en coral.
 
-   La cabecera: titular con su gesto de boli y una ficha con las cifras y una
-   pegatina. Debajo, las categorías como teclas, cada una con su color. Y las
+   La cabecera (rehecha el 23-11-2026): una hoja en el pastel de la categoría
+   con el titular, las teclas, una escena con pegatinas, las cifras y las
+   categorías como teclas, cada una con su color. Y las
    preguntas como tarjetas de papel con una pestaña del color de su categoría
    asomando por arriba, como las del índice de un cuaderno. */
 
-/* ── Cabecera ──────────────────────────────────────────────────────────── */
+/* ── Cabecera (23-11-2026, rehecha de cero) ─────────────────────────────
+   Una hoja entera en el pastel de la categoría (`--cat-s`; coral en la
+   portada) con los puntos de la libreta en su tono y un cuarto de círculo en
+   la esquina. Rejilla: texto a la izquierda, escena a la derecha, y abajo, a
+   lo ancho, las cifras y las categorías. */
 
-.fl-cabecera {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  align-items: end;
-  gap: 2.5rem;
-  padding: 0.8rem 0 2.4rem;
-}
-
-.fl-acciones {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 14px;
-  margin-top: 1.9rem;
-}
-
-/* La ficha de las cifras: papel con su canto, girada un poco, y una
-   pegatina coral con la interrogación en la esquina. */
-.fl-ficha {
+.flc {
   position: relative;
-  padding: 1.7rem 1.3rem 1.4rem;
-  border-radius: 28px;
-  background: var(--papel);
-  box-shadow: 0 7px 0 var(--gris-o);
-  transform: rotate(1.5deg);
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  grid-template-areas: "texto escena" "pie pie" "cats cats";
+  gap: 1.6rem 2rem;
+  margin: 0.6rem 0 2.4rem;
+  padding: 2.6rem 2.6rem 2.2rem;
+  border-radius: 36px;
+  background-color: var(--cat-s, var(--coral-s));
+  /* Dos garabatos de tinta muy suaves en el propio fondo de la hoja (un
+     bocadillo y una interrogación), y encima los puntos de la libreta. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%231d1b33' stroke-opacity='.13' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 22c18-4 46-5 64 0 8 2 10 10 10 20s-2 18-10 20c-12 3-26 3-38 2L28 78l4-15c-6-1-11-2-14-4-7-4-9-12-8-20 1-9 2-15 8-17z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%231d1b33' stroke-opacity='.13' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M32 34c0-14 14-22 27-18 13 4 14 20 4 27-7 5-12 8-12 18'/%3E%3Cpath d='M51 80v1' stroke-width='10'/%3E%3C/svg%3E"),
+    radial-gradient(color-mix(in srgb, var(--cat, var(--coral)) 28%, transparent) 1.5px, transparent 2px);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 120px auto, 70px auto, 22px 22px;
+  background-position: 46% 96%, 3% 44%, 11px 11px;
+  box-shadow: 0 7px 0 var(--cat, var(--coral)), 0 30px 46px -36px rgba(29, 27, 51, 0.55);
 }
 
-.fl-ficha-pegatina {
+.flc::before {
+  content: "";
   position: absolute;
-  top: -26px;
-  right: -14px;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 300px;
+  border-radius: 0 36px 0 100%;
+  background: color-mix(in srgb, var(--cat, var(--coral)) 20%, var(--cat-s, var(--coral-s)));
+  pointer-events: none;
+}
+
+.flc > * { position: relative; }
+
+.flc-texto { grid-area: texto; align-self: center; }
+.flc-nota { color: var(--cat-o, var(--coral-o)); }
+
+.flc-titulo {
+  margin: 0.45rem 0 0;
+  max-width: 18ch;
+  font-family: var(--letra-titular);
+  font-size: clamp(2.3rem, 4.8vw, 3.7rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+  overflow-wrap: anywhere;
+}
+
+/* «resueltas entre todos», pasado a rotulador amarillo. */
+.flc-fluor {
+  padding: 0 0.08em;
+  background: linear-gradient(transparent 58%, var(--amarillo) 58%, var(--amarillo) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.flc-entradilla {
+  max-width: 50ch;
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+/* Las acciones: la grande arriba, a lo ancho, y debajo las dos pequeñas juntas. */
+.flc-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(100%, 470px);
+  margin-top: 1.8rem;
+}
+
+/* «Hacer una pregunta»: la protagonista. Más alta, con su icono en una
+   pegatina blanca que se mece, el texto en dos líneas, una flecha que empuja
+   y un brillo que la cruza de vez en cuando. */
+.flc-acciones .tecla.flc-preguntar {
+  justify-content: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 22px 16px 16px;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 var(--h) 0 var(--o), 0 18px 30px -12px color-mix(in srgb, var(--coral) 70%, transparent);
+}
+
+.flc-preguntar-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--papel);
+  color: var(--coral-o);
+  box-shadow: 0 4px 0 var(--coral-o);
+  rotate: -6deg;
+  animation: flc-boli 2.6s ease-in-out infinite;
+}
+
+@keyframes flc-boli {
+  0%, 70%, 100% { transform: rotate(0); }
+  76% { transform: rotate(-14deg) translateY(-2px); }
+  84% { transform: rotate(10deg); }
+  92% { transform: rotate(-5deg); }
+}
+
+.flc-preguntar-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 1.2rem;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.flc-preguntar-texto small {
+  font-family: var(--letra-mano);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.92;
+}
+
+.flc-preguntar-flecha {
+  flex: none;
+  transition: transform 0.26s cubic-bezier(0.34, 1.8, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .flc-preguntar:hover .flc-preguntar-flecha { transform: translateX(5px); }
+}
+
+/* El brillo que cruza la tecla. */
+.flc-acciones .tecla.flc-preguntar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.38) 50%, transparent 65%);
+  background-size: 260% 100%;
+  background-position: 120% 0;
+  pointer-events: none;
+  animation: flc-brillo 4.5s ease-in-out infinite;
+}
+
+@keyframes flc-brillo {
+  0%, 70% { background-position: 120% 0; }
+  100% { background-position: -40% 0; }
+}
+
+/* Ranking y Lo mío: juntas debajo, mitad y mitad (o una sola a lo ancho). */
+.flc-acciones-fila {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.flc-acciones-fila.is-sola { grid-template-columns: minmax(0, 1fr); }
+.flc-acciones-fila .tecla { width: 100%; }
+
+/* El punto rojo de «Lo mío» con sus novedades (PuntoNovedades.tsx), como el
+   del dashboard: cuenta en blanco y un latido suave. La tecla deja que asome. */
+.flc-acciones-fila .tecla { overflow: visible; }
+
+.flc-punto {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  z-index: 2;
   display: grid;
   place-items: center;
-  width: 70px;
-  height: 70px;
-  border: 4px solid var(--papel);
-  border-radius: 50%;
-  background: var(--coral);
-  box-shadow: 0 6px 14px -6px rgba(29, 27, 51, 0.45);
-  font-family: var(--letra-titular);
-  font-size: 2.1rem;
-  font-weight: 800;
-  line-height: 1;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 3px solid var(--papel);
+  border-radius: 999px;
+  background: var(--baja);
   color: #fff;
-  transform: rotate(12deg);
-}
-
-.fl-ficha-nota {
-  margin: -0.6rem 0 0.9rem;
-  font-family: var(--letra-mano);
-  font-size: 21px;
+  font-size: 12px;
+  font-weight: 900;
   line-height: 1;
-  color: var(--tinta-2);
-  text-align: center;
+  letter-spacing: 0;
+  animation: flc-latir 1.8s ease-in-out infinite;
 }
 
-.fl-cifras {
+@keyframes flc-latir {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--baja) 55%, transparent); }
+  60% { box-shadow: 0 0 0 9px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flc-punto { animation: none; }
+}
+
+/* ── La escena (23-11-2026, recolocada) ──────────────────────────────────
+   Un lienzo de proporción fija (19:15) que crece y encoge entero: personajes
+   y bocadillos se colocan en % de él y las letras en `cqw` (su ancho), así
+   que nada se descoloca al cambiar de pantalla. La composición:
+     · la mascota de las burbujas, grande, abajo a la derecha;
+     · el «?» pensativo, abajo a la izquierda, mirándola;
+     · «¿y esto?» sale del «?» (pico hacia abajo, a su cabeza);
+     · los tres puntos de «está escribiendo» salen de la mascota grande
+       (pico hacia abajo a la derecha, a su mano levantada);
+     · «resuelta» sale de la burbuja verde pequeña (pico hacia abajo). */
+.flc-escena {
+  grid-area: escena;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  justify-items: center;
+}
+
+.flc-lienzo {
+  position: relative;
+  width: min(100%, 400px);
+  aspect-ratio: 19 / 15;
+  container-type: inline-size;
+}
+
+.flc-burbujas {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 66%;
+  height: auto;
+  filter: drop-shadow(0 14px 18px rgba(143, 124, 255, 0.35));
+  animation: flc-flota 4.4s ease-in-out infinite;
+}
+
+.flc-pregunta {
+  position: absolute;
+  left: 4%;
+  bottom: 2%;
+  width: 25%;
+  height: auto;
+  rotate: -8deg;
+  filter: drop-shadow(0 10px 14px rgba(143, 124, 255, 0.35));
+  animation: flc-duda 3.2s ease-in-out infinite;
+}
+
+@keyframes flc-flota {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3%) rotate(2deg); }
+}
+
+@keyframes flc-duda {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  40% { transform: translateY(-4%) rotate(-6deg); }
+  70% { transform: translateY(-1%) rotate(4deg); }
+}
+
+/* Los bocadillos: papel con contorno de tinta, su canto y su pico. */
+.flc-bocadillo {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.55em 0.95em;
+  border: 2.5px solid var(--tinta);
+  border-radius: 1.1em;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--tinta);
+  font-size: clamp(11px, 3.6cqw, 15px);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--tinta);
+  white-space: nowrap;
+  animation: flc-bocadillo 3.6s ease-in-out infinite;
+}
+
+.flc-bocadillo svg { width: 1.25em; height: 1.25em; color: var(--cat-o, var(--coral-o)); }
+
+/* El pico: un cuadradito girado con el mismo papel y el contorno de abajo. */
+.flc-bocadillo::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5em;
+  width: 0.85em;
+  height: 0.85em;
+  border-right: 2.5px solid var(--tinta);
+  border-bottom: 2.5px solid var(--tinta);
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+/* Escribiendo: arriba, encima de la mano levantada de la mascota. */
+.flc-bocadillo--escribe { top: 6%; left: 34%; animation-delay: -1.2s; }
+.flc-bocadillo--escribe::after { right: 1.2em; }
+
+/* «¿y esto?»: sobre la cabeza del «?», a mano. */
+.flc-bocadillo--duda {
+  top: 42%;
+  left: 0;
+  padding: 0.3em 0.85em 0.4em;
+  background: var(--amarillo-s);
+  font-family: var(--letra-mano);
+  font-size: clamp(14px, 4.8cqw, 21px);
+  font-weight: 700;
+  animation-delay: -2.4s;
+}
+
+.flc-bocadillo--duda::after { left: 1.3em; }
+
+/* «resuelta»: de la burbuja verde pequeña, a la derecha. */
+.flc-bocadillo--resuelta { top: 22%; right: 0; background: var(--menta-s); animation-delay: -0.4s; }
+.flc-bocadillo--resuelta svg { color: var(--menta-o); }
+.flc-bocadillo--resuelta::after { right: 1.6em; }
+
+/* Los tres puntos de «está escribiendo». */
+.flc-bocadillo i {
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: var(--tinta-3);
+  animation: flc-punto 1.2s ease-in-out infinite;
+}
+
+.flc-bocadillo i:nth-of-type(2) { animation-delay: 0.15s; }
+.flc-bocadillo i:nth-of-type(3) { animation-delay: 0.3s; }
+
+@keyframes flc-bocadillo {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+}
+
+@keyframes flc-punto {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ── Las cifras: tres fichas blancas a lo ancho ── */
+.flc-pie {
+  grid-area: pie;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flc-cifras {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
   margin: 0;
 }
 
-.fl-cifras > div {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.25rem;
-  padding: 0 0.5rem;
-  text-align: center;
+.flc-cifra {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "icono valor" "icono nombre";
+  align-items: center;
+  column-gap: 12px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--cat, var(--coral)) 45%, var(--cat-s, var(--coral-s)));
 }
 
-.fl-cifras > div + div { border-left: 2px dashed var(--gris); }
+.flc-cifra-icono {
+  grid-area: icono;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--cat, var(--coral));
+  color: var(--cat-t, #fff);
+  box-shadow: 0 4px 0 var(--cat-o, var(--coral-o));
+}
 
-.fl-cifras dd {
+.flc-cifra.es-resueltas .flc-cifra-icono { background: var(--menta); color: var(--tinta); box-shadow: 0 4px 0 var(--menta-o); }
+
+.flc-cifra dd {
+  grid-area: valor;
   margin: 0;
   font-family: var(--letra-titular);
-  font-size: 2.3rem;
+  font-size: 1.9rem;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.03em;
   color: var(--tinta);
   font-variant-numeric: tabular-nums;
 }
 
-.fl-cifras dt {
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.flc-cifra.es-resueltas dd { color: var(--menta-o); }
+
+.flc-cifra dt {
+  grid-area: nombre;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--tinta-2);
 }
 
-.fl-cifras .es-resueltas dd { color: var(--menta-o); }
-
-/* ── Categorías: teclas blancas con el icono en su color; la activa, su
-   color entero ── */
-
-.fl-categorias {
+/* ── Las categorías, en la hoja ── */
+.flc-categorias {
+  grid-area: cats;
   display: flex;
   flex-wrap: wrap;
   gap: 6px 10px;
-  margin-bottom: 2.2rem;
+  padding-top: 1.2rem;
+  border-top: 2px dashed color-mix(in srgb, var(--cat, var(--coral)) 35%, transparent);
 }
+
+/* ── Las categorías en el móvil (CategoriasMovil.tsx, 23-11-2026) ──
+   En el ordenador, la tira de teclas; en el móvil, una sola tecla con la
+   categoría en la que estás, que abre la ventana de libreta con todas. */
+.flc-cat-movil-caja { display: none; grid-area: cats; }
+
+.flc-cat-movil.tecla {
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px 12px 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.flc-cat-movil .fl-categoria-icono { width: 34px; height: 34px; border-radius: 11px; }
+
+.flc-cat-movil-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.flc-cat-movil-texto small {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+
+.flc-cat-movil-flecha { flex: none; color: var(--tinta-2); }
+
+/* La ventana: una fila grande por categoría, con su color y su cuenta. */
+.flc-cat-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 2px 2px 6px;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.flc-cat-lista li { animation: bp-entra 0.32s cubic-bezier(0.34, 1.5, 0.5, 1) both; animation-delay: calc(var(--i) * 35ms); }
+
+.flc-cat-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px 12px 12px;
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: inset 0 0 0 2px var(--gris), 0 4px 0 var(--gris);
+  color: var(--tinta);
+  font-size: 1.02rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 0.18s cubic-bezier(0.34, 1.6, 0.5, 1);
+}
+
+.flc-cat-fila:active { transform: translateY(3px); }
+.flc-cat-fila:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+.flc-cat-fila-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--cat, var(--coral));
+  color: var(--cat-t, #fff);
+  box-shadow: 0 3px 0 var(--cat-o, var(--coral-o));
+}
+
+.flc-cat-fila-nombre { flex: 1; min-width: 0; }
+
+.flc-cat-fila-cuenta {
+  min-width: 1.8em;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--fondo);
+  font-size: 13px;
+  color: var(--tinta-2);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La que estás viendo: en su pastel, con su borde y su check. */
+.flc-cat-fila.is-activa {
+  background: var(--cat-s, var(--coral-s));
+  box-shadow: inset 0 0 0 2.5px var(--cat, var(--coral)), 0 4px 0 var(--cat-o, var(--coral-o));
+}
+
+.flc-cat-fila-check { flex: none; color: var(--cat-o, var(--coral-o)); }
+
+@media (max-width: 640px) {
+  .flc-categorias { display: none; }
+  .flc-cat-movil-caja { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flc-cat-lista li { animation: none; }
+  .flc-cat-fila { transition: none; }
+}
+
+@media (max-width: 860px) {
+  .flc {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "texto" "escena" "pie" "cats";
+    padding: 2rem 1.4rem 1.6rem;
+  }
+
+}
+
+@media (max-width: 640px) {
+  .flc { gap: 1.2rem; margin-top: 0.2rem; padding: 1.6rem 1rem 1.2rem; border-radius: 28px; }
+  .flc::before { width: 170px; height: 170px; border-radius: 0 28px 0 100%; }
+  .flc-titulo { font-size: 2.2rem; }
+  .flc-entradilla { font-size: 1rem; }
+  .flc-acciones .tecla.flc-preguntar { gap: 12px; padding: 14px 16px 14px 12px; }
+  .flc-preguntar-icono { width: 44px; height: 44px; border-radius: 14px; }
+  .flc-preguntar-texto { font-size: 1.02rem; }
+  .flc-preguntar-texto small { font-size: 1.2rem; }
+  .flc-cifras { gap: 8px; }
+  .flc-cifra { grid-template-columns: minmax(0, 1fr); grid-template-areas: "icono" "valor" "nombre"; justify-items: center; row-gap: 4px; padding: 12px 6px; text-align: center; }
+  .flc-cifra-icono { width: 34px; height: 34px; border-radius: 11px; }
+  .flc-cifra dd { font-size: 1.5rem; }
+  .flc-cifra dt { font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flc-burbujas,
+  .flc-pregunta,
+  .flc-bocadillo,
+  .flc-bocadillo i,
+  .flc-preguntar-icono,
+  .flc-acciones .tecla.flc-preguntar::after { animation: none; }
+}
+
+/* ── Categorías: teclas blancas con el icono en su color; la activa, su
+   color entero ── */
 
 .fl-categoria.tecla {
   gap: 8px;
@@ -535,11 +993,6 @@
   .fl-lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 }
 
-@media (max-width: 860px) {
-  .fl-cabecera { grid-template-columns: minmax(0, 1fr); gap: 2.8rem; }
-  .fl-ficha { max-width: 420px; transform: rotate(0.8deg); }
-}
-
 @media (max-width: 640px) {
   .fl-lateral { grid-template-columns: minmax(0, 1fr); }
   .fl-hilo { grid-template-columns: 58px minmax(0, 1fr); gap: 0.85rem; padding: 1.2rem 1rem 1rem; }
@@ -549,15 +1002,7 @@
   .fl-marcador span { display: none; }
   .fl-flecha { display: none; }
   .fl-titulo { font-size: 1.15rem; }
-  .fl-acciones .tecla { flex: 1 1 auto; }
-  .fl-cifras dd { font-size: 1.9rem; }
-  .fl-ficha-pegatina { width: 58px; height: 58px; font-size: 1.7rem; right: -6px; }
-  /* Las tres cifras a 360 px: «RESPUESTAS» en mayúsculas no cabía en su
-     tercio; en minúscula y sin espaciado, sí. */
-  .fl-ficha { padding-inline: 0.9rem; }
-  .fl-cifras > div { padding: 0 0.25rem; }
-  .fl-cifras dt { font-size: 0.8rem; letter-spacing: 0; text-transform: none; }
-  .fl-categorias { gap: 4px 8px; }
+  .flc-categorias { gap: 4px 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

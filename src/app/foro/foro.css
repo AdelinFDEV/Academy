@@ -76,6 +76,60 @@ body:has(.fo-main) { overflow-x: clip; }
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
 }
 
+/* ── Los garabatos del fondo (GarabatosForo.tsx, 23-11-2026) ─────────────
+   Detrás de todo, de arriba abajo de la página: bocadillos, interrogaciones,
+   exclamaciones, «escribiendo», un check, una bombilla, un corazón y una
+   flecha de respuesta, en los colores de la paleta y suaves. Por los
+   márgenes y entre bloques; en el móvil, más pequeños y asomando por los
+   bordes. */
+.fog {
+  position: absolute;
+  inset: 70px 0 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fog svg {
+  position: absolute;
+  height: auto;
+  stroke: currentColor;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.42;
+}
+
+/* Los puntos de interrogación y exclamación: el punto, más gordo. */
+.fog-interrogacion path:last-child,
+.fog-interrogacion2 path:last-child,
+.fog-exclamacion path:last-child,
+.fog-dudas path:nth-child(2),
+.fog-dudas path:nth-child(4),
+.fog-escribiendo path:not(:first-child) { stroke-width: 9; }
+
+.fog-bocadillo { top: 1%; left: 2%; width: 120px; color: var(--coral); transform: rotate(-8deg); }
+.fog-interrogacion { top: 6%; right: 3%; width: 84px; color: var(--lila); transform: rotate(14deg); }
+.fog-escribiendo { top: 15%; left: 1%; width: 110px; color: var(--cielo); transform: rotate(6deg); }
+.fog-check { top: 22%; right: 2%; width: 90px; color: var(--menta-o); transform: rotate(-10deg); }
+.fog-dos { top: 30%; left: 3%; width: 130px; color: var(--naranja); transform: rotate(-4deg); }
+.fog-exclamacion { top: 37%; right: 5%; width: 60px; color: var(--coral); transform: rotate(10deg); }
+.fog-bombilla { top: 45%; left: 2%; width: 90px; color: var(--amarillo-o); transform: rotate(-12deg); }
+.fog-corazon { top: 52%; right: 3%; width: 70px; color: var(--coral); transform: rotate(-14deg); }
+.fog-respuesta { top: 60%; left: 4%; width: 110px; color: var(--azul); transform: rotate(8deg); }
+.fog-dudas { top: 67%; right: 2%; width: 96px; color: var(--lila); transform: rotate(-6deg); }
+.fog-interrogacion2 { top: 75%; left: 1%; width: 64px; color: var(--naranja); transform: rotate(-18deg); }
+.fog-bocadillo2 { top: 82%; right: 4%; width: 124px; color: var(--cielo); transform: rotate(6deg); }
+.fog-chispas { top: 89%; left: 6%; width: 56px; color: var(--amarillo-o); }
+.fog-espiral { top: 94%; right: 6%; width: 80px; color: var(--menta-o); transform: rotate(24deg); }
+
+@media (max-width: 760px) {
+  .fog svg { opacity: 0.5; scale: 0.62; }
+  /* En el móvil, todos pegados a un borde, asomando por fuera. */
+  .fog-bocadillo, .fog-escribiendo, .fog-dos, .fog-bombilla, .fog-respuesta, .fog-interrogacion2, .fog-chispas { left: -34px !important; }
+  .fog-interrogacion, .fog-check, .fog-exclamacion, .fog-corazon, .fog-dudas, .fog-bocadillo2, .fog-espiral { right: -34px !important; }
+}
+
 /* ── La página ─────────────────────────────────────────────────────────── */
 
 .fo-main {
@@ -686,7 +740,15 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   font-size: 0.85rem;
   font-weight: 800;
   color: var(--tinta-2);
+  transition: background 0.2s ease, color 0.2s ease;
 }
+
+/* En cuanto reciben la primera, cada una en su color. */
+.fp-etiqueta.es-propia.is-con.is-amarillo { background: var(--amarillo-s); color: var(--amarillo-o); }
+.fp-etiqueta.es-propia.is-con.is-menta { background: var(--menta-s); color: var(--menta-o); }
+.fp-etiqueta.es-propia.is-con.is-cielo { background: var(--cielo-s); color: var(--cielo-o); }
+.fp-etiqueta.es-propia.is-con.is-coral { background: var(--coral-s); color: var(--coral-o); }
+.fp-etiqueta.es-propia.is-con b { color: var(--tinta); }
 
 /* ── Con «reducir movimiento» ── */
 

@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check, MessageCircle, PenLine, Pin, Trophy, Users } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
-import Anotacion from "@/components/cuaderno/Anotacion";
 import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
 import MarcoForo from "@/components/foro/MarcoForo";
+import PuntoNovedades from "@/components/foro/PuntoNovedades";
+import CategoriasMovil from "@/components/foro/CategoriasMovil";
 import { aspectoDe, colorDe } from "@/components/foro/categorias";
 import type { FilaRanking, ListadoForo } from "@/lib/foro/tipos";
 import "@/app/foro/listado.css";
@@ -43,100 +45,159 @@ export default function ListadoHilos({
 
   return (
     <MarcoForo conSesion={conSesion} tono={cat ? colorDe(cat.slug) : undefined}>
-      {/* ── Cabecera ── */}
-      <header className="fl-cabecera">
-        <div className="fl-cabecera-texto">
-          <p className="fo-nota">
+      {/* ── Cabecera (23-11-2026, rehecha de cero: pedido por el admin) ──
+          Una hoja entera en el pastel de la categoría (coral en la portada del
+          foro), con los puntos de la libreta. A la izquierda, la nota a mano,
+          el titular, la entradilla y las teclas; a la derecha, la escena: la
+          pegatina de las burbujas que charlan, la del «?» pensativo y unos
+          bocadillos que flotan. Abajo, dentro de la misma hoja, las cifras
+          del foro en tres fichas y las categorías en una tira de teclas. */}
+      <header className="flc">
+        <div className="flc-texto">
+          <p className="fo-nota flc-nota">
             {cat ? <><Link href="/foro">Foro</Link> · {cat.nombre}</> : "Foro de la comunidad"}
           </p>
 
           {cat ? (
-            <h1 className="fo-titulo">{cat.nombre}</h1>
+            <h1 className="flc-titulo">{cat.nombre}</h1>
           ) : (
-            <h1 className="fo-titulo">
-              Las dudas de cripto,{" "}
-              <Anotacion tipo="circle" color="var(--coral)" retraso={300}>resueltas</Anotacion>{" "}
-              entre todos.
+            <h1 className="flc-titulo">
+              Las dudas de cripto, <span className="flc-fluor">resueltas entre todos</span>.
             </h1>
           )}
 
-          <p className="fo-entradilla">
+          <p className="flc-entradilla">
             {cat
               ? cat.descripcion
               : "Pregunta lo que no entiendes y ayuda con lo que sabes. Leer es libre; participar es parte de Premium."}
           </p>
 
-          <div className="fl-acciones">
-            <Tecla href="/foro/preguntar" color="coral" tamano="grande">
-              <PenLine size={19} strokeWidth={2.6} aria-hidden="true" />
-              Hacer una pregunta
+          {/* Las acciones (23-11-2026, pedido por el admin): «Hacer una pregunta»
+              grande y protagonista, y debajo, juntas y cada una en su color,
+              «Ranking» (amarillo, el de los logros) y «Lo mío» (lila). */}
+          <div className="flc-acciones">
+            <Tecla href="/foro/preguntar" color="coral" tamano="grande" className="flc-preguntar">
+              <span className="flc-preguntar-icono" aria-hidden="true"><PenLine size={22} strokeWidth={2.6} /></span>
+              <span className="flc-preguntar-texto">
+                Hacer una pregunta
+                <small>la comunidad te responde</small>
+              </span>
+              <ArrowRight className="flc-preguntar-flecha" size={22} strokeWidth={2.8} aria-hidden="true" />
             </Tecla>
-            <Tecla href="/foro/ranking" color="blanca">
-              <Trophy size={17} strokeWidth={2.5} aria-hidden="true" />
-              Ranking
-            </Tecla>
-            {conSesion && <Tecla href="/foro/mio" color="blanca">Lo mío</Tecla>}
+            <div className={`flc-acciones-fila${conSesion ? "" : " is-sola"}`}>
+              <Tecla href="/foro/ranking" color="amarillo">
+                <Trophy size={17} strokeWidth={2.5} aria-hidden="true" />
+                Ranking
+              </Tecla>
+              {conSesion && (
+                <Tecla href="/foro/mio" color="lila">
+                  <Users size={17} strokeWidth={2.5} aria-hidden="true" />
+                  Lo mío
+                  {/* El punto rojo con sus novedades: lo pide el navegador aparte. */}
+                  <PuntoNovedades />
+                </Tecla>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Las cifras del foro entero, en una ficha con su pegatina. */}
-        <div className="fl-ficha">
-          <span className="fl-ficha-pegatina" aria-hidden="true">?</span>
-          {/* Las cifras son siempre las del foro entero: dentro de una
-              categoría se dice, para que no se lean como suyas. */}
-          {cat && <p className="fl-ficha-nota">en todo el foro</p>}
-          <dl className="fl-cifras">
-            <div>
-              <dt>Preguntas</dt>
+        {/* La escena: decoración pura. Va en un lienzo de proporción fija y
+            todo se coloca en % de él, así que personajes y bocadillos guardan
+            siempre su sitio en cualquier pantalla (23-11-2026). Cada bocadillo
+            sale de su personaje, con el pico apuntándole. */}
+        <div className="flc-escena" aria-hidden="true">
+          <div className="flc-lienzo">
+            <Image src="/cuaderno/burbujas-pegatina.webp" alt="" width={360} height={339} className="flc-burbujas" draggable={false} />
+            <Image src="/cuaderno/pregunta-pegatina.webp" alt="" width={225} height={300} className="flc-pregunta" draggable={false} />
+            <span className="flc-bocadillo flc-bocadillo--escribe"><MessageCircle strokeWidth={2.6} /> <i /><i /><i /></span>
+            <span className="flc-bocadillo flc-bocadillo--duda">¿y esto?</span>
+            <span className="flc-bocadillo flc-bocadillo--resuelta"><Check strokeWidth={3} /> resuelta</span>
+          </div>
+        </div>
+
+        {/* Las cifras del foro entero. */}
+        <div className="flc-pie">
+          <dl className="flc-cifras">
+            <div className="flc-cifra">
+              <span className="flc-cifra-icono" aria-hidden="true"><MessageCircle size={18} strokeWidth={2.6} /></span>
               <dd>{datos.cifras.preguntas}</dd>
+              <dt>{datos.cifras.preguntas === 1 ? "pregunta" : "preguntas"}</dt>
             </div>
-            <div>
-              <dt>Respuestas</dt>
+            <div className="flc-cifra">
+              <span className="flc-cifra-icono" aria-hidden="true"><Users size={18} strokeWidth={2.6} /></span>
               <dd>{datos.cifras.respuestas}</dd>
+              <dt>{datos.cifras.respuestas === 1 ? "respuesta" : "respuestas"}</dt>
             </div>
-            <div className="es-resueltas">
-              <dt>Resueltas</dt>
+            <div className="flc-cifra es-resueltas">
+              <span className="flc-cifra-icono" aria-hidden="true"><Check size={18} strokeWidth={3} /></span>
               <dd>{datos.cifras.resueltas}</dd>
+              <dt>{datos.cifras.resueltas === 1 ? "resuelta" : "resueltas"}</dt>
             </div>
           </dl>
         </div>
+
+        {/* ── En el móvil, las categorías en una ventana (CategoriasMovil) ── */}
+        <div className="flc-cat-movil-caja">
+          <CategoriasMovil
+            categorias={[
+              {
+                slug: null,
+                nombre: "Todas",
+                hilos: datos.cifras.preguntas,
+                activa: !cat,
+                icono: <MessageCircle size={16} strokeWidth={2.5} />,
+              },
+              ...datos.categorias.map((c) => {
+                const { Icono } = aspectoDe(c.slug);
+                return {
+                  slug: c.slug,
+                  nombre: c.nombre,
+                  hilos: c.hilos,
+                  activa: cat?.slug === c.slug,
+                  estilo: colorDe(c.slug),
+                  icono: <Icono size={16} strokeWidth={2.5} />,
+                };
+              }),
+            ]}
+          />
+        </div>
+
+        {/* ── Las categorías, una tecla por cada una, en la misma hoja ── */}
+        <nav className="flc-categorias" aria-label="Categorías del foro">
+          <Tecla
+            href="/foro"
+            color="blanca"
+            tamano="peq"
+            className={`fl-categoria${cat ? "" : " is-activa"}`}
+            aria-current={cat ? undefined : "page"}
+          >
+            <span className="fl-categoria-icono" aria-hidden="true"><MessageCircle size={15} strokeWidth={2.5} /></span>
+            Todas
+            <span className="fl-categoria-cuenta">{datos.cifras.preguntas}</span>
+          </Tecla>
+          {datos.categorias.map((c) => {
+            const { Icono } = aspectoDe(c.slug);
+            const activa = cat?.slug === c.slug;
+            return (
+              <Tecla
+                key={c.slug}
+                href={`/foro/${c.slug}`}
+                color="blanca"
+                tamano="peq"
+                className={`fl-categoria${activa ? " is-activa" : ""}`}
+                style={colorDe(c.slug)}
+                aria-current={activa ? "page" : undefined}
+              >
+                <span className="fl-categoria-icono" aria-hidden="true"><Icono size={15} strokeWidth={2.5} /></span>
+                {c.nombre}
+                <span className="fl-categoria-cuenta">{c.hilos}</span>
+              </Tecla>
+            );
+          })}
+        </nav>
       </header>
 
       {aviso && <p className="fo-aviso" role="status">{aviso}</p>}
-
-      {/* ── Categorías: una tecla por cada una ── */}
-      <nav className="fl-categorias" aria-label="Categorías del foro">
-        <Tecla
-          href="/foro"
-          color="blanca"
-          tamano="peq"
-          className={`fl-categoria${cat ? "" : " is-activa"}`}
-          aria-current={cat ? undefined : "page"}
-        >
-          <span className="fl-categoria-icono" aria-hidden="true"><MessageCircle size={15} strokeWidth={2.5} /></span>
-          Todas
-          <span className="fl-categoria-cuenta">{datos.cifras.preguntas}</span>
-        </Tecla>
-        {datos.categorias.map((c) => {
-          const { Icono } = aspectoDe(c.slug);
-          const activa = cat?.slug === c.slug;
-          return (
-            <Tecla
-              key={c.slug}
-              href={`/foro/${c.slug}`}
-              color="blanca"
-              tamano="peq"
-              className={`fl-categoria${activa ? " is-activa" : ""}`}
-              style={colorDe(c.slug)}
-              aria-current={activa ? "page" : undefined}
-            >
-              <span className="fl-categoria-icono" aria-hidden="true"><Icono size={15} strokeWidth={2.5} /></span>
-              {c.nombre}
-              <span className="fl-categoria-cuenta">{c.hilos}</span>
-            </Tecla>
-          );
-        })}
-      </nav>
 
       <div className="fl-cuerpo">
         {/* ── Las preguntas ── */}
