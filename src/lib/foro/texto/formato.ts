@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * El formato de los mensajes del foro (23-11-2026): negrita y listas.
  *
