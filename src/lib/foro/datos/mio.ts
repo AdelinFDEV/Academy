@@ -1,4 +1,5 @@
 import "server-only";
+import { sinFormato } from "../texto/formato";
 import { bd } from "../bd";
 import { ETIQUETA_IDS, logrosDelForo, nivelDe, type EtiquetaId } from "../limites";
 import type { ResultadoAccion } from "../peticion";
@@ -118,7 +119,7 @@ export async function novedadesDelForo(usuarioId: string, cuantas = 3): Promise<
 }
 
 const extracto = (texto: unknown) => {
-  const t = String(texto ?? "").replace(/\s+/g, " ").trim();
+  const t = sinFormato(String(texto ?? "")).replace(/\s+/g, " ").trim();
   return t.length > 140 ? `${t.slice(0, 140).replace(/\s+\S*$/, "")}…` : t;
 };
 

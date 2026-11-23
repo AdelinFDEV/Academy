@@ -1,8 +1,9 @@
 import "server-only";
+import { sinFormato } from "../texto/formato";
 import { bd } from "../bd";
 import { urlPublica } from "../imagenes/almacen";
 import { nivelDe } from "../limites";
-import type { AutorForo, CategoriaForo, HiloEnListado, HiloForo, ListadoForo, MensajeForo } from "../tipos";
+import type { AutorForo, CategoriaForo, HiloEnListado, HiloForo, ImagenForo, ListadoForo, MensajeForo } from "../tipos";
 
 /**
  * Lo PÚBLICO del foro: el listado de preguntas y un hilo con sus respuestas.
@@ -28,7 +29,7 @@ type Cliente = ReturnType<typeof bd>;
 
 /** Las primeras palabras de un texto, en una línea y sin cortar una palabra. */
 function extracto(texto: unknown, max = 180): string {
-  const t = String(texto ?? "").replace(/\s+/g, " ").trim();
+  const t = sinFormato(String(texto ?? "")).replace(/\s+/g, " ").trim();
   return t.length > max ? `${t.slice(0, max).replace(/\s+\S*$/, "")}…` : t;
 }
 
@@ -180,7 +181,8 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
       .order("creada_at", { ascending: true })
       .order("id", { ascending: true })
       .limit(2000),
-    cliente.from("foro_imagenes").select("id, ancho, alto, orden").eq("pregunta_id", id).eq("estado", "publicada").order("orden", { ascending: true }),
+    // Las de la pregunta y las de sus respuestas, todas del hilo; se reparten abajo.
+    cliente.from("foro_imagenes").select("id, ancho, alto, orden, respuesta_id").eq("pregunta_id", id).eq("estado", "publicada").order("orden", { ascending: true }),
     cliente.from("foro_categorias").select("slug, nombre").eq("slug", String(p.categoria)).maybeSingle(),
     cliente.from("foro_reportes").select("id", { count: "exact", head: true }).eq("pregunta_id", id).eq("estado", "abierto"),
   ]);
@@ -193,6 +195,15 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
   ]);
   const autorDe = (uid: unknown) => (typeof uid === "string" && uid ? (quien.get(uid) ?? null) : null);
 
+  const imagen = (i: NonNullable<typeof imagenes>[number]) => ({ url: urlPublica(String(i.id)), ancho: Number(i.ancho), alto: Number(i.alto) });
+  const imagenesDe = new Map<string, ImagenForo[]>();
+  for (const i of imagenes ?? []) {
+    if (i.respuesta_id == null) continue;
+    const lista = imagenesDe.get(String(i.respuesta_id)) ?? [];
+    lista.push(imagen(i));
+    imagenesDe.set(String(i.respuesta_id), lista);
+  }
+
   const mensaje = (f: (typeof todas)[number], replicas: MensajeForo[]): MensajeForo => ({
     id: String(f.id),
     texto: String(f.cuerpo),
@@ -204,6 +215,7 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
     esGanadora: p.ganadora_id != null && String(f.id) === String(p.ganadora_id),
     citado: autorDe(f.citado_id)?.alias ?? null,
     replicas,
+    imagenes: imagenesDe.get(String(f.id)) ?? [],
   });
 
   // Las réplicas cuelgan de su respuesta. Como solo se han leído las
@@ -234,7 +246,7 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
     cerrado: Boolean(p.cerrada),
     fijado: Boolean(p.fijada),
     etiquetas: { interesante: Number(p.interesante), gracias: Number(p.gracias), yoTambien: Number(p.yo_tambien) },
-    imagenes: (imagenes ?? []).map((i) => ({ url: urlPublica(String(i.id)), ancho: Number(i.ancho), alto: Number(i.alto) })),
+    imagenes: (imagenes ?? []).filter((i) => i.respuesta_id == null).map(imagen),
     respuestas: ordenadas,
     totalRespuestas: respuestas.length,
     // Google espera: con respuesta, 48 horas publicada y sin reportes abiertos.

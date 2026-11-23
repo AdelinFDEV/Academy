@@ -174,62 +174,6 @@
 
 p.fq-nota { margin: 0; }
 
-.fq-miniaturas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.fq-miniaturas li {
-  position: relative;
-  width: 132px;
-  padding: 6px;
-  border-radius: 14px;
-  background: var(--papel);
-  box-shadow: 0 4px 0 var(--gris-o), 0 10px 16px -10px rgba(29, 27, 51, 0.45);
-}
-
-.fq-miniaturas li:nth-child(odd) { transform: rotate(-2deg); }
-.fq-miniaturas li:nth-child(even) { transform: rotate(1.5deg); }
-
-.fq-miniaturas img,
-.fq-sin-vista {
-  display: block;
-  width: 100%;
-  height: 100px;
-  border-radius: 9px;
-  object-fit: cover;
-  background: var(--fondo);
-}
-
-.fq-sin-vista {
-  display: grid;
-  place-items: center;
-  padding: 0.4rem;
-  overflow: hidden;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--tinta-2);
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-/* Quitar: una tecla redonda coral, encima de la esquina. */
-.fq-miniaturas .fq-quitar.tecla {
-  position: absolute;
-  top: -14px;
-  right: -14px;
-  z-index: 2;
-  width: 34px;
-  height: 34px;
-  margin: 0;
-  border-radius: 50%;
-  --h: 4px;
-}
-
 /* ── El pie: publicar ── */
 
 .fq-pie {
@@ -393,9 +337,6 @@ p.fq-nota { margin: 0; }
   .fq-lateral { grid-template-columns: minmax(0, 1fr); }
   .fq-form { padding: 0.4rem 1.05rem 1.1rem; border-radius: 24px; }
   .fq-pie .tecla { flex: 1 1 100%; padding-inline: 18px; }
-  .fq-miniaturas li { width: calc(50% - 0.6rem); }
-  /* Quitar una imagen con el dedo: la tecla redonda, más grande. */
-  .fq-miniaturas .fq-quitar.tecla { top: -16px; right: -12px; width: 42px; height: 42px; }
   .fq-ficha { min-height: 44px; }
 }
 

@@ -213,6 +213,8 @@ export type MensajeForo = {
   citado: string | null;
   /** Solo en las respuestas: sus réplicas, por orden de llegada. */
   replicas: MensajeForo[];
+  /** Sus imágenes (23-11-2026), como mucho 2. */
+  imagenes: ImagenForo[];
 };
 
 export type ImagenForo = { url: string; ancho: number; alto: number };

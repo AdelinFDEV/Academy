@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BadgeCheck, CornerDownRight, Flag, Pencil, Trash2 } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
@@ -9,6 +9,7 @@ import { LIMITES, MOTIVOS_REPORTE, type MotivoReporteId } from "@/lib/foro/limit
 import { sonar } from "@/lib/sonidos";
 import { celebrarGanadora } from "./celebrar";
 import { useHilo } from "./ContextoHilo";
+import BarraFormato from "./BarraFormato";
 import Invitacion from "./Invitacion";
 import Responder from "./Responder";
 
@@ -53,6 +54,8 @@ export default function AccionesMensaje({
   const [hecho, setHecho] = useState("");
   const [nuevoTexto, setNuevoTexto] = useState(texto);
   const [nuevoTitulo, setNuevoTitulo] = useState(titulo ?? "");
+  const campoEditar = useRef<HTMLTextAreaElement>(null);
+  const idEditar = useId();
 
   if (!mio) return null;
 
@@ -169,10 +172,14 @@ export default function AccionesMensaje({
               <input type="text" value={nuevoTitulo} onChange={(e) => setNuevoTitulo(e.target.value)} maxLength={LIMITES.titulo.max * 2} />
             </label>
           )}
-          <label className="fp-campo">
-            <span>Texto <small>— puedes editarlo durante {LIMITES.minutosParaEditar} minutos desde que lo publicaste</small></span>
-            <textarea value={nuevoTexto} onChange={(e) => setNuevoTexto(e.target.value)} rows={respuestaId ? 5 : 9} maxLength={LIMITES.pregunta.max * 2} />
-          </label>
+          {/* Un div, no un label: la barra de formato lleva botones. */}
+          <div className="fp-campo">
+            <span className="fp-campo-cab">
+              <label htmlFor={idEditar}>Texto <small>— puedes editarlo durante {LIMITES.minutosParaEditar} minutos desde que lo publicaste</small></label>
+              <BarraFormato campo={campoEditar} valor={nuevoTexto} cambiar={setNuevoTexto} bloqueado={enviando} />
+            </span>
+            <textarea ref={campoEditar} id={idEditar} value={nuevoTexto} onChange={(e) => setNuevoTexto(e.target.value)} rows={respuestaId ? 5 : 9} maxLength={LIMITES.pregunta.max * 2} />
+          </div>
           <div className="fp-fila">
             <Tecla
               color="coral"

@@ -70,9 +70,9 @@ export async function reportar(usuarioId: string, d: z.infer<typeof esquemaRepor
     p_detalle: detalle,
   });
   if (!r.ok) return r;
-  // Si este reporte ha ocultado una pregunta, sus imágenes salen ya del
-  // bucket público: lo oculto no puede seguir sirviéndose ni un minuto.
-  if (r.datos.oculto === true && !d.respuesta) await sincronizar(d.pregunta);
+  // Si este reporte ha ocultado una pregunta o una respuesta, sus imágenes
+  // salen ya del bucket público: lo oculto no puede seguir sirviéndose.
+  if (r.datos.oculto === true) await sincronizar(d.pregunta);
   // Quien reporta no tiene por qué saber si su reporte fue el que lo ocultó.
   return { ok: true, datos: {} };
 }

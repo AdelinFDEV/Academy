@@ -112,12 +112,15 @@ Referencia: Reddit permite títulos de 300 caracteres y cuerpos de 40.000; Stack
 | Respuesta | 20 | 3.000 | Una respuesta que necesita más suele ser una guía |
 | Réplica | 5 | 1.000 | Es una aclaración, no otra respuesta |
 | Imágenes por pregunta | 0 | 4 | Capturas de un gráfico, un error o un exchange |
+| Imágenes por respuesta o réplica | 0 | 2 | Una captura que enseña la solución |
 | Peso por imagen (subida) | — | 5 MB | Lo que pesa una captura de móvil |
 | Lado mayor (guardada) | — | 1.600 px | Se reduce al guardar |
 
 Los límites se cuentan **después de normalizar** (§6.4) y viven en un solo archivo (`src/lib/foro/limites.ts`) que leen la API y el formulario. La restricción `check` de la tabla repite los máximos como última barrera.
 
-**Imágenes en las respuestas y réplicas: no** (decidido el 12-11-2026). Como nada se revisa antes de publicar, cada imagen sale sin que nadie la haya visto; se limita a las preguntas, y casi todas las dudas se resuelven con texto.
+**Imágenes en las respuestas y réplicas: sí, hasta 2** (23-11-2026, lo pidió el admin; el 12-11-2026 se había decidido que no). Siguen el mismo camino que las de las preguntas (§6.6): subida firmada, comprobación, recodificado a WebP y bucket público solo al publicarse. En `foro_imagenes` llevan su `pregunta_id` (el hilo) y además su `respuesta_id`, y su estado sigue siempre al de su respuesta y al de su hilo con dos disparadores (`scripts/foro-imagenes-respuestas.sql`): si la respuesta se oculta o se borra, sus imágenes también, y una imagen nunca queda publicada si su respuesta o su pregunta no lo están. `sincronizar(pregunta)` las mueve con las del hilo, y se llama también tras ocultar, restaurar o borrar una respuesta.
+
+**Formato: negrita y listas** (23-11-2026, lo pidió el admin). En preguntas, respuestas y réplicas. El texto se sigue guardando como texto plano: el formato son marcas que `TextoForo` interpreta al pintar, con elementos de React y nunca con HTML (`src/lib/foro/texto/formato.ts`): `**así**` es negrita, una línea que empieza por `- ` es un punto de lista y una que empieza por `1. ` es un punto de lista numerada. Los formularios llevan una barra con los tres botones (`BarraFormato`), que solo ponen las marcas. Los extractos y la descripción de la página las quitan (`sinFormato`).
 
 ---
 

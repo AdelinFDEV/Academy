@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { sinFormato } from "@/lib/foro/texto/formato";
 import { notFound, permanentRedirect } from "next/navigation";
 import JsonLd from "@/components/JsonLd";
 import HiloCompleto from "@/components/foro/HiloCompleto";
@@ -32,7 +33,7 @@ function idDeHilo(ref: string): number | null {
 
 /** La primera frase del texto, para la descripción: sin saltos y sin cortar una palabra. */
 function resumen(texto: string, max = 155): string {
-  const limpio = texto.replace(/\s+/g, " ").trim();
+  const limpio = sinFormato(texto).replace(/\s+/g, " ").trim();
   if (limpio.length <= max) return limpio;
   return `${limpio.slice(0, max).replace(/\s+\S*$/, "")}…`;
 }

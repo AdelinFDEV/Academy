@@ -328,6 +328,10 @@
   background: var(--fondo);
 }
 
+/* En una réplica, más pequeñas. */
+.fh-imagenes--peq { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); margin-top: 0.9rem; }
+.fh-imagenes--peq img { max-height: 180px; }
+
 .fh-pregunta-pie {
   display: grid;
   gap: 1rem;

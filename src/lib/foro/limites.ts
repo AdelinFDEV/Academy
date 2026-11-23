@@ -16,6 +16,8 @@ export const LIMITES = {
   replica: { min: 5, max: 1000 },
   detalleReporte: { max: 500 },
   imagenesPorPregunta: 4,
+  /** Imágenes de una respuesta o una réplica (23-11-2026). */
+  imagenesPorRespuesta: 2,
   /** Saltos de línea como mucho en un mensaje: más es un muro o un dibujo. */
   saltos: 80,
   /** Lo que puede pesar el cuerpo de una petición a la API del foro. */

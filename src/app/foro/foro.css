@@ -493,6 +493,34 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
 .fo-texto p { margin: 0 0 0.9rem; white-space: pre-line; }
 .fo-texto p:last-child { margin-bottom: 0; }
 
+/* El formato del foro: negrita y listas (23-11-2026). */
+.fo-texto strong { font-weight: 900; }
+
+.fo-texto .fo-lista {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 0.9rem;
+  padding-left: 1.4rem;
+}
+
+.fo-texto .fo-lista:last-child { margin-bottom: 0; }
+.fo-texto ul.fo-lista { list-style: none; padding-left: 1.2rem; }
+
+.fo-texto ul.fo-lista li { position: relative; }
+
+.fo-texto ul.fo-lista li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: -1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.fo-texto ol.fo-lista li::marker { font-family: var(--letra-titular); font-weight: 800; color: var(--coral-o); }
+
 .fo-texto a {
   color: var(--azul-o);
   font-weight: 800;
@@ -568,6 +596,83 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   gap: 8px;
 }
 
+/* La cabecera de un cuadro de texto: su nombre y, a la derecha, la barra
+   de formato (23-11-2026). */
+.fp-campo-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 12px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: var(--tinta);
+}
+
+.fp-campo-cab small {
+  font-family: var(--letra-mano);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+/* Negrita, lista, lista numerada: tres teclas pequeñas juntas. */
+.fp-formato {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--gris);
+}
+
+.fp-formato-boton {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--tinta-2);
+  cursor: var(--puntero-mano, pointer);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.fp-formato-boton:hover:not(:disabled) { background: var(--coral-s); color: var(--coral-o); }
+.fp-formato-boton:active:not(:disabled) { transform: translateY(1px); }
+.fp-formato-boton:focus-visible { outline: 3px solid var(--azul); outline-offset: 1px; }
+.fp-formato-boton:disabled { opacity: 0.45; cursor: default; }
+
+/* Las imágenes de un mensaje que se está escribiendo. */
+.fp-imagenes {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Añadir imagen: tecla amarilla con el icono en su pastilla. */
+.fp-imagenes-boton.tecla { gap: 10px; padding-left: 8px; }
+
+.fp-imagenes-icono {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--papel);
+  color: var(--amarillo-o);
+  transition: transform 0.25s var(--fo-muelle, ease);
+}
+
+.fp-imagenes-boton.tecla:hover:not(:disabled) .fp-imagenes-icono { transform: rotate(-8deg) scale(1.08); }
+
+.fp-imagenes .fq-nota {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
 .fp-campo > span:first-child {
   font-size: 0.92rem;
   font-weight: 900;
@@ -597,7 +702,16 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.fp-campo textarea { min-height: 7rem; resize: vertical; }
+/* El cuadro no se estira a mano (23-11-2026, regla del admin): crece solo
+   con lo que se escribe hasta su tope, y a partir de ahí el texto avanza
+   dentro. */
+.fp-campo textarea {
+  min-height: 7rem;
+  max-height: 26rem;
+  resize: none;
+  field-sizing: content;
+  overflow-y: auto;
+}
 .fp-campo select { cursor: var(--puntero-mano, pointer); }
 
 .fp-campo input::placeholder,
@@ -781,4 +895,69 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   .fo-cat { transition: none; }
   .fo-migas a:hover,
   a.fo-cat:hover { transform: none; }
+}
+
+/* ── Miniaturas de las imágenes que se van a publicar (preguntas y
+   respuestas; antes vivían en preguntar.css) ── */
+
+.fq-miniaturas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fq-miniaturas li {
+  position: relative;
+  width: 132px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o), 0 10px 16px -10px rgba(29, 27, 51, 0.45);
+}
+
+.fq-miniaturas li:nth-child(odd) { transform: rotate(-2deg); }
+.fq-miniaturas li:nth-child(even) { transform: rotate(1.5deg); }
+
+.fq-miniaturas img,
+.fq-sin-vista {
+  display: block;
+  width: 100%;
+  height: 100px;
+  border-radius: 9px;
+  object-fit: cover;
+  background: var(--fondo);
+}
+
+.fq-sin-vista {
+  display: grid;
+  place-items: center;
+  padding: 0.4rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--tinta-2);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Quitar: una tecla redonda coral, encima de la esquina. */
+.fq-miniaturas .fq-quitar.tecla {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  border-radius: 50%;
+  --h: 4px;
+}
+
+@media (max-width: 640px) {
+  .fq-miniaturas li { width: calc(50% - 0.6rem); }
+  /* Quitar una imagen con el dedo: la tecla redonda, más grande. */
+  .fq-miniaturas .fq-quitar.tecla { top: -16px; right: -12px; width: 42px; height: 42px; }
 }

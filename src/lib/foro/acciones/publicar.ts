@@ -90,6 +90,7 @@ export const esquemaResponder = z.strictObject({
   /** El mensaje al que se contesta. Sin él, es una respuesta a la pregunta. */
   a: idRespuesta.optional(),
   cuerpo: texto(LIMITES.respuesta.max),
+  imagenes: z.array(z.uuid()).max(LIMITES.imagenesPorRespuesta).optional(),
 });
 
 export async function responder(usuarioId: string, d: z.infer<typeof esquemaResponder>): Promise<ResultadoAccion> {
@@ -99,14 +100,29 @@ export async function responder(usuarioId: string, d: z.infer<typeof esquemaResp
   const f = await pasarFiltro(usuarioId, d.a ? "replica" : "respuesta", { cuerpo: d.cuerpo });
   if (!f.ok) return { ok: false, error: "rechazado", mensaje: f.mensaje };
 
-  return llamar("foro_responder", {
+  // Igual que en las preguntas: al bucket público antes, y fuera si al final
+  // la respuesta no se crea (23-11-2026).
+  const imagenes = d.imagenes ?? [];
+  if (imagenes.length) {
+    if (!(await sonSuyasYListas(usuarioId, imagenes))) return { ok: false, error: "imagen_no_valida" };
+    if (!(await publicar(imagenes))) return { ok: false, error: "interno" };
+  }
+
+  const r = await llamar("foro_responder", {
     p_usuario: usuarioId,
     p_pregunta: d.pregunta,
     p_a: d.a ?? null,
     p_cuerpo: f.cuerpo,
     p_huella: f.huella,
     p_tiene_enlaces: f.tieneEnlaces,
+    p_imagenes: imagenes.length ? imagenes : null,
   });
+
+  if (imagenes.length) {
+    if (r.ok) await olvidarListas(imagenes);
+    else await despublicar(imagenes);
+  }
+  return r;
 }
 
 // ── Editar lo propio (30 minutos) ───────────────────────────────────────────
@@ -158,7 +174,8 @@ export async function borrar(usuarioId: string, d: z.infer<typeof esquemaBorrar>
     p_pregunta: d.pregunta,
     p_respuesta: d.respuesta ?? null,
   });
-  // Al borrar una pregunta, sus imágenes salen del bucket público.
-  if (r.ok && !d.respuesta) await sincronizar(d.pregunta);
+  // Al borrar una pregunta o una respuesta, sus imágenes salen del bucket
+  // público (las de una respuesta siguen su estado en la tabla).
+  if (r.ok) await sincronizar(d.pregunta);
   return r;
 }

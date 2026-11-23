@@ -12,7 +12,7 @@ import ContextoHilo from "@/components/foro/participar/ContextoHilo";
 import Etiquetas from "@/components/foro/participar/Etiquetas";
 import MeGusta from "@/components/foro/participar/MeGusta";
 import Responder from "@/components/foro/participar/Responder";
-import type { HiloForo, MensajeForo } from "@/lib/foro/tipos";
+import type { HiloForo, ImagenForo, MensajeForo } from "@/lib/foro/tipos";
 import "@/app/foro/hilo.css";
 
 /**
@@ -31,6 +31,23 @@ import "@/app/foro/hilo.css";
  * réplicas cuelgan de su respuesta como notas más pequeñas, con una sola
  * sangría, porque el hilo tiene un nivel.
  */
+
+/** Las imágenes de un mensaje, como fotos pegadas; se abren en grande. */
+function Imagenes({ imagenes, de, pequenas = false }: { imagenes: ImagenForo[]; de: string; pequenas?: boolean }) {
+  if (!imagenes.length) return null;
+  return (
+    <ul className={`fh-imagenes${pequenas ? " fh-imagenes--peq" : ""}`}>
+      {imagenes.map((img, i) => (
+        <li key={img.url}>
+          <a href={img.url} target="_blank" rel="noopener noreferrer">
+            {/* eslint-disable-next-line @next/next/no-img-element -- ya recodificada a WebP de 1.600 px por el servidor (FORO.md §6.6) */}
+            <img src={img.url} alt={`Imagen ${i + 1} de ${de}`} width={img.ancho} height={img.alto} loading="lazy" decoding="async" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 const marcas = (m: { editado: boolean; editadoPorModeracion: boolean }) =>
   m.editadoPorModeracion ? "Editado por moderación" : m.editado ? "Editado" : null;
@@ -65,6 +82,7 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
             {marca && <span className="fh-editado">{marca}</span>}
           </header>
           <TextoForo texto={r.texto} />
+          <Imagenes imagenes={r.imagenes} de={`la respuesta de ${r.autor?.alias ?? "un usuario"}`} />
           <AccionesMensaje respuestaId={r.id} esRespuesta esGanadora={r.esGanadora} hiloCerrado={cerrado} texto={r.texto} fecha={r.fecha} />
 
           {r.replicas.length > 0 && (
@@ -84,6 +102,7 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
                       </p>
                     )}
                     <TextoForo texto={x.texto} />
+                    <Imagenes imagenes={x.imagenes} de={`la réplica de ${x.autor?.alias ?? "un usuario"}`} pequenas />
                     <div className="fh-replica-pie">
                       <MeGusta respuestaId={x.id} inicial={x.meGusta} />
                       <AccionesMensaje respuestaId={x.id} hiloCerrado={cerrado} texto={x.texto} fecha={x.fecha} />
@@ -207,25 +226,7 @@ export default function HiloCompleto({
             <article className="fh-pregunta">
               <TextoForo texto={hilo.texto} className="fh-texto-pregunta" />
 
-              {hilo.imagenes.length > 0 && (
-                <ul className="fh-imagenes">
-                  {hilo.imagenes.map((img, i) => (
-                    <li key={img.url}>
-                      <a href={img.url} target="_blank" rel="noopener noreferrer">
-                        {/* eslint-disable-next-line @next/next/no-img-element -- ya recodificada a WebP de 1.600 px por el servidor (FORO.md §6.6) */}
-                        <img
-                          src={img.url}
-                          alt={`Imagen ${i + 1} de la pregunta «${hilo.titulo}»`}
-                          width={img.ancho}
-                          height={img.alto}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <Imagenes imagenes={hilo.imagenes} de={`la pregunta «${hilo.titulo}»`} />
 
               <footer className="fh-pregunta-pie">
                 <Etiquetas

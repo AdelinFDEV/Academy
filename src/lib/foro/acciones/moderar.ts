@@ -43,9 +43,9 @@ export async function moderar(adminId: string, d: z.infer<typeof esquemaModerar>
     p_motivo: motivoLimpio(d.motivo),
     p_categoria: d.categoria ?? null,
   });
-  // Ocultar, restaurar o borrar una PREGUNTA mueve sus imágenes: al público,
-  // fuera de él, o a ningún sitio.
-  if (r.ok && !d.respuesta && ["ocultar", "restaurar", "borrar"].includes(d.accion)) {
+  // Ocultar, restaurar o borrar una pregunta o una respuesta mueve sus
+  // imágenes: al público, fuera de él, o a ningún sitio.
+  if (r.ok && ["ocultar", "restaurar", "borrar"].includes(d.accion)) {
     await sincronizar(d.pregunta);
   }
   return r.ok ? { ok: true, datos: {} } : r;
