@@ -12,6 +12,7 @@ import RegistroVisita from "@/components/RegistroVisita";
 import StreakTracker from "@/components/StreakTracker";
 import GlosarioPopupGlobal, { type TerminoCorto } from "@/components/GlosarioPopupGlobal";
 import AcordeonesSuaves from "@/components/AcordeonesSuaves";
+import SonidosGlobales from "@/components/SonidosGlobales";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 
 // Poppins y DM Sans, las letras de la web oscura, se quitaron el 17-11-2026:
@@ -122,6 +123,8 @@ export default function RootLayout({
         <StreakTracker />
         <GlosarioPopupGlobal terminos={TERMINOS_POPUP} />
         <AcordeonesSuaves />
+        {/* El sonido al escribir y el clic de las tarjetas que no son teclas. */}
+        <SonidosGlobales />
         {/* Cloudflare Web Analytics: sin cookies, así que no depende del
             banner y mide siempre. Es la red de seguridad si alguien no acepta. */}
         <Script

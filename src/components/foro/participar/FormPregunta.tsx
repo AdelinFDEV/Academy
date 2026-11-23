@@ -1,14 +1,16 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Send } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
 import { aspectoDe, colorDe } from "@/components/foro/categorias";
+import CategoriasMovil from "@/components/foro/CategoriasMovil";
 import { pedirForo } from "@/components/foro/pedir";
 import { LIMITES } from "@/lib/foro/limites";
 import { sonar } from "@/lib/sonidos";
-import BarraFormato from "./BarraFormato";
+import EditorForo from "./EditorForo";
+import PreguntasParecidas from "./PreguntasParecidas";
 import SubirImagenes, { type Subida } from "./SubirImagenes";
 
 /**
@@ -25,7 +27,6 @@ import SubirImagenes, { type Subida } from "./SubirImagenes";
 export default function FormPregunta({ categorias }: { categorias: { slug: string; nombre: string }[] }) {
   const router = useRouter();
   const duda = useRef<HTMLTextAreaElement>(null);
-  const idDuda = useId();
   const [categoria, setCategoria] = useState(categorias[0]?.slug ?? "");
   const [titulo, setTitulo] = useState("");
   const [cuerpo, setCuerpo] = useState("");
@@ -68,6 +69,25 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
           <span className="fq-paso-num" aria-hidden="true">1</span>
           ¿De qué va?
         </legend>
+        {/* En el móvil, la categoría se elige en la misma ventana que en el
+            listado del foro (23-11-2026); en el ordenador, las fichas. */}
+        <div className="fq-cat-movil">
+          <CategoriasMovil
+            etiqueta="Categoría de tu pregunta"
+            nota="¿de qué va tu pregunta?"
+            elegir={(slug) => { if (slug) setCategoria(slug); }}
+            categorias={categorias.map((c) => {
+              const { Icono } = aspectoDe(c.slug);
+              return {
+                slug: c.slug,
+                nombre: c.nombre,
+                activa: c.slug === categoria,
+                estilo: colorDe(c.slug),
+                icono: <Icono size={18} strokeWidth={2.5} />,
+              };
+            })}
+          />
+        </div>
         <div className="fq-fichas">
           {categorias.map((c) => {
             const { Icono } = aspectoDe(c.slug);
@@ -124,26 +144,25 @@ export default function FormPregunta({ categorias }: { categorias: { slug: strin
           </span>
         </label>
 
-        {/* Un div, no un label: la barra de formato lleva botones. */}
-        <div className="fp-campo">
-          <span className="fp-campo-cab">
-            <label htmlFor={idDuda}>Tu duda <small>— con el contexto que haga falta para entenderla</small></label>
-            <BarraFormato campo={duda} valor={cuerpo} cambiar={setCuerpo} bloqueado={enviando} />
-          </span>
-          <textarea
-            ref={duda}
-            id={idDuda}
-            value={cuerpo}
-            onChange={(e) => setCuerpo(e.target.value)}
-            rows={10}
-            maxLength={LIMITES.pregunta.max * 2}
-            placeholder="Cuenta qué has hecho, qué esperabas y qué ha pasado. No publiques frases semilla, claves, teléfonos ni correos."
-            required
-          />
-          <span className={`fp-contador${nCuerpo > LIMITES.pregunta.max ? " es-malo" : ""}`}>
-            {nCuerpo} / {LIMITES.pregunta.max} · mínimo {LIMITES.pregunta.min}
-          </span>
-        </div>
+        {/* Las que ya hay y se parecen a lo que está escribiendo. */}
+        <PreguntasParecidas titulo={titulo} />
+
+        <EditorForo
+          campo={duda}
+          valor={cuerpo}
+          cambiar={setCuerpo}
+          etiqueta={<>Tu duda <small>— con el contexto que haga falta para entenderla</small></>}
+          filas={10}
+          maximo={LIMITES.pregunta.max * 2}
+          placeholder="Cuenta qué has hecho, qué esperabas y qué ha pasado. No publiques frases semilla, claves, teléfonos ni correos."
+          bloqueado={enviando}
+          requerido
+          imagenes={imagenes}
+          titulo={titulo}
+        />
+        <span className={`fp-contador${nCuerpo > LIMITES.pregunta.max ? " es-malo" : ""}`}>
+          {nCuerpo} / {LIMITES.pregunta.max} · mínimo {LIMITES.pregunta.min}
+        </span>
       </fieldset>
 
       <fieldset className="fq-paso">

@@ -392,3 +392,24 @@
   .fm-interruptor,
   .fm-interruptor::after { transition: none; }
 }
+
+/* ══ 23-11-2026 · Hilos que sigues ══ */
+.fm-seguidos { margin-top: 2.6rem; }
+
+.fm-lista--seguidos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fm-lista--seguidos .fm-aviso { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+
+.fm-dejar { display: grid; justify-items: end; gap: 4px; }
+
+@media (max-width: 860px) {
+  .fm-lista--seguidos { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 520px) {
+  .fm-lista--seguidos .fm-aviso { grid-template-columns: auto minmax(0, 1fr); }
+  .fm-dejar { grid-column: 1 / -1; justify-items: stretch; }
+  .fm-dejar .tecla { width: 100%; }
+}

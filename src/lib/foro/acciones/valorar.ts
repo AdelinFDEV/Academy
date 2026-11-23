@@ -39,6 +39,13 @@ export function etiquetar(usuarioId: string, d: z.infer<typeof esquemaEtiquetar>
   });
 }
 
+export const esquemaSeguir = z.strictObject({ pregunta: idPregunta, poner: z.boolean() });
+
+/** Seguir un hilo (avisan de cada respuesta nueva) o dejar de seguirlo. */
+export function seguir(usuarioId: string, d: z.infer<typeof esquemaSeguir>): Promise<ResultadoAccion> {
+  return llamar("foro_seguir", { p_usuario: usuarioId, p_pregunta: d.pregunta, p_poner: d.poner });
+}
+
 export const esquemaGanadora = z.strictObject({ pregunta: idPregunta, respuesta: idRespuesta });
 
 export function elegirGanadora(usuarioId: string, d: z.infer<typeof esquemaGanadora>): Promise<ResultadoAccion> {

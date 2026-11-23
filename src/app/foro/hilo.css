@@ -750,3 +750,35 @@
   .fh-imagenes a { transition: none; }
   .fh-imagenes a:hover { transform: none; }
 }
+
+/* ══ 23-11-2026 · Seguir el hilo ══ */
+.fh-seguir {
+  display: grid;
+  justify-items: end;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.fh-seguir-tecla.tecla { gap: 7px; }
+
+/* La campana suena un momento al empezar a seguirlo. */
+.fh-seguir-tecla.is-siguiendo svg { transform-origin: 50% 10%; animation: fh-campana 0.7s ease-in-out 1; }
+
+@keyframes fh-campana {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-16deg); }
+  45% { transform: rotate(13deg); }
+  70% { transform: rotate(-7deg); }
+}
+
+/* Las fotos de un mensaje abren el visor: que se note que se pulsan. */
+.fh-imagenes a { cursor: zoom-in; }
+
+@media (max-width: 640px) {
+  .fh-seguir { width: 100%; justify-items: stretch; margin-left: 0; }
+  .fh-seguir-tecla.tecla { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh-seguir-tecla.is-siguiendo svg { animation: none; }
+}

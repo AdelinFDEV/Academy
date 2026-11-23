@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BadgeCheck, CornerDownRight, Flag, Pencil, Trash2 } from "lucide-react";
 import Tecla from "@/components/cuaderno/Tecla";
@@ -9,7 +9,7 @@ import { LIMITES, MOTIVOS_REPORTE, type MotivoReporteId } from "@/lib/foro/limit
 import { sonar } from "@/lib/sonidos";
 import { celebrarGanadora } from "./celebrar";
 import { useHilo } from "./ContextoHilo";
-import BarraFormato from "./BarraFormato";
+import EditorForo from "./EditorForo";
 import Invitacion from "./Invitacion";
 import Responder from "./Responder";
 
@@ -45,7 +45,7 @@ export default function AccionesMensaje({
   fecha: string;
 }) {
   const router = useRouter();
-  const { preguntaId, mio, cambiar } = useHilo();
+  const { preguntaId, mio, cambiar, participantes } = useHilo();
   const [panel, setPanel] = useState<Panel>(null);
   const [motivo, setMotivo] = useState<MotivoReporteId>("estafa");
   const [detalle, setDetalle] = useState("");
@@ -54,8 +54,6 @@ export default function AccionesMensaje({
   const [hecho, setHecho] = useState("");
   const [nuevoTexto, setNuevoTexto] = useState(texto);
   const [nuevoTitulo, setNuevoTitulo] = useState(titulo ?? "");
-  const campoEditar = useRef<HTMLTextAreaElement>(null);
-  const idEditar = useId();
 
   if (!mio) return null;
 
@@ -172,14 +170,16 @@ export default function AccionesMensaje({
               <input type="text" value={nuevoTitulo} onChange={(e) => setNuevoTitulo(e.target.value)} maxLength={LIMITES.titulo.max * 2} />
             </label>
           )}
-          {/* Un div, no un label: la barra de formato lleva botones. */}
-          <div className="fp-campo">
-            <span className="fp-campo-cab">
-              <label htmlFor={idEditar}>Texto <small>— puedes editarlo durante {LIMITES.minutosParaEditar} minutos desde que lo publicaste</small></label>
-              <BarraFormato campo={campoEditar} valor={nuevoTexto} cambiar={setNuevoTexto} bloqueado={enviando} />
-            </span>
-            <textarea ref={campoEditar} id={idEditar} value={nuevoTexto} onChange={(e) => setNuevoTexto(e.target.value)} rows={respuestaId ? 5 : 9} maxLength={LIMITES.pregunta.max * 2} />
-          </div>
+          <EditorForo
+            valor={nuevoTexto}
+            cambiar={setNuevoTexto}
+            etiqueta={<>Texto <small>— puedes editarlo durante {LIMITES.minutosParaEditar} minutos desde que lo publicaste</small></>}
+            filas={respuestaId ? 5 : 9}
+            maximo={LIMITES.pregunta.max * 2}
+            bloqueado={enviando}
+            participantes={participantes}
+            titulo={respuestaId ? undefined : nuevoTitulo}
+          />
           <div className="fp-fila">
             <Tecla
               color="coral"

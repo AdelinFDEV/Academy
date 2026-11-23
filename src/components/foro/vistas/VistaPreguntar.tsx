@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Info, Lightbulb, ShieldAlert } from "lucide-react";
 import MarcoForo from "@/components/foro/MarcoForo";
@@ -27,17 +28,19 @@ export default function VistaPreguntar({
 }) {
   return (
     <MarcoForo conSesion={conSesion}>
-      <nav className="fo-migas" aria-label="Estás en">
-        <Link href="/foro">Foro</Link>
-      </nav>
-
-      <header className="fq-cabecera">
-        <p className="fo-nota">Nueva pregunta</p>
-        <h1 className="fo-titulo">Pregunta lo que <span className="fluor">necesitas</span> saber.</h1>
-        <p className="fo-entradilla">
-          Una duda concreta y bien explicada recibe mejores respuestas. Antes de preguntar, mira si alguien ya la ha
-          planteado.
-        </p>
+      {/* La cabecera (23-11-2026, rehecha a petición del admin): corta, sin
+          migas ni entradilla, porque quien llega aquí ya sabe a qué viene.
+          Una franja en el coral del foro con el título y, a la derecha, el
+          boli escribiendo y el «?» asomando. */}
+      <header className="fqc">
+        <div className="fqc-texto">
+          <h1 className="fqc-titulo">Nueva pregunta</h1>
+          <p className="fqc-nota">la comunidad te responde</p>
+        </div>
+        <div className="fqc-pegatinas" aria-hidden="true">
+          <Image src="/cuaderno/boli-pegatina.webp" alt="" width={130} height={458} className="fqc-boli" draggable={false} />
+          <Image src="/cuaderno/pregunta-pegatina.webp" alt="" width={225} height={300} className="fqc-pregunta" draggable={false} />
+        </div>
       </header>
 
       {aviso && (

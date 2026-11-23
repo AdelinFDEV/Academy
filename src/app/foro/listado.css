@@ -429,112 +429,11 @@
    categoría en la que estás, que abre la ventana de libreta con todas. */
 .flc-cat-movil-caja { display: none; grid-area: cats; }
 
-.flc-cat-movil.tecla {
-  justify-content: flex-start;
-  gap: 10px;
-  width: 100%;
-  padding: 12px 14px 12px 12px;
-  text-transform: none;
-  letter-spacing: 0;
-  text-align: left;
-}
-
-.flc-cat-movil .fl-categoria-icono { width: 34px; height: 34px; border-radius: 11px; }
-
-.flc-cat-movil-texto {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.flc-cat-movil-texto small {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tinta-3);
-}
-
-.flc-cat-movil-flecha { flex: none; color: var(--tinta-2); }
-
-/* La ventana: una fila grande por categoría, con su color y su cuenta. */
-.flc-cat-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0;
-  padding: 2px 2px 6px;
-  list-style: none;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.flc-cat-lista li { animation: bp-entra 0.32s cubic-bezier(0.34, 1.5, 0.5, 1) both; animation-delay: calc(var(--i) * 35ms); }
-
-.flc-cat-fila {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px 12px 12px;
-  border-radius: 18px;
-  background: var(--papel);
-  box-shadow: inset 0 0 0 2px var(--gris), 0 4px 0 var(--gris);
-  color: var(--tinta);
-  font-size: 1.02rem;
-  font-weight: 900;
-  text-decoration: none;
-  transition: transform 0.18s cubic-bezier(0.34, 1.6, 0.5, 1);
-}
-
-.flc-cat-fila:active { transform: translateY(3px); }
-.flc-cat-fila:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
-
-.flc-cat-fila-icono {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--cat, var(--coral));
-  color: var(--cat-t, #fff);
-  box-shadow: 0 3px 0 var(--cat-o, var(--coral-o));
-}
-
-.flc-cat-fila-nombre { flex: 1; min-width: 0; }
-
-.flc-cat-fila-cuenta {
-  min-width: 1.8em;
-  padding: 2px 8px;
-  border-radius: 8px;
-  background: var(--fondo);
-  font-size: 13px;
-  color: var(--tinta-2);
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-/* La que estás viendo: en su pastel, con su borde y su check. */
-.flc-cat-fila.is-activa {
-  background: var(--cat-s, var(--coral-s));
-  box-shadow: inset 0 0 0 2.5px var(--cat, var(--coral)), 0 4px 0 var(--cat-o, var(--coral-o));
-}
-
-.flc-cat-fila-check { flex: none; color: var(--cat-o, var(--coral-o)); }
-
 @media (max-width: 640px) {
   .flc-categorias { display: none; }
   .flc-cat-movil-caja { display: block; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .flc-cat-lista li { animation: none; }
-  .flc-cat-fila { transition: none; }
-}
 
 @media (max-width: 860px) {
   .flc {
@@ -635,7 +534,7 @@
 .fl-hilo {
   position: relative;
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr) auto;
+  grid-template-columns: 86px minmax(0, 1fr) auto;
   align-items: start;
   gap: 1.1rem;
   padding: 1.35rem 1.4rem 1.2rem;
@@ -682,12 +581,16 @@
 
 /* El marcador: un cuadradito con la cifra. Sin respuestas, punteado; con
    ellas, coral; resuelta, menta con su visto. */
+/* La cifra y su palabra, centradas en el cuadro y con aire hasta la línea
+   discontinua (23-11-2026: «respuestas» casi la tocaba). */
 .fl-marcador {
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: 2px;
-  height: 76px;
+  gap: 4px;
+  box-sizing: border-box;
+  height: 82px;
+  padding: 2px 6px 0;
   border: 3px dashed var(--gris-o);
   border-radius: 18px;
   color: var(--tinta-2);
@@ -702,9 +605,12 @@
 }
 
 .fl-marcador span {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 900;
-  letter-spacing: 0.05em;
+  line-height: 1;
+  /* Sin espaciado a la derecha de la última letra: descentraba la palabra. */
+  letter-spacing: 0.03em;
+  margin-right: -0.03em;
   text-transform: uppercase;
 }
 
@@ -997,7 +903,7 @@
   .fl-lateral { grid-template-columns: minmax(0, 1fr); }
   .fl-hilo { grid-template-columns: 58px minmax(0, 1fr); gap: 0.85rem; padding: 1.2rem 1rem 1rem; }
   .fl-hilo::before { left: 18px; width: 52px; }
-  .fl-marcador { height: 58px; border-radius: 14px; }
+  .fl-marcador { height: 58px; padding: 0; border-radius: 14px; }
   .fl-marcador b { font-size: 1.35rem; }
   .fl-marcador span { display: none; }
   .fl-flecha { display: none; }
@@ -1011,4 +917,85 @@
   .fl-hilo:has(.fl-titulo a:hover),
   .fl-hilo:has(.fl-titulo a:active) { transform: none; }
   .fl-hilo:has(.fl-titulo a:hover) .fl-flecha { transform: none; }
+}
+
+/* ══ 23-11-2026 · El buscador: lo marcado en un título y la página de resultados ══ */
+
+/* Lo que coincide con lo buscado, a rotulador. */
+.fl-marca {
+  padding: 0 2px;
+  border-radius: 4px;
+  background: linear-gradient(transparent 52%, var(--amarillo) 52%, var(--amarillo) 92%, transparent 92%);
+  color: inherit;
+}
+
+/* En la cabecera del foro, la caja ocupa todo el ancho, sobre las cifras. */
+.flc-pie .fb { margin-bottom: 8px; }
+/* Las sugerencias del buscador pasan por encima de las categorías de debajo. */
+.flc > .flc-pie { z-index: 4; }
+
+/* La cabecera de /foro/buscar: corta, con la caja de protagonista. */
+.fbc {
+  position: relative;
+  /* Por encima de la lista de resultados: de ella cuelgan las sugerencias. */
+  z-index: 5;
+  display: grid;
+  /* `minmax(0, …)`: sin él, la caja de búsqueda ensancha la hoja en el móvil. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin: 1.6rem 0 2rem;
+  padding: 1.5rem 2rem 1.7rem;
+  border-radius: 28px;
+  background-color: var(--coral-s);
+  background-image: radial-gradient(color-mix(in srgb, var(--coral) 26%, transparent) 1.5px, transparent 2px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  box-shadow: 0 6px 0 var(--coral), 0 26px 40px -32px rgba(29, 27, 51, 0.5);
+}
+
+.fbc-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  justify-self: start;
+  padding: 6px 12px;
+  border-radius: 11px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--coral) 40%, var(--coral-s));
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--tinta-2);
+  text-decoration: none;
+}
+
+.fbc-volver:hover { color: var(--coral-o); }
+
+.fbc-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.fbr { max-width: 900px; }
+
+.fbr-vacio { display: grid; justify-items: center; gap: 0.8rem; }
+
+.fbr-pie {
+  margin: 1.6rem 0 0;
+  font-family: var(--letra-mano);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--tinta-2);
+  text-align: center;
+}
+
+.fbr-pie a { color: var(--coral-o); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+
+@media (max-width: 640px) {
+  .fbc { margin-top: 1.2rem; padding: 1.1rem 1rem 1.3rem; border-radius: 24px; }
 }

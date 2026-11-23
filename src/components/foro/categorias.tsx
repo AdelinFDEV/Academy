@@ -1,4 +1,4 @@
-import { Bitcoin, CandlestickChart, Coins, GraduationCap, Landmark, MessagesSquare, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Bitcoin, CandlestickChart, Coins, GraduationCap, Landmark, MessagesSquare, Shapes, ShieldCheck, type LucideIcon } from "lucide-react";
 
 /**
  * El color y el icono de cada categoría del foro.
@@ -25,6 +25,7 @@ const CATEGORIAS: Record<string, { tono: Tono; Icono: LucideIcon }> = {
   seguridad: { tono: "lila", Icono: ShieldCheck },
   impuestos: { tono: "amarillo", Icono: Landmark },
   academia: { tono: "cielo", Icono: GraduationCap },
+  otras: { tono: "coral", Icono: Shapes },
 };
 
 const GENERICA: { tono: Tono; Icono: LucideIcon } = { tono: "coral", Icono: MessagesSquare };

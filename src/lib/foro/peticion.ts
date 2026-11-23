@@ -4,7 +4,7 @@ import type { z } from "zod";
 import { SITE_URL } from "@/lib/site";
 import { errorForo } from "./errores";
 import { LIMITES } from "./limites";
-import { sesion, sesionAdmin } from "./permisos";
+import { entradaAlForo, sesion, sesionAdmin } from "./permisos";
 
 /**
  * La puerta de TODA ruta de `/api/foro/*` (FORO.md §6.2).
@@ -160,3 +160,29 @@ export function rutaForoLectura(
     return NextResponse.json({ ok: true, ...resultado.datos }, { headers: SIN_CACHE });
   };
 }
+
+/**
+ * Una ruta que LEE algo PÚBLICO del foro (las sugerencias del buscador): lo
+ * mismo para todo el mundo, sin sesión. Aun así:
+ *   · con el foro cerrado no existe para quien no es admin (404, como las páginas);
+ *   · nunca se cachea: lo que se oculta deja de salir en el acto;
+ *   · la lectura solo recibe los parámetros de la URL, nunca quién mira.
+ */
+export function rutaForoPublica(
+  lectura: (parametros: URLSearchParams) => Promise<ResultadoAccion>,
+) {
+  return async function GET(request: Request): Promise<NextResponse> {
+    let resultado: ResultadoAccion;
+    try {
+      const { visible } = await entradaAlForo();
+      if (!visible) return fallo("foro_cerrado");
+      resultado = await lectura(new URL(request.url).searchParams);
+    } catch (err) {
+      console.error(`[foro] lectura pública falló: ${err instanceof Error ? err.name : "desconocido"}`);
+      return fallo("interno");
+    }
+    if (!resultado.ok) return fallo(resultado.error, resultado.mensaje);
+    return NextResponse.json({ ok: true, ...resultado.datos }, { headers: SIN_CACHE });
+  };
+}
+

@@ -1,9 +1,11 @@
 import "server-only";
-import { sinFormato } from "../texto/formato";
+import { consultaLimpia, marcar, palabrasDe } from "../texto/buscar";
+import { candidatosDeMencion, sinFormato } from "../texto/formato";
 import { bd } from "../bd";
+import type { ResultadoAccion } from "../peticion";
 import { urlPublica } from "../imagenes/almacen";
 import { nivelDe } from "../limites";
-import type { AutorForo, CategoriaForo, HiloEnListado, HiloForo, ImagenForo, ListadoForo, MensajeForo } from "../tipos";
+import type { AutorForo, BusquedaForo, CategoriaForo, HiloEnListado, HiloForo, HiloSugerido, ImagenForo, ListadoForo, MensajeForo } from "../tipos";
 
 /**
  * Lo PÚBLICO del foro: el listado de preguntas y un hilo con sus respuestas.
@@ -133,6 +135,128 @@ export async function listado(categoria: string | null, pagina: number): Promise
   };
 }
 
+// ── El buscador (23-11-2026) ────────────────────────────────────────────────
+
+const COLUMNAS_DE_LISTADO =
+  "id, slug, titulo, cuerpo, categoria, autor_id, creada_at, ultima_actividad_at, respuestas, ganadora_id, fijada, yo_tambien";
+
+/** Los ids de los hilos publicados que llevan las palabras, del más al menos acertado. */
+async function idsEncontrados(cliente: Cliente, palabras: string[], minimo: number, limite: number): Promise<number[]> {
+  if (!palabras.length) return [];
+  const { data, error } = await cliente.rpc("foro_buscar", { p_palabras: palabras, p_minimo: minimo, p_limite: limite });
+  if (error) {
+    console.error(`[foro] foro_buscar falló: ${error.code ?? "sin código"}`);
+    return [];
+  }
+  return ((data ?? []) as { id: unknown }[]).map((f) => Number(f.id)).filter((n) => Number.isSafeInteger(n) && n > 0);
+}
+
+/**
+ * El buscador del foro: los hilos publicados que llevan TODAS las palabras,
+ * en el título o en el texto, sin distinguir mayúsculas ni tildes. Primero
+ * los que las llevan en el título.
+ */
+export async function buscar(bruto: unknown): Promise<BusquedaForo> {
+  const consulta = consultaLimpia(bruto);
+  const palabras = palabrasDe(consulta);
+  if (!palabras.length) return { consulta, palabras, hilos: [] };
+
+  const cliente = bd();
+  const ids = await idsEncontrados(cliente, palabras, palabras.length, 30);
+  if (!ids.length) return { consulta, palabras, hilos: [] };
+
+  // Otra vez «publicada»: entre buscar y leer, un hilo puede haberse ocultado.
+  const [{ data: filas }, cats] = await Promise.all([
+    cliente.from("foro_preguntas").select(COLUMNAS_DE_LISTADO).in("id", ids).eq("estado", "publicada"),
+    categorias(cliente),
+  ]);
+  const quien = await autores(cliente, (filas ?? []).map((f) => f.autor_id as string | null));
+  const nombreDe = new Map(cats.map((c) => [c.slug, c.nombre]));
+  const porId = new Map((filas ?? []).map((f) => [Number(f.id), f]));
+
+  const hilos: HiloEnListado[] = [];
+  for (const id of ids) {
+    const f = porId.get(id);
+    if (!f) continue;
+    hilos.push({
+      id: Number(f.id),
+      slug: String(f.slug),
+      titulo: String(f.titulo),
+      categoria: { slug: String(f.categoria), nombre: nombreDe.get(String(f.categoria)) ?? String(f.categoria) },
+      extracto: extracto(f.cuerpo),
+      autor: f.autor_id ? (quien.get(String(f.autor_id)) ?? null) : null,
+      fecha: String(f.creada_at),
+      ultimaActividad: String(f.ultima_actividad_at),
+      respuestas: Number(f.respuestas),
+      resuelto: f.ganadora_id != null,
+      fijado: Boolean(f.fijada),
+      yoTambien: Number(f.yo_tambien),
+      tituloMarcado: marcar(String(f.titulo), palabras),
+    });
+  }
+  return { consulta, palabras, hilos };
+}
+
+/**
+ * Una lista corta de hilos para lo que se está escribiendo:
+ *   · `buscar`: lo que saldría en el buscador (todas las palabras);
+ *   · `parecidas`: preguntas que se parecen a un título a medio escribir.
+ *     Se quitan las palabras que no distinguen nada («cómo», «qué», «para»)
+ *     y basta con que coincida algo más de la mitad del resto.
+ */
+export async function sugerencias(bruto: unknown, modo: "buscar" | "parecidas", cuantas = 5): Promise<HiloSugerido[]> {
+  const consulta = consultaLimpia(bruto);
+  const palabras = palabrasDe(consulta, { significativas: modo === "parecidas" });
+  // Con una sola palabra suelta, «parecida» sería medio foro.
+  if (palabras.length < (modo === "parecidas" ? 2 : 1)) return [];
+  const minimo = modo === "parecidas" ? Math.max(2, Math.ceil(palabras.length * 0.6)) : palabras.length;
+
+  const cliente = bd();
+  const ids = await idsEncontrados(cliente, palabras, minimo, Math.max(1, Math.min(cuantas, 8)));
+  if (!ids.length) return [];
+  const [{ data: filas }, { data: cats }] = await Promise.all([
+    cliente.from("foro_preguntas").select("id, slug, titulo, categoria, respuestas, ganadora_id").in("id", ids).eq("estado", "publicada"),
+    cliente.from("foro_categorias").select("slug, nombre"),
+  ]);
+  const nombreDe = new Map((cats ?? []).map((c) => [String(c.slug), String(c.nombre)]));
+  const porId = new Map((filas ?? []).map((f) => [Number(f.id), f]));
+  const lista: HiloSugerido[] = [];
+  for (const id of ids) {
+    const f = porId.get(id);
+    if (!f) continue;
+    lista.push({
+      id: Number(f.id),
+      slug: String(f.slug),
+      titulo: String(f.titulo),
+      categoria: { slug: String(f.categoria), nombre: nombreDe.get(String(f.categoria)) ?? String(f.categoria) },
+      respuestas: Number(f.respuestas),
+      resuelto: f.ganadora_id != null,
+    });
+  }
+  return lista;
+}
+
+/** La lectura de `/api/foro/buscar`: `?q=…&modo=buscar|parecidas`. */
+export async function sugerenciasDelForo(parametros: URLSearchParams): Promise<ResultadoAccion> {
+  const modo = parametros.get("modo") === "parecidas" ? "parecidas" : "buscar";
+  return { ok: true, datos: { hilos: await sugerencias(parametros.get("q"), modo, modo === "parecidas" ? 4 : 6) } };
+}
+
+/**
+ * De los alias que un texto parece mencionar, los que existen (en minúsculas).
+ * Para pintar como mención solo las de verdad, y para la vista previa. Si la
+ * consulta falla, ninguno: el texto se pinta sin menciones.
+ */
+export async function aliasQueExisten(candidatos: string[]): Promise<string[]> {
+  if (!candidatos.length) return [];
+  const { data, error } = await bd().rpc("foro_alias_existentes", { p_alias: candidatos.slice(0, 200) });
+  if (error) {
+    console.error(`[foro] foro_alias_existentes falló: ${error.code ?? "sin código"}`);
+    return [];
+  }
+  return ((data ?? []) as { alias: unknown }[]).map((f) => String(f.alias).toLowerCase());
+}
+
 /**
  * El orden de las respuestas (FORO.md §9.1). Recibe las respuestas POR ORDEN
  * DE LLEGADA (fecha y, a igualdad, id), que es como las da la consulta.
@@ -233,6 +357,11 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
 
   const ordenadas = ordenar(respuestas, orden);
 
+  // Los @alias del hilo que existen de verdad: solo esos se pintan como mención.
+  const menciones = await aliasQueExisten(
+    candidatosDeMencion([String(p.cuerpo), ...todas.map((f) => String(f.cuerpo))].join(" ")),
+  );
+
   return {
     id: Number(p.id),
     slug: String(p.slug),
@@ -254,6 +383,7 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
       respuestas.length > 0 &&
       Date.now() - new Date(String(p.creada_at)).getTime() > DOS_DIAS &&
       (reportesAbiertos ?? 0) === 0,
+    menciones,
   };
 }
 

@@ -4,7 +4,7 @@ import { bd } from "../bd";
 import { ETIQUETA_IDS, logrosDelForo, nivelDe, type EtiquetaId } from "../limites";
 import type { ResultadoAccion } from "../peticion";
 import { accesoAlForo, motivoParaNoParticipar } from "../permisos";
-import type { AvisoForo, LoMio, MensajeMio, MioEnHilo, PreguntaMia } from "../tipos";
+import type { AvisoForo, HiloSugerido, LoMio, MensajeMio, MioEnHilo, PreguntaMia } from "../tipos";
 
 /**
  * Lo PERSONAL de quien mira: qué ha hecho en un hilo y sus avisos.
@@ -43,13 +43,14 @@ export async function mioEnHilo(usuarioId: string, parametros: URLSearchParams):
     .eq("estado", "publicada");
   const idsDelHilo = (respuestas ?? []).map((r) => String(r.id));
 
-  const [motivo, gustas, etiquetas, reportes] = await Promise.all([
+  const [motivo, gustas, etiquetas, reportes, seguido] = await Promise.all([
     motivoParaNoParticipar(usuarioId),
     idsDelHilo.length
       ? cliente.from("foro_me_gusta").select("respuesta_id").eq("usuario_id", usuarioId).in("respuesta_id", idsDelHilo)
       : Promise.resolve({ data: [] as { respuesta_id: string }[] }),
     cliente.from("foro_etiquetas").select("tipo").eq("usuario_id", usuarioId).eq("pregunta_id", preguntaId),
     cliente.from("foro_reportes").select("respuesta_id").eq("usuario_id", usuarioId).eq("pregunta_id", preguntaId),
+    cliente.from("foro_seguidos").select("pregunta_id").eq("usuario_id", usuarioId).eq("pregunta_id", preguntaId).maybeSingle(),
   ]);
 
   const mio: MioEnHilo = {
@@ -60,6 +61,7 @@ export async function mioEnHilo(usuarioId: string, parametros: URLSearchParams):
     etiquetas: (etiquetas.data ?? []).map((e) => e.tipo).filter(esEtiqueta),
     mios: (respuestas ?? []).filter((r) => r.autor_id === usuarioId).map((r) => String(r.id)),
     reportados: (reportes.data ?? []).map((r) => (r.respuesta_id ? String(r.respuesta_id) : "pregunta")),
+    sigue: seguido.data != null,
   };
   return { ok: true, datos: mio };
 }
@@ -187,13 +189,14 @@ export async function loMio(usuarioId: string): Promise<LoMio> {
   const ahora = new Date().toISOString();
   const mesActual = `${ahora.slice(0, 8)}01`;
 
-  const [perfil, reputacion, sancionesFilas, preguntas, respuestas, avisos] = await Promise.all([
+  const [perfil, reputacion, sancionesFilas, preguntas, respuestas, avisos, seguidos] = await Promise.all([
     cliente.from("profiles").select("alias").eq("id", usuarioId).maybeSingle(),
     cliente.from("foro_reputacion").select("puntos, puntos_mes, mes, ganadoras, gracias, respuestas, fuera_del_ranking").eq("usuario_id", usuarioId).maybeSingle(),
     cliente.from("foro_sanciones").select("tipo, hasta, motivo, creada_at").eq("usuario_id", usuarioId).is("levantada_at", null).order("creada_at", { ascending: false }).limit(20),
     cliente.from("foro_preguntas").select("id, slug, titulo, cuerpo, estado, creada_at").eq("autor_id", usuarioId).neq("estado", "borrada").order("creada_at", { ascending: false }).limit(50),
     cliente.from("foro_respuestas").select("id, pregunta_id, padre_id, cuerpo, estado, creada_at").eq("autor_id", usuarioId).neq("estado", "borrada").order("creada_at", { ascending: false }).limit(50),
     leerAvisos(usuarioId),
+    hilosSeguidos(usuarioId),
   ]);
 
   // Los títulos de los hilos donde ha respondido, y el motivo de lo que tenga oculto.
@@ -265,5 +268,40 @@ export async function loMio(usuarioId: string): Promise<LoMio> {
     avisos: avisos.avisos,
     sinLeer: avisos.sinLeer,
     mensajes,
+    seguidos,
   };
+}
+
+/**
+ * Los hilos que sigue el usuario, los últimos primero. Solo los publicados:
+ * de uno oculto no sale ni el título. Si algo falla, ninguno.
+ */
+async function hilosSeguidos(usuarioId: string): Promise<HiloSugerido[]> {
+  const cliente = bd();
+  const { data: filas } = await cliente
+    .from("foro_seguidos")
+    .select("pregunta_id, creado_at")
+    .eq("usuario_id", usuarioId)
+    .order("creado_at", { ascending: false })
+    .limit(50);
+  const ids = (filas ?? []).map((f) => Number(f.pregunta_id));
+  if (!ids.length) return [];
+  const [{ data: hilos }, { data: cats }] = await Promise.all([
+    cliente.from("foro_preguntas").select("id, slug, titulo, categoria, respuestas, ganadora_id").in("id", ids).eq("estado", "publicada"),
+    cliente.from("foro_categorias").select("slug, nombre"),
+  ]);
+  const nombreDe = new Map((cats ?? []).map((c) => [String(c.slug), String(c.nombre)]));
+  const porId = new Map((hilos ?? []).map((h) => [Number(h.id), h]));
+  return ids.flatMap((id): HiloSugerido[] => {
+    const h = porId.get(id);
+    if (!h) return [];
+    return [{
+      id: Number(h.id),
+      slug: String(h.slug),
+      titulo: String(h.titulo),
+      categoria: { slug: String(h.categoria), nombre: nombreDe.get(String(h.categoria)) ?? String(h.categoria) },
+      respuestas: Number(h.respuestas),
+      resuelto: h.ganadora_id != null,
+    }];
+  });
 }

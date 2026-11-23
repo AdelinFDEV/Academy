@@ -40,6 +40,8 @@ export type MioEnHilo = {
   mios: string[];
   /** Lo que ya ha reportado: "pregunta" o el id de la respuesta. */
   reportados: string[];
+  /** Sigue este hilo: le avisan de cada respuesta nueva (23-11-2026). */
+  sigue: boolean;
 };
 
 export type AvisoForo = {
@@ -75,6 +77,8 @@ export function fraseDeAviso(a: AvisoForo): string {
     case "retirado": return "Un mensaje tuyo se ha retirado";
     case "restaurado": return "Un mensaje tuyo vuelve a estar publicado";
     case "sancion": return "Has recibido una sanción en el foro";
+    case "seguido": return n === 1 ? "Nueva respuesta en un hilo que sigues" : `${n} respuestas nuevas en un hilo que sigues`;
+    case "mencion": return n === 1 ? "Te han mencionado en un mensaje" : `Te han mencionado ${n} veces en un hilo`;
     default: return "Tienes una novedad en el foro";
   }
 }
@@ -165,6 +169,22 @@ export type RankingForo = {
   gracias: FilaRanking[];
 };
 
+// ── El texto de un mensaje, listo para pintar ───────────────────────────────
+// El mensaje se guarda como texto plano; el servidor lo convierte en esta
+// estructura (`texto/formato.ts`) y el navegador la pinta con elementos de
+// React (`TextoBloques`). Nunca viaja HTML.
+
+/** Un trozo de una línea. Un enlace solo existe si su dominio está permitido. */
+export type TrozoForo =
+  | { tipo: "texto"; texto: string; negrita: boolean }
+  | { tipo: "enlace"; texto: string; url: string; negrita: boolean }
+  /** `texto` es «@alias», tal cual se escribió. Sin enlace: no hay perfiles. */
+  | { tipo: "mencion"; texto: string; negrita: boolean };
+
+export type BloqueForo =
+  | { tipo: "parrafo"; trozos: TrozoForo[] }
+  | { tipo: "lista"; numerada: boolean; puntos: TrozoForo[][] };
+
 // ── Lo público: el listado y el hilo ────────────────────────────────────────
 
 export type CategoriaForo = { slug: string; nombre: string; descripcion: string; hilos: number };
@@ -185,6 +205,27 @@ export type HiloEnListado = {
   resuelto: boolean;
   fijado: boolean;
   yoTambien: number;
+  /** Solo en el buscador: el título partido, con lo que coincide marcado. */
+  tituloMarcado?: { texto: string; marca: boolean }[];
+};
+
+/** Lo que devuelve el buscador del foro (`/foro/buscar`). */
+export type BusquedaForo = {
+  /** Lo buscado, ya limpio (lo que se enseña en la caja). */
+  consulta: string;
+  /** Las palabras que se han buscado de verdad. Vacío = no había nada que buscar. */
+  palabras: string[];
+  hilos: HiloEnListado[];
+};
+
+/** Un hilo en una lista corta: sugerencias del buscador y «¿es alguna de estas?». */
+export type HiloSugerido = {
+  id: number;
+  slug: string;
+  titulo: string;
+  categoria: { slug: string; nombre: string };
+  respuestas: number;
+  resuelto: boolean;
 };
 
 export type ListadoForo = {
@@ -240,6 +281,8 @@ export type HiloForo = {
   totalRespuestas: number;
   /** Si Google puede indexarlo (FORO.md §12). */
   indexable: boolean;
+  /** Los alias mencionados en el hilo que existen, en minúsculas (23-11-2026). */
+  menciones: string[];
 };
 
 // ── Lo mío en el foro (/foro/mio) ───────────────────────────────────────────
@@ -293,4 +336,6 @@ export type LoMio = {
   avisos: AvisoForo[];
   sinLeer: number;
   mensajes: MensajeMio[];
+  /** Los hilos que sigue, los últimos primero (23-11-2026). */
+  seguidos: HiloSugerido[];
 };

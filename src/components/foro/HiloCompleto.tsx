@@ -4,6 +4,7 @@ import { ArrowLeft, BadgeCheck, CornerDownRight, HandHeart, Heart, Lightbulb, Lo
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Tecla from "@/components/cuaderno/Tecla";
 import Firma from "@/components/foro/Firma";
+import GaleriaForo from "@/components/foro/GaleriaForo";
 import MarcoForo from "@/components/foro/MarcoForo";
 import TextoForo from "@/components/foro/TextoForo";
 import { aspectoDe, colorDe } from "@/components/foro/categorias";
@@ -12,7 +13,8 @@ import ContextoHilo from "@/components/foro/participar/ContextoHilo";
 import Etiquetas from "@/components/foro/participar/Etiquetas";
 import MeGusta from "@/components/foro/participar/MeGusta";
 import Responder from "@/components/foro/participar/Responder";
-import type { HiloForo, ImagenForo, MensajeForo } from "@/lib/foro/tipos";
+import SeguirHilo from "@/components/foro/participar/SeguirHilo";
+import type { HiloForo, MensajeForo } from "@/lib/foro/tipos";
 import "@/app/foro/hilo.css";
 
 /**
@@ -32,27 +34,10 @@ import "@/app/foro/hilo.css";
  * sangría, porque el hilo tiene un nivel.
  */
 
-/** Las imágenes de un mensaje, como fotos pegadas; se abren en grande. */
-function Imagenes({ imagenes, de, pequenas = false }: { imagenes: ImagenForo[]; de: string; pequenas?: boolean }) {
-  if (!imagenes.length) return null;
-  return (
-    <ul className={`fh-imagenes${pequenas ? " fh-imagenes--peq" : ""}`}>
-      {imagenes.map((img, i) => (
-        <li key={img.url}>
-          <a href={img.url} target="_blank" rel="noopener noreferrer">
-            {/* eslint-disable-next-line @next/next/no-img-element -- ya recodificada a WebP de 1.600 px por el servidor (FORO.md §6.6) */}
-            <img src={img.url} alt={`Imagen ${i + 1} de ${de}`} width={img.ancho} height={img.alto} loading="lazy" decoding="async" />
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 const marcas = (m: { editado: boolean; editadoPorModeracion: boolean }) =>
   m.editadoPorModeracion ? "Editado por moderación" : m.editado ? "Editado" : null;
 
-function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
+function Respuesta({ r, cerrado, menciones }: { r: MensajeForo; cerrado: boolean; menciones: string[] }) {
   const marca = marcas(r);
   return (
     <li className={`fh-resp${r.esGanadora ? " is-ganadora" : ""}`} id={`r-${r.id}`}>
@@ -81,8 +66,8 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
             <Firma autor={r.autor} fecha={r.fecha} />
             {marca && <span className="fh-editado">{marca}</span>}
           </header>
-          <TextoForo texto={r.texto} />
-          <Imagenes imagenes={r.imagenes} de={`la respuesta de ${r.autor?.alias ?? "un usuario"}`} />
+          <TextoForo texto={r.texto} menciones={menciones} />
+          <GaleriaForo imagenes={r.imagenes} de={`la respuesta de ${r.autor?.alias ?? "un usuario"}`} />
           <AccionesMensaje respuestaId={r.id} esRespuesta esGanadora={r.esGanadora} hiloCerrado={cerrado} texto={r.texto} fecha={r.fecha} />
 
           {r.replicas.length > 0 && (
@@ -101,8 +86,8 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
                         En respuesta a <b>{x.citado}</b>
                       </p>
                     )}
-                    <TextoForo texto={x.texto} />
-                    <Imagenes imagenes={x.imagenes} de={`la réplica de ${x.autor?.alias ?? "un usuario"}`} pequenas />
+                    <TextoForo texto={x.texto} menciones={menciones} />
+                    <GaleriaForo imagenes={x.imagenes} de={`la réplica de ${x.autor?.alias ?? "un usuario"}`} pequenas />
                     <div className="fh-replica-pie">
                       <MeGusta respuestaId={x.id} inicial={x.meGusta} />
                       <AccionesMensaje respuestaId={x.id} hiloCerrado={cerrado} texto={x.texto} fecha={x.fecha} />
@@ -134,10 +119,19 @@ export default function HiloCompleto({
   const { Icono } = aspectoDe(hilo.categoria.slug);
   const resuelto = hilo.respuestas.some((r) => r.esGanadora);
   const meGustaTotal = hilo.respuestas.reduce((n, r) => n + r.meGusta + r.replicas.reduce((m, x) => m + x.meGusta, 0), 0);
+  // Quienes escriben en el hilo (sus firmas ya son públicas): lo que se
+  // sugiere al teclear «@» en una respuesta.
+  const participantes = Array.from(
+    new Set(
+      [hilo.autor, ...hilo.respuestas.flatMap((r) => [r.autor, ...r.replicas.map((x) => x.autor)])]
+        .map((a) => a?.alias)
+        .filter((a): a is string => typeof a === "string" && a !== ""),
+    ),
+  );
 
   return (
     <MarcoForo conSesion={conSesion} tono={colorDe(hilo.categoria.slug)}>
-      <ContextoHilo preguntaId={hilo.id} conSesion={conSesion}>
+      <ContextoHilo preguntaId={hilo.id} conSesion={conSesion} participantes={participantes}>
         {/* ── El inicio del hilo (23-11-2026, rehecho de cero: pedido por el
             admin) ── Una hoja en el pastel de su categoría, como la cabecera
             del foro: arriba, la vuelta y las migas; la categoría en una
@@ -216,6 +210,8 @@ export default function HiloCompleto({
                 </li>
               )}
             </ul>
+            {/* Seguir el hilo: a la derecha, lo pide aparte quien mira. */}
+            <SeguirHilo />
           </div>
         </header>
 
@@ -224,9 +220,9 @@ export default function HiloCompleto({
         <div className="fh-rejilla">
           <div className="fh-principal">
             <article className="fh-pregunta">
-              <TextoForo texto={hilo.texto} className="fh-texto-pregunta" />
+              <TextoForo texto={hilo.texto} menciones={hilo.menciones} className="fh-texto-pregunta" />
 
-              <Imagenes imagenes={hilo.imagenes} de={`la pregunta «${hilo.titulo}»`} />
+              <GaleriaForo imagenes={hilo.imagenes} de={`la pregunta «${hilo.titulo}»`} />
 
               <footer className="fh-pregunta-pie">
                 <Etiquetas
@@ -312,7 +308,7 @@ export default function HiloCompleto({
                 </div>
               ) : (
                 <ol className="fh-lista">
-                  {hilo.respuestas.map((r) => <Respuesta key={r.id} r={r} cerrado={hilo.cerrado} />)}
+                  {hilo.respuestas.map((r) => <Respuesta key={r.id} r={r} cerrado={hilo.cerrado} menciones={hilo.menciones} />)}
                 </ol>
               )}
 

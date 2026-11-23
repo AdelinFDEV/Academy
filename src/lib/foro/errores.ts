@@ -66,6 +66,7 @@ const ERRORES: Record<string, Entrada> = {
   limite_etiquetas: E(429, "Has llegado al máximo de etiquetas por hoy."),
   limite_reportes: E(429, "Has llegado al máximo de reportes por hoy."),
   limite_imagenes: E(429, "Has llegado al máximo de imágenes por hoy."),
+  limite_seguidos: E(429, "Sigues demasiados hilos. Deja de seguir alguno para seguir otro."),
   demasiados_rechazos: E(429, "Has enviado demasiados mensajes que no cumplen las normas. Podrás volver a publicar mañana."),
   nuevo_sin_enlaces: E(403, "Durante tus primeros 7 días en el foro no puedes publicar enlaces."),
 

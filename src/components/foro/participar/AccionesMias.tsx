@@ -88,3 +88,33 @@ export function PreferenciaRanking({ fuera }: { fuera: boolean }) {
     </div>
   );
 }
+
+/** Dejar de seguir un hilo desde «Lo mío». Se puede siempre, también sin Premium. */
+export function DejarDeSeguir({ pregunta }: { pregunta: number }) {
+  const router = useRouter();
+  const [enviando, setEnviando] = useState(false);
+  const [error, setError] = useState("");
+
+  async function dejar() {
+    setEnviando(true);
+    setError("");
+    const r = await pedirForo("/api/foro/seguir", { pregunta, poner: false });
+    setEnviando(false);
+    if (!r.ok) {
+      sonar("error");
+      setError(r.mensaje);
+    } else {
+      sonar("interruptor");
+      router.refresh();
+    }
+  }
+
+  return (
+    <span className="fm-dejar">
+      <Tecla color="blanca" tamano="peq" disabled={enviando} onClick={dejar}>
+        {enviando ? "Quitando…" : "Dejar de seguir"}
+      </Tecla>
+      {error && <span className="fp-error" role="alert">{error}</span>}
+    </span>
+  );
+}

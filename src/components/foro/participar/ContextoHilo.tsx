@@ -16,7 +16,7 @@ import type { MioEnHilo } from "@/lib/foro/tipos";
  */
 
 const SIN_SESION: MioEnHilo = {
-  puede: false, motivo: "sin_sesion", esAutorDeLaPregunta: false, meGusta: [], etiquetas: [], mios: [], reportados: [],
+  puede: false, motivo: "sin_sesion", esAutorDeLaPregunta: false, meGusta: [], etiquetas: [], mios: [], reportados: [], sigue: false,
 };
 
 type Valor = {
@@ -25,6 +25,8 @@ type Valor = {
   mio: MioEnHilo | null;
   /** Cambia lo propio en pantalla tras una acción, sin volver a pedirlo. */
   cambiar: (cambio: (antes: MioEnHilo) => MioEnHilo) => void;
+  /** Los alias de quienes escriben en el hilo: lo que se sugiere al teclear «@». */
+  participantes: string[];
 };
 
 const Contexto = createContext<Valor | null>(null);
@@ -38,10 +40,13 @@ export function useHilo(): Valor {
 export default function ContextoHilo({
   preguntaId,
   conSesion,
+  participantes,
   children,
 }: {
   preguntaId: number;
   conSesion: boolean;
+  /** Ya públicos: son las firmas de los mensajes del hilo. */
+  participantes: string[];
   children: React.ReactNode;
 }) {
   const [mio, setMio] = useState<MioEnHilo | null>(conSesion ? null : SIN_SESION);
@@ -65,6 +70,7 @@ export default function ContextoHilo({
                 etiquetas: Array.isArray(r.etiquetas) ? r.etiquetas : [],
                 mios: Array.isArray(r.mios) ? r.mios : [],
                 reportados: Array.isArray(r.reportados) ? r.reportados : [],
+                sigue: r.sigue === true,
               }
             : { ...SIN_SESION, motivo: "interno" },
         );
@@ -77,6 +83,6 @@ export default function ContextoHilo({
     setMio((antes) => (antes ? cambio(antes) : antes));
   }, []);
 
-  const valor = useMemo(() => ({ preguntaId, mio, cambiar }), [preguntaId, mio, cambiar]);
+  const valor = useMemo(() => ({ preguntaId, mio, cambiar, participantes }), [preguntaId, mio, cambiar, participantes]);
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;
 }

@@ -702,15 +702,14 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* El cuadro no se estira a mano (23-11-2026, regla del admin): crece solo
-   con lo que se escribe hasta su tope, y a partir de ahí el texto avanza
-   dentro. */
+/* El cuadro tiene un alto fijo (el de sus `rows`) y no se estira ni a mano
+   ni solo (23-11-2026, regla del admin): lo escrito se desliza por dentro,
+   como en los foros de ahora, sin empujar lo que hay debajo. */
 .fp-campo textarea {
   min-height: 7rem;
-  max-height: 26rem;
   resize: none;
-  field-sizing: content;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .fp-campo select { cursor: var(--puntero-mano, pointer); }
 
@@ -904,7 +903,7 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   display: flex;
   flex-wrap: wrap;
   gap: 1.1rem;
-  margin: 0;
+  margin: 0.4rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -943,21 +942,501 @@ a.fo-cat:hover { transform: translateY(-1px) rotate(-1deg); }
   overflow-wrap: anywhere;
 }
 
-/* Quitar: una tecla redonda coral, encima de la esquina. */
+/* Quitar: una tecla redonda coral pequeña, DENTRO de la esquina de la foto
+   (23-11-2026: fuera de ella tapaba el botón de añadir en el móvil). */
 .fq-miniaturas .fq-quitar.tecla {
   position: absolute;
-  top: -14px;
-  right: -14px;
+  top: 10px;
+  right: 10px;
   z-index: 2;
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
+  min-height: 0;
   margin: 0;
+  padding: 0;
   border-radius: 50%;
-  --h: 4px;
+  --h: 3px;
 }
+
+.fq-miniaturas .fq-quitar.tecla svg { width: 14px; height: 14px; }
 
 @media (max-width: 640px) {
   .fq-miniaturas li { width: calc(50% - 0.6rem); }
-  /* Quitar una imagen con el dedo: la tecla redonda, más grande. */
-  .fq-miniaturas .fq-quitar.tecla { top: -16px; right: -12px; width: 42px; height: 42px; }
+  /* Con el dedo, un poco más grande, pero dentro de la foto. */
+  .fq-miniaturas .fq-quitar.tecla { width: 30px; height: 30px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   23-11-2026 · Menciones, editor con vista previa, buscador y visor de
+   imágenes. Lo usan varias pantallas del foro, por eso viven aquí.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Una mención (@alias) dentro de un mensaje ── */
+.fo-mencion {
+  display: inline-block;
+  padding: 0 7px;
+  border-radius: 8px;
+  background: var(--cat-s, var(--coral-s));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--cat, var(--coral)) 55%, transparent);
+  font-weight: 900;
+  color: var(--cat-o, var(--coral-o));
+  white-space: nowrap;
+}
+
+/* ── El editor: formato, pestañas, menciones y vista previa ── */
+.fp-editor-barra {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* Escribir / Vista previa: dos pestañas en una pastilla. */
+.fp-pestanas {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--papel);
+  box-shadow: 0 3px 0 var(--gris);
+}
+
+.fp-pestana {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  font: 900 12.5px/1 var(--letra-texto);
+  color: var(--tinta-2);
+  cursor: var(--puntero-mano, pointer);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fp-pestana:hover:not(:disabled):not(.is-activa) { background: var(--fondo); }
+.fp-pestana.is-activa { background: var(--tinta); color: #fff; }
+.fp-pestana:focus-visible { outline: 3px solid var(--azul); outline-offset: 1px; }
+.fp-pestana:disabled { opacity: 0.5; cursor: default; }
+
+/* Las sugerencias al teclear «@»: una tira de fichas bajo el cuadro. */
+.fp-menciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: inset 0 0 0 2px var(--gris), 0 4px 0 var(--gris);
+  list-style: none;
+  animation: fp-menciones 0.18s ease-out both;
+}
+
+@keyframes fp-menciones {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+
+.fp-menciones-nota {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 2px;
+  font-family: var(--letra-mano);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--tinta-2);
+}
+
+.fp-mencion {
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--coral-s);
+  font: 900 0.88rem/1 var(--letra-texto);
+  color: var(--coral-o);
+  cursor: var(--puntero-mano, pointer);
+  transition: background 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+
+.fp-mencion:hover,
+.fp-mencion.is-activa { background: var(--coral); color: #fff; }
+.fp-mencion:active { transform: translateY(1px); }
+
+/* La vista previa: una hoja con el mensaje tal como saldrá. */
+.fp-previa {
+  position: relative;
+  display: grid;
+  gap: 0.8rem;
+  min-height: 7rem;
+  padding: 1.5rem 1.1rem 1.1rem;
+  border: 3px dashed var(--gris-o);
+  border-radius: 14px;
+  background: var(--papel);
+}
+
+.fp-previa-nota {
+  position: absolute;
+  top: -15px;
+  left: 14px;
+  margin: 0;
+  padding: 2px 10px;
+  border-radius: 9px;
+  background: var(--amarillo-s);
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--tinta);
+  rotate: -2deg;
+}
+
+.fp-previa-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+  overflow-wrap: anywhere;
+}
+
+.fp-previa-vacia {
+  margin: 0;
+  font-weight: 700;
+  color: var(--tinta-3);
+}
+
+.fp-previa-imagenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fp-previa-imagenes li {
+  width: 150px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: 0 4px 0 var(--gris-o), 0 10px 16px -10px rgba(29, 27, 51, 0.45);
+}
+
+.fp-previa-imagenes img {
+  display: block;
+  width: 100%;
+  height: 110px;
+  border-radius: 9px;
+  object-fit: cover;
+  background: var(--fondo);
+}
+
+/* ── El buscador del foro ── */
+.fb {
+  position: relative;
+  /* Por encima de lo que venga debajo: de la caja cuelgan las sugerencias. */
+  z-index: 30;
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 7px 7px 14px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: inset 0 0 0 3px var(--tinta), 0 6px 0 var(--tinta);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.fb:focus-within { box-shadow: inset 0 0 0 3px var(--tinta), 0 6px 0 var(--cat, var(--coral)); }
+
+.fb-lupa {
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: var(--cat-o, var(--coral-o));
+}
+
+.fb-campo {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  font: 800 16px/1.2 var(--letra-texto);
+  color: var(--tinta);
+  outline: none;
+}
+
+.fb-campo::placeholder { font-weight: 700; color: var(--tinta-3); }
+/* La «x» propia del navegador sobra: el buscador lleva la suya. */
+.fb-campo::-webkit-search-cancel-button { display: none; }
+
+.fb-borrar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--fondo);
+  color: var(--tinta-2);
+  cursor: var(--puntero-mano, pointer);
+}
+
+.fb-borrar:hover { background: var(--coral-s); color: var(--coral-o); }
+
+.fb-boton {
+  flex: none;
+  height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--cat, var(--coral));
+  box-shadow: 0 4px 0 var(--cat-o, var(--coral-o));
+  font: 900 13px/1 var(--letra-texto);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cat-t, #fff);
+  cursor: var(--puntero-mano, pointer);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.15s ease;
+}
+
+.fb-boton:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--cat-o, var(--coral-o)); }
+.fb-boton:disabled { opacity: 0.5; cursor: default; }
+.fb-boton:focus-visible,
+.fb-borrar:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+
+/* Las sugerencias, colgando de la caja. */
+.fb-lista {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 20px;
+  background: var(--papel);
+  box-shadow: inset 0 0 0 3px var(--tinta), 0 8px 0 var(--tinta), 0 30px 40px -20px rgba(29, 27, 51, 0.5);
+  animation: fp-menciones 0.18s ease-out both;
+}
+
+.fb-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.fb-fila.is-activa { background: var(--cat-s, var(--coral-s)); }
+
+.fb-fila-icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--cat, var(--coral));
+  color: var(--cat-t, #fff);
+  box-shadow: 0 3px 0 var(--cat-o, var(--coral-o));
+}
+
+.fb-fila-texto {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 1px;
+}
+
+.fb-fila-texto b {
+  overflow: hidden;
+  font-size: 0.96rem;
+  font-weight: 900;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fb-fila-texto small { font-size: 12px; font-weight: 800; color: var(--tinta-2); }
+
+.fb-fila-estado {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 9px;
+  background: var(--fondo);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--tinta-2);
+}
+
+.fb-fila-estado.is-resuelta { background: var(--menta-s); color: var(--menta-o); }
+
+.fb-vacio {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 0.92rem;
+  color: var(--tinta-2);
+}
+
+.fb-vacio b { font-weight: 900; color: var(--tinta); }
+
+.fb-todos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-top: 2px dashed var(--gris);
+  border-radius: 0 0 12px 12px;
+  background: transparent;
+  font: 900 0.88rem/1.3 var(--letra-texto);
+  color: var(--cat-o, var(--coral-o));
+  text-align: left;
+  cursor: var(--puntero-mano, pointer);
+}
+
+.fb-todos.is-activa { background: var(--cat-s, var(--coral-s)); }
+
+/* ── El visor de imágenes, a pantalla completa ── */
+.fv-velo {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 64px 16px 24px;
+  background: rgba(20, 18, 38, 0.9);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fv-velo 0.2s ease-out both;
+  touch-action: pan-y;
+}
+
+@keyframes fv-velo {
+  from { opacity: 0; }
+}
+
+.fv-imagen {
+  max-width: min(100%, 1400px);
+  max-height: calc(100dvh - 104px);
+  width: auto;
+  height: auto;
+  border: 6px solid var(--papel);
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+  object-fit: contain;
+  user-select: none;
+  animation: fv-entra 0.26s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+}
+
+@keyframes fv-entra {
+  from { opacity: 0; transform: scale(0.94); }
+}
+
+.fv-barra {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fv-cuenta {
+  margin-right: auto;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  font: 900 0.9rem/1 var(--letra-texto);
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.fv-boton,
+.fv-flecha {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  cursor: var(--puntero-mano, pointer);
+  transition: transform 0.14s ease, background 0.14s ease;
+}
+
+.fv-boton {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.fv-cerrar { background: var(--coral); color: #fff; }
+
+.fv-flecha {
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border-radius: 50%;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.fv-flecha--antes { left: 14px; }
+.fv-flecha--despues { right: 14px; }
+
+.fv-boton:hover,
+.fv-flecha:hover { transform: translateY(-2px); }
+.fv-boton:active,
+.fv-flecha:active { transform: translateY(2px); }
+.fv-boton:focus-visible,
+.fv-flecha:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 3px; }
+
+@media (max-width: 640px) {
+  .fp-editor-barra { width: 100%; justify-content: space-between; margin-left: 0; }
+  .fp-pestana { padding: 0 9px; }
+  .fp-previa-imagenes li { width: calc(50% - 0.4rem); }
+
+  .fb { padding: 6px 6px 6px 12px; border-radius: 18px; }
+  .fb-boton { padding: 0 14px; }
+  .fb-lista { padding: 8px; }
+  .fb-fila-texto b { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+  .fv-velo { padding: 62px 8px 76px; }
+  .fv-imagen { max-height: calc(100dvh - 150px); border-width: 4px; border-radius: 12px; }
+  /* Las flechas, abajo: no tapan la foto y quedan al alcance del pulgar. */
+  .fv-flecha { top: auto; bottom: 16px; margin-top: 0; }
+  .fv-flecha--antes { left: calc(50% - 62px); }
+  .fv-flecha--despues { right: calc(50% - 62px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-menciones, .fb-lista, .fv-velo, .fv-imagen { animation: none; }
+  .fp-mencion, .fb-boton, .fv-boton, .fv-flecha { transition: none; }
 }

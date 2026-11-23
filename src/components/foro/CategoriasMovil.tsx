@@ -8,12 +8,14 @@ import Tecla from "@/components/cuaderno/Tecla";
 import { bloquearScroll } from "@/lib/bloquearScroll";
 import { sonar } from "@/lib/sonidos";
 import "@/components/buscador-popup.css";
+import "./categorias-movil.css";
 
 export type CategoriaMovil = {
   /** `null` = «Todas». */
   slug: string | null;
   nombre: string;
-  hilos: number;
+  /** Cuántos hilos tiene. Sin él (al preguntar), no se enseña la cuenta. */
+  hilos?: number;
   activa: boolean;
   /** Sus colores (`--cat`, `--cat-o`, `--cat-s`, `--cat-t`), de `colorDe`. */
   estilo?: React.CSSProperties;
@@ -27,7 +29,18 @@ export type CategoriaMovil = {
  * (buscador-popup.css), con una fila grande por categoría, su color y su
  * cuenta. En el ordenador sigue la tira de teclas (listado.css).
  */
-export default function CategoriasMovil({ categorias }: { categorias: CategoriaMovil[] }) {
+export default function CategoriasMovil({
+  categorias,
+  elegir,
+  etiqueta = "Categoría",
+  nota = "¿de qué quieres hablar?",
+}: {
+  categorias: CategoriaMovil[];
+  /** Al preguntar: elegir la categoría en vez de ir a su página. */
+  elegir?: (slug: string | null) => void;
+  etiqueta?: string;
+  nota?: string;
+}) {
   const [abierta, setAbierta] = useState(false);
   const boton = useRef<HTMLButtonElement>(null);
   const actual = categorias.find((c) => c.activa) ?? categorias[0];
@@ -68,10 +81,10 @@ export default function CategoriasMovil({ categorias }: { categorias: CategoriaM
       >
         <span className="fl-categoria-icono" aria-hidden="true">{actual.icono}</span>
         <span className="flc-cat-movil-texto">
-          <small>Categoría</small>
+          <small>{etiqueta}</small>
           {actual.nombre}
         </span>
-        <span className="fl-categoria-cuenta">{actual.hilos}</span>
+        {actual.hilos !== undefined && <span className="fl-categoria-cuenta">{actual.hilos}</span>}
         <ChevronDown size={18} strokeWidth={2.8} aria-hidden="true" className="flc-cat-movil-flecha" />
       </Tecla>
 
@@ -88,11 +101,25 @@ export default function CategoriasMovil({ categorias }: { categorias: CategoriaM
               <button type="button" className="bp-cerrar" aria-label="Cerrar" onClick={cerrar}>
                 <X size={18} strokeWidth={2.8} aria-hidden="true" />
               </button>
-              <p className="bp-nota" aria-hidden="true">¿de qué quieres hablar?</p>
+              <p className="bp-nota" aria-hidden="true">{nota}</p>
 
               <ul className="flc-cat-lista">
                 {categorias.map((c, i) => (
                   <li key={c.slug ?? "todas"} style={{ "--i": i } as React.CSSProperties}>
+                    {elegir ? (
+                      <button
+                        type="button"
+                        className={`flc-cat-fila${c.activa ? " is-activa" : ""}`}
+                        style={c.estilo}
+                        aria-pressed={c.activa}
+                        onClick={() => { sonar("elegir"); elegir(c.slug); setAbierta(false); boton.current?.focus(); }}
+                      >
+                      <span className="flc-cat-fila-icono" aria-hidden="true">{c.icono}</span>
+                      <span className="flc-cat-fila-nombre">{c.nombre}</span>
+                      {c.hilos !== undefined && <span className="flc-cat-fila-cuenta">{c.hilos}</span>}
+                      {c.activa && <Check className="flc-cat-fila-check" size={18} strokeWidth={3} aria-hidden="true" />}
+                      </button>
+                    ) : (
                     <Link
                       href={c.slug ? `/foro/${c.slug}` : "/foro"}
                       className={`flc-cat-fila${c.activa ? " is-activa" : ""}`}
@@ -102,9 +129,10 @@ export default function CategoriasMovil({ categorias }: { categorias: CategoriaM
                     >
                       <span className="flc-cat-fila-icono" aria-hidden="true">{c.icono}</span>
                       <span className="flc-cat-fila-nombre">{c.nombre}</span>
-                      <span className="flc-cat-fila-cuenta">{c.hilos}</span>
+                      {c.hilos !== undefined && <span className="flc-cat-fila-cuenta">{c.hilos}</span>}
                       {c.activa && <Check className="flc-cat-fila-check" size={18} strokeWidth={3} aria-hidden="true" />}
                     </Link>
+                    )}
                   </li>
                 ))}
               </ul>

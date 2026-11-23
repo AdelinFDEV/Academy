@@ -1,13 +1,13 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Tecla from "@/components/cuaderno/Tecla";
 import { pedirForo } from "@/components/foro/pedir";
 import { LIMITES } from "@/lib/foro/limites";
 import { sonar } from "@/lib/sonidos";
 import { useHilo } from "./ContextoHilo";
-import BarraFormato from "./BarraFormato";
+import EditorForo from "./EditorForo";
 import Invitacion from "./Invitacion";
 import SubirImagenes, { type Subida } from "./SubirImagenes";
 
@@ -31,9 +31,7 @@ export default function Responder({
   alCancelar?: () => void;
 }) {
   const router = useRouter();
-  const { preguntaId, mio } = useHilo();
-  const campo = useRef<HTMLTextAreaElement>(null);
-  const idCampo = useId();
+  const { preguntaId, mio, participantes } = useHilo();
   const [texto, setTexto] = useState("");
   const [imagenes, setImagenes] = useState<Subida[]>([]);
   const [subiendo, setSubiendo] = useState(false);
@@ -73,25 +71,20 @@ export default function Responder({
 
   return (
     <form className={`fp-form${a ? " fp-form--replica" : ""}`} onSubmit={enviar}>
-      {/* Un div, no un label: la barra de formato lleva botones, y dentro de
-          un label el primero de ellos se quedaría con sus clics. */}
-      <div className="fp-campo">
-        <span className="fp-campo-cab">
-          {/* «Tu respuesta» ya es el título de la caja: aquí solo para lectores de pantalla. */}
-          <label htmlFor={idCampo} className={a ? undefined : "sr-only"}>{a ? "Tu réplica" : "Tu respuesta"}</label>
-          <BarraFormato campo={campo} valor={texto} cambiar={setTexto} bloqueado={enviando} />
-        </span>
-        <textarea
-          ref={campo}
-          id={idCampo}
-          value={texto}
-          onChange={(e) => setTexto(e.target.value)}
-          rows={a ? 3 : 6}
-          maxLength={limite.max * 2}
-          placeholder={a ? "Aclara o matiza esta respuesta." : "Responde a la pregunta con lo que sabes. Sé claro y respetuoso."}
-          required
-        />
-      </div>
+      <EditorForo
+        valor={texto}
+        cambiar={setTexto}
+        etiqueta={a ? "Tu réplica" : "Tu respuesta"}
+        // «Tu respuesta» ya es el título de la caja: aquí solo para lectores de pantalla.
+        etiquetaOculta={!a}
+        filas={a ? 3 : 6}
+        maximo={limite.max * 2}
+        placeholder={a ? "Aclara o matiza esta respuesta. Con @ mencionas a alguien del hilo." : "Responde a la pregunta con lo que sabes. Sé claro y respetuoso."}
+        bloqueado={enviando}
+        requerido
+        participantes={participantes}
+        imagenes={imagenes}
+      />
       <SubirImagenes
         max={LIMITES.imagenesPorRespuesta}
         imagenes={imagenes}

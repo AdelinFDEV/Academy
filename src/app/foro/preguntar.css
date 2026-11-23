@@ -10,7 +10,98 @@
    como teclas y toman su color al elegirlas. A la derecha, un pósit con los
    consejos y un aviso coral con lo que nunca se publica. */
 
-.fq-cabecera { margin-bottom: 2rem; }
+/* ── La cabecera (23-11-2026): una franja corta en el coral del foro ── */
+.fqc {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.6rem 0 2rem;
+  padding: 1.4rem 2rem;
+  border-radius: 28px;
+  background-color: var(--coral-s);
+  background-image: radial-gradient(color-mix(in srgb, var(--coral) 26%, transparent) 1.5px, transparent 2px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  box-shadow: 0 6px 0 var(--coral), 0 26px 40px -32px rgba(29, 27, 51, 0.5);
+}
+
+.fqc::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 190px;
+  height: 100%;
+  border-radius: 0 28px 28px 100%;
+  background: color-mix(in srgb, var(--coral) 18%, var(--coral-s));
+  pointer-events: none;
+}
+
+.fqc > * { position: relative; }
+
+.fqc-texto { display: grid; gap: 0.2rem; }
+
+.fqc-titulo {
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.fqc-nota {
+  margin: 0;
+  font-family: var(--letra-mano);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--coral-o);
+  rotate: -2deg;
+}
+
+/* El boli escribiendo y el «?» que asoma por encima de la franja. */
+.fqc-pegatinas {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  gap: 4px;
+  margin: -2.2rem 0 -1.2rem;
+}
+
+/* El boli es alto y estrecho: tumbado, para que la franja siga corta. */
+.fqc-boli {
+  width: auto;
+  height: 118px;
+  margin: 0 18px;
+  rotate: 58deg;
+  filter: drop-shadow(0 8px 10px rgba(29, 27, 51, 0.22));
+  animation: fqc-escribe 2.6s ease-in-out infinite;
+}
+
+.fqc-pregunta {
+  width: 78px;
+  height: auto;
+  rotate: 8deg;
+  filter: drop-shadow(0 8px 12px rgba(143, 124, 255, 0.3));
+  animation: fqc-piensa 3.4s ease-in-out infinite;
+}
+
+@keyframes fqc-escribe {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25% { transform: translate(4px, -2px) rotate(4deg); }
+  50% { transform: translate(-2px, 1px) rotate(-3deg); }
+  75% { transform: translate(3px, -1px) rotate(2deg); }
+}
+
+@keyframes fqc-piensa {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  40% { transform: translateY(-6px) rotate(-6deg); }
+  70% { transform: translateY(-2px) rotate(4deg); }
+}
 
 .fq-rejilla {
   display: grid;
@@ -85,6 +176,8 @@
 }
 
 /* ── Las categorías: fichas-tecla ── */
+
+.fq-cat-movil { display: none; }
 
 .fq-fichas {
   display: flex;
@@ -338,10 +431,126 @@ p.fq-nota { margin: 0; }
   .fq-form { padding: 0.4rem 1.05rem 1.1rem; border-radius: 24px; }
   .fq-pie .tecla { flex: 1 1 100%; padding-inline: 18px; }
   .fq-ficha { min-height: 44px; }
+  /* La categoría, en la ventana (CategoriasMovil) en vez de las fichas. */
+  .fq-fichas { display: none; }
+  .fq-cat-movil { display: block; }
+  .fqc { margin-top: 2rem; padding: 1.1rem 1.1rem 1.1rem 1.3rem; border-radius: 24px; }
+  .fqc::before { width: 120px; border-radius: 0 24px 24px 100%; }
+  .fqc-nota { font-size: 1.3rem; }
+  .fqc-pegatinas { margin: -2.4rem -0.2rem -1.2rem 0; }
+  .fqc-boli { height: 84px; margin: 0 10px; }
+  .fqc-pregunta { width: 56px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .fqc-boli, .fqc-pregunta { animation: none; }
   .fq-ficha { transition: none; }
   .fq-ficha:hover,
   .fq-ficha:active { transform: none; }
+}
+
+/* ══ 23-11-2026 · «¿Es alguna de estas?»: preguntas parecidas al título ══ */
+.fq-parecidas {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border-radius: 6px 18px 18px 18px;
+  background: var(--amarillo-s);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--amarillo) 70%, var(--amarillo-o));
+  animation: fq-parecidas 0.28s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+}
+
+@keyframes fq-parecidas {
+  from { opacity: 0; transform: translateY(-6px) rotate(-0.6deg); }
+}
+
+.fq-parecidas-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--letra-titular);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.fq-parecidas-titulo small {
+  font-family: var(--letra-mano);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tinta-2);
+}
+
+.fq-parecidas-icono {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--amarillo);
+  color: var(--tinta);
+  box-shadow: 0 3px 0 var(--amarillo-o);
+}
+
+.fq-parecidas ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fq-parecida {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: inset 4px 0 0 var(--cat, var(--coral)), 0 3px 0 var(--gris);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.fq-parecida:hover { transform: translateX(3px); }
+.fq-parecida:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+
+.fq-parecida b {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.fq-parecida-estado {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 9px;
+  background: var(--fondo);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
+
+.fq-parecida-estado.is-resuelta { background: var(--menta-s); color: var(--menta-o); }
+.fq-parecida-fuera { flex: none; color: var(--tinta-3); }
+
+@media (max-width: 640px) {
+  .fq-parecida { flex-wrap: wrap; }
+  .fq-parecida b { flex-basis: 100%; order: 2; }
+  .fq-parecida-fuera { margin-left: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-parecidas { animation: none; }
+  .fq-parecida { transition: none; }
 }

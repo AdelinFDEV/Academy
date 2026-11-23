@@ -90,7 +90,19 @@ export default async function ForoRefPage({ params, searchParams }: Props) {
         {modo === "abierto" && (
           <JsonLd
             data={[
-              qaPageSchema({ path: `/foro/${h.id}-${h.slug}`, titulo: h.titulo, texto: h.texto, fecha: h.fecha, autor: h.autor, respuestas: h.respuestas }),
+              // Sin las marcas de formato: a Google va el texto, no los «**».
+              qaPageSchema({
+                path: `/foro/${h.id}-${h.slug}`,
+                titulo: h.titulo,
+                texto: sinFormato(h.texto),
+                fecha: h.fecha,
+                autor: h.autor,
+                respuestas: h.respuestas.map((r) => ({
+                  ...r,
+                  texto: sinFormato(r.texto),
+                  replicas: r.replicas.map((x) => ({ ...x, texto: sinFormato(x.texto) })),
+                })),
+              }),
               breadcrumbSchema([
                 { name: "Foro", path: "/foro" },
                 { name: h.categoria.nombre, path: `/foro/${h.categoria.slug}` },

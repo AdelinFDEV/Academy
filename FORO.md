@@ -35,6 +35,9 @@ Cada fase de la §16 tiene un **criterio de salida**: hasta cumplirlo no se empi
 | 12-11-2026 | Los niveles dan **solo estatus** |
 | 12-11-2026 | Reportes, sanciones y registro se guardan **12 meses** |
 | 12-11-2026 | Los números del §4, §6.5 y §10.2 son los de este documento para la beta, y se ajustan con lo que pase en ella |
+| 23-11-2026 | **Imágenes también en respuestas y réplicas** (hasta 2), y **formato**: negrita y listas (§4) |
+| 23-11-2026 | **Buscador del foro** y **«¿es alguna de estas?»** al escribir el título de una pregunta (§2, §12 bis) |
+| 23-11-2026 | **Seguir un hilo**: aviso con cada respuesta nueva. **Menciones** con `@alias` (hasta 5 por mensaje), con aviso. **Vista previa** antes de publicar y **visor de imágenes** dentro de la página (§2) |
 | 06-11-2026 | **Solo Premium participa, en todo.** Sin Premium (gratuito, sin cuenta o con el Premium caducado) solo se lee: ni me gusta, ni etiquetas, ni reportar, ni elegir ganadora. **Cualquier botón de participar le lleva a hacerse Premium** |
 
 ---
@@ -64,6 +67,12 @@ Cada fase de la §16 tiene un **criterio de salida**: hasta cumplirlo no se empi
 - **Respuesta ganadora**, elegida por el autor de la pregunta (§9).
 - **Reportar** cualquier pregunta o respuesta.
 - **Avisos** (§11) y **ranking** (§10).
+- **Buscador** (`/foro/buscar`, 23-11-2026): los hilos publicados que llevan todas las palabras, en el título o en el texto, sin distinguir mayúsculas ni tildes; primero los que las llevan en el título. Mientras se escribe salen sugerencias. Leer y buscar es de todos.
+- **«¿Es alguna de estas?»** (23-11-2026): al escribir el título de una pregunta nueva, las que ya hay y se le parecen. Se abren en otra pestaña.
+- **Seguir un hilo** (23-11-2026): quien lo sigue recibe un aviso con cada **respuesta** nueva (no con las réplicas). Seguir es participar (Premium); dejar de seguir se puede siempre. Quien preguntó no lo necesita: ya le llegan. Tope: 200 hilos seguidos. Se ven en «Lo mío».
+- **Menciones** (23-11-2026): `@alias` en una pregunta, respuesta o réplica avisa al mencionado. Como mucho **5 por mensaje**, nunca a uno mismo, y no se repite a quien ese mensaje ya avisa por otra vía. **Al editar no se avisa.** Solo se pinta como mención un alias que existe, y **sin enlace**: sigue sin haber perfiles. Al escribir «@» se sugieren los alias de quienes escriben en ese hilo (ya están a la vista).
+- **Vista previa** (23-11-2026): antes de publicar, la pestaña enseña el mensaje tal como saldrá (la misma estructura que pinta el hilo).
+- **Visor de imágenes** (23-11-2026): las imágenes de un mensaje se abren en grande dentro de la página, con flechas, teclado y deslizar; sin JavaScript siguen siendo un enlace al archivo.
 
 **No hay, y no se construye sin que el admin lo pida:**
 
@@ -144,6 +153,7 @@ Nombres orientativos; el SQL final se escribe en la fase 2. Todas las tablas con
 | `foro_ajustes` | el modo del foro y la versión de las normas | una sola fila; la leen todas las funciones (§6.1) |
 | `foro_normas_aceptadas` | una aceptación de las normas | `usuario_id`, `version`, fecha |
 | `foro_avisos` | un aviso | `destinatario`, `tipo`, `pregunta_id`, `cuantos`, `leido`, fechas |
+| `foro_seguidos` | un hilo seguido por alguien (23-11-2026) | **PK (`pregunta_id`, `usuario_id`)**: no se puede seguir dos veces |
 
 **Estados** de preguntas, respuestas e imágenes: `publicada` → `oculta` (reversible) | `borrada`. No hay `pendiente` ni `rechazada`: nada espera revisión, y lo que el filtro rechaza no llega a guardarse. Nunca se borra la fila de verdad mientras haya un reporte o una sanción que la cite: se marca, y se purga al vencer el plazo de conservación (§13).
 
@@ -227,6 +237,11 @@ Todas las rutas `/api/foro/*` entran en el tramo `escritura` de `src/lib/rate-li
 | `foro_reportar(objeto, usuario, motivo)` | Apunta el reporte y, al tercero de cuentas distintas, **oculta el mensaje** en la misma transacción |
 | `foro_moderar(objeto, accion, motivo, admin)` | Oculta, restaura o borra; revierte los puntos que dependían de ello; apunta en el registro y avisa al autor con el motivo |
 | `foro_sancionar(usuario, tipo, hasta, motivo, admin)` | Crea la sanción, la apunta y avisa |
+| `foro_seguir(usuario, pregunta, poner)` (23-11-2026) | Sigue o deja de seguir un hilo publicado. Seguir comprueba `foro_puede_participar` y el tope de 200; dejar de seguir borra también sus avisos de «seguido» sin leer |
+| `foro_buscar(palabras[], minimo, limite)` (23-11-2026) | **Solo lee**: ids de los hilos publicados que llevan las palabras. Las palabras llegan como datos (un `text[]` ya en minúsculas, sin tildes y solo con letras y números, `texto/buscar.ts`) y se comparan con `position`: no hay SQL dinámico ni comodines |
+| `foro_alias_existentes(alias[])` (23-11-2026) | **Solo lee**: de una lista de alias, cuáles existen. No devuelve ningún id |
+
+`foro_preguntar` y `foro_responder` reciben además `p_menciones text[]` (los alias, no ids: quién es cada uno lo resuelve la base de datos) y, **en la misma transacción** que el mensaje, crean los avisos de mención y, en una respuesta, los de quienes siguen el hilo. Los parámetros nuevos llevan valor por defecto: la web publicada sigue funcionando entre que se ejecuta el SQL y se despliega el código.
 
 Todas bloquean la fila que tocan (`select … for update`) antes de comprobar nada: dos me gusta simultáneos, o dos personas eligiendo ganadora a la vez, no pueden dejar un contador mal.
 
@@ -239,6 +254,8 @@ Todas bloquean la fila que tocan (`select … for update`) antes de comprobar na
 - **Enlaces**: solo a dominios de una lista blanca (la propia web, YouTube, exploradores de bloques y webs oficiales que apruebe el admin). Los demás, rechazados. Todo enlace sale con `rel="nofollow ugc noopener noreferrer"`. Se analizan con `new URL()` y se compara el **dominio exacto**: solo `https:`, sin usuario ni contraseña en la URL, sin puerto y sin dominios `xn--` (los que imitan a otro con letras parecidas). El enlace se pinta como componente de React a partir del texto, nunca como HTML.
 - **El JSON-LD lleva texto de usuarios** (§12): al escribirlo en la página, cada `<` se escapa como `<`. Sin eso, un `</script>` dentro de una pregunta cerraría la etiqueta y lo siguiente se ejecutaría como código en la página de todos.
 - **Detectores que rechazan el mensaje en el acto** (decidido el 12-11-2026; no se guarda, y el usuario ve qué tiene que quitar). **Buscan la oferta, no el tema**: en este foro se viene a preguntar por estafas, y un detector que rechace la palabra «Telegram» o «10 % mensual» deja sin poder preguntar a quien más lo necesita. «Me han escrito por Telegram ofreciendo un 10 % garantizado, ¿es fiable?» pasa; «escríbeme por Telegram» y «te garantizo un 10 %» no. La frase semilla se detecta con las listas oficiales BIP-39 (12 palabras seguidas de la lista). Saltan con: algo que parezca una **frase semilla** (12 o 24 palabras seguidas de la lista BIP-39), una **clave privada**, una dirección de cartera pidiendo envíos, teléfonos y emails, «escríbeme por privado», enlaces de WhatsApp o Telegram, códigos de referido y promesas de rentabilidad («x10 asegurado»). Son las estafas típicas del sector. Un falso positivo se arregla afinando el detector, y cada rechazo se cuenta (sin guardar el texto) para ver cuál se pasa de estricto.
+- **Las marcas de formato no cuentan para los detectores** (repaso del 23-11-2026). Antes de comparar se quitan los asteriscos (sin dejar hueco) y el punto de lista «•»: «te \*\*garantizo\*\* un 10 %», «ga\*\*ran\*\*tizo» o una frase semilla puesta en una lista de puntos se rechazan igual que sin formato. Con el formato recién estrenado se colaban.
+- **El formato nunca es HTML.** El texto se convierte en una estructura (`BloqueForo[]`, en `tipos.ts`) y se pinta con elementos de React (`TextoBloques`): párrafos, listas, negrita, enlaces `https` a dominios permitidos y menciones. La vista previa devuelve esa misma estructura, no HTML.
 - **Palabras malsonantes**: el mismo filtro del alias (`src/lib/perfilPublico.ts`), sobre el texto normalizado.
 
 ### 6.5 Límites de envío, por usuario
@@ -459,12 +476,15 @@ Una campana en la barra con los no leídos, y la lista en el dashboard.
 | Ya puedes elegir ganadora (a los 14 días) | Autor de la pregunta | No |
 | La ganadora de tu hilo se retiró: elige otra | Autor de la pregunta | No |
 | Sanción, con su motivo | Sancionado | No |
+| Nueva respuesta en un hilo que sigues (23-11-2026) | Quien sigue el hilo (no su autor, que ya tiene el suyo) | Sí, por hilo |
+| Te han mencionado (23-11-2026) | El mencionado | Sí, por mensaje |
 
 Reglas:
 
 - Se crean **dentro de la misma función** que hace el cambio, y solo sobre contenido **publicado**: un spam rechazado no llega a nadie.
 - Si lo que causó el aviso se oculta o se borra, el aviso desaparece.
 - **Sin auto-avisos.**
+- El aviso de una mención desaparece si el mensaje que mencionaba se oculta o se borra (disparador `foro_menciones_siguen_respuesta`).
 - Guardan a quién, qué hilo, el tipo, cuántos y si está leído. Nada del texto: enlazan al hilo.
 - Los lee el servidor filtrando por el usuario **de la sesión**, nunca por un id que mande el navegador; nadie crea avisos para otros.
 - Se borran solos a los 90 días de leídos.
@@ -551,6 +571,30 @@ Antes de enseñárselo a nadie, cada intento se prueba y su resultado se escribe
 
 **Google**
 - [ ] El sitemap, el `noindex`, el 410 y el `QAPage` de un hilo con y sin respuesta, y con ganadora.
+
+### Repaso de seguridad del 23-11-2026
+
+Hecho al añadir imágenes en las respuestas, formato, buscador, seguir, menciones, vista previa y visor. Cada punto se probó; el script y su salida no se guardan en el repositorio (se rehacen en minutos).
+
+**Contra Supabase, con la clave pública** (la que tiene cualquier navegador):
+- Las 17 tablas `foro_*`: leer, insertar, modificar y borrar, todo rechazado (`42501`).
+- Las funciones `foro_*` (publicar, responder, me gusta, etiquetar, ganadora, subidas, avisos, mantenimiento, las internas): todas rechazadas.
+- Los dos buckets: no se puede listar, subir, pedir una URL de subida ni borrar. `foro-pendientes` es privado (5 MB; JPG, PNG, WebP) y `foro` público (2 MB; solo WebP), y los dos rechazan por sí mismos un SVG, un HTML, un GIF y 6 MB, también con la clave de servicio.
+- **Hallazgo, fuera del foro**: `profiles` tenía lectura pública (`USING (true)`). Con la clave pública se listaban los 16 usuarios con su `id`, su **nombre real**, su rol, su alta y su último día de conexión, y se podía cruzar cada alias del foro con su nombre. Arreglo: `scripts/perfiles-lectura-propia.sql` (cada uno lee solo su fila). **Pendiente de que el admin lo ejecute.**
+
+**Imágenes** (`comprobarYRecodificar`, con archivos fabricados): rechazados un SVG con script, un PHP renombrado, HTML, GIF, PDF, ejecutable, ZIP, archivo vacío, la firma de JPEG con basura, un PNG truncado, más de 5 MB, una bomba de 30.000 × 30.000 px (en 1 ms, sin abrirla), 49 megapíxeles, 12.000 px de ancho y un WebP animado. De un JPG con un script pegado al final y de una foto con GPS y texto en el EXIF, lo guardado sale sin el script, sin EXIF, sin ICC y sin XMP. Una foto de 4.000 × 3.000 se guarda a 1.600.
+
+**Texto** (filtro + estructura + pintado, 24 ataques): `<script>`, `</script>` para romper el JSON-LD, `<img onerror>`, `<iframe>`, `javascript:` y `data:`, HTML dentro de una negrita, de una lista y de una mención, enlaces con comillas, a un dominio parecido, con `usuario@`, punycode, `http` y con puerto, texto con dirección invertida, caracteres invisibles, zalgo, plantillas y SQL. Ninguno produce una etiqueta fuera de `div p ul ol li strong a span`, ni un atributo `on…`, ni un enlace que no sea `https` a un dominio permitido.
+
+**Huecos encontrados y cerrados ese día:**
+1. Con negritas por medio, una promesa de rentabilidad y una frase semilla en lista pasaban el filtro (§6.4). Cerrado en `texto/filtro.ts`.
+2. Al ocultar o borrar una respuesta, las imágenes de sus réplicas seguían en el bucket público (no se veían en la página, pero su dirección seguía viva). Cerrado en `scripts/foro-buscar-seguir-menciones.sql`.
+
+**Que no se cuelgue**: nueve textos de 5.000 caracteres hechos para atascar las expresiones regulares (asteriscos, arrobas, `a.a.a.`, `https://` repetido…): el peor, 60 ms.
+
+**Buscador**: lo que se escribe se corta a 80 caracteres y se convierte en 8 palabras como mucho, solo letras y números; `foro_buscar` no tiene SQL dinámico y solo lee lo publicado. Lo buscado se pinta como texto y la página no se indexa.
+
+**No probado**: nada de lo que necesita una sesión Premium iniciada (publicar con imágenes, mencionar, seguir, la vista previa contra el servidor). Sus funciones de Postgres sí, con 47 casos en un Postgres de pruebas (PGlite).
 
 ---
 

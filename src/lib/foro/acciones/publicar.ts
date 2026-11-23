@@ -6,6 +6,7 @@ import { LIMITES } from "../limites";
 import type { ResultadoAccion } from "../peticion";
 import { motivoParaNoParticipar } from "../permisos";
 import { filtrar, type ClaseDeTexto } from "../texto/filtro";
+import { candidatosDeMencion, MENCIONES_MAX } from "../texto/formato";
 import { slugDe } from "../texto/normalizar";
 import { sonSuyasYListas } from "./imagenes";
 
@@ -38,6 +39,17 @@ async function pasarFiltro(usuarioId: string, clase: ClaseDeTexto, entrada: { ti
     await llamar("foro_registrar_rechazo", { p_usuario: usuarioId, p_detector: f.detector });
   }
   return f;
+}
+
+/**
+ * Los alias que menciona un texto YA FILTRADO (@alias), como mucho 5. Van
+ * como texto: quién es cada uno lo resuelve la función de Postgres, que
+ * además no avisa a quien no existe ni al propio autor. Al editar no se
+ * avisa: editar un mensaje para mencionar a alguien una y otra vez sería acoso.
+ */
+function menciones(cuerpo: string): string[] | null {
+  const alias = candidatosDeMencion(cuerpo, MENCIONES_MAX);
+  return alias.length ? alias : null;
 }
 
 // ── Preguntar ───────────────────────────────────────────────────────────────
@@ -74,6 +86,7 @@ export async function preguntar(usuarioId: string, d: z.infer<typeof esquemaPreg
     p_huella: f.huella,
     p_imagenes: imagenes.length ? imagenes : null,
     p_tiene_enlaces: f.tieneEnlaces,
+    p_menciones: menciones(f.cuerpo),
   });
 
   if (imagenes.length) {
@@ -116,6 +129,7 @@ export async function responder(usuarioId: string, d: z.infer<typeof esquemaResp
     p_huella: f.huella,
     p_tiene_enlaces: f.tieneEnlaces,
     p_imagenes: imagenes.length ? imagenes : null,
+    p_menciones: menciones(f.cuerpo),
   });
 
   if (imagenes.length) {

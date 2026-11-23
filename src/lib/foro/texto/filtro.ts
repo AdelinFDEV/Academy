@@ -48,7 +48,14 @@ export function filtrar(clase: ClaseDeTexto, entrada: { titulo?: string; cuerpo:
   const todo = titulo ? `${titulo}\n${cuerpo}` : cuerpo;
 
   // Que diga algo: no solo signos, ni una letra repetida, ni todo a gritos.
-  const comparable = paraComparar(todo);
+  //
+  // Las marcas de formato NO cuentan para los detectores (repaso de seguridad
+  // del 23-11-2026): «te **garantizo** un 10 %» se lee «te garantizo un 10 %»,
+  // y una frase semilla en una lista de puntos sigue siendo una frase semilla.
+  // Los asteriscos se quitan sin dejar hueco («ga**ran**tizo» se pinta como
+  // una sola palabra) y el punto de lista «•» pasa a ser un espacio. Solo
+  // para COMPARAR: lo que se guarda es el texto limpio, con sus marcas.
+  const comparable = paraComparar(todo).replace(/\*+/g, "").replace(/•/g, " ");
   const letras = comparable.replace(/[^a-z]/g, "");
   // Una réplica puede ser muy corta («Sí, eso»): se le pide menos.
   const [minLetras, minDistintas] = clase === "replica" ? [3, 3] : [10, 5];

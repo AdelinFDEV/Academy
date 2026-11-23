@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Award, BadgeCheck, Bell, HandHeart, MessageCircle, PenLine, ShieldAlert, Sparkles } from "lucide-react";
+import { Award, BadgeCheck, Bell, BellRing, HandHeart, MessageCircle, PenLine, ShieldAlert, Sparkles } from "lucide-react";
 import MarcoForo from "@/components/foro/MarcoForo";
 import { fechaCorta } from "@/components/foro/fechas";
-import { MarcarLeidos, PreferenciaRanking } from "@/components/foro/participar/AccionesMias";
+import { DejarDeSeguir, MarcarLeidos, PreferenciaRanking } from "@/components/foro/participar/AccionesMias";
 import { LOGROS_FORO, NIVELES } from "@/lib/foro/limites";
 import { fraseDeAviso as fraseDe, type LoMio } from "@/lib/foro/tipos";
 import "@/app/foro/mio.css";
@@ -183,6 +183,39 @@ export default function VistaMio({ mio }: { mio: LoMio }) {
           )}
         </section>
       </div>
+
+      {/* ── Hilos que sigue (23-11-2026): le avisan de cada respuesta nueva ── */}
+      <section className="fm-seguidos" aria-labelledby="fm-seguidos">
+        <div className="fo-seccion-cab">
+          <span className="fo-seccion-num">03</span>
+          <h2 id="fm-seguidos" className="fo-seccion-titulo">Hilos que sigues</h2>
+          {mio.seguidos.length > 0 && <span className="fo-seccion-nota">{mio.seguidos.length}</span>}
+        </div>
+
+        {mio.seguidos.length === 0 ? (
+          <div className="fo-vacio">
+            <b>No sigues ningún hilo</b>
+            <p>Pulsa «Seguir hilo» en una pregunta que te interese y te avisamos de cada respuesta nueva.</p>
+          </div>
+        ) : (
+          <ul className="fm-lista fm-lista--seguidos">
+            {mio.seguidos.map((h) => (
+              <li key={h.id} className="fm-aviso is-neutro">
+                <span className="fm-aviso-icono" aria-hidden="true"><BellRing size={17} strokeWidth={2.5} /></span>
+                <div className="fm-aviso-texto">
+                  <span className="fm-linea">
+                    <Link href={`/foro/${h.id}-${h.slug}`}>{h.titulo}</Link>
+                  </span>
+                  <small>
+                    {h.categoria.nombre} · {h.resuelto ? "resuelta" : h.respuestas === 1 ? "1 respuesta" : `${h.respuestas} respuestas`}
+                  </small>
+                </div>
+                <DejarDeSeguir pregunta={h.id} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </MarcoForo>
   );
 }

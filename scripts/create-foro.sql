@@ -43,7 +43,8 @@ insert into public.foro_categorias (slug, nombre, descripcion, orden) values
   ('trading',    'Trading',              'Operativa, gestión del riesgo, psicología y análisis.',              3),
   ('seguridad',  'Seguridad y carteras', 'Carteras, frases semilla, estafas y cómo protegerte.',               4),
   ('impuestos',  'Impuestos',            'Fiscalidad de las criptomonedas y declaraciones.',                   5),
-  ('academia',   'La academia',          'Dudas sobre las guías, los cursos y las herramientas de la web.',    6)
+  ('academia',   'La academia',          'Dudas sobre las guías, los cursos y las herramientas de la web.',    6),
+  ('otras',      'Otras',                'Lo que no encaja en ninguna de las demás categorías.',               7)
 on conflict (slug) do nothing;
 
 -- ── 3 · Preguntas ───────────────────────────────────────────────────────────

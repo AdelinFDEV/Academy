@@ -45,7 +45,8 @@ export type Sonido =
   | "encender"
   | "apagar"
   | "abrir"
-  | "cerrar";
+  | "cerrar"
+  | "escribir";
 
 const CLAVE = "sonido";
 const EVENTO = "sonido-cambia";
@@ -496,6 +497,23 @@ function barrido(ctx: AudioContext, desde: number, hasta: number, dur: number, f
   ruido.start(t);
 }
 
+/**
+ * Escribir (23-11-2026, pedido por el admin: «un sonido al escribir, muy
+ * ASMR, muy placentero»). Una tecla de teclado mecánico con las piezas
+ * lubricadas, oída de cerca y bajito: un «toc» grave y redondo, sin clic
+ * agudo. Es la mitad de fuerte que la tecla de un botón, porque suena con
+ * cada letra y no puede cansar. Cada pulsación varía un poco de tono, como
+ * las teclas de verdad; el espacio y el intro, más graves (`tono`).
+ */
+function escribir(ctx: AudioContext, tono = 1) {
+  const t = ctx.currentTime;
+  const k = tono * variar(1, 0.085);
+  modo(ctx, t, 118 * k, 0.06, VOLUMEN * 0.36);
+  modo(ctx, t, 236 * k, 0.07, VOLUMEN * 0.5);
+  modo(ctx, t, 468 * k, 0.034, VOLUMEN * 0.17);
+  chasquido(ctx, t, variar(1350, 0.16) * k, 0.006, VOLUMEN * 0.17);
+}
+
 const CATALOGO: Record<Sonido, (ctx: AudioContext, tono?: number) => void> = {
   tecla,
   soltar,
@@ -515,6 +533,7 @@ const CATALOGO: Record<Sonido, (ctx: AudioContext, tono?: number) => void> = {
   apagar,
   abrir,
   cerrar,
+  escribir,
 };
 
 // ─────────────────────────── Quién suena y quién calla ───────────────────────────
@@ -524,7 +543,7 @@ const CATALOGO: Record<Sonido, (ctx: AudioContext, tono?: number) => void> = {
  * sonar. Lo corto evita el eco de dos llamadas seguidas; lo largo, que dos
  * piezas celebren lo mismo (el quiz y el aviso del logro, por ejemplo).
  */
-const REPOSO: Partial<Record<Sonido, number>> = { logro: 2500, racha: 900, avance: 350, acierto: 250, fallo: 250, girar: 0, tecla: 30 };
+const REPOSO: Partial<Record<Sonido, number>> = { logro: 2500, racha: 900, avance: 350, acierto: 250, fallo: 250, girar: 0, tecla: 30, escribir: 26 };
 const REPOSO_NORMAL = 90;
 
 /** Si dos sonidos piden sonar a la vez, gana el que más cuenta. */
@@ -541,6 +560,16 @@ const ESPERA_SOLTAR = 50;
 const CALLA_SOLTAR = 260;
 
 const ultimaVez = new Map<Sonido, number>();
+/** Cuándo se pidió sonar algo por última vez, lo que fuera (`performance.now()`). */
+let ultimaPeticion = -1e9;
+
+/**
+ * ¿Acaba de sonar (o de pedirse) algo? Lo usa `SonidosGlobales` para no
+ * repetir: si la pieza pulsada ya ha hecho su sonido, el genérico calla.
+ */
+export function acabaDeSonar(ms = 70): boolean {
+  return performance.now() - ultimaPeticion < ms;
+}
 let ultimoConSentido = -1e9;
 let soltarEnEspera = 0;
 let enEspera: { nombre: Sonido; tono: number; reloj: number } | null = null;
@@ -566,6 +595,14 @@ export function sonar(nombre: Sonido, tono = 1) {
   if (!audio()) return;
   const ahora = performance.now();
   if (ahora - (ultimaVez.get(nombre) ?? -1e9) < (REPOSO[nombre] ?? REPOSO_NORMAL)) return;
+
+  // Escribir: una letra, un «toc», al instante. No es un botón: ni cuenta
+  // como tecla pulsada ni calla ni espera a nadie.
+  if (nombre === "escribir") {
+    tocar(nombre, tono);
+    return;
+  }
+  ultimaPeticion = ahora;
 
   // El clic de bajar: al instante, sin esperas. Es lo que se nota bajo el dedo.
   if (nombre === "tecla") {
